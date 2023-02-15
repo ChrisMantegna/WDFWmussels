@@ -1,0 +1,87 @@
+---
+title: "Making a Map in R"
+author: "Chris"
+date: "2/14/2023"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Here are the pitfalls
+
+* Google API key needed
+* Old or defunct packages or package dependencies
+* I was avoiding packages that have failed me in the past without thinking of how some of them could be used together
+
+### Website this base code was altered from: https://eriqande.github.io/rep-res-web/lectures/making-maps-with-R.html
+
+Map of the USA
+
+```{r}
+
+#install.packages("mapdata")
+library(ggplot2, ggmap, maps, "mapdata")
+
+usa <- map_data("usa")
+gg1 <-ggplot() + geom_polygon(data = usa, aes(x=long, y = lat, group = group)) + 
+  coord_fixed(1.3) #run code without object to see in this doc
+
+```
+
+Mapping WA State
+```{r}
+states <- map_data("state")
+head(states)
+
+library("cowplot")
+
+wa_df <- subset(states, region== "washington")
+head(wa_df)
+
+counties <- map_data("county")
+wa_county <- subset(counties, region== "washington")
+head(wa_county)
+
+wa_base <- ggplot(data = wa_df, mapping = aes(x = long, y = lat, group = group)) + 
+  coord_fixed(1.3) + 
+  geom_polygon(color = "black", fill = "gray")
+wa_base + theme_nothing()
+
+wac <- wa_base + theme_nothing() + 
+  geom_polygon(data = wa_county, fill = NA, color = "white") +
+  geom_polygon(color = "black", fill = NA)  # get the state border back on top
+
+```
+
+Mapping Puget Sound and my cage retrieval sites
+```{r}
+
+location<- read.csv("mussel.csv")
+head(location)
+lat <- location[,5]
+long <- location[,6]
+site <- location[,2]
+cage <- data.frame(long, lat, site)
+head(cage)
+
+#isolating puget sound area
+wac + coord_fixed(xlim = c(-124, -122),  ylim = c(47, 49), ratio = 1.3)
+
+#adding cage sites
+wac +
+  coord_fixed(xlim = c(-124, -122),  ylim = c(47, 49), ratio = 1.3) +
+  geom_point(data = cage, aes(x = long, y = lat), color = "black", size = 5, inherit.aes = FALSE) +
+  geom_point(data = cage, aes(x = long, y = lat), color = "yellow", size = 4, inherit.aes = FALSE)
+
+
+```
+
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
