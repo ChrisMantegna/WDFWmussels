@@ -24,11 +24,9 @@ thick<- read.csv("data/shellthickness.csv", header= TRUE, sep=",")
 
 ```
 
-#clean up morph and thick csv's since their are too many columns
+#inspect data
 ```{r}
-data
-morph
-thick
+summary(data()
 
 ```
 
@@ -45,8 +43,32 @@ thick
 ```
 
 #plot p450 by site
+#one site at a time and the loop for it
 ```{r}
+#individual
+# Filtering the data for site 21 
+site21_df <- df[df$site_number == 21, ]
 
+ggplot(site21_df, aes(x = factor(sample), y = p450)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Individual Sample", y = "p450 Value") +
+  ggtitle("p450 Values for Site 21 by Individual Sample")
+
+
+#loop
+for (site in 1:77) {
+  # Filter the data for the current site
+  site_df <- df[df$site_number == site, ]
+  
+  # Plot the bar chart for the current site
+  p <- ggplot(site_df, aes(x = factor(sample), y = p450)) +
+    geom_bar(stat = "identity") +
+    labs(x = "Individual Sample", y = "p450 Value") +
+    ggtitle(paste("p450 Values for Site", site, "by Individual Sample"))
+  
+  # Print the plot
+  print(p)
+}
 
 ```
 
