@@ -1,0 +1,66 @@
+---
+title: "initial visualization of biomarker data"
+authors: Chris M
+date: February 20, 2024
+---
+
+#load packages
+```{r}
+
+library(tidyverse)
+library(ggplot2)
+library(vegan)
+
+```
+
+#load data
+#biomarkersbysite= p450 and SOD by site
+#morphometrics= weight, length, height, and width measurements
+#shellthickness= shell thickness measurements
+```{r}
+data<- read.csv("data/biomarkerswithsites.csv", header= TRUE, sep=",")
+morph<- read.csv("data/morphometrics.csv", header= TRUE, sep=",")
+thick<- read.csv("data/shellthickness.csv", header= TRUE, sep=",")
+
+```
+
+#clean up morph and thick csv's since their are too many columns
+```{r}
+data
+morph
+thick
+
+```
+
+#quick stats
+```{r}
+#condition factor (weight/ length)
+# mean/ median/ weight, length, thickness
+
+```
+
+#plot SOD by site
+```{r}
+
+```
+
+#plot p450 by site
+```{r}
+
+
+```
+
+
+#map sites by category (high, medium, low)
+```{r}
+
+
+
+```
+
+
+
+
+
+
+
