@@ -6,7 +6,7 @@ date: February 20, 2024
 
 #load packages
 ```{r}
-install.packages("vctrs")
+#install.packages("vctrs")
 library(tidyr)
 library(tidyverse)
 library(ggplot2)
@@ -36,24 +36,15 @@ summary(data)
 ```
 #inspect morph
 #distance measured in mm + weight measured in g
-#fix na's
 ```{r}
 summary(morph)
 ```
 
 #inspect thick
 #fix data types for measurement categories + include mm as unit of measurement
+#throw out the 0's?
 ```{r}
 summary(thick)
-```
-
-
-#quick stats
-```{r}
-#add a weight change column
-#condition factor (weight/ length)
-# mean/ median/ weight, length, thickness
-
 ```
 
 #plot SOD by site
@@ -111,6 +102,7 @@ for (site in 1:77) {
 ```{r}
 # Variation within each site for SOD and p450
 sod_variation <- aggregate(SOD ~ site_number, data = data, var)
+print(sod_variation)
 p450_variation <- aggregate(p450 ~ site_number, data = data, var)
 
 # ANOVA for site and SOD
@@ -126,11 +118,15 @@ anova_sod_p450 <- aov(SOD ~ p450, data = data)
 summary(anova_sod_p450)
 
 
+#site and biomarkers are statistically relevant co-factors, but the biomarkers aren't statistically significant to each other.
+#try to understand the variation stuff, it feels incorrect
+
 ```
 
 #pca
 #correlation plot
-#
+#combine condition factor, economic facotr + data for correlation and pca?
+
 
 
 
