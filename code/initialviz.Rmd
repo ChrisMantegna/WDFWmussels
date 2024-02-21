@@ -58,6 +58,7 @@ summary(thick)
 
 #plot SOD by site
 ```{r}
+#loop 
 for (site in 1:77) {
   # Filter the data for the current site
   sodsite_df <- data[data$site_number == site, ]
@@ -74,43 +75,27 @@ for (site in 1:77) {
 ```
 
 #plot p450 by site
-#one site at a time and the loop for it
 ```{r}
 #individual
-# Filtering the data for site 21 
-site21_df <- df[df$site_number == 21, ]
+# Example for site 21 
+#site21_df <- df[df$site_number == 21, ]
 
-ggplot(site21_df, aes(x = factor(sample), y = p450)) +
-  geom_bar(stat = "identity") +
-  labs(x = "Individual Sample", y = "p450 Value") +
-  ggtitle("p450 Values for Site 21 by Individual Sample")
+#ggplot(site21_df, aes(x = factor(sample), y = p450)) +
+  #geom_bar(stat = "identity") +
+  #labs(x = "Individual Sample", y = "p450 Value") +
+  #ggtitle("p450 Values for Site 21 by Individual Sample")
 
 
 #loop
+# Loop through each site from 1 to 77
 for (site in 1:77) {
   # Filter the data for the current site
   psite_df <- data[data$site_number == site, ]
   
-  # Plot the bar chart for the current site
-  p <- ggplot(psite_df, aes(x = factor(sample), y = p450)) +
-    geom_bar(stat = "identity") +
-    labs(x = "Individual Sample", y = "p450 Value") +
-    ggtitle(paste("p450 Values for Site", site, "by Individual Sample"))
-  
-  # Print the plot
-  print(p)
-}
-
-#a different loop
-# Loop through each site from 1 to 77
-for (site in 1:77) {
-  # Filter the data for the current site
-  site_df <- df[df$site_number == site, ]
-  
   # Check if there are samples for the current site
-  if (nrow(site_df) > 0) {
+  if (nrow(psite_df) > 0) {
     # Plot the bar chart for the current site
-    p <- ggplot(site_df, aes(x = factor(sample), y = p450)) +
+    p <- ggplot(psite_df, aes(x = factor(sample), y = p450)) +
       geom_bar(stat = "identity") +
       labs(x = "Individual Sample", y = "p450 Value") +
       ggtitle(paste("p450 Values for Site", site, "by Individual Sample"))
@@ -122,14 +107,30 @@ for (site in 1:77) {
 ```
 
 
-#map sites by category (high, medium, low)
+#ANOVA
 ```{r}
+# Variation within each site for SOD and p450
+sod_variation <- aggregate(SOD ~ site_number, data = data, var)
+p450_variation <- aggregate(p450 ~ site_number, data = data, var)
 
+# ANOVA for site and SOD
+anova_sod <- aov(SOD ~ factor(site_number), data = data)
+summary(anova_sod)
+
+# ANOVA for site and p450
+anova_p450 <- aov(p450 ~ factor(site_number), data = data)
+summary(anova_p450)
+
+# ANOVA for SOD and p450
+anova_sod_p450 <- aov(SOD ~ p450, data = data)
+summary(anova_sod_p450)
 
 
 ```
 
-
+#pca
+#correlation plot
+#
 
 
 
