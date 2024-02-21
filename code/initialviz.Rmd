@@ -6,7 +6,8 @@ date: February 20, 2024
 
 #load packages
 ```{r}
-
+install.packages("vctrs")
+library(tidyr)
 library(tidyverse)
 library(ggplot2)
 library(vegan)
@@ -26,12 +27,30 @@ thick<- read.csv("data/shellthickness.csv", header= TRUE, sep=",")
 
 #inspect data
 ```{r}
-summary(data()
-
+str(data)
 ```
+
+#inspect data
+```{r}
+summary(data)
+```
+#inspect morph
+#distance measured in mm + weight measured in g
+#fix na's
+```{r}
+summary(morph)
+```
+
+#inspect thick
+#fix data types for measurement categories + include mm as unit of measurement
+```{r}
+summary(thick)
+```
+
 
 #quick stats
 ```{r}
+#add a weight change column
 #condition factor (weight/ length)
 # mean/ median/ weight, length, thickness
 
@@ -39,7 +58,19 @@ summary(data()
 
 #plot SOD by site
 ```{r}
-
+for (site in 1:77) {
+  # Filter the data for the current site
+  sodsite_df <- data[data$site_number == site, ]
+  
+  # Plot the bar chart for the current site
+  p <- ggplot(sodsite_df, aes(x = factor(sample), y = SOD)) +
+    geom_bar(stat = "identity") +
+    labs(x = "Individual Sample", y = "SOD Value") +
+    ggtitle(paste("SOD Values for Site", site, "by Individual Sample"))
+  
+  # Print the plot
+  print(p)
+}
 ```
 
 #plot p450 by site
@@ -58,10 +89,10 @@ ggplot(site21_df, aes(x = factor(sample), y = p450)) +
 #loop
 for (site in 1:77) {
   # Filter the data for the current site
-  site_df <- df[df$site_number == site, ]
+  psite_df <- data[data$site_number == site, ]
   
   # Plot the bar chart for the current site
-  p <- ggplot(site_df, aes(x = factor(sample), y = p450)) +
+  p <- ggplot(psite_df, aes(x = factor(sample), y = p450)) +
     geom_bar(stat = "identity") +
     labs(x = "Individual Sample", y = "p450 Value") +
     ggtitle(paste("p450 Values for Site", site, "by Individual Sample"))
@@ -70,6 +101,24 @@ for (site in 1:77) {
   print(p)
 }
 
+#a different loop
+# Loop through each site from 1 to 77
+for (site in 1:77) {
+  # Filter the data for the current site
+  site_df <- df[df$site_number == site, ]
+  
+  # Check if there are samples for the current site
+  if (nrow(site_df) > 0) {
+    # Plot the bar chart for the current site
+    p <- ggplot(site_df, aes(x = factor(sample), y = p450)) +
+      geom_bar(stat = "identity") +
+      labs(x = "Individual Sample", y = "p450 Value") +
+      ggtitle(paste("p450 Values for Site", site, "by Individual Sample"))
+    
+    # Print the plot
+    print(p)
+  }
+}
 ```
 
 
