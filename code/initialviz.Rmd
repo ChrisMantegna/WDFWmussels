@@ -70,6 +70,7 @@ for (site in 1:77) {
 
 #SOD plotting from AH
 ```{r}
+data$rank <- rank(data$SOD)
 
 plot<-data%>%
   
@@ -92,6 +93,9 @@ ggsave(plot=plot, filename="~/viz/sod.png", width=15, height=8)
 
 #p450 plot by site 
 ```{r}
+#change order based on value
+data$rank <- rank(data$p450)
+
 plot<-data%>%
   
   ggplot(aes(x=site_name, y=p450))+
@@ -102,7 +106,7 @@ plot<-data%>%
   xlab(expression(bold("Site"))) +
   ylab(expression(bold(paste("p450 (mg protein)"^-1)))) +
   theme_classic()+
-  ylim(29000, 53000000)+ #adjust this to remove values you are going to exclude 
+  ylim(29000, 23000000)+ #adjust this to remove values you are going to exclude 
   theme(legend.position="right")+
   theme(axis.text.x=element_text(angle=90, hjust=1)); plot
 
