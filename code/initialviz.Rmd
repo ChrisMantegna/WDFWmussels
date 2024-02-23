@@ -50,6 +50,7 @@ summary(thick)
 #plot SOD by site
 ```{r}
 #loop 
+#set y axis threshold
 for (site in 1:77) {
   # Filter the data for the current site
   sodsite_df <- data[data$site_number == site, ]
@@ -126,6 +127,24 @@ summary(anova_sod_p450)
 #pca
 #correlation plot
 #combine condition factor, economic facotr + data for correlation and pca?
+```{r}
+# Load necessary libraries
+library(vegan)
+
+# Selecting the relevant variables for CCA
+cca_data <- df[, c("p450", "sod", "condition_factor", "economic_index")]
+
+# Perform CCA
+cca_result <- cca(cca_data ~ site_name, data = df)
+
+# Plot CCA results using ggplot2
+cca_plot <- autoplot(cca_result, data = df, colour = 'site_name', size = 3) +
+  theme_minimal() +
+  labs(title = "CCA of Mussel Data")
+
+# Print the plot
+print(cca_plot)
+```
 
 
 
