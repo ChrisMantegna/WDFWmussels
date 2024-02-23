@@ -90,8 +90,25 @@ ggsave(plot=plot, filename="~/viz/sod.png", width=15, height=8)
 
 ```
 
+#p450 plot by site 
+```{r}
+plot<-data%>%
+  
+  ggplot(aes(x=site_name, y=p450))+
 
+  geom_boxplot()+
+  geom_point(position=position_dodge(0.3), alpha=1, size=1)+
 
+  xlab(expression(bold("Site"))) +
+  ylab(expression(bold(paste("p450 (mg protein)"^-1)))) +
+  theme_classic()+
+  ylim(29000, 53000000)+ #adjust this to remove values you are going to exclude 
+  theme(legend.position="right")+
+  theme(axis.text.x=element_text(angle=90, hjust=1)); plot
+
+ggsave(plot=plot, filename="~/viz/p450.png", width=15, height=8)
+
+```
 
 
 #plot p450 by site
