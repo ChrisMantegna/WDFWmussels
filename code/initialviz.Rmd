@@ -102,7 +102,7 @@ for (site in 1:77) {
 ```{r}
 # Variation within each site for SOD and p450
 sod_variation <- aggregate(SOD ~ site_number, data = data, var)
-print(sod_variation)
+#print(sod_variation)
 p450_variation <- aggregate(p450 ~ site_number, data = data, var)
 
 # ANOVA for site and SOD
