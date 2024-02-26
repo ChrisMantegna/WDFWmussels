@@ -25,6 +25,7 @@ Map of the USA
 install.packages("mapdata")
 install.packages('maps')
 library(ggplot2, ggmap, 'maps')
+library(tidyverse)
 
 usa <- map_data("usa")
 gg1 <-ggplot() + geom_polygon(data = usa, aes(x=long, y = lat, group = group)) + 
@@ -72,7 +73,7 @@ cage <- data.frame(long, lat, site)
 head(cage)
 
 #isolating puget sound area
-#wac + coord_fixed(xlim = c(-124, -122),  ylim = c(47, 49), ratio = 1.3)
+wac + coord_fixed(xlim = c(-124, -122),  ylim = c(47, 49), ratio = 1.3)
 
 #adding cage sites
 wac +
