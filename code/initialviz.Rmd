@@ -53,12 +53,14 @@ data_ordered <- data[order(data$SOD),]
 data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
 
 # Plot the SOD values in a boxplot with ordered site names
-ggplot(data_ordered, aes(x = site_name, y = SOD)) +
+plot<- ggplot(data_ordered, aes(x = site_name, y = SOD)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
 
-ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/sod.png", width=15, height=8)
+ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/sodranked.png", width=15, height=8)
 ```
+
+
 ```{r}
 # Order the sites by p450 value
 data_ordered <- data[order(data$p450),]
@@ -67,14 +69,14 @@ data_ordered <- data[order(data$p450),]
 data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
 
 # Plot the SOD values in a boxplot with ordered site names
-ggplot(data_ordered, aes(x = site_name, y = p450)) +
+plot<- ggplot(data_ordered, aes(x = site_name, y = p450)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
 
-ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/p450.png", width=15, height=8)
+ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/p450ranked.png", width=15, height=8)
 ```
 
-#plot SOD by site
+#plot SOD by site - don't need to do this one right now. finesse the code so that we can plot each site on the same axis, maybe something that compares the lowest 25% to the highest 25% or whatever.
 ```{r}
 #loop 
 #set y axis threshold
@@ -92,6 +94,7 @@ for (site in 1:77) {
   print(p)
 }
 ```
+#this visualization doesn't help at all. find a better way to plot location and biomarker level. this could also work better on a map.
 ```{r}
 #plotting sod + p450 together
 ggplot(data, aes(x = longitude, y = latitude)) +
@@ -102,7 +105,9 @@ ggplot(data, aes(x = longitude, y = latitude)) +
   theme_minimal() +
   guides(color = guide_legend(), size = guide_legend())
 
+```
 
+```{r}
 #plotting SOD alone
 ggplot(data, aes(x = longitude, y = latitude, color = SOD)) +
   geom_point() +
@@ -110,7 +115,11 @@ ggplot(data, aes(x = longitude, y = latitude, color = SOD)) +
   labs(x = "Longitude", y = "Latitude", color = "SOD Value") +
   theme_minimal()
 
+ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/sodmap.png", width=15, height=8)
+```
 
+
+```{r}
 #plotting p450 alone
 ggplot(data, aes(x = longitude, y = latitude, color = p450)) +
   geom_point() +
@@ -118,7 +127,9 @@ ggplot(data, aes(x = longitude, y = latitude, color = p450)) +
   labs(x = "Longitude", y = "Latitude", color = "p450 Value") +
   theme_minimal()
 
+ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/p450map.png", width=15, height=8)
 ```
+
 #pearson correlation
 ```{r}
 # Convert condition_factor to numeric if it's not already
@@ -142,12 +153,81 @@ melted_cor_matrix <- melt(cor_matrix)
 
 ggplot(data = melted_cor_matrix, aes(x = Var1, y = Var2, fill = value)) +
   geom_tile() +
-  scale_fill_gradient2(low = "blue", high = "grey", mid = "white", midpoint = 0, limit = c(-1,1), space = "Lab", name="Pearson\nCorrelation") +
+  scale_fill_gradient2(low = "blue", high = "red", mid = "grey", midpoint = 0, limit = c(-1,1), space = "Lab", name="Pearson\nCorrelation") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
   labs(x = "", y = "")
 ```
+```{r}
+#this is an ugly plot - try something else
+data <- data.frame(
+  p450 = as.numeric(rnorm(100)),
+  SOD = as.numeric(rnorm(100)),
+  condition_factor = as.numeric(rnorm(100))
+)
 
+
+#different option for pearson correlation visual
+cor_matrix <- cor(data[c("p450", "SOD", "condition_factor")], use = "complete.obs", method = "pearson")
+
+pairs(data, 
+      lower.panel = function(x, y, ...) {
+        points(x, y, ...)
+        text(mean(x, na.rm = TRUE), mean(y, na.rm = TRUE), 
+             round(cor_matrix[match(names(data), colnames(cor_matrix))], 2), cex = 0.7)
+      },
+      upper.panel = NULL,
+      labels = c("p450", "SOD", "condition_factor")
+)
+```
+
+```{r}
+# i don't like this one either
+# Example data
+data <- data.frame(
+  p450 = rnorm(100),
+  SOD = rnorm(100),
+  condition_factor = rnorm(100)
+)
+
+# Compute correlation matrix
+cor_matrix <- cor(data, use = "complete.obs")
+
+# Plot correlation matrix with annotations
+plot(1, type="n", xlim=c(0, ncol(data)), ylim=c(0, ncol(data)), xlab="", ylab="", axes=FALSE)
+text(rep(1:ncol(data), each=ncol(data)), rep(ncol(data):1, ncol(data)), format(round(cor_matrix, 2), nsmall = 2), cex=0.7, col="black", font=2)
+axis(1, at=1:ncol(data), labels=colnames(data), las=2)
+axis(2, at=ncol(data):1, labels=rev(colnames(data)), las=2)
+box()
+
+```
+#ANOVA
+```{r}
+# Variation within each site for SOD and p450
+sod_variation <- aggregate(SOD ~ site_number, data = data, var)
+#print(sod_variation)
+p450_variation <- aggregate(p450 ~ site_number, data = data, var)
+
+# ANOVA for site and SOD
+anova_sod <- aov(SOD ~ factor(site_number), data = data)
+summary(anova_sod)
+
+# ANOVA for site and p450
+anova_p450 <- aov(p450 ~ factor(site_number), data = data)
+summary(anova_p450)
+
+# ANOVA for SOD and p450
+anova_sod_p450 <- aov(SOD ~ p450, data = data)
+summary(anova_sod_p450)
+
+
+#site and biomarkers are statistically relevant co-factors, but the biomarkers aren't statistically significant to each other.
+#try to understand the variation stuff, it feels incorrect
+
+```
+
+
+# Wasteland
 
 #SOD plotting from AH
 ```{r}
@@ -230,30 +310,6 @@ for (site in 1:77) {
 ```
 
 
-#ANOVA
-```{r}
-# Variation within each site for SOD and p450
-sod_variation <- aggregate(SOD ~ site_number, data = data, var)
-#print(sod_variation)
-p450_variation <- aggregate(p450 ~ site_number, data = data, var)
-
-# ANOVA for site and SOD
-anova_sod <- aov(SOD ~ factor(site_number), data = data)
-summary(anova_sod)
-
-# ANOVA for site and p450
-anova_p450 <- aov(p450 ~ factor(site_number), data = data)
-summary(anova_p450)
-
-# ANOVA for SOD and p450
-anova_sod_p450 <- aov(SOD ~ p450, data = data)
-summary(anova_sod_p450)
-
-
-#site and biomarkers are statistically relevant co-factors, but the biomarkers aren't statistically significant to each other.
-#try to understand the variation stuff, it feels incorrect
-
-```
 
 #pca
 #correlation plot
