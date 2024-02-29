@@ -35,17 +35,43 @@ str(data)
 summary(data)
 ```
 
-#inspect morph
-#distance measured in mm + weight measured in g
+#fix character/ numeric values
 ```{r}
-summary(morph)
+as.numeric("weight_initial", "weight_change", "length", "width", "height", "condition_factor", "economic_index")
+```
+```{r}
+getwd()
 ```
 
-#inspect thick
-#fix data types for measurement categories + include mm as unit of measurement
-#throw out the 0's?
+
+#plotting sites in order of expression
 ```{r}
-summary(thick)
+# Order the sites by SOD value
+data_ordered <- data[order(data$SOD),]
+
+# Create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+# Plot the SOD values in a boxplot with ordered site names
+ggplot(data_ordered, aes(x = site_name, y = SOD)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/sod.png", width=15, height=8)
+```
+```{r}
+# Order the sites by p450 value
+data_ordered <- data[order(data$p450),]
+
+# Create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+# Plot the SOD values in a boxplot with ordered site names
+ggplot(data_ordered, aes(x = site_name, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/p450.png", width=15, height=8)
 ```
 
 #plot SOD by site
@@ -65,6 +91,61 @@ for (site in 1:77) {
   # Print the plot
   print(p)
 }
+```
+```{r}
+#plotting sod + p450 together
+ggplot(data, aes(x = longitude, y = latitude)) +
+  geom_point(aes(color = SOD, size = p450)) +
+  scale_color_gradient(low = "blue", high = "red", name = "SOD Value") +
+  scale_size_continuous(name = "P450 Value") +
+  labs(x = "Longitude", y = "Latitude") +
+  theme_minimal() +
+  guides(color = guide_legend(), size = guide_legend())
+
+
+#plotting SOD alone
+ggplot(data, aes(x = longitude, y = latitude, color = SOD)) +
+  geom_point() +
+  scale_color_gradient(low = "blue", high = "red") +
+  labs(x = "Longitude", y = "Latitude", color = "SOD Value") +
+  theme_minimal()
+
+
+#plotting p450 alone
+ggplot(data, aes(x = longitude, y = latitude, color = p450)) +
+  geom_point() +
+  scale_color_gradient(low = "blue", high = "red") +
+  labs(x = "Longitude", y = "Latitude", color = "p450 Value") +
+  theme_minimal()
+
+```
+#pearson correlation
+```{r}
+# Convert condition_factor to numeric if it's not already
+data$condition_factor <- as.numeric(data$condition_factor)
+
+# Perform Pearson correlation with NA values ignored
+cor(data[c("p450", "SOD", "condition_factor")], use = "complete.obs", method = "pearson")
+```
+#pearson correlation with visualization
+```{r}
+
+# Perform Pearson correlation with NA values ignored
+cor_matrix <- cor(data[c("p450", "SOD", "condition_factor")], use = "complete.obs", method = "pearson")
+
+# Visualize the correlation matrix
+library(ggplot2)
+library(reshape2)
+
+# Melt the correlation matrix for visualization
+melted_cor_matrix <- melt(cor_matrix)
+
+ggplot(data = melted_cor_matrix, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "blue", high = "grey", mid = "white", midpoint = 0, limit = c(-1,1), space = "Lab", name="Pearson\nCorrelation") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust=1)) +
+  labs(x = "", y = "")
 ```
 
 
@@ -86,12 +167,13 @@ plot<-data%>%
   theme(legend.position="right")+
   theme(axis.text.x=element_text(angle=90, hjust=1)); plot
 
-ggsave(plot=plot, filename="~/viz/sod.png", width=15, height=8)
+ggsave(plot=plot, filename="~/output/sod.png", width=15, height=8)
 
 
 ```
 
 #p450 plot by site 
+#trying to rank the values but it isn't working
 ```{r}
 #change order based on value
 data$rank <- rank(data$p450)
