@@ -20,8 +20,8 @@ library(vegan)
 #shellthickness= shell thickness measurements
 ```{r}
 data<- read_csv("data/biomarkerfull.csv")
-morph<- read_csv("data/morphometrics.csv", header= TRUE, sep=",")
-thick<- read_csv("data/shellthickness.csv", header= TRUE, sep=",")
+#morph<- read_csv("data/morphometrics.csv", header= TRUE, sep=",")
+#thick<- read_csv("data/shellthickness.csv", header= TRUE, sep=",")
 
 ```
 
