@@ -318,7 +318,7 @@ ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/
 (fix df/ data and any other data name issues)
 ```{r}
 #install.packages("FactoMineR")
-library('FactoMineR')
+#library('FactoMineR')
 library(factoextra)
 
 # Ensure that condition_factor and economic_index are numeric
