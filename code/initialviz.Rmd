@@ -4,7 +4,7 @@ authors: Chris M
 date: February 20, 2024
 ---
 
-#load packages
+# load packages
 ```{r}
 #install.packages("vctrs")
 library(tidyr)
@@ -14,37 +14,39 @@ library(vegan)
 
 ```
 
-#load data
+# load data
 #biomarkerfull= p450 and SOD by site, condition factor and economic index
 #morphometrics= weight, length, height, and width measurements
 #shellthickness= shell thickness measurements
 ```{r}
-data<- read_csv("data/biomarkerfull.csv")
+getwd()
+data<- read_csv("/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/data/biomarkerfull.csv")
 #morph<- read_csv("data/morphometrics.csv", header= TRUE, sep=",")
 #thick<- read_csv("data/shellthickness.csv", header= TRUE, sep=",")
 
 ```
 
-#inspect data
+# inspect data
 ```{r}
 str(data)
 ```
 
-#inspect data
+# inspect data with summary
 ```{r}
 summary(data)
 ```
 
-#fix character/ numeric values
+# fix character/ numeric values
 ```{r}
 as.numeric("weight_initial", "weight_change", "length", "width", "height", "condition_factor", "economic_index")
 ```
+#still having directory issues, so i need to use the full path
 ```{r}
-getwd()
+#getwd()
 ```
 
 
-#plotting sites in order of expression
+# plotting sites in order of expression value for SOD
 ```{r}
 # Order the sites by SOD value
 data_ordered <- data[order(data$SOD),]
@@ -57,10 +59,10 @@ plot<- ggplot(data_ordered, aes(x = site_name, y = SOD)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
 
-ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/sodranked.png", width=15, height=8)
+#ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/sodranked.png", width=15, height=8)
 ```
 
-
+# plotting sites in order of expression value for p450
 ```{r}
 # Order the sites by p450 value
 data_ordered <- data[order(data$p450),]
@@ -73,10 +75,10 @@ plot<- ggplot(data_ordered, aes(x = site_name, y = p450)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
 
-ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/p450ranked.png", width=15, height=8)
+#ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/p450ranked.png", width=15, height=8)
 ```
 
-#plot SOD by site - don't need to do this one right now. finesse the code so that we can plot each site on the same axis, maybe something that compares the lowest 25% to the highest 25% or whatever.
+# plot SOD by site - don't need to do this one right now. finesse the code so that we can plot each site on the same axis, maybe something that compares the lowest 25% to the highest 25% or whatever.
 ```{r}
 #loop 
 #set y axis threshold
@@ -94,7 +96,7 @@ for (site in 1:77) {
   print(p)
 }
 ```
-#this visualization doesn't help at all. find a better way to plot location and biomarker level. this could also work better on a map.
+# this visualization doesn't help at all. find a better way to plot location and biomarker level. this could also work better on a map.
 ```{r}
 #plotting sod + p450 together
 ggplot(data, aes(x = longitude, y = latitude)) +
@@ -106,6 +108,35 @@ ggplot(data, aes(x = longitude, y = latitude)) +
   guides(color = guide_legend(), size = guide_legend())
 
 ```
+# plotting all points basic by site
+```{r}
+ggplot(data) +
+  geom_point(aes(x = site_name, y = SOD, color = "SOD")) +
+  geom_point(aes(x = site_name, y = p450, color = "P450")) +
+  labs(x = "Site Name", y = "Value", color = "Biomarker") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/allbysite.png", width=15, height=8)
+```
+
+# plotting a histogram of the p450 values with a density curve
+```{r}
+ggplot(data, aes(x = p450)) +
+  geom_histogram(aes(y = ..density..), binwidth = diff(range(data$p450))/30, colour = "black", fill = "white") +
+  geom_density(alpha = .2, fill = "#FF6666") +
+  labs(x = "P450 Values", y = "Density", title = "Histogram of P450 Values with Density Curve") +
+  theme_minimal()
+```
+#plotting a histogram of SOD with a density curve
+```{r}
+ggplot(data, aes(x = SOD)) +
+  geom_histogram(aes(y = ..density..), binwidth = diff(range(data$SOD))/30, colour = "black", fill = "white") +
+  geom_density(alpha = .2, fill = "#FF6666") +
+  labs(x = "SOD Values", y = "Density", title = "Histogram of SOD Values with Density Curve") +
+  theme_minimal()
+```
+
 
 ```{r}
 #plotting SOD alone
@@ -132,6 +163,9 @@ ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/
 
 #pearson correlation
 ```{r}
+
+#plain pearson if I want
+# cor.test(df$site_number, df$sod, method = "pearson")
 # Convert condition_factor to numeric if it's not already
 data$condition_factor <- as.numeric(data$condition_factor)
 
@@ -201,7 +235,7 @@ axis(2, at=ncol(data):1, labels=rev(colnames(data)), las=2)
 box()
 
 ```
-#ANOVA
+# ANOVA
 ```{r}
 # Variation within each site for SOD and p450
 sod_variation <- aggregate(SOD ~ site_number, data = data, var)
@@ -333,6 +367,31 @@ cca_plot <- autoplot(cca_result, data = df, colour = 'site_name', size = 3) +
 print(cca_plot)
 ```
 
+#extra stuff
+```{r}
+df_clean <- na.omit(df)
+
+library(FactoMineR)
+library(factoextra)
+
+# Ensure that condition_factor and economic_index are numeric
+df$condition_factor <- as.numeric(df$condition_factor)
+df$economic_index <- as.numeric(df$economic_index)
+
+# Remove NAs from the dataset
+df_clean <- na.omit(df)
+
+# Selecting the relevant variables for PCA
+pca_data <- df_clean[, c("sod", "p450", "condition_factor", "economic_index")]
+
+# Performing PCA
+pca_res <- PCA(pca_data, scale.unit = TRUE, graph = FALSE)
+
+# Plotting the PCA
+fviz_pca_biplot(pca_res, label = "var", col.var = "contrib",
+                gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+                repel = TRUE)  # Avoid text overlapping (slow if many points)
+```
 
 
 

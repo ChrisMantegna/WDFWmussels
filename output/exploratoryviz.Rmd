@@ -1,0 +1,358 @@
+---
+title: "Exploratory Visualizations"
+name: "Chris"
+date: "03-01-2024"
+---
+
+# Load Packages
+```{r}
+
+library(tidyr)
+library(tidyverse)
+library(ggplot2)
+library(vegan)
+
+```
+
+# Get working directory & load data
+```{r}
+getwd()
+data<- read_csv("/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/data/biomarkerfull.csv")
+
+```
+
+# Inspect data structure
+```{r}
+str(data)
+```
+
+# Inspect data summary stats
+## Note the following measurement types
+
+Weight = g\
+Length, width, height = mm\
+p450, SOD = activity/ (mg/protein)\
+Condition factor, economic factor = unitless
+```{r}
+summary(data)
+```
+
+# Fix character/ numeric values
+```{r}
+as.numeric("weight_initial", "weight_change", "length", "width", "height", "condition_factor", "economic_index")
+```
+
+# Detect outliers
+Code from stats notes/ stack overflow - updated with Chat GPT
+```{r}
+detect_outliers_mad <- function(data, accuracy = 0.99) {
+  # Function to calculate MAD
+  mad_function <- function(x) {
+    median(abs(x - median(x)))
+  }
+
+  # Calculate z-score equivalent for the given accuracy
+  z_threshold <- qnorm(accuracy + (1 - accuracy) / 2)
+
+  # Calculate MAD threshold
+  mad_threshold <- z_threshold
+
+  # Initialize a list to store outlier indices for each numeric column
+  outliers_list <- list()
+
+  # Initialize a vector to keep track of rows with outliers
+  rows_with_outliers <- rep(FALSE, nrow(data))
+
+  # Loop through each column in the dataframe
+  for (col_name in names(data)) {
+    # Check if the column is numeric
+    if (is.numeric(data[[col_name]])) {
+      # Calculate MAD and median for the column
+      mad_value <- mad_function(data[[col_name]])
+      median_value <- median(data[[col_name]])
+
+      # Calculate the deviation scores (using a modified z-score)
+      deviation_scores <- 0.6745 * (data[[col_name]] - median_value) / mad_value
+
+      # Identify indices of outliers
+      outlier_indices <- which(abs(deviation_scores) > mad_threshold)
+
+      # Store the indices in the list
+      outliers_list[[col_name]] <- outlier_indices
+
+      # Update rows with outliers
+      rows_with_outliers[outlier_indices] <- TRUE
+    }
+  }
+
+  # Calculate the number of outliers in each column
+  num_outliers_each_col <- sapply(outliers_list, length)
+
+  # Calculate the number of rows with at least one outlier
+  num_rows_with_outliers <- sum(rows_with_outliers)
+
+  # Combine the results into one vector
+  combined_results <- c(num_outliers_each_col, "Rows w/ Outliers" = num_rows_with_outliers)
+
+  # Return the combined results
+  return(combined_results)
+}
+
+# Detect outliers using the previously defined function
+outliers_info <- detect_outliers_mad(data)
+
+# Check if there are any outliers
+if (all(outliers_info == 0)) {
+  print("There are no outliers in any columns.")
+} else {
+  # Create a data frame for plotting
+  outliers_data_df <- data.frame(
+    Column = names(outliers_info),
+    Outliers = outliers_info,
+    OutlierPercentage = (outliers_info / nrow(df)) * 100 # Calculate the percentage of outliers
+  )
+
+  # Plot the number of outliers for all columns with labels
+  ggplot(outliers_data_df, aes(x = Column, y = Outliers, fill = Column)) +
+    geom_bar(stat = "identity") +
+    geom_text(aes(label = sprintf("%.2f%%", OutlierPercentage)), hjust = -0.3, vjust = 0) + # Add labels to the bars
+    coord_flip() + # Makes the bars horizontal
+    labs(title = "Number of Outliers by Column", x = "Column", y = "Number of Outliers") +
+    scale_fill_brewer(palette = "Set3") + # Use a color palette for different bars
+    theme(legend.position = "none", axis.title.y = element_blank()) + # Remove the legend
+    scale_y_continuous(expand = expansion(mult = c(0, 0.2))) # Extend the y-axis limits
+}
+
+ggsave(plot= plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/outliers.png", width=15, height=8)
+```
+
+#Alternate QC Plots
+Code from stats notes/ stack overflow - updated with Chat GPT
+```{r}
+#library(gridExtra)
+#install.packages("e1071")
+#library("e1071") # for skewness
+
+# Function to check if the variable is highly skewed
+is_highly_skewed <- function(x) {
+  # Remove missing values before computing skewness
+  x <- na.omit(x)
+  abs(e1071::skewness(x)) > 1
+}
+
+create_plots <- function(data, var) {
+  skewness_value <- round(e1071::skewness(na.omit(data[[var]])), 2)
+
+  # Histogram
+  p1 <- ggplot(data, aes_string(x = var)) +
+    geom_histogram(bins = 15, fill = "skyblue", color = "black") +
+    ggtitle(paste("Histogram of", var)) +
+    annotate("text", x = Inf, y = Inf, label = paste("Skewness:", skewness_value), hjust = 1.1, vjust = 1.1)
+
+  # QQ Plot with reference line
+  p2 <- ggplot(data, aes_string(sample = var)) +
+    stat_qq() +
+    stat_qq_line(color = "red") +
+    ggtitle(paste("QQ Plot of", var))
+
+  if (is_highly_skewed(data[[var]])) {
+    df$log_transformed <- log(data[[var]] + 1)
+    skewness_log_value <- round(e1071::skewness(na.omit(data$log_transformed)), 2)
+
+    # Histogram after log transformation
+    p3 <- ggplot(data, aes(x = log_transformed)) +
+      geom_histogram(bins = 15, fill = "lightgreen", color = "black") +
+      ggtitle(paste("Log-transformed", var)) +
+      annotate("text", x = Inf, y = Inf, label = paste("Skewness:", skewness_log_value), hjust = 1.1, vjust = 1.1)
+
+    # QQ Plot after log transformation
+    p4 <- ggplot(data, aes(sample = log_transformed)) +
+      stat_qq() +
+      stat_qq_line(color = "red") +
+      ggtitle(paste("log-transformed", var))
+
+    return(grid.arrange(p1, p2, p3, p4, ncol = 2))
+  } else {
+    return(grid.arrange(p1, p2, ncol = 2))
+  }
+}
+  # If the dataframe has more than 2000 rows, sample 2000 rows randomly
+  df_reduced <- data
+  if (nrow(df) > max_data_points_eda) {
+    set.seed(123) # Set a random seed for reproducibility
+    df_reduced <- df_reduced[sample(nrow(df_reduced), 2000), ]
+    cat("Since there are too many rows, ", max_data_points_eda," randomly selected rows are shown scatter plots.")
+  }
+
+# Apply the function to each numeric variable in the dataframe
+lapply(names(df_reduced)[sapply(df_reduced, is.numeric)], function(var) create_plots(df, var))
+
+ggsave(plot= plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/qcplots.png", width=15, height=8)
+```
+
+
+# Plot all
+```{r}
+plot<- ggplot(data) +
+  geom_point(aes(x = site_name, y = SOD, color = "SOD")) +
+  geom_point(aes(x = site_name, y = p450, color = "P450")) +
+  labs(x = "Site Name", y = "Value", color = "Biomarker") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/allbysite.png", width=15, height=8)
+```
+
+# Plot ranked p450 all sites
+```{r}
+# Order the sites by p450 value
+data_ordered <- data[order(data$p450),]
+
+# Create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+# Plot the SOD values in a boxplot with ordered site names
+plot<- ggplot(data_ordered, aes(x = site_name, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/p450ranked.png", width=15, height=8)
+```
+
+
+# Plot ranked SOD all sites
+```{r}
+# Order the sites by SOD value
+data_ordered <- data[order(data$SOD),]
+
+# Create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+# Plot the SOD values in a boxplot with ordered site names
+plot<- ggplot(data_ordered, aes(x = site_name, y = SOD)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/sodranked.png", width=15, height=8)
+```
+
+
+# Plot histogram of the p450 values with a density curve
+```{r}
+ggplot(data, aes(x = p450)) +
+  geom_histogram(aes(y = ..density..), binwidth = diff(range(data$p450))/30, colour = "black", fill = "white") +
+  geom_density(alpha = .2, fill = "#FF6666") +
+  labs(x = "P450 Values", y = "Density", title = "Histogram of P450 Values with Density Curve") +
+  theme_minimal()
+
+ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/p450histogram.png", width=15, height=8)
+```
+
+#Plot histogram of SOD with a density curve
+```{r}
+ggplot(data, aes(x = SOD)) +
+  geom_histogram(aes(y = ..density..), binwidth = diff(range(data$SOD))/30, colour = "black", fill = "white") +
+  geom_density(alpha = .2, fill = "#FF6666") +
+  labs(x = "SOD Values", y = "Density", title = "Histogram of SOD Values with Density Curve") +
+  theme_minimal()
+
+ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/sodhistogram.png", width=15, height=8)
+```
+
+# Plot p450 by site (lat/ long)
+```{r}
+ggplot(data, aes(x = longitude, y = latitude, color = p450)) +
+  geom_point() +
+  scale_color_gradient(low = "blue", high = "red") +
+  labs(x = "Longitude", y = "Latitude", color = "p450 Value") +
+  theme_minimal()
+
+ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/p450map.png", width=15, height=8)
+```
+
+# Plot SOD by site (lat/ long)
+```{r}
+ggplot(data, aes(x = longitude, y = latitude, color = SOD)) +
+  geom_point() +
+  scale_color_gradient(low = "blue", high = "red") +
+  labs(x = "Longitude", y = "Latitude", color = "SOD Value") +
+  theme_minimal()
+
+ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/sodmap.png", width=15, height=8)
+```
+
+# Correlation
+## Values
+```{r}
+#pearson correlation
+
+#plain pearson if I want
+# cor.test(df$site_number, df$sod, method = "pearson")
+# Convert condition_factor to numeric if it's not already
+data$condition_factor <- as.numeric(data$condition_factor)
+
+# Perform Pearson correlation with NA values ignored
+cor(data[c("p450", "SOD", "condition_factor")], use = "complete.obs", method = "pearson")
+```
+
+## visualization
+(fix df/ data and any other data name issues)
+```{r}
+library(corrplot)
+
+df2 <- data[sapply(data, is.numeric)]
+df2 <- na.omit(df2)
+M <- cor(df2)
+testRes <- cor.mtest(df2, conf.level = 0.95)
+## leave blank on non-significant coefficient
+## add significant correlation coefficients
+corrplot(M,
+  p.mat = testRes$p, method = "circle", type = "lower", insig = "blank",
+  addCoef.col = "black", number.cex = 0.8, order = "AOE", diag = FALSE
+)
+
+ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/correlation.png", width=15, height=8)
+```
+
+# PCA
+(fix df/ data and any other data name issues)
+```{r}
+#install.packages("FactoMineR")
+library('FactoMineR')
+library(factoextra)
+
+# Ensure that condition_factor and economic_index are numeric
+data$condition_factor <- as.numeric(data$condition_factor)
+data$economic_index <- as.numeric(data$economic_index)
+
+# Remove NAs from the dataset
+df_clean <- na.omit(data)
+
+# Selecting the relevant variables for PCA
+pca_data <- df_clean[, c("SOD", "p450", "condition_factor", "economic_index")]
+
+# Performing PCA
+pca_res <- PCA(pca_data, scale.unit = TRUE, graph = FALSE)
+
+# Plotting the PCA
+fviz_pca_biplot(pca_res, label = "var", col.var = "contrib",
+                gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+                repel = TRUE)  # Avoid text overlapping (slow if many points)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
