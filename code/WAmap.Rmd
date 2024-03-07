@@ -116,6 +116,7 @@ wac +
   geom_point(data = cage, aes(x = "longitude", y = "latitude"), color = "yellow", size = 4)
 
 ```
+this map code isn't working because the 
 ```{r, echo=FALSE}
 
 library(ggplot2)
@@ -142,6 +143,29 @@ final_map <- wa_base +
 print(final_map)
 
 ```
+
+trying a different map that maps the biomarker sites
+```{r}
+library(ggplot2)
+
+# Assuming 'wa_base' is a ggplot object with your base map
+# and 'data' is your dataframe with 'longitude', 'latitude', 'p450', and 'SOD' columns
+
+# First, reshape your data from wide to long format
+data_long <- tidyr::pivot_longer(data, cols = c("p450", "SOD"), names_to = "Variable", values_to = "Value")
+
+wa_base + 
+  geom_point(data = data_long, aes(x = longitude, y = latitude, color = Value), size = 2) +
+  facet_wrap(~Variable, scales = "free", ncol = 1) + # Faceting by variable, with separate scales
+  scale_color_gradient(low = "lightpink", high = "darkred", name = "Value", aesthetics = "color") +
+  labs(title = "Map with p450 and SOD values", x = "Longitude", y = "Latitude") +
+  theme_minimal()
+
+```
+
+
+
+
 this is a map
 ```{r}
 library(ggplot2)
@@ -150,11 +174,19 @@ library(ggplot2)
 
 # Plot p450 values with a gradient from light to dark red
 wa_base + 
-  geom_point(data = df, aes(x = longitude, y = latitude, color = p450), size = 2) +
+  geom_point(data = data, aes(x = longitude, y = latitude, color = p450), size = 2) +
   scale_color_gradient(low = "lightpink", high = "darkred", name = "p450 Value") +
-  geom_point(data = df, aes(x = longitude, y = latitude, color = SOD), size = 2) +
+  geom_point(data = data, aes(x = longitude, y = latitude, color = SOD), size = 2) +
   scale_color_gradient(low = "lightblue", high = "darkblue", name = "SOD Value") +
   labs(title = "Map with p450 and SOD values", x = "Longitude", y = "Latitude") +
+  theme_minimal()
+
+```
+simplified map
+```{r}
+# Start with a simple plot
+wa_base + 
+  geom_point(data = data, aes(x = longitude, y = latitude), size = 2) +
   theme_minimal()
 
 ```
