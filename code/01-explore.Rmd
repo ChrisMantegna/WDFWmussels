@@ -1,0 +1,72 @@
+---
+title: "Data Exploration"
+---
+
+# Directory and doc rules
+
+```{r, setup, include=FALSE}
+
+knitr::opts_knit$set(root.dir = '/code')
+
+```
+
+# Load packages
+
+```{r}
+
+library(tidyr)
+library(tidyverse)
+library(ggplot2)
+library(vegan)
+
+```
+
+# Load data
+
+```{r}
+
+#data has all sites, coordinates, p450, sod, condition factor, economic factor data
+data<- read.csv(~"data/biomarkerfull.csv")
+
+```
+
+# Review setup
+
+```{r}
+
+str(data)
+
+```
+
+# Data type and summary
+
+## Note
+
+Weight = g\
+Length, width, height = mm\
+p450, SOD = activity/ (mg/protein)\
+Condition factor, economic factor = unitless
+
+```{r}
+
+#the data types are based in str() results, make numeric anything with na in the column.
+summary(data)
+
+```
+
+```{r}
+
+as.numeric("weight_initial", "weight_change", "length", "width", "height", "condition_factor", "economic_index")
+
+```
+
+# Sort values out of line
+SOD values that are negative are changed to 0 signifying that the value was undetectable.\
+p450 values that are 0 are missing, not actual 0's.
+```{r}
+
+```
+
+```{r}
+
+```
