@@ -1,8 +1,8 @@
 ---
 title: "02- Basic Statistics"
 output:
-  html_document:
-    df_print: paged
+  html_document: 
+    fig_width: 8
   pdf_document: 
     fig_width: 8
     fig_height: 5
@@ -27,18 +27,18 @@ knitr::opts_chunk$set(
 
 # Load packages
 
-```{r,eval=TRUE}
+```{r, eval= FALSE}
 
-#library(tidyr)
-#library(tidyverse)
-#library(ggplot2)
-#library(vegan)
+library(tidyr)
+library(tidyverse)
+library(ggplot2)
+library(vegan)
 
 ```
 
 # Load data
 
-```{r, eval=FALSE}
+```{r}
 
 getwd()
 #data has all sites, coordinates, p450, sod, condition factor, economic factor data
@@ -80,7 +80,7 @@ as.numeric("weight_initial", "weight_change", "length", "width", "height", "cond
 SOD values that are negative are changed to 0 signifying that the value was undetectable.\
 p450 values that are 0 are missing, not actual 0's.
 
-```{r, eval=TRUE}
+```{r}
 
 #get rid of the p450 values that are 0
 mdata <- mdata[mdata$p450 != 0, ]
@@ -124,7 +124,6 @@ cor.test(mdata$p450, mdata$SOD)
 ```{r}
 #pearson correlation
 
-#plain pearson if I want
 # cor.test(df$site_number, df$sod, method = "pearson")
 # Convert condition_factor to numeric if it's not already
 mdata$condition_factor <- as.numeric(mdata$condition_factor)
@@ -135,30 +134,43 @@ cor(mdata[c("p450", "SOD", "condition_factor")], use = "complete.obs", method = 
 
 # Plot Pearson
 
-## Interpretation -
-
 ```{r}
 library(corrplot)
 
-df2 <- data[sapply(data, is.numeric)]
+cor.mtest <- function(mat, conf.level = 0.95){
+  mat <- as.matrix(mat)
+  n <- ncol(mat)
+  p.mat <- matrix(NA, n, n)
+  diag(p.mat) <- 0
+  
+  for(i in 1:(n-1)){
+    for(j in (i+1):n){
+      tmp <- cor.test(mat[,i], mat[,j], conf.level = conf.level)
+      p.mat[i,j] <- tmp$p.value
+      p.mat[j,i] <- tmp$p.value
+    }
+  }
+  list(p = p.mat, conf.level = conf.level)
+}
+
+# Assuming 'mdata' and 'data' are defined and 'data' is used to subset 'mdata'
+df2 <- mdata[sapply(mdata, is.numeric)] # Ensure 'mdata' is used here
 df2 <- na.omit(df2)
 M <- cor(df2)
 testRes <- cor.mtest(df2, conf.level = 0.95)
-## leave blank on non-significant coefficient
-## add significant correlation coefficients
-cor<- corrplot(M,
-  p.mat = testRes$p, method = "circle", type = "lower", insig = "blank",
+
+# Visualization with corrplot
+corrplot::corrplot(M,
+  method = "circle", type = "lower", insig = "blank",
   addCoef.col = "black", number.cex = 0.8, order = "AOE", diag = FALSE
 )
 
-print(cor)
+#print(cor)
 #ggsave(plot=cor, filename="/Users/cmantegna/Documents/WDFWmussels/output/pearson.png", width=15, height=8)
 
 ```
 
 # PCA Plot with biomarkers, condition_factor and economic_factor
-
-## Interpretation -
 
 ```{r}
 
