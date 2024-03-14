@@ -29,10 +29,10 @@ knitr::opts_chunk$set(
 
 ```{r,eval=TRUE}
 
-library(tidyr)
-library(tidyverse)
-library(ggplot2)
-library(vegan)
+#library(tidyr)
+#library(tidyverse)
+#library(ggplot2)
+#library(vegan)
 
 ```
 
@@ -42,7 +42,7 @@ library(vegan)
 
 getwd()
 #data has all sites, coordinates, p450, sod, condition factor, economic factor data
-data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
+mdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
 
 ```
 
@@ -50,7 +50,7 @@ data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
 
 ```{r}
 
-str(data)
+str(mdata)
 
 ```
 
@@ -65,7 +65,7 @@ Condition factor, economic factor = unitless
 
 ```{r}
 # the data types are based in str() results, make numeric anything with na in the column.
-summary(data)
+summary(mdata)
 ```
 
 
@@ -83,10 +83,10 @@ p450 values that are 0 are missing, not actual 0's.
 ```{r, eval=TRUE}
 
 #get rid of the p450 values that are 0
-data <- data[data$p450 != 0, ]
+mdata <- mdata[mdata$p450 != 0, ]
 
 #change any negative numbers to 0 to indicate not detectable
-data$SOD <- ifelse(data$SOD <= 0, 0, data$SOD)
+mdata$SOD <- ifelse(mdata$SOD <= 0, 0, mdata$SOD)
 
 ```
 
@@ -95,7 +95,7 @@ data$SOD <- ifelse(data$SOD <= 0, 0, data$SOD)
 ## Interpretation- p450 data is not normally distributed
 
 ```{r}
-shapiro.test(data$p450)
+shapiro.test(mdata$p450)
 
 ```
 
@@ -104,7 +104,7 @@ shapiro.test(data$p450)
 ## Interpretation-SOD data is not normally distributed
 
 ```{r}
-shapiro.test(data$SOD)
+shapiro.test(mdata$SOD)
 
 ```
 
@@ -115,7 +115,7 @@ shapiro.test(data$SOD)
 ```{r}
 
 #individual correlation test between the biomarkers
-cor.test(data$p450, data$SOD)
+cor.test(mdata$p450, mdata$SOD)
 
 ```
 
@@ -127,10 +127,10 @@ cor.test(data$p450, data$SOD)
 #plain pearson if I want
 # cor.test(df$site_number, df$sod, method = "pearson")
 # Convert condition_factor to numeric if it's not already
-data$condition_factor <- as.numeric(data$condition_factor)
+mdata$condition_factor <- as.numeric(mdata$condition_factor)
 
 # Perform Pearson correlation with NA values ignored
-cor(data[c("p450", "SOD", "condition_factor")], use = "complete.obs", method = "pearson")
+cor(mdata[c("p450", "SOD", "condition_factor")], use = "complete.obs", method = "pearson")
 ```
 
 # Plot Pearson
@@ -168,11 +168,11 @@ library('FactoMineR')
 library("factoextra")
 
 # Ensure that condition_factor and economic_index are numeric
-data$condition_factor <- as.numeric(data$condition_factor)
-data$economic_index <- as.numeric(data$economic_index)
+mdata$condition_factor <- as.numeric(mdata$condition_factor)
+mdata$economic_index <- as.numeric(mdata$economic_index)
 
 # Remove NAs from the dataset
-df_clean <- na.omit(data)
+df_clean <- na.omit(mdata)
 
 # Selecting the relevant variables for PCA
 pca_data <- df_clean[, c("SOD", "p450", "condition_factor", "economic_index")]
@@ -198,24 +198,24 @@ print(pcaplot)
 
 ```{r,eval=TRUE}
 #fixing data for kmeans
-sum(is.na(data$p450)) # Checks for NA values in p450
-sum(is.nan(data$p450)) # Checks for NaN values in p450
-sum(is.infinite(data$p450)) # Checks for Inf values in p450
+sum(is.na(mdata$p450)) # Checks for NA values in p450
+sum(is.nan(mdata$p450)) # Checks for NaN values in p450
+sum(is.infinite(mdata$p450)) # Checks for Inf values in p450
 
-sum(is.na(data$SOD))
-sum(is.nan(data$SOD)) 
-sum(is.infinite(data$SOD)) 
+sum(is.na(mdata$SOD))
+sum(is.nan(mdata$SOD)) 
+sum(is.infinite(mdata$SOD)) 
 
-sum(is.na(data$condition_factor)) 
-sum(is.nan(data$condition_factor)) 
-sum(is.infinite(data$condition_factor)) 
+sum(is.na(mdata$condition_factor)) 
+sum(is.nan(mdata$condition_factor)) 
+sum(is.infinite(mdata$condition_factor)) 
 
-data$p450 <- as.numeric(data$p450)
-data$SOD <- as.numeric(data$SOD)
-data$condition_factor <- as.numeric(data$condition_factor)
+mdata$p450 <- as.numeric(mdata$p450)
+mdata$SOD <- as.numeric(mdata$SOD)
+mdata$condition_factor <- as.numeric(mdata$condition_factor)
 
 # Remove rows with NA or NaN values in specified columns
-clean_data <- data[complete.cases(data[, c("p450", "SOD", "condition_factor")]), ]
+clean_data <- mdata[complete.cases(mdata[, c("p450", "SOD", "condition_factor")]), ]
 
 # Ensure all data is numeric for the Inf check to make sense
 clean_data <- transform(clean_data,
