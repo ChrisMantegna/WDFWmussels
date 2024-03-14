@@ -1,5 +1,5 @@
 ---
-title: "02- Base Statistics"
+title: "02- Basic Statistics"
 output:
   html_document:
     df_print: paged
