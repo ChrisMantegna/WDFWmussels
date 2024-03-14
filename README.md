@@ -29,7 +29,10 @@ Analysis and writing February 2024 - March 2024
 3. p450
 4. SOD
 # Repo Contents
-## Output
-## Code
+## Output: visualizations
+## Code:
+01-explore: initial explanatory visualizations
+02-statistics: initial statistics performed on the dataset
+03-map: Washington state map of biomarker values plotted by coordinates of sites
 ## Data
 
