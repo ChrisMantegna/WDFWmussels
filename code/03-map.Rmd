@@ -1,5 +1,5 @@
 ---
-title: "01- Visual Data Exploration"
+title: "03- Mapping Biomarkers"
 ---
 
 # Directory and doc rules
@@ -16,7 +16,7 @@ knitr::opts_knit$set(root.dir = '/code')
 #install.packages(c("ggplot2", "sf", "viridis", "rnaturalearth", "rnaturalearthdata"))
 library(tidyr)
 #library(tidyverse)
-#library(ggplot2)
+library(ggplot2)
 library(vegan)
 library(sf)
 library(viridis)
@@ -56,20 +56,99 @@ data$SOD <- ifelse(data$SOD <= 0, 0, data$SOD)
 
 ```
 
+# Map of Washington State
 ```{r}
 world <- ne_states(country = "united states of america", returnclass = "sf")
 washington_map <- world[world$name == "Washington", ]
 1
 ```
+# p450 map
 ```{r}
 
-library(ggplot2)
-ggplot() + 
+pmap<- ggplot() + 
   geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
-  geom_point(data = data, aes(x = lon, y = lat, color = p450), size = 3) +
+  geom_point(data = data, aes(x = longitude, y = latitude, color = p450), size = 1) +
   scale_color_viridis(option = "C", name = "p450") +
   theme_minimal() +
   labs(title = "Washington State - p450 Data")
+
+print(pmap)
+ggsave(plot=pmap, filename="/Users/cmantegna/Documents/WDFWmussels/output/p450map.png", width=15, height=8)
+```
+
+# SOD map
+```{r}
+
+smap<- ggplot() + 
+  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
+  geom_point(data = data, aes(x = longitude, y = latitude, color = SOD), size = 1) +
+  scale_color_viridis(option = "C", name = "SOD") +
+  theme_minimal() +
+  labs(title = "Washington State - SOD Data")
+
+print(smap)
+ggsave(plot=smap, filename="/Users/cmantegna/Documents/WDFWmussels/output/sodmap.png", width=15, height=8)
+
+```
+
+# Mapping both biomarkers
+```{r}
+
+# Assuming washington_map is your sf object for Washington State
+ggplot(data = washington_map) + 
+  geom_sf(fill = "lightgrey", color = "white") +
+  geom_point(data = data, aes(x = longitude, y = latitude, color = p450, size = SOD), alpha = 0.6) +
+  scale_color_viridis(name = "p450", option = "D") +
+  scale_size_continuous(name = "SOD", range = c(2, 6)) +
+  theme_minimal() +
+  labs(title = "Washington State: p450 and SOD")
+
+```
+
+# Mapping with shapes to differenciate the biomarkers - change dataframe to accomodate
+```{r}
+
+long_data <- pivot_longer(data, cols = c(SOD, p450), names_to = "type", values_to = "value")
+
+```
+
+```{r}
+
+ggplot(data = washington_map) + 
+  geom_sf(fill = "lightgrey", color = "white") +
+  geom_point(data = long_data, aes(x = longitude, y = latitude, color = value, shape = type), alpha = 0.6, size = 2) +
+  scale_color_viridis(name = "value", option = "C") +
+  scale_shape_manual(values = c("SOD" = 16, "p450" = 17)) + # 16: dot, 17: triangle
+  theme_minimal() +
+  labs(title = "Washington State: SOD & p450")
+
+```
+
+# Mapping with Leaflet instead of ggplot; this is interactive and not helpful
+```{r}
+
+if(!require(leaflet)) install.packages("leaflet")
+library(leaflet)
+
+leaflet(data) %>% addTiles() %>%
+  addCircles(lng = ~longitude, lat = ~latitude, color = ~colorBin(c("red", "yellow", "green"), p450, bins = 3), radius = 500) %>%
+  addCircles(lng = ~longitude, lat = ~latitude, color = ~colorBin(c("blue", "white", "black"), SOD, bins = 3), radius = 200)
+
+```
+
+# Mapping with Plotly, also interactive and plotted on a grid that I don't understand
+```{r}
+if(!require(plotly)) install.packages("plotly")
+library(plotly)
+
+# Assuming data is your dataframe with lat, lon, p450, and SOD columns
+fig <- plot_ly() %>%
+  add_trace(data = data, x = ~longitude, y = ~latitude, type = 'scatter', mode = 'markers',
+            marker = list(size = 10, color = ~p450, colorscale = 'Viridis', showscale = TRUE)) %>%
+  add_trace(data = data, x = ~longitude, y = ~latitude, type = 'scatter', mode = 'markers',
+            marker = list(size = 10, color = ~SOD, colorscale = 'Cividis', showscale = TRUE))
+
+fig
 
 ```
 
