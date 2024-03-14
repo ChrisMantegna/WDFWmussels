@@ -5,6 +5,7 @@ date: "03-01-2024"
 ---
 
 # Load Packages
+
 ```{r}
 
 library(tidyr)
@@ -15,6 +16,7 @@ library(vegan)
 ```
 
 # Get working directory & load data
+
 ```{r}
 getwd()
 data<- read_csv("/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/data/biomarkerfull.csv")
@@ -22,28 +24,34 @@ data<- read_csv("/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/data/biomar
 ```
 
 # Inspect data structure
+
 ```{r}
 str(data)
 ```
 
 # Inspect data summary stats
+
 ## Note the following measurement types
 
 Weight = g\
 Length, width, height = mm\
 p450, SOD = activity/ (mg/protein)\
 Condition factor, economic factor = unitless
+
 ```{r}
 summary(data)
 ```
 
 # Fix character/ numeric values
+
 ```{r}
 as.numeric("weight_initial", "weight_change", "length", "width", "height", "condition_factor", "economic_index")
 ```
 
 # Detect outliers
+
 Code from stats notes/ stack overflow - updated with Chat GPT
+
 ```{r}
 detect_outliers_mad <- function(data, accuracy = 0.99) {
   # Function to calculate MAD
@@ -126,8 +134,8 @@ if (all(outliers_info == 0)) {
 ggsave(plot= plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/outliers.png", width=15, height=8)
 ```
 
-#Alternate QC Plots
-Code from stats notes/ stack overflow - updated with Chat GPT
+#Alternate QC Plots Code from stats notes/ stack overflow - updated with Chat GPT
+
 ```{r}
 #library(gridExtra)
 #install.packages("e1071")
@@ -190,8 +198,8 @@ lapply(names(df_reduced)[sapply(df_reduced, is.numeric)], function(var) create_p
 ggsave(plot= plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/qcplots.png", width=15, height=8)
 ```
 
-
 # Plot all
+
 ```{r}
 plot<- ggplot(data) +
   geom_point(aes(x = site_name, y = SOD, color = "SOD")) +
@@ -204,6 +212,7 @@ ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/
 ```
 
 # Plot ranked p450 all sites
+
 ```{r}
 # Order the sites by p450 value
 data_ordered <- data[order(data$p450),]
@@ -219,8 +228,8 @@ plot<- ggplot(data_ordered, aes(x = site_name, y = p450)) +
 ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/p450ranked.png", width=15, height=8)
 ```
 
-
 # Plot ranked SOD all sites
+
 ```{r}
 # Order the sites by SOD value
 data_ordered <- data[order(data$SOD),]
@@ -236,8 +245,8 @@ plot<- ggplot(data_ordered, aes(x = site_name, y = SOD)) +
 ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/output/sodranked.png", width=15, height=8)
 ```
 
-
 # Plot histogram of the p450 values with a density curve
+
 ```{r}
 ggplot(data, aes(x = p450)) +
   geom_histogram(aes(y = ..density..), binwidth = diff(range(data$p450))/30, colour = "black", fill = "white") +
@@ -249,6 +258,7 @@ ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/
 ```
 
 #Plot histogram of SOD with a density curve
+
 ```{r}
 ggplot(data, aes(x = SOD)) +
   geom_histogram(aes(y = ..density..), binwidth = diff(range(data$SOD))/30, colour = "black", fill = "white") +
@@ -260,6 +270,7 @@ ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/
 ```
 
 # Plot p450 by site (lat/ long)
+
 ```{r}
 ggplot(data, aes(x = longitude, y = latitude, color = p450)) +
   geom_point() +
@@ -271,6 +282,7 @@ ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/
 ```
 
 # Plot SOD by site (lat/ long)
+
 ```{r}
 ggplot(data, aes(x = longitude, y = latitude, color = SOD)) +
   geom_point() +
@@ -282,7 +294,9 @@ ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/
 ```
 
 # Correlation
+
 ## Values
+
 ```{r}
 #pearson correlation
 
@@ -296,7 +310,9 @@ cor(data[c("p450", "SOD", "condition_factor")], use = "complete.obs", method = "
 ```
 
 ## visualization
+
 (fix df/ data and any other data name issues)
+
 ```{r}
 library(corrplot)
 
@@ -315,7 +331,9 @@ ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/
 ```
 
 # PCA
+
 (fix df/ data and any other data name issues)
+
 ```{r}
 #install.packages("FactoMineR")
 #install.packages("factoextra")
@@ -340,20 +358,3 @@ fviz_pca_biplot(pca_res, label = "var", col.var = "contrib",
                 gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
                 repel = TRUE)  # Avoid text overlapping (slow if many points)
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

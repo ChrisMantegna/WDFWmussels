@@ -1,0 +1,159 @@
+---
+title: "02- Statistical Data Exploration"
+---
+
+# Directory and doc rules
+
+```{r, setup, include=FALSE}
+
+knitr::opts_knit$set(root.dir = '/code')
+
+```
+
+# Load packages
+
+```{r}
+
+library(tidyr)
+library(tidyverse)
+library(ggplot2)
+library(vegan)
+
+```
+
+# Load data
+
+```{r}
+
+getwd()
+#data has all sites, coordinates, p450, sod, condition factor, economic factor data
+data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
+
+```
+
+# Review setup
+
+```{r}
+
+str(data)
+
+```
+
+# Data type and summary
+
+## Note
+
+Weight = g\
+Length, width, height = mm\
+p450, SOD = activity/ (mg/protein)\
+Condition factor, economic factor = unitless
+
+```{r}
+
+#the data types are based in str() results, make numeric anything with na in the column.
+summary(data)
+
+```
+
+```{r}
+
+as.numeric("weight_initial", "weight_change", "length", "width", "height", "condition_factor", "economic_index")
+
+```
+
+# 0's and negative number management
+
+SOD values that are negative are changed to 0 signifying that the value was undetectable.\
+p450 values that are 0 are missing, not actual 0's.
+
+```{r}
+
+#get rid of the p450 values that are 0
+data <- data[data$p450 != 0, ]
+
+#change any negative numbers to 0 to indicate not detectable
+data$SOD <- ifelse(data$SOD <= 0, 0, data$SOD)
+
+```
+
+# Test p450 for data normality
+
+## Interpretation-
+
+```{r}
+shapiro.test(data$p450)
+
+```
+
+# Test SOD for data normality
+
+## Interpretation-
+
+```{r}
+shapiro.test(data$SOD)
+
+```
+
+# Correlation, Pearson
+
+```{r}
+#pearson correlation
+
+#plain pearson if I want
+# cor.test(df$site_number, df$sod, method = "pearson")
+# Convert condition_factor to numeric if it's not already
+data$condition_factor <- as.numeric(data$condition_factor)
+
+# Perform Pearson correlation with NA values ignored
+cor(data[c("p450", "SOD", "condition_factor")], use = "complete.obs", method = "pearson")
+```
+
+# Plot Pearson
+# fix this and correlation plot in the output, they are still showing the ranked plot
+```{r}
+library(corrplot)
+
+df2 <- data[sapply(data, is.numeric)]
+df2 <- na.omit(df2)
+M <- cor(df2)
+testRes <- cor.mtest(df2, conf.level = 0.95)
+## leave blank on non-significant coefficient
+## add significant correlation coefficients
+corrplot(M,
+  p.mat = testRes$p, method = "circle", type = "lower", insig = "blank",
+  addCoef.col = "black", number.cex = 0.8, order = "AOE", diag = FALSE
+)
+
+
+ggsave(plot=plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/pearson.png", width=15, height=8)
+
+```
+
+```{r}
+
+#install.packages("FactoMineR")
+#install.packages("factoextra")
+library('FactoMineR')
+library("factoextra")
+
+# Ensure that condition_factor and economic_index are numeric
+data$condition_factor <- as.numeric(data$condition_factor)
+data$economic_index <- as.numeric(data$economic_index)
+
+# Remove NAs from the dataset
+df_clean <- na.omit(data)
+
+# Selecting the relevant variables for PCA
+pca_data <- df_clean[, c("SOD", "p450", "condition_factor", "economic_index")]
+
+# Performing PCA
+pca_res <- PCA(pca_data, scale.unit = TRUE, graph = FALSE)
+
+# Plotting the PCA
+fviz_pca_biplot(pca_res, label = "var", col.var = "contrib",
+                gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+                repel = TRUE)  # Avoid text overlapping (slow if many points)
+
+ggsave(plot=hist, filename="/Users/cmantegna/Documents/WDFWmussels/output/pearson.png", width=15, height=8)
+
+```

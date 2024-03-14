@@ -1,5 +1,5 @@
 ---
-title: "Data Exploration"
+title: "01- Visual Data Exploration"
 ---
 
 # Directory and doc rules
@@ -25,8 +25,9 @@ library(vegan)
 
 ```{r}
 
+getwd()
 #data has all sites, coordinates, p450, sod, condition factor, economic factor data
-data<- read.csv(~"data/biomarkerfull.csv")
+data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
 
 ```
 
@@ -60,13 +61,179 @@ as.numeric("weight_initial", "weight_change", "length", "width", "height", "cond
 
 ```
 
-# Sort values out of line
+# 0's and negative number management
+
 SOD values that are negative are changed to 0 signifying that the value was undetectable.\
 p450 values that are 0 are missing, not actual 0's.
+
 ```{r}
+
+#get rid of the p450 values that are 0
+data <- data[data$p450 != 0, ]
+
+#change any negative numbers to 0 to indicate not detectable
+data$SOD <- ifelse(data$SOD <= 0, 0, data$SOD)
 
 ```
 
+# p450 histogram
+
 ```{r}
 
+#basic histogram + basic density plot
+#hist(data$p450)
+#plot(density(data$p450), main="Density Plot", xlab="p450 Value")
+
+#ggplot histogram with density curve
+library(scales) # Make sure this package is loaded for label_number()
+
+phist<- ggplot(data, aes(x = p450)) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = diff(range(data$p450))/30, colour = "black", fill = "white") +
+  geom_density(alpha = .2, fill = "#FF6666") +
+  labs(x = "P450 Values", y = "Density", title = "Histogram of P450 Values with Density Curve") +
+  theme_minimal() +
+  scale_x_continuous(labels = label_number()) # This line adjusts the x-axis labels
+
+print(phist)
+ggsave(plot=phist, filename="/Users/cmantegna/Documents/WDFWmussels/output/p450histogram.png", width=15, height=8)
+
+```
+
+# SOD histogram
+
+```{r}
+
+#basic histogram + basic density plot
+#hist(data$SOD)
+#plot(density(data$SOD), main="Density Plot", xlab="SOD Value")
+
+#ggplot histogram with density curve
+library(scales) # Make sure this package is loaded for label_number()
+
+shist <- ggplot(data, aes(x = SOD)) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = diff(range(data$SOD))/30, colour = "black", fill = "white") +
+  geom_density(alpha = .2, fill = "#FF6666") +
+  labs(x = "SOD Values", y = "Density", title = "Histogram of SOD Values with Density Curve") +
+  theme_minimal() +
+  scale_x_continuous(labels = label_number()) # This line adjusts the x-axis labels
+
+print(shist)
+ggsave(plot=shist, filename="/Users/cmantegna/Documents/WDFWmussels/output/SODhistogram.png", width=15, height=8)
+
+```
+
+# Plotting both biomarkers in a box plot
+
+```{r}
+
+all<-plot<- ggplot(data) +
+  geom_point(aes(x = site_name, y = SOD, color = "SOD")) +
+  geom_point(aes(x = site_name, y = p450, color = "P450")) +
+  labs(x = "Site Name", y = "Value", color = "Biomarker") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+print(all)
+ggsave(plot=all, filename="/Users/cmantegna/Documents/WDFWmussels/output/allBoxPlot.png", width=15, height=8)
+
+```
+
+# Plotting both biomarkers in a box plot with a free y-axis to fix the sod v p450 values. The SOD values all look the same and are all at 0.\
+Note that the color for SOD shifts from teal to salmon between the two plots.
+
+```{r}
+# First, create a basic ggplot object with SOD data
+freey <- ggplot(data, aes(x = site_name)) +
+  geom_point(aes(y = SOD, color = "SOD")) +
+  labs(x = "Site Name", y = "SOD Value") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Then, add p450 using sec.axis
+freey + geom_point(aes(y = p450/100, color = "p450")) + # Example scaling factor, adjust as needed
+  scale_y_continuous(sec.axis = sec_axis(~.*100, name = "p450 Value")) # Reverse the scaling for the secondary axis label
+
+print(freey)
+#ggsave(plot=freey, filename="/Users/cmantegna/Documents/WDFWmussels/output/allBoxPlotFreeY.png", width=15, height=8)
+```
+
+# Plotting both biomarkers in their own box plots with a facet wrap to try to show the difference in values for both biomarkers since SOD looks the same.
+
+```{r}
+
+# Reshape data from wide to long format
+long_data <- pivot_longer(data, cols = c(SOD, p450), names_to = "Biomarker", values_to = "Value")
+
+# Plotting with faceting
+facetp <- ggplot(long_data, aes(x = site_name, y = Value, color = Biomarker)) +
+  geom_point() +
+  facet_wrap(~Biomarker, scales = "free_y") + # This allows each biomarker to have its own y-axis scale
+  labs(x = "Site Name", y = "Value", color = "Biomarker") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+print(facetp)
+# Save the plot
+ggsave(plot=facetp, filename="/Users/cmantegna/Documents/WDFWmussels/output/allBoxPlotFacet.png", width=15, height=8)
+
+```
+
+# Plotting separate box plots to investigate the facet, the other options still show the sod values the 'same' when everything is plotted together.
+
+```{r}
+
+# Ensure your data is in the correct format.
+# Reshape your dataframe if it hasn't been done correctly.
+long_data <- pivot_longer(data, cols = c(SOD, p450), names_to = "Biomarker", values_to = "Value")
+
+# Faceted plot with separate scales.
+plotf<- ggplot(long_data, aes(x = site_name, y = Value)) +
+  geom_point(aes(color = Biomarker)) +
+  facet_wrap(~ Biomarker, scales = "free_y") +
+  labs(x = "Site Name", y = "Value", color = "Biomarker") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+print(plotf)
+ggsave(plot=plotf, filename="/Users/cmantegna/Documents/WDFWmussels/output/allBoxPlotFacetPanels.png", width=40, height=25)
+
+```
+
+# Plotting p450 values ranked from smallest to largest
+
+```{r}
+
+# Order the sites by p450 value
+data_ordered <- data[order(data$p450),]
+
+# Create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+# Plot the SOD values in a boxplot with ordered site names
+rankp<- ggplot(data_ordered, aes(x = site_name, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+print(rankp)
+ggsave(plot=rankp, filename="/Users/cmantegna/Documents/WDFWmussels/output/p450ranked.png", width=15, height=8)
+```
+
+# Plotting SOD values ranked from samllest largest
+
+```{r}
+
+# Order the sites by p450 value
+data_ordered <- data[order(data$SOD),]
+
+# Create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+# Plot the SOD values in a boxplot with ordered site names
+ranks<- ggplot(data_ordered, aes(x = site_name, y = SOD)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+print(ranks)
+ggsave(plot=ranks, filename="/Users/cmantegna/Documents/WDFWmussels/output/SODranked.png", width=15, height=8)
 ```
