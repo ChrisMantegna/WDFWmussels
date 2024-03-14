@@ -336,9 +336,14 @@ ggsave(plot=plot, filename="/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/
 
 ```{r}
 #install.packages("FactoMineR")
+<<<<<<< HEAD:output/exploratoryviz.Rmd
+#library('FactoMineR')
+library(factoextra)
+=======
 #install.packages("factoextra")
 library('FactoMineR')
 library("factoextra")
+>>>>>>> 5a4d0b098c45ddd9b4b6bff47983d1b2b1b84df0:code/exploratoryviz.Rmd
 
 # Ensure that condition_factor and economic_index are numeric
 data$condition_factor <- as.numeric(data$condition_factor)

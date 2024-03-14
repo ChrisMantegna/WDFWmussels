@@ -1,7 +1,6 @@
 ---
 title: "Mapping Retrieval Sites"
 author: "Chris"
-date: "2/14/2023"
 output:
   pdf_document: default
   html_document: default
@@ -16,8 +15,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r }
 
-install.packages("mapdata")
-library(ggplot2, ggmap, maps, "mapdata")
+#install.packages("mapdata")
+library(ggplot2)
+#library(ggmap)
+library(maps)
+library("mapdata")
 
 ```
 Testing the code from the website: https://eriqande.github.io/rep-res-web/lectures/making-maps-with-R.html
@@ -28,7 +30,6 @@ Going to start with direct cut & paste from site to replicate what I see. It wor
 usa <- map_data("usa")
 gg1 <-ggplot() + geom_polygon(data = usa, aes(x=long, y = lat, group = group)) + 
   coord_fixed(1.3)
-
 
 ```
 Code to add points, here as a placeholder for me to add my own points after I know it can work
@@ -46,10 +47,6 @@ labs <- data.frame(
 gg1 + 
   geom_point(data = labs, aes(x = long, y = lat), color = "black", size = 5) +
   geom_point(data = labs, aes(x = long, y = lat), color = "yellow", size = 4)
-
-
-
-
 
 ```
 Let's grab state data
@@ -94,7 +91,9 @@ wac + coord_fixed(xlim = c(-124, -122),  ylim = c(46, 49), ratio = 1.3)
 ```
 Adding the retrieval points
 ```{r}
-location<- read.csv("mussel.csv")
+
+library(tidyverse)
+#location<- read.csv("mussel.csv")
 head(location)
 
 # create plotting df
@@ -103,15 +102,94 @@ latitude <- location[,5]
 longitude <- location[,6]
 cage <- data.frame(longitude, latitude)
 
+str(cage)
+
+# Make sure 'wac' contains the necessary data for plotting
+
+# Check the structure of wac to ensure it contains the necessary variables
+str(wac)
+
+
+
 wac + 
-  geom_point(data = cage, aes(x = "Longitude", y = "Latitude"), color = "black", size = 5) +
-  geom_point(data = cage, aes(x = "longitude", y = "Latitude"), color = "yellow", size = 4)
+  geom_point(data = cage, aes(x = "longitude", y = "latitude"), color = "black", size = 5) +
+  geom_point(data = cage, aes(x = "longitude", y = "latitude"), color = "yellow", size = 4)
 
 ```
+this map code isn't working because the 
 ```{r, echo=FALSE}
 
+library(ggplot2)
+
+
+# Your base map code
+wa_base <- ggplot(data = wa_df, mapping = aes(x = long, y = lat, group = group)) + 
+  coord_fixed(1.3) + 
+  geom_polygon(color = "black", fill = "gray") +
+  theme_nothing()
+
+# Adding county borders (assuming wa_county is already defined with lat, long, group)
+wa_base <- wa_base + 
+  geom_polygon(data = wa_county, aes(x = long, y = lat, group = group), fill = NA, color = "white") +
+  geom_polygon(color = "black", fill = NA)  # Reinforcing state border
+
+# Add each set of data points with different aesthetics
+final_map <- wa_base +
+  geom_point(data = df$p450, aes(x = long, y = lat), color = "red", size = 2) +  # Set 1 in red
+  geom_point(data = df$SOD, aes(x = long, y = lat), color = "blue", size = 2)  # Set 2 in blue
+  #geom_point(data = df$condition_factor, aes(x = long, y = lat), color = "green", size = 2)   # Set 3 in green
+
+# Display the map
+print(final_map)
+
 ```
 
+trying a different map that maps the biomarker sites
+```{r}
+library(ggplot2)
+
+# Assuming 'wa_base' is a ggplot object with your base map
+# and 'data' is your dataframe with 'longitude', 'latitude', 'p450', and 'SOD' columns
+
+# First, reshape your data from wide to long format
+data_long <- tidyr::pivot_longer(data, cols = c("p450", "SOD"), names_to = "Variable", values_to = "Value")
+
+wa_base + 
+  geom_point(data = data_long, aes(x = longitude, y = latitude, color = Value), size = 2) +
+  facet_wrap(~Variable, scales = "free", ncol = 1) + # Faceting by variable, with separate scales
+  scale_color_gradient(low = "lightpink", high = "darkred", name = "Value", aesthetics = "color") +
+  labs(title = "Map with p450 and SOD values", x = "Longitude", y = "Latitude") +
+  theme_minimal()
+
+```
+
+
+
+
+this is a map
+```{r}
+library(ggplot2)
+
+# Assuming wa_base is your prepared base map
+
+# Plot p450 values with a gradient from light to dark red
+wa_base + 
+  geom_point(data = data, aes(x = longitude, y = latitude, color = p450), size = 2) +
+  scale_color_gradient(low = "lightpink", high = "darkred", name = "p450 Value") +
+  geom_point(data = data, aes(x = longitude, y = latitude, color = SOD), size = 2) +
+  scale_color_gradient(low = "lightblue", high = "darkblue", name = "SOD Value") +
+  labs(title = "Map with p450 and SOD values", x = "Longitude", y = "Latitude") +
+  theme_minimal()
+
+```
+simplified map
+```{r}
+# Start with a simple plot
+wa_base + 
+  geom_point(data = data, aes(x = longitude, y = latitude), size = 2) +
+  theme_minimal()
+
+```
 
 
 
