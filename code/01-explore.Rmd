@@ -1,19 +1,33 @@
 ---
 title: "01- Visual Data Exploration"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
 ---
 
 # Directory and doc rules
 
-```{r, setup, include=FALSE}
+```{r, setup, eval=TRUE, include=TRUE}
 
-knitr::opts_knit$set(root.dir = '/code')
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 8,       # Set plot width in inches
+  fig.height = 5,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
 
 ```
 
 # Load packages
 
 ```{r}
-
+library(tinytex)
 library(tidyr)
 library(tidyverse)
 library(ggplot2)
@@ -212,7 +226,7 @@ ggsave(plot=all, filename="/Users/cmantegna/Documents/WDFWmussels/output/allBoxP
 
 ```
 
-# Plotting both biomarkers in a box plot with a free y-axis to fix the sod v p450 values. The SOD values all look the same and are all at 0. 
+# Plotting both biomarkers in a box plot with a free y-axis to fix the sod v p450 values. The SOD values all look the same and are all at 0.
 
 Note that the color for SOD shifts from teal to salmon between the two plots.
 

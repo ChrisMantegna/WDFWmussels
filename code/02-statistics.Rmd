@@ -1,18 +1,33 @@
 ---
-title: "02- Statistical Data Exploration"
+title: "02- Base Statistics"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: 
+    fig_width: 8
+    fig_height: 5
 ---
+
 
 # Directory and doc rules
 
-```{r, setup, include=FALSE}
+```{r, setup, eval=TRUE, include=TRUE}
 
-knitr::opts_knit$set(root.dir = '/code')
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 8,       # Set plot width in inches
+  fig.height = 5,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
 
 ```
 
 # Load packages
 
-```{r}
+```{r,eval=TRUE}
 
 library(tidyr)
 library(tidyverse)
@@ -23,7 +38,7 @@ library(vegan)
 
 # Load data
 
-```{r}
+```{r, eval=FALSE}
 
 getwd()
 #data has all sites, coordinates, p450, sod, condition factor, economic factor data
@@ -49,11 +64,10 @@ p450, SOD = activity/ (mg/protein)\
 Condition factor, economic factor = unitless
 
 ```{r}
-
-#the data types are based in str() results, make numeric anything with na in the column.
+# the data types are based in str() results, make numeric anything with na in the column.
 summary(data)
-
 ```
+
 
 ```{r}
 
@@ -66,7 +80,7 @@ as.numeric("weight_initial", "weight_change", "length", "width", "height", "cond
 SOD values that are negative are changed to 0 signifying that the value was undetectable.\
 p450 values that are 0 are missing, not actual 0's.
 
-```{r}
+```{r, eval=TRUE}
 
 #get rid of the p450 values that are 0
 data <- data[data$p450 != 0, ]
@@ -78,7 +92,7 @@ data$SOD <- ifelse(data$SOD <= 0, 0, data$SOD)
 
 # Test p450 for data normality
 
-## Interpretation-
+## Interpretation- p450 data is not normally distributed
 
 ```{r}
 shapiro.test(data$p450)
@@ -87,7 +101,7 @@ shapiro.test(data$p450)
 
 # Test SOD for data normality
 
-## Interpretation-
+## Interpretation-SOD data is not normally distributed
 
 ```{r}
 shapiro.test(data$SOD)
@@ -96,12 +110,16 @@ shapiro.test(data$SOD)
 
 # Correlation, Pearson Correlation
 
+## Interpretation - slight negative correlation between the biomarkers is not statistically significant
+
 ```{r}
 
 #individual correlation test between the biomarkers
 cor.test(data$p450, data$SOD)
 
 ```
+
+## the interpretation here is the same as above, just created the table for clear view of biomarkers with the condition_factor
 
 ```{r}
 #pearson correlation
@@ -116,7 +134,9 @@ cor(data[c("p450", "SOD", "condition_factor")], use = "complete.obs", method = "
 ```
 
 # Plot Pearson
-# fix this and correlation plot in the output, they are still showing the ranked plot
+
+## Interpretation -
+
 ```{r}
 library(corrplot)
 
@@ -135,6 +155,10 @@ print(cor)
 #ggsave(plot=cor, filename="/Users/cmantegna/Documents/WDFWmussels/output/pearson.png", width=15, height=8)
 
 ```
+
+# PCA Plot with biomarkers, condition_factor and economic_factor
+
+## Interpretation -
 
 ```{r}
 
@@ -164,12 +188,46 @@ pcaplot<- fviz_pca_biplot(pca_res, label = "var", col.var = "contrib",
 
 
 print(pcaplot)
-ggsave(plot=pcaplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/pca.png", width=15, height=8)
+#ggsave(plot=pcaplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/pca.png", width=15, height=8)
 
 ```
 
+# K-means cluster/ relationship test
 
+## Interpretation- there are three clusters that vary in size and that is an indicator of a significant number of outliers, see the 01-explore code for the plot of the outliers. There are significant outliers for SOD, this may be rendering this test unhelpful. "The means of each cluster give you an idea of the centroid values around which the data points in each cluster are aggregated."
 
+```{r,eval=TRUE}
+#fixing data for kmeans
+sum(is.na(data$p450)) # Checks for NA values in p450
+sum(is.nan(data$p450)) # Checks for NaN values in p450
+sum(is.infinite(data$p450)) # Checks for Inf values in p450
 
+sum(is.na(data$SOD))
+sum(is.nan(data$SOD)) 
+sum(is.infinite(data$SOD)) 
 
+sum(is.na(data$condition_factor)) 
+sum(is.nan(data$condition_factor)) 
+sum(is.infinite(data$condition_factor)) 
 
+data$p450 <- as.numeric(data$p450)
+data$SOD <- as.numeric(data$SOD)
+data$condition_factor <- as.numeric(data$condition_factor)
+
+# Remove rows with NA or NaN values in specified columns
+clean_data <- data[complete.cases(data[, c("p450", "SOD", "condition_factor")]), ]
+
+# Ensure all data is numeric for the Inf check to make sense
+clean_data <- transform(clean_data,
+                        p450 = as.numeric(p450),
+                        SOD = as.numeric(SOD),
+                        condition_factor = as.numeric(condition_factor))
+
+# Now check for and handle Inf values
+clean_data <- clean_data[!is.infinite(clean_data$p450) & !is.infinite(clean_data$SOD) & !is.infinite(clean_data$condition_factor), ]
+
+kmeans_result <- kmeans(clean_data[, c("p450", "SOD", "condition_factor")], centers = 3)
+
+print(kmeans_result)
+
+```

@@ -1,12 +1,27 @@
 ---
 title: "03- Mapping Biomarkers"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: 
+    fig_width: 12
+    fig_height: 8
 ---
+
 
 # Directory and doc rules
 
-```{r, setup, include=FALSE}
+```{r, setup, eval=TRUE, include=TRUE}
 
-knitr::opts_knit$set(root.dir = '/code')
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 12,       # Set plot width in inches
+  fig.height = 8,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
 
 ```
 
