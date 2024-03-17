@@ -31,8 +31,11 @@ Analysis and writing February 2024 - March 2024
 # Repo Contents
 ## Output: visualizations
 ## Code:
-01-explore: initial explanatory visualizations
-02-statistics: initial statistics performed on the dataset
-03-map: Washington state map of biomarker values plotted by coordinates of sites
+01-explore: initial explanatory visualizations\
+[01-explore](https://rpubs.com/cmantegna/mb01explore)\
+02-statistics: initial statistics performed on the dataset\
+[02-statistics](https://rpubs.com/cmantegna/mb02statistics)\
+03-map: Washington state map of biomarker values plotted by coordinates of sites\
+[03-map](https://rpubs.com/cmantegna/mb03map)   
 ## Data
 
