@@ -78,14 +78,15 @@ as.numeric("weight_initial", "weight_change", "length", "width", "height", "cond
 # 0's and negative number management
 
 SOD values that are negative are changed to 0 signifying that the value was undetectable.\
-p450 values that are 0 are missing, not actual 0's.
+p450 values that are 0 are missing, not actual 0's.They are thrown out.\
+Note: must address the SOD values, 0's skew the data so some kind of replacement or adjustment must be made.
 
 ```{r}
 
 #get rid of the p450 values that are 0
 mdata <- mdata[mdata$p450 != 0, ]
 
-#change any negative numbers to 0 to indicate not detectable
+#change negative numbers to 0 to indicate not detectable
 mdata$SOD <- ifelse(mdata$SOD <= 0, 0, mdata$SOD)
 
 ```
@@ -122,7 +123,7 @@ cor.test(mdata$p450, mdata$SOD)
 ## the interpretation here is the same as above, just created the table for clear view of biomarkers with the condition_factor
 
 ```{r}
-#pearson correlation
+#pearson correlation of only biomarkers and condition_factor
 
 # cor.test(df$site_number, df$sod, method = "pearson")
 # Convert condition_factor to numeric if it's not already
