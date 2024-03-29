@@ -36,7 +36,9 @@ Analysis and writing February 2024 - March 2024
 02-statistics: initial statistics performed on the dataset\
 [02-statistics](https://rpubs.com/cmantegna/mb02statistics)\
 03-map: Washington state map of biomarker values plotted by coordinates of sites\
-[03-map](https://rpubs.com/cmantegna/mb03map)   
+[03-map](https://rpubs.com/cmantegna/mb03map)\
+04-spatial: Geospatial statistical analysis of the biomarkers\
+[04-spatial](https://rpubs.com/cmantegna/mb04spatial)
 ## Data
 All work to date utilizing [biomarkerfull.csv](https://github.com/ChrisMantegna/WDFWmussels/blob/main/data/biomarkerfull.csv)\
 lat - latitude\
