@@ -8,8 +8,7 @@ output:
     fig_height: 5
 ---
 
-
-# Directory and doc rules
+### Directory and doc rules
 
 ```{r, setup, eval=TRUE, include=TRUE}
 
@@ -48,7 +47,7 @@ data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
 
 ```
 
-# Review setup
+### Review setup
 
 ```{r}
 
@@ -56,9 +55,9 @@ str(data)
 
 ```
 
-# Data type and summary
+#### Data type and summary
 
-## Note
+#### Note
 
 Weight = g\
 Length, width, height = mm\
@@ -70,38 +69,201 @@ Condition factor, economic factor = unitless
 summary(data)
 ```
 
-# Take this out, this is for the analytes document. Repeat for ana
+# SOD log transformation
+
+### The following spatial analyses require normally distributed data or something close so I am log- transforming to try to attain that. The base code/ concepts came from this repo: <https://github.com/spcanelon/geospatial-learning?tab=readme-ov-file>
+
 ```{r}
-#str(ana)
 
-#summary(ana)
-
-```
-
-# The following spatial analyses require normally distributed data or something close so I am log- transforming to try to attain that.
-## The base code/ concepts came from this repo: https://github.com/spcanelon/geospatial-learning?tab=readme-ov-file
-```{r}
 #trying out some spatial techniques for the biomarkers. If I want to use the MORAN I, I need to have normally distributed data and I do not. 
 #Log transform my SOD data to try to make it normal.
 
 # Create new variable that is the log-transformed 
-logdata <- log(data$SOD)
+slogdata <- log(data$SOD)
 
 # Histogram
-hist(logdata)
+h<- hist(slogdata)
+print(h)
 
 # Boxplot
-boxplot(logdata, horizontal = TRUE)
+b<-boxplot(slogdata, horizontal = TRUE)
+print(b)
+
+```
+# p450 log transformation
+
+```{r}
+#the following spatial analyses require normally distributed data or something close so I am log- transforming to try to attain that. The base code/ concepts came from this repo: <https://github.com/spcanelon/geospatial-learning?tab=readme-ov-file>
+
+#trying out some spatial techniques for the biomarkers. If I want to use the MORAN I, I need to have normally distributed data and I do not. 
+#Log transform my p450 data to try to make it normal.
+
+# Create new variable that is the log-transformed 
+plogdata <- log(data$p450)
+
+# Histogram
+hh<- hist(plogdata)
+print(hh)
+
+# Boxplot
+bb<- boxplot(plogdata, horizontal = TRUE)
+print(bb)
+
 ```
 
+# Point pattern analysis
 
+#### Exploratory data analysis tool that looks to interpret the distribution of my values across geographic space - I believe this is the first step in geospatial analysis, the Moran and Geary C statistical tests are what follow to support or debate the hypothesis formed from this step.
 
-# Try to run the Moran with code from: 
 ```{r}
+#install.packages("spatstat")
+library(spatstat)
+
+#pull out lat, long, site_name, and biomarkers as a dataframe for the following work.
+
+select <- c("latitude", "longitude", "site_name", "p450", "SOD")
+
+# Create a new data frame with only the specified columns
+bdata <- data[,select]
+
+# Create the kind of data frame that works in spatstat package
+sites_pp <- ppp(x = bdata$longitude, y = bdata$latitude, 
+                window = owin(xrange = range(bdata$longitude), 
+                              yrange = range(bdata$latitude)))
+
+```
+
+```{r}
+#Add biomarker layer to the geographical data
+sites_pp$marks <- data.frame(p450 = bdata$p450, 
+                             SOD = bdata$SOD)
+
+```
+
+### Two different ways to analyze any spatial clustering
+
+## K test, 1 of 2
+
+### Interpretation- the clustering of the black, red, and green lines (isotropic, and two transformations) lie significanlty above the blue line, the Poisson distribution line. This means that the biomarker data is more clustered than random. The proximity of the black, red and green lines show agreement across the isotropic and transformation analyses.
+
+```{r}
+
+K_result <- Kest(sites_pp)
+print(plot(K_result))
+
+```
+
+## PPM model, 2 of 2
+
+### Interpretation- I need to dig further to see what this means, I am following a GIS/ Geospatial tutorial and wanted to be able to make the process work.
+
+```{r}
+
+# Fit a point process model
+#ppm_model <- ppm(sites_pp ~ p450)
+#summary(ppm_model)
+
+
+#option 2
+sites_pp$marks <- as.factor(cut(sites_pp$marks$p450, breaks = quantile(sites_pp$marks$p450, probs = 0:3/3), include.lowest = TRUE))
+
+# Now run the ppm model
+ppm_model <- ppm(sites_pp ~ marks, covariates = NULL)
+print(summary(ppm_model))
+
+```
+
+# Spatial Autocorrelation Analysis
+
+```{r}
+#Load packages & prep dataframe for "sf" package
 #install.packages(spdep)
 #install.packages("/Users/cmantegna/Downloads/spdep_1.2-8.tar.gz", repos = NULL, type = "source")
-
 library(sf)
+library(sp)
 library(spdep)
 
+sf_data <- st_as_sf(bdata, coords = c("longitude", "latitude"), crs = 4326)
+
+# Take a look at your sf object
+print(sf_data)
+
 ```
+
+```{r}
+
+# Create a spatial weights matrix to assess nearest neighbors and distance-based neighbors to define spatial relationships using Moran's I and Geary's C.
+# You can extract the matrix of coordinates using st_coordinates
+coords <- st_coordinates(sf_data)
+
+# Now use the knearneigh function from the spdep package directly on the coordinates
+neighbors <- knn2nb(knearneigh(coords, k = 4))
+
+# Then convert the neighbors into spatial weights with nb2listw
+weights <- nb2listw(neighbors, style = "W")
+
+```
+
+#### Moran I and Geary's C statistical analyses tests if we can cluster or not- cluster sites based on the if the distribution of biomarker values is random or non-random. This helps clarify any biomarker patterns that are unclear by visual analysis - at least to me. If it's unclear to me, I assume it will be unclear to those with less familiarity of the data.
+
+## Run Moran's I and Geary's C for p450
+
+```{r}
+
+moran_result <- moran.test(sf_data$p450, weights)
+print(moran_result)
+
+geary_result <- geary.test(sf_data$p450, weights)
+print(geary_result)
+
+```
+
+## Run Moran's I and Geary's C for SOD
+
+```{r}
+
+moran_result <- moran.test(sf_data$SOD, weights)
+print(moran_result)
+
+geary_result <- geary.test(sf_data$SOD, weights)
+print(geary_result)
+
+```
+
+# Spatial Regression Analysis
+
+```{r}
+#library(spdep)
+#install.packages("sphet")
+library(sphet)
+
+```
+
+## Spatial Lag Model
+```{r}
+library(spatialreg)
+#accounts for spatial dependence in the dependent variable
+slm_model <- lagsarlm(p450 ~ SOD, data = sf_data, listw = weights)
+print(summary(slm_model))
+
+```
+## Spatial Error Model
+```{r}
+#accounts for the spatial autocorrelation in the error term
+sem_model <- errorsarlm(p450 ~ SOD, data = sf_data, listw = weights)
+print(summary(sem_model))
+
+
+```
+## Spatial Durbin Model
+```{r}
+#install.packages("spatialreg")
+library(spatialreg)
+
+#combines SLM and SEM
+sdm_model <- spatialreg::lagsarlm(p450 ~ SOD, data = sf_data, listw = weights, type="mixed")
+print(summary(sdm_model))
+
+```
+
+# Next steps are completing the interpretations and then using this same code path to review the PAH analytes
