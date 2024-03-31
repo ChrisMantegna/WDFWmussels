@@ -1,5 +1,5 @@
 ---
-title: "05- WDFW Analytes Data for Coorelation with Biomarker Values"
+title: "05- Analytes Data for Coorelation with Biomarker Values"
 output:
   html_document: 
     fig_width: 8
@@ -32,6 +32,7 @@ library(tidyr)
 library(tidyverse)
 library(ggplot2)
 library(vegan)
+library(reshape2)
 
 ```
 
@@ -43,7 +44,9 @@ getwd()
 #data has all sites, coordinates, p450, sod, condition factor, economic factor data
 data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
 
-#ana<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/PAHanalytes.csv")
+pah<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/sum_analytes.csv")
+
+indv<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/individual_analytes.csv") 
 
 ```
 
@@ -52,18 +55,81 @@ data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
 ```{r}
 
 str(data)
-str(ana)
+str(pah)
+str(indv)
 
 ```
 
 ```{r}
 summary(data)
-summary(ana)
+summary(pah)
+summary(indv)
 
 ```
 
+# Linear Regression
+# GLM
+
+#### both model types are applied becasue I am unsure where to go - the GLM feels most correct because it is more flexible to non- normally distributed data.
+
+```{r}
+
+#merge data frames and reshape for input.
+
+#merge by latitude and longitude
+merged_df <- merge(data, pah, by = c("latitude", "longitude"))
+
+#reshape to get the analytes into their own columns with the DryValue as their values
+reshaped_df <- dcast(merged_df, latitude + longitude + p450 + SOD ~ Analyte, value.var = "DryValue")
+
+print(reshaped_df)
+
+```
+# Linear Regression- p450 as response 
+```{r}
+
+lm_model <- lm(p450 ~ SOD + SumPAHs + SumPAHs16 + SumPAHs42_DMNcorrected + SumPAHsHMW + SumPAHsLMW, data = reshaped_df)
+print(summary(lm_model))
+
+```
+# GLM - p450 as response
+```{r}
+
+glm_model <- glm(p450 ~ SOD + SumPAHs + SumPAHs16 + SumPAHs42_DMNcorrected + SumPAHsHMW + SumPAHsLMW, family = poisson(), data = reshaped_df)
+print(summary(glm_model))
+
+```
+# LR- p450 as response
+#### Replicating with individual analytes to see if anything really sticks out.
+```{r}
+#merge and reshape just like above
+#merge data frames and reshape for input.
+#fix column name difference so the merge can happen
+colnames(indv)[colnames(indv) == "Latitude"] <- "latitude"
+colnames(indv)[colnames(indv) == "Longitude"] <- "longitude"
+
+#merge by latitude and longitude
+merged_df2 <- merge(data, indv, by = c("latitude", "longitude"))
+
+#reshape to get the analytes into their own columns with the DryValue as their values
+reshaped2_df <- dcast(merged_df2, latitude + longitude + p450 + SOD ~ Analyte, value.var = "DryValue")
+
+print(reshaped2_df)
+```
 
 
+```{r}
 
+indvlm_model <- lm(p450 ~ SOD + SumPAHs + SumPAHs16 + SumPAHs42_DMNcorrected + SumPAHsHMW + SumPAHsLMW, data = reshaped_df)
+print(summary(indvlm_model))
 
+```
+
+# GLM- p450 as response
+```{r}
+
+indvglm_model <- glm(p450 ~ SOD + SumPAHs + SumPAHs16 + SumPAHs42_DMNcorrected + SumPAHsHMW + SumPAHsLMW, family = poisson(), data = reshaped_df)
+print(summary(indvglm_model))
+
+```
 
