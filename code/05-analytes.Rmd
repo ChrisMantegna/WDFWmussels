@@ -73,7 +73,7 @@ summary(indv)
 #### both model types are applied becasue I am unsure where to go - the GLM feels most correct because it is more flexible to non- normally distributed data.
 
 ```{r}
-
+library(reshape2)
 #merge data frames and reshape for input.
 
 #merge by latitude and longitude
@@ -117,10 +117,34 @@ reshaped2_df <- dcast(merged_df2, latitude + longitude + p450 + SOD ~ Analyte, v
 print(reshaped2_df)
 ```
 
+```{r}
+#get the column names so I don't have to individually type each one
+
+all_columns <- names(reshaped2_df)
+
+# Remove the columns you don't want to include in the model
+excluded_columns <- c('p450', 'latitude', 'longitude', 'SOD')
+independent_columns <- all_columns[!all_columns %in% excluded_columns]
+
+# Enclose each column name in backticks to handle special characters
+independent_columns <- sapply(independent_columns, function(x) paste0("`", x, "`"))
+
+# Create a string representing the formula
+formula_str <- paste("p450 ~", paste(independent_columns, collapse = " + "))
+
+# Convert the string to a formula object
+formula <- as.formula(formula_str)
+
+# Now you can use this formula in your model
+#lm_model <- lm(formula, data = reshaped_df)
+#summary(lm_model)
+
+
+```
 
 ```{r}
 
-indvlm_model <- lm(p450 ~ SOD + SumPAHs + SumPAHs16 + SumPAHs42_DMNcorrected + SumPAHsHMW + SumPAHsLMW, data = reshaped_df)
+indvlm_model <- lm(formula, data = reshaped2_df)
 print(summary(indvlm_model))
 
 ```
@@ -128,7 +152,7 @@ print(summary(indvlm_model))
 # GLM- p450 as response
 ```{r}
 
-indvglm_model <- glm(p450 ~ SOD + SumPAHs + SumPAHs16 + SumPAHs42_DMNcorrected + SumPAHsHMW + SumPAHsLMW, family = poisson(), data = reshaped_df)
+indvglm_model<- glm(formula, data = reshaped2_df, family = poisson())
 print(summary(indvglm_model))
 
 ```
