@@ -75,13 +75,15 @@ summary(indv)
 ```
 
 ```{r}
-#remove any p450 values that are 0 - those are true 0's not non-detectable
+#remove any p450 values that are 0 - those are true 0's not non-detectable. I have to replace with na so I don't lose the entire row of data, including the SOD values.
 #replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
-#p450
-data <- data[data$p450 != 0, ]
 
 #sod
 data$SOD[data$SOD <= 0] <- 0.0025
+
+#p450
+data$p450[data$p450 <= 0] <- NA
+
 
 ```
 
@@ -184,6 +186,86 @@ averaged_data <- data %>%
 
 # View the new dataframe with averaged values
 averaged_data
+
+```
+# Outliers
+```{r}
+
+# Detect outliers and plot them - code a combo of stack overflow and chat gpt.
+
+```{r}
+
+detect_outliers_mad <- function(data, accuracy = 0.99) {
+  # Calculate z-score equivalent for the given accuracy
+  z_threshold <- qnorm(accuracy + (1 - accuracy) / 2)
+
+  # Initialize a list to store outlier indices for each numeric column
+  outliers_list <- list()
+
+  # Initialize a vector to keep track of rows with outliers
+  rows_with_outliers <- rep(FALSE, nrow(data))
+
+  # Loop through each column in the dataframe
+  for (col_name in names(data)) {
+    # Check if the column is numeric
+    if (is.numeric(data[[col_name]])) {
+      # Calculate MAD and median for the column
+      mad_value <- median(abs(data[[col_name]] - median(data[[col_name]])))
+      median_value <- median(data[[col_name]])
+
+      # Calculate the deviation scores (using a modified z-score formula)
+      deviation_scores <- 0.6745 * (data[[col_name]] - median_value) / mad_value
+
+      # Identify indices of outliers
+      outlier_indices <- which(abs(deviation_scores) > z_threshold)
+
+      # Store the indices in the list
+      outliers_list[[col_name]] <- outlier_indices
+
+      # Update rows with outliers
+      rows_with_outliers[outlier_indices] <- TRUE
+    }
+  }
+
+  # Return the list of outliers and rows with outliers
+  list(outliers_list = outliers_list, rows_with_outliers = rows_with_outliers)
+}
+
+outliers_info <- detect_outliers_mad(data)
+
+# Convert the list of outliers to a named vector of counts
+num_outliers_each_col <- sapply(outliers_info$outliers_list, length)
+num_rows_with_outliers <- sum(outliers_info$rows_with_outliers)
+
+# Check if there are any outliers
+if (all(num_outliers_each_col == 0)) {
+  print("There are no outliers in any columns.")
+} else {
+  # Create a data frame for plotting
+  outliers_data_df <- data.frame(
+    Column = names(num_outliers_each_col),
+    Outliers = as.integer(num_outliers_each_col),
+    OutlierPercentage = (as.integer(num_outliers_each_col) / nrow(data)) * 100
+  )
+
+  # Plot the number of outliers for all columns
+  outlier_plot <- ggplot(outliers_data_df, aes(x = Column, y = Outliers, fill = Column)) +
+    geom_bar(stat = "identity") +
+    geom_text(aes(label = sprintf("%.2f%%", OutlierPercentage)), position = position_dodge(width = 0.9), vjust = -0.25) +
+    coord_flip() +
+    labs(title = "Number of Outliers by Column", x = "Column", y = "Number of Outliers") +
+    scale_fill_brewer(palette = "Set3") +
+    theme_minimal()
+
+  print(outlier_plot)
+}
+```
+
+```{r}
+
+```
+
+```{r}
 
 ```
 
