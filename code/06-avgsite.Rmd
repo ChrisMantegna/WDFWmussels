@@ -1,0 +1,189 @@
+---
+title: "06- Explore(01) through Analytes(05) with one average value per site"
+output:
+  html_document: 
+    fig_width: 8
+  pdf_document: 
+    fig_width: 8
+    fig_height: 5
+---
+
+### Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 8,       # Set plot width in inches
+  fig.height = 5,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load packages
+
+```{r, eval= FALSE}
+
+library(tidyr)
+library(tidyverse)
+library(ggplot2)
+library(vegan)
+
+```
+
+# Load data
+### Note for data the units are listed below. For pah and indv the units are ng/g
+
+Weight = g\
+Length, width, height = mm\
+p450, SOD = activity/ (mg/protein)\
+Condition factor, economic factor = unitless
+```{r}
+
+getwd()
+#data has all sites, coordinates, p450, sod, condition factor, economic factor data
+data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
+
+#pah has complete site values and different summed pah analyte whole tissue values 
+pah<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/sum_analytes.csv")
+
+#indv has complete site values and individual named pah analyte whole tissue values 
+indv<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/individual_analytes.csv") 
+
+```
+
+```{r}
+
+#review data frames
+str(data)
+str(pah)
+str(indv)
+
+```
+
+```{r}
+
+#review data
+summary(data)
+summary(pah)
+summary(indv)
+
+```
+
+```{r}
+#remove any p450 values that are 0 - those are true 0's not non-detectable
+#replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
+#p450
+data <- data[data$p450 != 0, ]
+
+#sod
+data$SOD[data$SOD <= 0] <- 0.0025
+
+```
+
+```{r}
+
+#taking the mean, median, sd, and variance of the biomarkers
+
+#stats p450
+mean_p450 <- mean(data$p450, na.rm = TRUE)
+median_p450 <- median(data$p450, na.rm = TRUE)
+sd_p450 <- sd(data$p450, na.rm = TRUE)
+var_p450 <- var(data$p450, na.rm = TRUE)
+
+#stats sod
+mean_SOD <- mean(data$SOD, na.rm = TRUE)
+median_SOD <- median(data$SOD, na.rm = TRUE)
+sd_SOD <- sd(data$SOD, na.rm = TRUE)
+var_SOD <- var(data$SOD, na.rm = TRUE)
+
+#make it a list
+stats_p450 <- list(mean = mean_p450, median = median_p450, sd = sd_p450, variance = var_p450)
+stats_sod <- list(mean = mean_SOD, median = median_SOD, sd = sd_SOD, variance = var_SOD)
+
+# Print the results
+print(stats_p450)
+print(stats_sod)
+
+
+```
+```{r}
+#quartiles because the data has been adjusted since summary
+#p450
+quartiles_p450 <- quantile(data$p450, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
+
+#SOD
+quartiles_SOD <- quantile(data$SOD, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
+
+# Display the results
+print(quartiles_p450)
+print(quartiles_SOD)
+
+```
+
+
+```{r}
+#i wanted to see the number of values that fall into each quartile and I'm not sure I did this right - revisit if necessary as it is inconsequential for current workflow.
+
+# Calculate quartiles for 'p450'
+quartiles_p450 <- quantile(data$p450, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
+
+# Count data points in each quartile range for 'p450'
+p450_q1_count <- sum(data$p450 <= quartiles_p450[1], na.rm = TRUE)
+p450_q2_count <- sum(data$p450 > quartiles_p450[1] & data$p450 <= quartiles_p450[2], na.rm = TRUE)
+p450_q3_count <- sum(data$p450 > quartiles_p450[2] & data$p450 <= quartiles_p450[3], na.rm = TRUE)
+p450_q4_count <- sum(data$p450 > quartiles_p450[3], na.rm = TRUE)
+
+# Calculate quartiles for 'SOD'
+quartiles_SOD <- quantile(data$SOD, probs = c(0.25, 0.5, 0.75), na.rm = TRUE)
+
+# Count data points in each quartile range for 'SOD'
+SOD_q1_count <- sum(data$SOD <= quartiles_SOD[1], na.rm = TRUE)
+SOD_q2_count <- sum(data$SOD > quartiles_SOD[1] & data$SOD <= quartiles_SOD[2], na.rm = TRUE)
+SOD_q3_count <- sum(data$SOD > quartiles_SOD[2] & data$SOD <= quartiles_SOD[3], na.rm = TRUE)
+SOD_q4_count <- sum(data$SOD > quartiles_SOD[3], na.rm = TRUE)
+
+# Combine the counts into a list for easier viewing
+p450_quartile_counts <- list(
+  Q1 = p450_q1_count,
+  Q2 = p450_q2_count,
+  Q3 = p450_q3_count,
+  Q4 = p450_q4_count
+)
+
+SOD_quartile_counts <- list(
+  Q1 = SOD_q1_count,
+  Q2 = SOD_q2_count,
+  Q3 = SOD_q3_count,
+  Q4 = SOD_q4_count
+)
+
+# Display the results
+p450_quartile_counts
+SOD_quartile_counts
+
+```
+
+# Collapsing the data to one average value per site
+```{r}
+#312 points are a bit unruly. i'm going to average the values for each site and see how that makes things change
+library(dplyr)
+
+#simplifying the dataframe for joining with next steps
+averaged_data <- data %>%
+  group_by(site_number, latitude, longitude, site_name) %>%  
+  summarise(
+    avg_p450 = mean(p450, na.rm = TRUE),  
+    avg_SOD = mean(SOD, na.rm = TRUE)  
+  ) %>%
+  ungroup()  # Remove grouping for the new dataframe
+
+# View the new dataframe with averaged values
+averaged_data
+
+```
+

@@ -75,7 +75,7 @@ data$SOD <- ifelse(data$SOD <= 0, 0, data$SOD)
 ```{r}
 world <- ne_states(country = "united states of america", returnclass = "sf")
 washington_map <- world[world$name == "Washington", ]
-1
+
 ```
 # p450 map
 ```{r}

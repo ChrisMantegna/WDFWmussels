@@ -210,8 +210,13 @@ weights <- nb2listw(neighbors, style = "W")
 
 ```{r}
 
-moran_result <- moran.test(sf_data$p450, weights)
-print(moran_result)
+coords <- st_coordinates(sf_data)
+
+# Now use the knearneigh function from the spdep package directly on the coordinates
+neighbors <- knn2nb(knearneigh(coords, k = 4))
+
+# Then convert the neighbors into spatial weights with nb2listw
+weights <- nb2listw(neighbors, style = "W")
 
 geary_result <- geary.test(sf_data$p450, weights)
 print(geary_result)
@@ -263,6 +268,106 @@ library(spatialreg)
 #combines SLM and SEM
 sdm_model <- spatialreg::lagsarlm(p450 ~ SOD, data = sf_data, listw = weights, type="mixed")
 print(summary(sdm_model))
+
+```
+# Local Indicator of Spatial Association (LISA)
+```{r}
+#install.packages("spdep")
+#install.packages("sf")  # for spatial data handling
+#install.packages("tmap")  # for visualization
+library(spdep)
+library(sf)
+library(tmap)
+
+```
+
+```{r}
+
+lisa_values <- localmoran(sf_data$p450, weights)
+
+```
+
+```{r}
+
+# Add LISA values and p-values to your spatial data
+sf_data$lisa <- lisa_values[,1]  # Local Moran's I values
+sf_data$p.value <- lisa_values[,4]  # p-values for significance
+
+# Use tmap for plotting
+library(tmap)
+
+# Define breaks for significance levels, e.g., 0.05 for 95% confidence
+sig_breaks <- c(0, 0.05, 1)  # Change according to your significance level
+
+# Create a map
+tm_shape(sf_data) +
+  tm_dots(col = "lisa", size = 0.5, palette = "-RdBu", title = "LISA Values") +
+  tm_layout(legend.position = c("left", "top")) +
+  tm_shape(sf_data[sf_data$p.value <= 0.05, ]) +  # Add a layer for significant points only
+  tm_dots(col = "red", size = 0.7, title = "Significant Clusters") +
+  tm_layout(main.title = "LISA Cluster Map", main.title.position = "center")
+
+```
+
+# Plot the LISA data over the map from the base Washington State map found in file: 03-map.rmd
+```{r}
+library(sf)
+library(viridis)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(ggplot2)
+
+```
+
+```{r}
+
+world <- ne_states(country = "united states of america", returnclass = "sf")
+washington_map <- world[world$name == "Washington", ]
+
+pmap <- ggplot() + 
+  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
+  theme_minimal() +
+  labs(title = "Washington State Map")
+
+print(pmap)
+
+```
+
+
+```{r}
+# Ensure CRS compatibility
+sf_data <- st_transform(sf_data, st_crs(washington_map))
+
+# Prepare the base map
+pmap <- ggplot() + 
+  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
+  theme_minimal() +
+  labs(title = "Washington State Map")
+
+# Add the LISA points layer to the map
+complete_map <- pmap + 
+  geom_sf(data = sf_data, aes(color = lisa), size = 2) +
+  scale_color_viridis_c(option = "D", direction = -1, name = "LISA Values")
+
+# Display the combined map
+print(complete_map)
+
+```
+
+```{r}
+#zoom in on the puget sound region
+# Assuming you know the bounding box coordinates you want to zoom in on
+# For example: xmin, xmax, ymin, ymax
+xlim <- c(-124, -122)  # longitude bounds
+ylim <- c(47, 49)  # latitude bounds
+
+complete_map <- pmap + 
+  geom_sf(data = sf_data, aes(color = lisa), size = 2) +
+  scale_color_viridis_c(option = "D", direction = -1, name = "LISA Values") +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)
+
+print(complete_map)
+
 
 ```
 

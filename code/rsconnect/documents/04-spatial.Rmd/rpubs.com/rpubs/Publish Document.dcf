@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/1167632/4a2ca100627048eb9a6ab87d72d5fb5e
+bundleId: https://api.rpubs.com/api/v1/document/1167632/4a2ca100627048eb9a6ab87d72d5fb5e
+url: http://rpubs.com/cmantegna/1167632
+version: 1
