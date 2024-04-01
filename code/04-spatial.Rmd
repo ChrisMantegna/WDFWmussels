@@ -113,7 +113,7 @@ print(bb)
 
 # Point pattern analysis
 
-#### Exploratory data analysis tool that looks to interpret the distribution of my values across geographic space - I believe this is the first step in geospatial analysis, the Moran and Geary C statistical tests are what follow to support or debate the hypothesis formed from this step.
+#### Exploratory data analysis tool that looks to interpret the distribution of my values across geographic space - this is the first step in geospatial analysis, the Moran and Geary C statistical tests are what follow to support or debate the hypothesis formed from this step.
 
 ```{r}
 #install.packages("spatstat")
