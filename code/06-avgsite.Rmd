@@ -1,15 +1,15 @@
 ---
 title: "06- Explore(01) through Analytes(05) with one average value per site"
 output:
+  pdf_document: 
+    fig_width: 10
+    fig_height: 7
   html_document: 
     toc: true
     toc_float:
         collapsed: false
         smooth_scroll: true
     fig_width: 10
-  pdf_document: 
-    fig_width: 10
-    fig_height: 7
 ---
 
 # Setup
@@ -31,7 +31,6 @@ knitr::opts_chunk$set(
 # Load packages
 
 ```{r, eval= FALSE}
-
 library(tidyr)
 library(tidyverse)
 library(ggplot2)
