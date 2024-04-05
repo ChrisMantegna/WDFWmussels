@@ -1,0 +1,318 @@
+---
+title: "08- PCA + Pearson, p450"
+output:
+  pdf_document: 
+    fig_width: 10
+    fig_height: 7
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 10
+---
+
+# Setup
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 8,       # Set plot width in inches
+  fig.height = 5,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load packages
+
+```{r, eval= FALSE}
+library(tidyr)
+library(tidyverse)
+library(ggplot2)
+library(vegan)
+#library(tinytex)
+
+```
+
+# Load data
+
+### Note:
+
+For *data* the units are listed below. Weight = g\
+Length, width, height = mm\
+p450, SOD = activity/ (mg/protein)\
+Condition factor, economic factor = unitless\
+For *pah*, *indv*, and *allana* the units are ng/g\
+For *metal* the units are mg/kg
+
+```{r}
+
+getwd()
+#data has all sites, coordinates, p450, sod, condition factor, economic factor data
+data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
+
+#pah has complete site values and different summed pah analyte whole tissue values 
+pah<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/sum_analytes.csv")
+
+#indv has complete site values and individual named pah analyte whole tissue values 
+indv<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/individual_analytes.csv") 
+
+metal<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/metal.csv")
+
+allana<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/allana.csv")
+
+```
+
+```{r}
+# Review data frame structure
+
+#str(metal)
+#str(allana)
+#str(indv)
+
+```
+
+```{r}
+# Review basic data types and stats
+
+#summary(data)
+#summary(pah)
+#summary(indv)
+
+```
+
+```{r}
+
+head(data)
+head(metal)
+head(allana)
+```
+
+# Data frame manipulations
+
+### Adjusting biomarker values for accurate stats
+
+```{r}
+# Data contains 0's and must be adjusted in this order to preserve all usable data.
+
+#sod
+#replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
+data$SOD[data$SOD <= 0] <- 0.0025
+
+#p450
+#remove any p450 values that are 0 - those are true 0's not non-detectable. I am replacing with na so I don't lose the entire row of data, including the SOD values.
+data$p450[data$p450 <= 0] <- NA
+
+```
+
+### Data adjustment for analysis- SOD & p450
+
+```{r}
+#Average the
+
+library(dplyr)
+
+#simplifying the dataframe for joining with next steps
+averaged_data <- data %>%
+  group_by(site_number, latitude, longitude, site_name) %>%  
+  summarise(
+    avg_p450 = mean(p450, na.rm = TRUE),  
+    avg_SOD = mean(SOD, na.rm = TRUE)
+  ) %>%
+  ungroup()  # Remove grouping for the new dataframe
+
+head(averaged_data)
+
+library(reshape2)
+#merge data frames and reshape for input.
+colnames(allana)[colnames(allana) == "SiteName"] <- "site_name"
+merged_df <- merge(averaged_data, allana, by = c("site_name"), all.x = TRUE)
+
+#reshape to get the analytes into their own columns with the DryValue as their values
+reshaped_df2 <- dcast(merged_df, site_name + site_number +latitude + longitude + avg_p450 + avg_SOD ~ Analyte, value.var = "DryValue")
+
+head(reshaped_df2)
+
+```
+
+### Data frame for p450 Pearson & PCA- summed PAH analytes
+
+```{r}
+
+#create a table without the avg_SOD and NA column for p450 work
+cols_to_keep2 <- colnames(reshaped_df2)[!colnames(reshaped_df2) %in% c("avg_SOD", "arsenic", "cadmium", "copper", "lead", "mercuryTotal", "Sum40CBs", "SumBDEs", "SumCHLDs", "SumDDTs", "SumHCHs", "SumPCBs2x17", "Zinc", "NA")]
+
+p450PAH <- reshaped_df2[, cols_to_keep2]
+
+
+head(p450PAH)
+
+```
+
+# p450 Pearson- summed analytes 
+
+```{r}
+#get the column names from sod_all so I don't have to individually type each one
+
+all_columns <- names(p450PAH)
+
+# Remove the columns you don't want to include in the model
+excluded_columns <- c('latitude', 'longitude', 'site_name', 'site_number')
+independent_columns <- all_columns[!all_columns %in% excluded_columns]
+
+# Enclose each column name in backticks to handle special characters
+independent_columns <- sapply(independent_columns, function(x) paste0("`", x, "`"))
+
+# Create a string representing the formula
+formula_str <- paste("avg_p450 ~", paste(independent_columns, collapse = " + "))
+
+# Convert the string to a formula object
+formula <- as.formula(formula_str)
+
+```
+
+```{r}
+library(corrplot)
+# Extract variable names from the formula
+variables <- all.vars(formula)
+
+# Subset the dataframe 'sod_all' using the extracted variables
+subset_data <- p450PAH[, variables]
+
+# Compute Pearson correlation for each pair of variables
+correlation_results <- cor(subset_data, method = "pearson", use = "complete.obs")
+
+# View the correlation matrix
+print(correlation_results)
+
+corrplot(correlation_results, method = "circle", type = "upper", tl.col = "black", tl.srt = 45)
+
+```
+
+# p450 PCA - summed analytes
+
+```{r}
+# PCA Plot with biomarkers
+#install.packages("FactoMineR")
+#install.packages("factoextra")
+library('FactoMineR')
+library("factoextra")
+
+
+# Remove NAs from the dataset
+df_clean <- na.omit(p450PAH)
+
+# Selecting the relevant variables for PCA
+pca_data <- df_clean[, c("avg_p450", "SumPAHs", "SumPAHs16", "SumPAHs42_DMNcorrected", "SumPAHsHMW", "SumPAHsLMW")]
+
+# Performing PCA
+pca_res <- PCA(pca_data, scale.unit = TRUE, graph = FALSE)
+
+# Plotting the PCA
+pcaplot<- fviz_pca_biplot(pca_res, label = "var", col.var = "contrib",
+                gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+                repel = TRUE)  # Avoid text overlapping (slow if many points)
+
+
+
+print(pcaplot)
+#ggsave(plot=pcaplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/pca.png", width=15, height=8)
+
+```
+### Data frame for p450 Pearson & PCA- individual PAH analytes
+```{r}
+library(reshape2)
+#merge data frames and reshape for input.
+colnames(indv)[colnames(indv) == "SiteName"] <- "site_name"
+merged_df2 <- merge(averaged_data, indv, by = c("site_name"), all.x = TRUE)
+
+#reshape to get the analytes into their own columns with the DryValue as their values
+reshaped_df3 <- dcast(merged_df2, site_name + site_number +latitude + longitude + avg_p450 + avg_SOD ~ Analyte, value.var = "DryValue")
+
+head(reshaped_df3)
+
+#create a table without the avg_SOD and NA column for p450 work
+cols_to_keep3 <- colnames(reshaped_df3)[!colnames(reshaped_df3) %in% c("avg_SOD", "NA")]
+
+p450all <- reshaped_df3[, cols_to_keep3]
+
+
+head(p450all)
+
+all_columns <- names(reshaped_df3)
+
+# Remove the columns you don't want 
+excluded_columns <- c('site_name', 'site_number' ,'latitude', 'longitude', 'avg_SOD', 'NA')
+independent_columns <- all_columns[!all_columns %in% excluded_columns]
+
+# Enclose each column name in backticks to handle special characters
+independent_columns <- sapply(independent_columns, function(x) paste0("`", x, "`"))
+
+# Create a string representing the formula
+formula_str <- paste("avg_p450 ~", paste(independent_columns, collapse = " + "))
+
+# Convert the string to a formula object
+formula1 <- as.formula(formula_str)
+
+```
+
+# Pearson - individual analytes
+```{r}
+#picking up after excluding non-analysis columns
+# Extract variable names from the formula
+variables <- all.vars(formula1)
+
+# Subset the dataframe 'sod_all' using the extracted variables
+subset_data <- p450all[, variables]
+
+# Compute Pearson correlation for each pair of variables
+correlation_results2 <- cor(subset_data, method = "pearson", use = "complete.obs")
+
+# View the correlation matrix
+head(correlation_results2)
+
+corrplot(correlation_results2, method = "circle", type = "upper", tl.col = "black", tl.srt = 45)
+
+```
+
+#PCA- individual analytes
+```{r}
+
+# PCA Plot with biomarkers
+#install.packages("FactoMineR")
+#install.packages("factoextra")
+library('FactoMineR')
+library("factoextra")
+
+# Remove NAs from the dataset
+df_clean <- na.omit(p450all)
+
+# Sample cols_to_keep3 vector (replace this with your actual vector of column names)
+cols_to_keep3 <- colnames(df_clean)
+
+# Remove the first four columns
+selected_cols <- cols_to_keep3[-(1:4)]
+
+# Select columns based on the selected_cols vector
+pca_data <- df_clean[, selected_cols]
+
+# Performing PCA
+pca_res <- PCA(pca_data, scale.unit = TRUE, graph = FALSE)
+
+# Plotting the PCA
+pcaplot<- fviz_pca_biplot(pca_res, label = "var", col.var = "contrib",
+                gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+                repel = TRUE)  # Avoid text overlapping (slow if many points)
+
+
+
+print(pcaplot)
+#ggsave(plot=pcaplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/pca.png", width=15, height=8)
+
+```
+

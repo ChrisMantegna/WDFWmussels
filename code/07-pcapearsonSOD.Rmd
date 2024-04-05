@@ -1,5 +1,5 @@
 ---
-title: "07- Paper Visualizations"
+title: "07- PCA + Pearson, SOD"
 output:
   pdf_document: 
     fig_width: 10
@@ -35,7 +35,7 @@ library(tidyr)
 library(tidyverse)
 library(ggplot2)
 library(vegan)
-library(tinytex)
+#library(tinytex)
 
 ```
 
@@ -71,8 +71,8 @@ allana<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/allana.csv
 ```{r}
 # Review data frame structure
 
-str(metal)
-str(allana)
+#str(metal)
+#str(allana)
 #str(indv)
 
 ```
@@ -86,7 +86,17 @@ str(allana)
 
 ```
 
-# Adjusting biomarker values for accurate stats
+```{r}
+
+head(data)
+head(metal)
+head(allana)
+```
+
+# Data frame manipulations
+
+### Adjusting biomarker values for accurate stats
+
 ```{r}
 # Data contains 0's and must be adjusted in this order to preserve all usable data.
 
@@ -100,9 +110,10 @@ data$p450[data$p450 <= 0] <- NA
 
 ```
 
-# Data frame for SOD GLM & PCA
+### Data adjustment for analysis- SOD & p450
+
 ```{r}
-#this data frame needs join allana and data for analysis (1) to have  'site name' renamed to match (2) have data averaged to one value per site (3) to join SOD only 
+#Average the
 
 library(dplyr)
 
@@ -115,85 +126,85 @@ averaged_data <- data %>%
   ) %>%
   ungroup()  # Remove grouping for the new dataframe
 
-# View the new dataframe with averaged values
-averaged_data
+print(averaged_data)
 
 library(reshape2)
 #merge data frames and reshape for input.
-colnames(pah)[colnames(pah) == "SiteName"] <- "site_name"
-merged_df <- merge(averaged_data, pah, by = c("site_name"), all.x = TRUE)
-
+colnames(allana)[colnames(allana) == "SiteName"] <- "site_name"
+merged_df <- merge(averaged_data, allana, by = c("site_name"), all.x = TRUE)
 
 #reshape to get the analytes into their own columns with the DryValue as their values
-reshaped_df <- dcast(merged_df, site_name + site_number +latitude.x + longitude.x + avg_p450 + avg_SOD ~ Analyte, value.var = "DryValue")
+reshaped_df <- dcast(merged_df, site_name + site_number +latitude + longitude + avg_p450 + avg_SOD ~ Analyte, value.var = "DryValue")
 
-print(reshaped_df)
+head(reshaped_df)
 
 ```
 
-# Data frame for p450 Pearson
+### Data frame for SOD GLM & PCA- All summed analytes and metals
 
 ```{r}
-#this data frame needs to merge pah with data (1) rename site name to match (2) have pah and only p450 merged into one data frame
-```
 
-# All Analytes GLM for SOD
+#create a table without the avg_p450 and NA column for SOD work
+cols_to_keep <- colnames(reshaped_df)[!colnames(reshaped_df) %in% c("avg_p450", "NA")]
+
+sod_all <- reshaped_df[, cols_to_keep]
+
+head(sod_all)
+
+#create a table without the avg_SOD and NA column for p450 work
+#cols_to_keep2 <- colnames(reshaped2_df)[!colnames(reshaped2_df) %in% c("avg_SOD", "arsenic", "cadmium", "copper", "lead", "mercuryTotal", "Sum40CBs", "SumBDEs", "SumCHLDs", "SumDDTs", "SumHCHs", "SumPCBs2x17", "Zinc", "NA")]
+
+#p450PAH <- reshaped2_df[, cols_to_keep2]
+#p450PAH$plogdata <- plogdata
+
+#print(p450PAH)
+
+```
+#SOD Pearson- summed analytes + metals
+
 ```{r}
+#get the column names from sod_all so I don't have to individually type each one
 
+all_columns <- names(sod_all)
+
+# Remove the columns you don't want to include in the model
+excluded_columns <- c('latitude', 'longitude', 'site_name', 'site_number')
+independent_columns <- all_columns[!all_columns %in% excluded_columns]
+
+# Enclose each column name in backticks to handle special characters
+independent_columns <- sapply(independent_columns, function(x) paste0("`", x, "`"))
+
+# Create a string representing the formula
+formula_str <- paste("avg_SOD ~", paste(independent_columns, collapse = " + "))
+
+# Convert the string to a formula object
+formula <- as.formula(formula_str)
+
+#SODall_glm<- glm(formula, data = sod_all, family = poisson())
+#print(summary(SODall_glm))
 ```
 
-# Pearson for p450
-## SumPAHs, HW PAHs, LW PAHs
-```{r}
-#individual correlation test between p450 and the PAHs listed above
-
-cor.test(averaged_data$avg_p450, averaged_data$avg_SOD)
-
-
-```
-
-# Pearson Correlation Plot
 ```{r}
 library(corrplot)
 
-cor.mtest <- function(mat, conf.level = 0.95){
-  mat <- as.matrix(mat)
-  n <- ncol(mat)
-  p.mat <- matrix(NA, n, n)
-  diag(p.mat) <- 0
-  
-  for(i in 1:(n-1)){
-    for(j in (i+1):n){
-      tmp <- cor.test(mat[,i], mat[,j], conf.level = conf.level)
-      p.mat[i,j] <- tmp$p.value
-      p.mat[j,i] <- tmp$p.value
-    }
-  }
-  list(p = p.mat, conf.level = conf.level)
-}
+# Extract variable names from the formula
+variables <- all.vars(formula)
 
-# Assuming 'mdata' and 'data' are defined and 'data' is used to subset 'mdata'
-df2 <- averaged_data[sapply(averaged_data, is.numeric)] # Ensure 'mdata' is used here
-df2 <- na.omit(df2)
-M <- cor(df2)
-testRes <- cor.mtest(df2, conf.level = 0.95)
+# Subset the dataframe 'sod_all' using the extracted variables
+subset_data <- sod_all[, variables]
 
-# Visualization with corrplot
-corrplot::corrplot(M,
-  method = "circle", type = "lower", insig = "blank",
-  addCoef.col = "black", number.cex = 0.8, order = "AOE", diag = FALSE
-)
+# Compute Pearson correlation for each pair of variables
+correlation_results <- cor(subset_data, method = "pearson", use = "complete.obs")
 
-print(cor)
-#ggsave(plot=cor, filename="/Users/cmantegna/Documents/WDFWmussels/output/avgpearson.png", width=15, height=8)
-```
+# View the correlation matrix
+print(correlation_results)
 
-# All Analytes for SOD
-```{r}
+corrplot(correlation_results, method = "circle", type = "upper", tl.col = "black", tl.srt = 45)
 
 ```
 
-# PCA for SOD
+# SOD PCA - all analytes + metals
+
 ```{r}
 # PCA Plot with biomarkers
 #install.packages("FactoMineR")
@@ -203,10 +214,10 @@ library("factoextra")
 
 
 # Remove NAs from the dataset
-df_clean <- na.omit(averaged_data)
+df_clean <- na.omit(sod_all)
 
 # Selecting the relevant variables for PCA
-pca_data <- df_clean[, c("avg_SOD", "avg_p450")]
+pca_data <- df_clean[, c("avg_SOD", "arsenic", "cadmium", "copper", "lead", "mercuryTotal", "Sum40CBs", "SumBDEs", "SumCHLDs", "SumDDTs", "SumHCHs", "SumPAHs", "SumPAHs16", "SumPAHs42_DMNcorrected", "SumPAHsHMW", "SumPAHsLMW", "SumPCBs2x17", "Zinc")]
 
 # Performing PCA
 pca_res <- PCA(pca_data, scale.unit = TRUE, graph = FALSE)
@@ -222,4 +233,8 @@ print(pcaplot)
 #ggsave(plot=pcaplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/pca.png", width=15, height=8)
 
 ```
+
+
+
+
 
