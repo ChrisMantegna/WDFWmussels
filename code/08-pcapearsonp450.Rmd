@@ -1,15 +1,16 @@
 ---
 title: "08- PCA + Pearson, p450"
 output:
-  pdf_document: 
-    fig_width: 10
-    fig_height: 7
+  
   html_document: 
     toc: true
     toc_float:
         collapsed: false
         smooth_scroll: true
+    fig_width: 12
+  pdf_document: 
     fig_width: 10
+    fig_height: 7
 ---
 
 # Setup
@@ -21,8 +22,8 @@ knitr::opts_chunk$set(
   eval = TRUE,         # Evaluate code chunks
   warning = FALSE,     # Hide warnings
   message = FALSE,     # Hide messages
-  fig.width = 8,       # Set plot width in inches
-  fig.height = 5,      # Set plot height in inches
+  fig.width = 12,       # Set plot width in inches
+  fig.height = 8,      # Set plot height in inches
   fig.align = "center" # Align plots to the center
 )
 
@@ -71,7 +72,7 @@ allana<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/allana.csv
 ```{r}
 # Review data frame structure
 
-#str(metal)
+str(pah)
 #str(allana)
 #str(indv)
 
@@ -175,6 +176,25 @@ formula_str <- paste("avg_p450 ~", paste(independent_columns, collapse = " + "))
 formula <- as.formula(formula_str)
 
 ```
+
+#plot of p450 against sumPAHs
+```{r}
+# Install ggplot2 package if you haven't already
+# install.packages("ggplot2")
+
+# Load the ggplot2 library
+library(ggplot2)
+
+
+# Plotting using ggplot2
+ggplot(p450PAH, aes(x = SumPAHs, y = avg_p450)) +
+  geom_point(color = "blue") +  # Scatter plot with blue color
+  labs(x = "Analyte Values", y = "Average P450 Values", title = "Analyte Values vs. Average P450 Values") +
+  theme_minimal()  # Optional: Use a minimal theme for the plot
+
+
+```
+
 
 ```{r}
 library(corrplot)
@@ -315,4 +335,79 @@ print(pcaplot)
 #ggsave(plot=pcaplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/pca.png", width=15, height=8)
 
 ```
+
+# plotting anayltes by site & plotting p450 values by site
+```{r}
+
+avgsum<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/avgsum.csv")
+
+library(ggplot2)
+ggplot(avgsum, aes(x = site_name, y = SumPAHs)) +
+  geom_point(color = "blue") +  # Scatter plot with blue color
+  labs(x = "Sites", y = "SumPAHs Values", title = "Analyte Values by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+ggplot(avgsum, aes(x = site_name, y = avg_p450)) +
+  geom_point(color = "purple") +  # Scatter plot with blue color
+  labs(x = "Sites", y = "Avg_p450 Values", title = "p450 Values by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+```{r}
+
+library(ggplot2)
+library(gridExtra)
+
+plot_sumPAHs <- ggplot(avgsum, aes(x = site_name, y = SumPAHs)) +
+  geom_point(color = "blue") +  # Scatter plot with blue color
+  labs(x = "Sites", y = "SumPAHs Values", title = "Analyte Values by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+plot_avg_p450 <- ggplot(avgsum, aes(x = site_name, y = avg_p450)) +
+  geom_point(color = "purple") +  # Scatter plot with purple color
+  labs(x = "Sites", y = "Avg_p450 Values", title = "p450 Values by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Arrange the plots side by side
+combined_plots <- grid.arrange(plot_sumPAHs, plot_avg_p450, ncol = 2,
+                               widths = c(8, 8)) 
+
+print(combined_plots)
+#ggsave(plot=combined_plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/combined.png", width=15, height=6)
+
+```
+
+```{r}
+library(ggplot2)
+library(gridExtra)
+
+# Create the plot for SumPAHs on the left y-axis
+plot_sumPAHs <- ggplot(avgsum, aes(x = site_name, y = SumPAHs)) +
+  geom_bar(stat = "identity", fill = "blue") +  # Bar plot with blue color
+  labs(y = "SumPAHs Values") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Create the plot for avg_p450 on the right y-axis
+plot_avg_p450 <- ggplot(avgsum, aes(x = site_name, y = avg_p450)) +
+  geom_point(color = "purple") +  # Scatter plot with purple color
+  labs(y = "Avg_p450 Values") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_y_continuous(sec.axis = sec_axis(~ ., name = "Avg_p450 Values"))
+
+# Combine both plots with a single x-axis and dual y-axes
+combined_plot <- grid.arrange(plot_sumPAHs, plot_avg_p450, ncol = 1)
+
+# Display the combined plot
+print(combined_plot)
+
+
+```
+
+
 
