@@ -261,16 +261,17 @@ for (i in 5:58) {
         geom_smooth(method = "lm", se = FALSE) +  # Add a linear regression line without standard error
         labs(title = paste("Site vs", colnames(allr)[i]),
              x = "Site Name",
-             y = colnames(allr)[i])
+             y = colnames(allr)[i])+
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
     # Print the plot
-    #print(s)
+    print(s)
 }
 
 # Define the file name
-    file_name <- paste0("/Site_vs_", colnames(allr)[i], ".png")
+    #file_name <- paste0("/Site_vs_", colnames(allr)[i], ".png")
 
-ggsave(file_name, plot= s, width=10, height=6)
+#ggsave(file_name, plot= s, width=10, height=6)
 
 ```
 
