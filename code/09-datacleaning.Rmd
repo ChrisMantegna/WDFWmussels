@@ -101,7 +101,7 @@ allr <- dcast(allr, site_name + site_number +latitude + longitude + p450 + SOD +
 
 head(allr)
 
-as.numeric("condition_factor", "avg_thickness")
+write.csv(allr, "alldata.csv", row.names = FALSE)
 ```
 # p450 correlation data frame preparation
 ```{r}
