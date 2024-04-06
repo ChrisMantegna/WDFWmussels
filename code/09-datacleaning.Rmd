@@ -1,0 +1,255 @@
+---
+title: "09- Data Cleaning Biomarkers and Analytes"
+output:
+  
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 12
+  pdf_document: 
+    fig_width: 10
+    fig_height: 7
+---
+
+# Setup
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 12,       # Set plot width in inches
+  fig.height = 8,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load packages
+
+```{r, eval= FALSE}
+library(tidyr)
+library(tidyverse)
+library(vegan)
+
+```
+
+# Load data
+
+### Note:
+
+For *data* the units are listed below. Weight = g\
+Length, width, height = mm\
+p450, SOD = activity/ (mg/protein)\
+Condition factor, economic factor = unitless\
+For *pah*, *indv*, and *allana* the units are ng/g\
+For *metal* the units are mg/kg
+
+```{r}
+
+getwd()
+#data has all sites, coordinates, p450, sod, condition factor, economic factor data
+data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarker_thickness_condition.csv")
+
+#pah has complete site values and different summed pah analyte whole tissue values 
+pah<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/individual_pah_analytes.csv")
+
+#indv has complete site values and individual named pah analyte whole tissue values 
+#indv<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/individual_analytes.csv") 
+
+metal<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/metal.csv")
+
+all<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/all_analytes.csv")
+
+```
+# adjusting biomarker values to remove true 0's and replace low values with half of detection limit.
+```{r}
+# Data contains 0's and must be adjusted in this order to preserve all usable data.
+
+#sod
+#replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
+data$SOD[data$SOD <= 0] <- 0.0025
+
+#p450
+#remove any p450 values that are 0 - those are true 0's not non-detectable. I am replacing with na so I don't lose the entire row of data, including the SOD values.
+data$p450[data$p450 <= 0] <- NA
+```
+
+```{r}
+library(dplyr)
+
+#merge data and all for per site review 
+merged_df <- merge(data, all, by = c("site_name"), all = TRUE)
+merged_df<- merge(merged_df, pah, by= c("site_name"), all= TRUE)
+
+head(merged_df)
+```
+
+```{r}
+summary(merged_df)
+```
+```{r}
+library(reshape2)
+
+allr <- dcast(merged_df, pah_analyte + DryValue.y + site_name + site_number +latitude + longitude + p450 + SOD + condition_factor + avg_thickness ~ all_analyte, value.var = "DryValue.x")
+
+allr <- dcast(allr, site_name + site_number +latitude + longitude + p450 + SOD + condition_factor + avg_thickness +arsenic + cadmium + copper + lead + mercuryTotal + SumBDEs + SumCHLDs + SumDDTs + SumHCHs + SumPAHs16 + SumPAHsHMW + SumPCBs2x17 + Zinc + ~ pah_analyte, value.var = "DryValue.y")
+
+head(allr)
+
+as.numeric("condition_factor", "avg_thickness")
+```
+# p450 correlation data frame preparation
+```{r}
+all_columns <- names(allr)
+
+# Remove the columns you don't want to include in the model
+excluded_columns <- c('latitude', 'longitude', 'site_name', 'site_number', 'SOD', 'NA')
+independent_columns <- all_columns[!all_columns %in% excluded_columns]
+
+# Enclose each column name in backticks to handle special characters
+independent_columns <- sapply(independent_columns, function(x) paste0("`", x, "`"))
+
+# Create a string representing the formula
+formula_str <- paste("p450 ~", paste(independent_columns, collapse = " + "))
+
+# Convert the string to a formula object
+formula <- as.formula(formula_str)
+
+```
+
+```{r}
+library(corrplot)
+library(dplyr)
+
+# Convert columns to numeric, handling NA values properly
+allr <- allr %>%
+  mutate(
+    condition_factor = as.numeric(as.character(condition_factor)),
+    avg_thickness = as.numeric(as.character(avg_thickness))
+  )
+
+# Extract variable names from the formula
+variables <- all.vars(formula)
+
+# Subset the dataframe 'sod_all' using the extracted variables
+subset_data <- allr[, variables]
+
+complete_cases <- subset_data[complete.cases(subset_data), ]
+if (nrow(complete_cases) > 1) {
+  correlation <- cor(complete_cases, method = "pearson")
+} else {
+  print("Insufficient complete cases for correlation calculation.")
+}
+
+
+# Compute Pearson correlation for each pair of variables
+correlation_results <- cor(subset_data, method = "pearson", use = "pairwise.complete.obs")
+
+# View the correlation matrix
+print(correlation_results)
+
+corrplot(correlation_results, method = "shade", type = "upper", tl.col = "black", tl.srt = 45)
+
+```
+
+#plot analytes by sites
+```{r}
+library(ggplot2)
+library(gridExtra)
+
+p450<- ggplot(allr, aes(x = site_name, y = p450)) +
+  geom_point(color = "blue") +  # Scatter plot with blue color
+  labs(x = "Sites", y = "p450 Values", title = "p450 Values by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+SumPAHsHMW<- ggplot(allr, aes(x = site_name, y = SumPAHsHMW)) +
+  geom_point(color = "red") +  # Scatter plot with blue color
+  labs(x = "Sites", y = "Analyte Values", title = "SumPAHsHMW Values by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Arrange the plots side by side
+combined_plots <- grid.arrange(p450, SumPAHsHMW, ncol = 2,
+                               widths = c(8, 8)) 
+```
+```{r}
+SumPAHsHMW<- ggplot(allr, aes(x = site_name, y = SumPAHsHMW)) +
+  geom_point(color = "red") +  # Scatter plot with blue color
+  labs(x = "Sites", y = "Analyte Values", title = "SumPAHsHMW Values by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Arrange the plots side by side
+combined_plots <- grid.arrange(p450, SumPAHsHMW, ncol = 2,
+                               widths = c(8, 8)) 
+```
+
+```{r}
+acenaphthene<- ggplot(allr, aes(x = site_name, y = acenaphthene)) +
+  geom_point(color = "red") +  # Scatter plot with blue color
+  labs(x = "Sites", y = "Analyte Values", title = "acenaphthene Values by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Arrange the plots side by side
+combined_plots <- grid.arrange(p450, acenaphthene, ncol = 2,
+                               widths=c(8,8))
+```
+
+
+```{r}
+anthracene<- ggplot(allr, aes(x = site_name, y = anthracene)) +
+  geom_point(color = "red") +  # Scatter plot with blue color
+  labs(x = "Sites", y = "Analyte Values", title = "anthracene Values by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Arrange the plots side by side
+combined_plots <- grid.arrange(p450, anthracene, ncol = 2,
+                               widths = c(8, 8)) 
+```
+
+```{r}
+# Load the ggplot2 package
+library(ggplot2)
+
+# Assuming your data frame is named 'allr'
+Biomarker <- allr[[4]]  # Biomarker column
+
+# Loop through columns 4 to 54
+for (i in 9:54) {
+    # Create a temporary data frame for plotting
+    temp_data <- data.frame(Biomarker = p450, Value = allr[[i]])
+
+    # Generate the plot
+    p <- ggplot(temp_data, aes(x = Value, y = Biomarker)) +
+        geom_point() +  # Add points
+        geom_smooth(method = "lm", se = FALSE) +  # Add a linear regression line without standard error
+        labs(title = paste("Biomarker vs", colnames(allr)[i]),
+             x = "Biomarker",
+             y = colnames(allr)[i])
+
+    # Print the plot
+    print(p)
+}
+
+```
+
+```{r}
+SumPAHsHMW<- ggplot(allr, aes(x = site_name, y = SumPAHsHMW)) +
+  geom_point(color = "red") +  # Scatter plot with blue color
+  labs(x = "Sites", y = "Analyte Values", title = "SumPAHsHMW Values by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Arrange the plots side by side
+combined_plots <- grid.arrange(p450, SumPAHsHMW, ncol = 2,
+                               widths = c(8, 8)) 
+```
+
