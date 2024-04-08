@@ -116,6 +116,10 @@ data$p450[data$p450 <= 0] <- NA
 ```{r}
 #Average the
 
+data$p450[data$p450 <= 1002088] <- NA
+data$p450[data$p450 >= 10831147] <- NA
+
+
 library(dplyr)
 
 #simplifying the dataframe for joining with next steps
@@ -409,5 +413,55 @@ print(combined_plot)
 
 ```
 
+```{r}
+#averaged data statistics
+#sort and summary
 
+sorted_df <- averaged_data[order(averaged_data$avg_p450), ]
+
+# Calculate the lower and upper percentiles (2.5th and 97.5th)
+lower_limit <- quantile(averaged_data$avg_p450, probs = 0.025, na.rm= TRUE)
+upper_limit <- quantile(averaged_data$avg_p450, probs = 0.975, na.rm= TRUE)
+
+# Print the lower and upper limits
+print(lower_limit)
+print(upper_limit)
+
+averaged_data$avg_p450[averaged_data$avg_p450 <= 1812232] <- NA
+averaged_data$avg_p450[averaged_data$avg_p450 >= 9735950] <- NA
+
+sorted_df <- averaged_data[order(averaged_data$avg_p450), ]
+print(sorted_df)
+
+```
+
+#same for SOD
+```{r}
+
+# Calculate the lower and upper percentiles (2.5th and 97.5th)
+lower_limit <- quantile(data$SOD, probs = 0.025, na.rm= TRUE)
+upper_limit <- quantile(data$SOD, probs = 0.975, na.rm= TRUE)
+
+print(lower_limit)
+print(upper_limit)
+
+#replace values outside of the limits with NA
+data$SOD[data$SOD <= .0025] <- NA
+data$SOD[data$SOD > 51.53] <- NA
+
+lower_limit <- quantile(averaged_data$avg_SOD, probs = 0.025, na.rm= TRUE)
+upper_limit <- quantile(averaged_data$avg_SOD, probs = 0.975, na.rm= TRUE)
+
+print(lower_limit)
+print(upper_limit)
+
+averaged_data$avg_p450[averaged_data$avg_p450 <= 1812232] <- NA
+averaged_data$avg_p450[averaged_data$avg_p450 >= 9735950] <- NA
+
+sorted_df <- averaged_data[order(averaged_data$avg_p450), ]
+print(sorted_df)
+
+
+
+```
 

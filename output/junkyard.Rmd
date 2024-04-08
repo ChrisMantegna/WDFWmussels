@@ -1,0 +1,125 @@
+# Extra stuff that I used to check
+
+
+
+
+
+
+
+#plot analytes by sites
+```{r}
+library(ggplot2)
+library(gridExtra)
+
+p450<- ggplot(allr, aes(x = site_name, y = p450)) +
+  geom_point(color = "blue") +  # Scatter plot with blue color
+  labs(x = "Sites", y = "p450 Values", title = "p450 Values by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+SumPAHsHMW<- ggplot(allr, aes(x = site_name, y = SumPAHsHMW)) +
+  geom_point(color = "red") +  # Scatter plot with blue color
+  labs(x = "Sites", y = "Analyte Values", title = "SumPAHsHMW Values by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Arrange the plots side by side
+combined_plots <- grid.arrange(p450, SumPAHsHMW, ncol = 2,
+                               widths = c(8, 8)) 
+```
+```{r}
+SumPAHsHMW<- ggplot(allr, aes(x = site_name, y = SumPAHsHMW)) +
+  geom_point(color = "red") +  # Scatter plot with blue color
+  labs(x = "Sites", y = "Analyte Values", title = "SumPAHsHMW Values by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Arrange the plots side by side
+combined_plots <- grid.arrange(p450, SumPAHsHMW, ncol = 2,
+                               widths = c(8, 8)) 
+```
+
+```{r}
+acenaphthene<- ggplot(allr, aes(x = site_name, y = acenaphthene)) +
+  geom_point(color = "red") +  # Scatter plot with blue color
+  labs(x = "Sites", y = "Analyte Values", title = "acenaphthene Values by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Arrange the plots side by side
+combined_plots <- grid.arrange(p450, acenaphthene, ncol = 2,
+                               widths=c(8,8))
+```
+
+
+```{r}
+anthracene<- ggplot(allr, aes(x = site_name, y = anthracene)) +
+  geom_point(color = "red") +  # Scatter plot with blue color
+  labs(x = "Sites", y = "Analyte Values", title = "anthracene Values by Site") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Arrange the plots side by side
+combined_plots <- grid.arrange(p450, anthracene, ncol = 2,
+                               widths = c(8, 8)) 
+```
+
+```{r}
+# Load the ggplot2 package
+library(ggplot2)
+
+# Assuming your data frame is named 'allr'
+Biomarker <- allr[[4]]  # Biomarker column
+
+# Loop through columns 4 to 54
+for (i in 9:54) {
+    # Create a temporary data frame for plotting
+    temp_data <- data.frame(Biomarker = p450, Value = allr[[i]])
+
+    # Generate the plot
+    p <- ggplot(temp_data, aes(x = Value, y = Biomarker)) +
+        geom_point() +  # Add points
+        geom_smooth(method = "lm", se = FALSE) +  # Add a linear regression line without standard error
+        labs(title = paste("Biomarker vs", colnames(allr)[i]),
+             x = "Biomarker",
+             y = colnames(allr)[i])
+
+    # Print the plot
+    print(p)
+}
+
+```
+
+```{r}
+# Load the ggplot2 package
+library(ggplot2)
+getwd()
+plot_directory<- "/Users/cmantegna/Documents/WDFWmussels/output/individual_plots/"
+
+
+Sites <- allr[[1]]  # Site name column
+
+# Loop through columns 5 to 58 (or whatever your range is)
+for (i in 5:58) {
+    # Create a temporary data frame for plotting
+    temp_data <- data.frame(Sites = Sites, Value = allr[[i]])
+
+    # Generate the plot
+    s <- ggplot(temp_data, aes(x = Sites, y = Value)) +
+        geom_point() +  
+        geom_smooth(method = "lm", se = FALSE) +  # Add a linear regression line without standard error
+        labs(title = paste("Site vs", colnames(allr)[i]),
+             x = "Site Name",
+             y = colnames(allr)[i])+
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+    # Print the plot
+    print(s)
+}
+
+# Define the file name
+    #file_name <- paste0("/Site_vs_", colnames(allr)[i], ".png")
+
+#ggsave(file_name, plot= s, width=10, height=6)
+
+```

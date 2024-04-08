@@ -66,7 +66,91 @@ metal<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/metal.csv")
 all<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/all_analytes.csv")
 
 ```
+
+#data for basic stats table for biomarkers, condition factor and shell thickness
+```{r}
+
+```
+
+#overall data stats
+```{r}
+library(dplyr)
+
+overall_summary <- data %>%
+  summarise(across(c(p450, SOD, condition_factor, avg_thickness),
+                   list(
+                     median = ~median(.x, na.rm = TRUE),
+                     lower_bound = ~quantile(.x, probs = 0.025, na.rm = TRUE),
+                     upper_bound = ~quantile(.x, probs = 0.975, na.rm = TRUE),
+                     min_value = ~min(.x, na.rm = TRUE),
+                     max_value = ~max(.x, na.rm = TRUE)
+                   ), .names = "{.col}_{.fn}"))
+
+```
+
+```{r}
+library(dplyr)
+
+grouped_summary_with_sd <- data %>%
+  group_by(site_name) %>%
+  summarise(across(c(p450, SOD, condition_factor, avg_thickness),
+                   list(
+                     median = ~median(.x, na.rm = TRUE),
+                     lower = ~quantile(.x, probs = 0.025, na.rm = TRUE),
+                     upper = ~quantile(.x, probs = 0.975, na.rm = TRUE),
+                     sd = ~sd(.x, na.rm = TRUE)
+                   ), .names = "{.col}_{.fn}"))
+
+```
+
+#not sure this is the way to go unless i want the sd for each site
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(purrr)
+
+# Convert 'condition_factor' and 'avg_thickness' to numeric
+data$condition_factor <- as.numeric(data$condition_factor)
+data$avg_thickness <- as.numeric(data$avg_thickness)
+
+# Check the structure of the dataframe to confirm the changes
+str(data)
+
+# Assuming your dataframe is named `data`
+library(dplyr)
+
+results <- data %>%
+  group_by(site_name) %>%
+  summarise(across(c(p450, SOD, condition_factor, avg_thickness),
+                   list(
+                     median = ~median(.x, na.rm = TRUE),
+                     lower = ~quantile(.x, probs = 0.025, na.rm = TRUE),
+                     upper = ~quantile(.x, probs = 0.975, na.rm = TRUE)
+                   ), .names = "{.col}_{.fn}"))
+
+# To display the results in a more readable format
+print(results, n = Inf)
+
+```
+# trying to get SD for all of the values, not just by site.
+```{r}
+overall_summary_with_sd <- data %>%
+  summarise(across(c(p450, SOD, condition_factor, avg_thickness),
+                   list(
+                     median = ~median(.x, na.rm = TRUE),
+                     lower_bound = ~quantile(.x, probs = 0.025, na.rm = TRUE),
+                     upper_bound = ~quantile(.x, probs = 0.975, na.rm = TRUE),
+                     min_value = ~min(.x, na.rm = TRUE),
+                     max_value = ~max(.x, na.rm = TRUE),
+                     sd = ~sd(.x, na.rm = TRUE)
+                   ), .names = "{.col}_{.fn}"))
+
+```
+
+
+
 # adjusting biomarker values to remove true 0's and replace low values with half of detection limit.
+
 ```{r}
 # Data contains 0's and must be adjusted in this order to preserve all usable data.
 
@@ -84,28 +168,58 @@ library(dplyr)
 
 #merge data and all for per site review 
 merged_df <- merge(data, all, by = c("site_name"), all = TRUE)
-merged_df<- merge(merged_df, pah, by= c("site_name"), all= TRUE)
+merged_df2<- merge(merged_df, pah, by= c("site_name"), all= TRUE)
 
 head(merged_df)
+head(merged_df2)
 ```
 
 ```{r}
-summary(merged_df)
+summary(merged_df2)
 ```
+
 ```{r}
 library(reshape2)
 
-allr <- dcast(merged_df, pah_analyte + DryValue.y + site_name + site_number +latitude + longitude + p450 + SOD + condition_factor + avg_thickness ~ all_analyte, value.var = "DryValue.x")
+all_analyte_df <- dcast(merged_df, DryValue + site_name + site_number +latitude + longitude + p450 + SOD + condition_factor + avg_thickness ~ all_analyte, value.var = "DryValue")
 
-allr <- dcast(allr, site_name + site_number +latitude + longitude + p450 + SOD + condition_factor + avg_thickness +arsenic + cadmium + copper + lead + mercuryTotal + SumBDEs + SumCHLDs + SumDDTs + SumHCHs + SumPAHs16 + SumPAHsHMW + SumPCBs2x17 + Zinc + ~ pah_analyte, value.var = "DryValue.y")
+head(all_analyte_df)
 
-head(allr)
+all_pah_df <- dcast(merged_df2, site_name + site_number +latitude + longitude + p450 + SOD + condition_factor + avg_thickness  ~ pah_analyte, value.var = "DryValue.y")
 
-write.csv(allr, "alldata.csv", row.names = FALSE)
+head(all_pah_df)
+
+#write.csv(allr, "alldata.csv", row.names = FALSE)
 ```
-# p450 correlation data frame preparation
+
+# adjusting p450 to only include values in the 2.5 - 97.5 percentile
+
 ```{r}
-all_columns <- names(allr)
+#find quartile values
+# Calculate the lower and upper percentiles (2.5th and 97.5th)
+lower_limit <- quantile(all_pah_df$p450, probs = 0.025, na.rm= TRUE)
+upper_limit <- quantile(all_pah_df$p450, probs = 0.975, na.rm= TRUE)
+
+# Print the lower and upper limits
+print(lower_limit)
+print(upper_limit)
+
+
+```
+
+#replace values outside of the quartiles with NA
+
+```{r}
+all_pah_df$p450[all_pah_df$p450 <= 1002088] <- NA
+all_pah_df$p450[all_pah_df$p450 >= 10831147] <- NA
+
+
+```
+
+# p450 correlation data frame preparation
+
+```{r}
+all_columns <- names(all_pah_df)
 
 # Remove the columns you don't want to include in the model
 excluded_columns <- c('latitude', 'longitude', 'site_name', 'site_number', 'SOD', 'NA')
@@ -122,22 +236,28 @@ formula <- as.formula(formula_str)
 
 ```
 
+#95% p450 against the analytes
+
 ```{r}
 library(corrplot)
 library(dplyr)
 
+#only assessing the values between 2.5 - 97.5 percentiles of the p450 data
+ 
+
 # Convert columns to numeric, handling NA values properly
-allr <- allr %>%
+all_pah_df <- all_pah_df %>%
   mutate(
     condition_factor = as.numeric(as.character(condition_factor)),
     avg_thickness = as.numeric(as.character(avg_thickness))
   )
 
+
 # Extract variable names from the formula
 variables <- all.vars(formula)
 
 # Subset the dataframe 'sod_all' using the extracted variables
-subset_data <- allr[, variables]
+subset_data <- all_pah_df[, variables]
 
 complete_cases <- subset_data[complete.cases(subset_data), ]
 if (nrow(complete_cases) > 1) {
@@ -153,125 +273,244 @@ correlation_results <- cor(subset_data, method = "pearson", use = "pairwise.comp
 # View the correlation matrix
 print(correlation_results)
 
-corrplot(correlation_results, method = "shade", type = "upper", tl.col = "black", tl.srt = 45)
+corrplot(correlation_results, method = "shade", type = "upper", tl.col = "black", tl.srt = 90)
 
 ```
 
-#plot analytes by sites
+# pca of those analytes and p450
+
 ```{r}
-library(ggplot2)
-library(gridExtra)
+# PCA Plot with biomarkers
+library('FactoMineR')
+library("factoextra")
 
-p450<- ggplot(allr, aes(x = site_name, y = p450)) +
-  geom_point(color = "blue") +  # Scatter plot with blue color
-  labs(x = "Sites", y = "p450 Values", title = "p450 Values by Site") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+all_columns <- names(all_pah_df)
 
-SumPAHsHMW<- ggplot(allr, aes(x = site_name, y = SumPAHsHMW)) +
-  geom_point(color = "red") +  # Scatter plot with blue color
-  labs(x = "Sites", y = "Analyte Values", title = "SumPAHsHMW Values by Site") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+# Remove the columns you don't want to include in the model
+excluded_columns <- c('latitude', 'longitude', 'site_name', 'site_number', 'SOD', 'NA')
+independent_columns <- all_columns[!all_columns %in% excluded_columns]
 
-# Arrange the plots side by side
-combined_plots <- grid.arrange(p450, SumPAHsHMW, ncol = 2,
-                               widths = c(8, 8)) 
+# Remove NAs from the dataset
+df_clean <- na.omit(all_pah_df)
+
+library(FactoMineR)
+library(factoextra)  # For PCA visualization
+
+# Use the list 'independent_columns' to subset 'df_clean'
+pca_data <- df_clean[, independent_columns]
+
+# Perform PCA on the subset of data
+pca_result <- PCA(pca_data, scale.unit = TRUE, ncp = 5, graph = FALSE)
+
+# Visualizations (Optional but helpful for interpreting PCA results)
+# Eigenvalues - to see the importance of each principal component
+fviz_eig(pca_result)
+
+# Individuals - to see the distribution of samples
+fviz_pca_ind(pca_result, 
+             col.ind = "cos2", # Color by the quality of representation
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
+             title = "PCA - Individuals (colored by cos2)",
+             repel = TRUE) # Avoid text overlapping
+
+# Variables - to see how variables contribute to the principal components
+fviz_pca_var(pca_result,
+             col.var = "contrib", # Color by contribution to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             title = "PCA - Variables (colored by contribution)",
+             repel = TRUE) # Avoid text overlapping
+
+
+# Selecting the relevant variables for PCA
+#pca_data <- df_clean[, independent_columns]
+
+# Performing PCA
+#pca_res <- PCA(pca_data, scale.unit = TRUE, graph = FALSE)
+
+# Plotting the PCA
+#pcaplot<- fviz_pca_biplot(pca_res, label = "var", col.var = "contrib",
+             #   gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             #   repel = TRUE)  # Avoid text overlapping (slow if many points)
+
+
+
 ```
+#pearson correlation values
 ```{r}
-SumPAHsHMW<- ggplot(allr, aes(x = site_name, y = SumPAHsHMW)) +
-  geom_point(color = "red") +  # Scatter plot with blue color
-  labs(x = "Sites", y = "Analyte Values", title = "SumPAHsHMW Values by Site") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
-# Arrange the plots side by side
-combined_plots <- grid.arrange(p450, SumPAHsHMW, ncol = 2,
-                               widths = c(8, 8)) 
-```
-
-```{r}
-acenaphthene<- ggplot(allr, aes(x = site_name, y = acenaphthene)) +
-  geom_point(color = "red") +  # Scatter plot with blue color
-  labs(x = "Sites", y = "Analyte Values", title = "acenaphthene Values by Site") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-
-# Arrange the plots side by side
-combined_plots <- grid.arrange(p450, acenaphthene, ncol = 2,
-                               widths=c(8,8))
-```
-
-
-```{r}
-anthracene<- ggplot(allr, aes(x = site_name, y = anthracene)) +
-  geom_point(color = "red") +  # Scatter plot with blue color
-  labs(x = "Sites", y = "Analyte Values", title = "anthracene Values by Site") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-
-# Arrange the plots side by side
-combined_plots <- grid.arrange(p450, anthracene, ncol = 2,
-                               widths = c(8, 8)) 
-```
-
-```{r}
-# Load the ggplot2 package
-library(ggplot2)
-
-# Assuming your data frame is named 'allr'
-Biomarker <- allr[[4]]  # Biomarker column
-
-# Loop through columns 4 to 54
-for (i in 9:54) {
-    # Create a temporary data frame for plotting
-    temp_data <- data.frame(Biomarker = p450, Value = allr[[i]])
-
-    # Generate the plot
-    p <- ggplot(temp_data, aes(x = Value, y = Biomarker)) +
-        geom_point() +  # Add points
-        geom_smooth(method = "lm", se = FALSE) +  # Add a linear regression line without standard error
-        labs(title = paste("Biomarker vs", colnames(allr)[i]),
-             x = "Biomarker",
-             y = colnames(allr)[i])
-
-    # Print the plot
-    print(p)
-}
 
 ```
 
+
+#glm
+
 ```{r}
-# Load the ggplot2 package
-library(ggplot2)
-getwd()
-plot_directory<- "/Users/cmantegna/Documents/WDFWmussels/output/individual_plots/"
+all_columns <- names(all_pah_df)
+
+# Remove the columns you don't want to include in the model
+excluded_columns <- c('latitude', 'longitude', 'site_name', 'site_number', 'SOD', 'NA')
+independent_columns <- all_columns[!all_columns %in% excluded_columns]
+
+# Enclose each column name in backticks to handle special characters
+independent_columns <- sapply(independent_columns, function(x) paste0("`", x, "`"))
+
+# Create a string representing the formula
+formula_str <- paste("p450 ~", paste(independent_columns, collapse = " + "))
+
+# Convert the string to a formula object
+formula <- as.formula(formula_str)
+
+glm_model <- glm(formula, family = poisson(), data = all_pah_df)
+print(summary(glm_model))
+
+lm_model<- lm(formula, data = all_pah_df)
+print(summary(lm_model))
+```
+
+# trying a General Additive Model to see if any of the analytes is skewing the relationship
+
+```{r}
+library(mgcv)
+
+#rename columns with characters in them
+colnames(all_pah_df)[colnames(all_pah_df) == "benz[a]anthracene" ] <- "benzaanthracene"
+colnames(all_pah_df)[colnames(all_pah_df) == "benzo[a]pyrene" ] <- "benzoapyrene"
+colnames(all_pah_df)[colnames(all_pah_df) == "benzo[b]fluoranthene" ] <- "benzobfluoranthene"
+colnames(all_pah_df)[colnames(all_pah_df) == "benzo[e]pyrene" ] <- "benzoepyrene"
+colnames(all_pah_df)[colnames(all_pah_df) == "benzo[ghi]perylene" ] <- "benzoghiperylene"
+colnames(all_pah_df)[colnames(all_pah_df) == "benzo[k]fluoranthene" ] <- "benzokfluoranthene"
+colnames(all_pah_df)[colnames(all_pah_df) == "dibenz[a,h]anthracene" ] <- "dibenzahanthracene"
+colnames(all_pah_df)[colnames(all_pah_df) == "indeno[1,2,3-cd]pyrene" ] <- "indeno123cdpyrene"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-benzanthracene/schrysenes" ] <- "C1benzanthraceneschrysenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-dibenzothiophenes" ] <- "C1dibenzothiophenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-fluoranthenes/pyrenes" ] <- "C1fluoranthenespyrenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-fluorenes" ] <- "C1fluorenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-naphthalenes" ] <- "C1naphthalenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-phenanthrenes/anthracenes" ] <- "C1phenanthrenesanthracenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-benzanthracenes/chrysenes" ] <- "C2benzanthraceneschrysenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-dibenzothiophenes" ] <- "C2dibenzothiophenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-fluoranthenes/pyrenes" ] <- "C2fluoranthenespyrenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-fluorenes" ] <- "C2fluorenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-naphthalenes" ] <- "C2naphthalenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-phenanthrenes/anthracenes" ] <- "C2phenanthrenesanthracenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-benzanthracenes/chrysenes" ] <- "C3benzanthraceneschrysenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-dibenzothiophenes" ] <- "C3dibenzothiophenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-fluoranthenes/pyrenes" ] <- "C3fluoranthenespyrenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-fluorenes" ] <- "C3fluorenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-naphthalenes" ] <- "C3naphthalenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-phenanthrenes/anthracenes" ] <- "C3phenanthrenesanthracenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C4-benzanthracenes/chrysenes" ] <- "C4benzanthraceneschrysenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C4-dibenzothiophenes" ] <- "C4dibenzothiophenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C4-fluoranthenes/pyrenes" ] <- "C4fluoranthenespyrenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C4-naphthalenes" ] <- "C4naphthalenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C4-phenanthrenes/anthracenes" ] <- "C4phenanthrenesanthracenes" 
+
+# Fit a GAM model
+gam_model <- gam(p450 ~ acenaphthene + acenaphthylene + anthracene + `benzaanthracene` + `benzoapyrene` +  `benzobfluoranthene` + `benzoepyrene` + `benzoghiperylene` + `benzokfluoranthene` + chrysene + `dibenzahanthracene` + dibenzothiophene + `indeno123cdpyrene` + phenanthrene + C1dibenzothiophenes + C1fluoranthenespyrenes + C1fluorenes + C1naphthalenes + C1phenanthrenesanthracenes + C2benzanthraceneschrysenes + C2dibenzothiophenes + C2fluoranthenespyrenes + C2fluorenes + C2naphthalenes + C2phenanthrenesanthracenes + C3benzanthraceneschrysenes + C3dibenzothiophenes + C3fluoranthenespyrenes + C3naphthalenes + C3phenanthrenesanthracenes + C4benzanthraceneschrysenes + C4dibenzothiophenes + C4fluoranthenespyrenes + C4naphthalenes + C4phenanthrenesanthracenes , data = all_pah_df)
+
+# Summary of the model
+summary(gam_model)
+
+# Check diagnostics (plots to assess the model)
+par(mfrow = c(2, 2))  # Set up the plotting area for a 2 by 2 layout
+plot(gam_model)  # Diagnostic plots
+
+# Predict using the model (if necessary)
+predictions <- predict(gam_model, newdata = new_data)
+
+# Replace 'new_data' with your new data frame for prediction if needed.
+
+```
+
+Get my data ranges for SOD
+
+```{r}
+
+# Calculate the lower and upper percentiles (2.5th and 97.5th)
+lower_limit <- quantile(all_pah_df$SOD, probs = 0.025, na.rm= TRUE)
+upper_limit <- quantile(all_pah_df$SOD, probs = 0.975, na.rm= TRUE)
+
+# Print the lower and upper limits
+print(lower_limit)
+print(upper_limit)
+
+all_pah_df$SOD[all_pah_df$SOD <= .0025] <- NA
+all_pah_df$SOD[all_pah_df$SOD >= 51.53] <- NA
 
 
-Sites <- allr[[1]]  # Site name column
 
-# Loop through columns 5 to 58 (or whatever your range is)
-for (i in 5:58) {
-    # Create a temporary data frame for plotting
-    temp_data <- data.frame(Sites = Sites, Value = allr[[i]])
 
-    # Generate the plot
-    s <- ggplot(temp_data, aes(x = Sites, y = Value)) +
-        geom_point() +  
-        geom_smooth(method = "lm", se = FALSE) +  # Add a linear regression line without standard error
-        labs(title = paste("Site vs", colnames(allr)[i]),
-             x = "Site Name",
-             y = colnames(allr)[i])+
-      theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+#trying to get the pca for sod to match the one for p450 but that isn't working
 
-    # Print the plot
-    print(s)
-}
+```{r}
+# PCA Plot with biomarkers
+library('FactoMineR')
+library("factoextra")
 
-# Define the file name
-    #file_name <- paste0("/Site_vs_", colnames(allr)[i], ".png")
+all_columns <- names(all_analyte_df)
 
-#ggsave(file_name, plot= s, width=10, height=6)
+# Remove the columns you don't want to include in the model
+excluded_columns <- c('latitude', 'longitude', 'site_name', 'site_number', 'p450', 'NA', "condition_factor")
+independent_columns <- all_columns[!all_columns %in% excluded_columns]
 
+# Remove NAs from the dataset
+df_clean <- na.omit(all_analyte_df)
+
+# Use the list 'independent_columns' to subset 'df_clean'
+pca_data <- df_clean[, independent_columns]
+
+# Perform PCA on the subset of data
+pca_result <- PCA(pca_data, scale.unit = TRUE, ncp = 5, graph = FALSE)
+
+# Visualizations (Optional but helpful for interpreting PCA results)
+# Eigenvalues - to see the importance of each principal component
+fviz_eig(pca_result)
+
+# Individuals - to see the distribution of samples
+fviz_pca_ind(pca_result, 
+             col.ind = "cos2", # Color by the quality of representation
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"), 
+             title = "PCA - Individuals (colored by cos2)",
+             repel = TRUE) # Avoid text overlapping
+
+# Variables - to see how variables contribute to the principal components
+fviz_pca_var(pca_result,
+             col.var = "contrib", # Color by contribution to the PC
+             gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             title = "PCA - Variables (colored by contribution)",
+             repel = TRUE) # Avoid text overlapping
+
+
+# Selecting the relevant variables for PCA
+#pca_data <- df_clean[, independent_columns]
+
+# Performing PCA
+#pca_res <- PCA(pca_data, scale.unit = TRUE, graph = FALSE)
+
+# Plotting the PCA
+#pcaplot<- fviz_pca_biplot(pca_res, label = "var", col.var = "contrib",
+             #   gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+             #   repel = TRUE)  # Avoid text overlapping (slow if many points)
+
+
+
+```
+
+# sorting p450 values for results conversation
+```{r}
+
+# Sorting the data in ascending order
+# Assuming your dataframe is named df
+sorted_df <- all_analyte_df[order(all_analyte_df$p450), ]
+
+
+# Printing the ranked list
+print(sorted_df)
+
+```
+
+```{r}
+summary(all_analyte_df)
 ```
 
