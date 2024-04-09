@@ -198,10 +198,10 @@ summary(merged_df2)
 ```{r}
 library(reshape2)
 
-colnames(man_df)[colnames(man_df) == "Broad Spit (Fisherman's Point)" ] <- "Broad Spit"
-colnames(man_df)[colnames(man_df) == "Penrose Point State Park" ] <- "Pennrose Point State Park"
-colnames(man_df)[colnames(man_df) == "Maristone Island Bridge" ] <- "Maristone Island"
-colnames(man_df)[colnames(man_df) == "Suquamish, Stormwater Outfall" ] <- "Suquamish Stormwater Outfall"
+rownames(merged_df3)[rownames(merged_df3) == "Broad Spit (Fisherman's Point)" ] <- "Broad Spit"
+rownames(merged_df3)[rownames(merged_df3) == "Penrose Point State Park" ] <- "Pennrose Point State Park"
+rownames(merged_df3)[rownames(merged_df3) == "Maristone Island Bridge" ] <- "Maristone Island"
+rownames(merged_df3)[rownames(merged_df3) == "Suquamish, Stormwater Outfall" ] <- "Suquamish Stormwater Outfall"
 
 
 man_df <- dcast(merged_df3, site_name + p450_median + SOD_median + condition_factor_median + avg_thickness_median ~ all_analyte, value.var = "DryValue")
@@ -216,7 +216,7 @@ head(man_df)
 
 #head(all_pah_df)
 
-#write.csv(allr, "alldata.csv", row.names = FALSE)
+write.csv(man_df, "man_df.csv", row.names = FALSE)
 ```
 #running the MANOVA with all_analytes (not indidivual PAH analytes)
 ```{r}
