@@ -66,9 +66,24 @@ metal<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/metal.csv")
 all<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/all_analytes.csv")
 
 ```
+# fix values
+```{r}
+# Data contains 0's and must be adjusted in this order to preserve all usable data.
+
+#sod
+#replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
+data$SOD[data$SOD <= 0] <- 0.0025
+
+#p450
+#remove any p450 values that are 0 - those are true 0's not non-detectable. I am replacing with na so I don't lose the entire row of data, including the SOD values.
+data$p450[data$p450 <= 0] <- NA
+```
 
 #data for basic stats table for biomarkers, condition factor and shell thickness
 ```{r}
+# Convert 'condition_factor' and 'avg_thickness' to numeric
+data$condition_factor <- as.numeric(data$condition_factor)
+data$avg_thickness <- as.numeric(data$avg_thickness)
 
 ```
 
@@ -103,35 +118,6 @@ grouped_summary_with_sd <- data %>%
 
 ```
 
-#not sure this is the way to go unless i want the sd for each site
-```{r}
-# Load necessary libraries
-library(dplyr)
-library(purrr)
-
-# Convert 'condition_factor' and 'avg_thickness' to numeric
-data$condition_factor <- as.numeric(data$condition_factor)
-data$avg_thickness <- as.numeric(data$avg_thickness)
-
-# Check the structure of the dataframe to confirm the changes
-str(data)
-
-# Assuming your dataframe is named `data`
-library(dplyr)
-
-results <- data %>%
-  group_by(site_name) %>%
-  summarise(across(c(p450, SOD, condition_factor, avg_thickness),
-                   list(
-                     median = ~median(.x, na.rm = TRUE),
-                     lower = ~quantile(.x, probs = 0.025, na.rm = TRUE),
-                     upper = ~quantile(.x, probs = 0.975, na.rm = TRUE)
-                   ), .names = "{.col}_{.fn}"))
-
-# To display the results in a more readable format
-print(results, n = Inf)
-
-```
 # trying to get SD for all of the values, not just by site.
 ```{r}
 overall_summary_with_sd <- data %>%
@@ -147,21 +133,50 @@ overall_summary_with_sd <- data %>%
 
 ```
 
+# manova for biomarkers, sites, condition_factor and avg_thickness
+```{r}
+
+data2<- grouped_summary_with_sd
+#if(!require(car)) install.packages("car")
+library(car)
+
+# Your dependent variables (biomarkers)
+dv <- cbind(data$p450, data$SOD)
+
+# Running MANOVA
+manova_result <- manova(dv ~ condition_factor + avg_thickness + site_name, data = data)
+
+# View the summary of the MANOVA results
+summary(manova_result, test = "Wilks")
+
+```
+# trying the lme
+```{r}
+install.packages("Matrix")
+install.packages("lme4")
+
+library(lme4)
+
+# Example model for Biomarker1
+model_p450 <- lmer(p450 ~ condition_factor +avg_thickness + (1|site_name), data = data)
+
+# You can inspect the model summary
+summary(model_p450)
+
+```
+# sod 
+```{r}
+library(lme4)
+
+# Example model for Biomarker1
+model_SOD <- lmer(SOD ~ condition_factor +avg_thickness + (1|site_name), data = data)
+
+# You can inspect the model summary
+summary(model_SOD)
+```
 
 
 # adjusting biomarker values to remove true 0's and replace low values with half of detection limit.
-
-```{r}
-# Data contains 0's and must be adjusted in this order to preserve all usable data.
-
-#sod
-#replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
-data$SOD[data$SOD <= 0] <- 0.0025
-
-#p450
-#remove any p450 values that are 0 - those are true 0's not non-detectable. I am replacing with na so I don't lose the entire row of data, including the SOD values.
-data$p450[data$p450 <= 0] <- NA
-```
 
 ```{r}
 library(dplyr)
@@ -169,9 +184,11 @@ library(dplyr)
 #merge data and all for per site review 
 merged_df <- merge(data, all, by = c("site_name"), all = TRUE)
 merged_df2<- merge(merged_df, pah, by= c("site_name"), all= TRUE)
+merged_df3<- merge(grouped_summary_with_sd, all, by= c("site_name"), all= TRUE)
 
 head(merged_df)
 head(merged_df2)
+head(merged_df3)
 ```
 
 ```{r}
@@ -181,16 +198,42 @@ summary(merged_df2)
 ```{r}
 library(reshape2)
 
-all_analyte_df <- dcast(merged_df, DryValue + site_name + site_number +latitude + longitude + p450 + SOD + condition_factor + avg_thickness ~ all_analyte, value.var = "DryValue")
+colnames(man_df)[colnames(man_df) == "Broad Spit (Fisherman's Point)" ] <- "Broad Spit"
+colnames(man_df)[colnames(man_df) == "Penrose Point State Park" ] <- "Pennrose Point State Park"
+colnames(man_df)[colnames(man_df) == "Maristone Island Bridge" ] <- "Maristone Island"
+colnames(man_df)[colnames(man_df) == "Suquamish, Stormwater Outfall" ] <- "Suquamish Stormwater Outfall"
 
-head(all_analyte_df)
 
-all_pah_df <- dcast(merged_df2, site_name + site_number +latitude + longitude + p450 + SOD + condition_factor + avg_thickness  ~ pah_analyte, value.var = "DryValue.y")
+man_df <- dcast(merged_df3, site_name + p450_median + SOD_median + condition_factor_median + avg_thickness_median ~ all_analyte, value.var = "DryValue")
+head(man_df)
 
-head(all_pah_df)
+
+#all_analyte_df <- dcast(merged_df, DryValue + site_name + site_number +latitude + longitude + p450 + SOD + condition_factor + avg_thickness ~ all_analyte, value.var = "DryValue")
+
+#head(all_analyte_df)
+
+#all_pah_df <- dcast(merged_df2, site_name + site_number +latitude + longitude + p450 + SOD + condition_factor + avg_thickness  ~ pah_analyte, value.var = "DryValue.y")
+
+#head(all_pah_df)
 
 #write.csv(allr, "alldata.csv", row.names = FALSE)
 ```
+#running the MANOVA with all_analytes (not indidivual PAH analytes)
+```{r}
+library(car)
+
+man_df <- man_df[-c(20, 52, 53, 54), ]
+
+# Your dependent variables (biomarkers)
+dv <- cbind(data$p450, data$SOD)
+
+# Running MANOVA
+manova_result <- manova(dv ~ site_name + arsenic + cadmium + copper + lead + mercuryTotal + SumBDEs + SumCHLDs + SumDDTs + SumHCHs + SumPAHs16 + SumPAHsHMW + SumPCBs2x17 + Zinc, data = man_df)
+
+# View the summary of the MANOVA results
+summary(manova_result, test = "Wilks")
+```
+
 
 # adjusting p450 to only include values in the 2.5 - 97.5 percentile
 
@@ -359,6 +402,47 @@ formula_str <- paste("p450 ~", paste(independent_columns, collapse = " + "))
 
 # Convert the string to a formula object
 formula <- as.formula(formula_str)
+
+# Install and load the ppcor package
+install.packages("ppcor")
+library(ppcor)
+
+library(ppcor)
+library(car) # For vif() function
+
+# Assume independent_columns, all_pah_df, and response_var are defined as before
+
+for (predictor in independent_columns) {
+  # Variables to potentially control for
+  potential_controls <- independent_columns[!independent_columns %in% predictor]
+  
+  # Check VIF to address multicollinearity among control variables
+  # Temporarily include the predictor of interest to calculate VIF
+  temp_model <- lm(as.formula(paste(response_var, "~", paste(potential_controls, collapse = "+"), "+", gsub("`", "", predictor))), data = all_pah_df)
+  vif_values <- vif(temp_model)
+  
+  # Exclude variables with high VIF
+  low_vif_controls <- names(vif_values)[vif_values < 5] # Choosing 5 as a threshold is somewhat arbitrary; adjust as needed
+  
+  # Ensure there's enough data for the calculation
+  if (length(low_vif_controls) < 2) {
+    cat("Not enough control variables for partial correlation between", response_var, "and", predictor, "\n")
+    next
+  }
+  
+  # Attempt partial correlation with reduced set of controls
+  temp_df <- all_pah_df[, c(response_var, gsub("`", "", predictor), gsub("`", "", low_vif_controls))]
+  tryCatch({
+    temp_result <- pcor.test(temp_df[,1], temp_df[,2], temp_df[,-c(1,2)])
+    results_list[[gsub("`", "", predictor)]] <- temp_result
+  }, error = function(e) {
+    cat("Error in partial correlation between", response_var, "and", predictor, ": ", e$message, "\n")
+  })
+}
+
+# Proceed as before to inspect results
+
+
 
 glm_model <- glm(formula, family = poisson(), data = all_pah_df)
 print(summary(glm_model))
