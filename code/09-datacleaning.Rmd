@@ -65,6 +65,8 @@ metal<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/metal.csv")
 
 all<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/all_analytes.csv")
 
+man_df <-read.csv("/Users/cmantegna/Documents/WDFWmussels/data/man_df.csv")
+
 ```
 # fix values
 ```{r}
@@ -152,8 +154,8 @@ summary(manova_result, test = "Wilks")
 ```
 # trying the lme
 ```{r}
-install.packages("Matrix")
-install.packages("lme4")
+#install.packages("Matrix")
+#install.packages("lme4")
 
 library(lme4)
 
@@ -198,14 +200,14 @@ summary(merged_df2)
 ```{r}
 library(reshape2)
 
-rownames(merged_df3)[rownames(merged_df3) == "Broad Spit (Fisherman's Point)" ] <- "Broad Spit"
-rownames(merged_df3)[rownames(merged_df3) == "Penrose Point State Park" ] <- "Pennrose Point State Park"
-rownames(merged_df3)[rownames(merged_df3) == "Maristone Island Bridge" ] <- "Maristone Island"
-rownames(merged_df3)[rownames(merged_df3) == "Suquamish, Stormwater Outfall" ] <- "Suquamish Stormwater Outfall"
+#rownames(merged_df3)[rownames(merged_df3) == "Broad Spit (Fisherman's Point)" ] <- "Broad Spit"
+#rownames(merged_df3)[rownames(merged_df3) == "Penrose Point State Park" ] <- "Pennrose Point State Park"
+#rownames(merged_df3)[rownames(merged_df3) == "Maristone Island Bridge" ] <- "Maristone Island"
+#rownames(merged_df3)[rownames(merged_df3) == "Suquamish, Stormwater Outfall" ] <- "Suquamish Stormwater Outfall"
 
 
-man_df <- dcast(merged_df3, site_name + p450_median + SOD_median + condition_factor_median + avg_thickness_median ~ all_analyte, value.var = "DryValue")
-head(man_df)
+#man_df <- dcast(merged_df3, site_name + p450_median + SOD_median + condition_factor_median + avg_thickness_median ~ all_analyte, value.var = "DryValue")
+#head(man_df)
 
 
 #all_analyte_df <- dcast(merged_df, DryValue + site_name + site_number +latitude + longitude + p450 + SOD + condition_factor + avg_thickness ~ all_analyte, value.var = "DryValue")
@@ -216,19 +218,17 @@ head(man_df)
 
 #head(all_pah_df)
 
-write.csv(man_df, "man_df.csv", row.names = FALSE)
+#write.csv(man_df, "man_df.csv", row.names = FALSE)
 ```
 #running the MANOVA with all_analytes (not indidivual PAH analytes)
 ```{r}
 library(car)
 
-man_df <- man_df[-c(20, 52, 53, 54), ]
-
 # Your dependent variables (biomarkers)
 dv <- cbind(data$p450, data$SOD)
 
 # Running MANOVA
-manova_result <- manova(dv ~ site_name + arsenic + cadmium + copper + lead + mercuryTotal + SumBDEs + SumCHLDs + SumDDTs + SumHCHs + SumPAHs16 + SumPAHsHMW + SumPCBs2x17 + Zinc, data = man_df)
+manova_result <- manova(dv ~ site_name + condition_factor_median + avg_thickness_median, data = man_df)
 
 # View the summary of the MANOVA results
 summary(manova_result, test = "Wilks")
