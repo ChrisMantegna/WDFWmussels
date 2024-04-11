@@ -129,6 +129,25 @@ print(pahplot)
 
 ```
 
+# plotting condition factor ranking at sites
+```{r}
+data_ordered <- man_df[order(man_df$condition_factor_median),]
+
+#create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+#plot with ordered site names
+cfplot<- ggplot(data_ordered, aes(x = site_name, y = condition_factor_median)) +
+  geom_boxplot() +
+  labs(x = "Site Name", y = "Median Condtion Factor)", title = "Median Condition Factor by Site") +
+  theme_minimal() +
+  theme(panel.background = element_blank())+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+print(cfplot)
+
+```
 
 
 # fix values
