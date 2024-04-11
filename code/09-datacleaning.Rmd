@@ -68,6 +68,69 @@ all<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/all_analytes.
 man_df <-read.csv("/Users/cmantegna/Documents/WDFWmussels/data/man_df.csv")
 
 ```
+
+#plot ranks site medians
+```{r}
+#order the sites by value
+data_ordered <- man_df[order(man_df$p450_median),]
+
+#create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+#plot with ordered site names
+ranks<- ggplot(data_ordered, aes(x = site_name, y = p450_median)) +
+  geom_boxplot() +
+  labs(x = "Site Name", y = "Median p450 Values (activity/ (mg/protein)", title = "Median p450 Values by Site") +
+  theme_minimal() +
+  theme(panel.background = element_blank())+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+print(ranks)
+```
+
+#plotting median SOD values by site
+```{r}
+#order the sites by value
+data_ordered <- man_df[order(man_df$SOD_median),]
+
+#create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+#plot with ordered site names
+ranks<- ggplot(data_ordered, aes(x = site_name, y = SOD_median)) +
+  geom_boxplot() +
+  labs(x = "Site Name", y = "Median SOD Values (activity/ (mg/protein)", title = "Median SOD Values by Site") +
+  theme_minimal() +
+  theme(panel.background = element_blank())+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+print(ranks)
+```
+
+#plot pah's by site
+```{r}
+#plot with ordered site names
+#order the sites by value
+data_ordered <- man_df[order(man_df$SumPAHsHMW),]
+
+#create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+pahplot<- ggplot(data_ordered, aes(x = site_name, y = SumPAHsHMW)) +
+  geom_boxplot() +
+  labs(x = "Site Name", y = "High Molecular Weight Analyte Presence (ng/g)", title = "Sum HMW PAH Analyte Values by Site") +
+  theme_minimal() +
+  theme(panel.background = element_blank())+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+print(pahplot)
+
+```
+
+
+
 # fix values
 ```{r}
 # Data contains 0's and must be adjusted in this order to preserve all usable data.
