@@ -148,7 +148,25 @@ cfplot<- ggplot(data_ordered, aes(x = site_name, y = condition_factor_median)) +
 print(cfplot)
 
 ```
+# plotting shell thickness ranking at sites
+```{r}
+data_ordered <- man_df[order(man_df$avg_thickness_median),]
 
+#create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+#plot with ordered site names
+stplot<- ggplot(data_ordered, aes(x = site_name, y = avg_thickness_median)) +
+  geom_boxplot() +
+  labs(x = "Site Name", y = "Median Shell Thickness (mm))", title = "Median Shell Thickness by Site") +
+  theme_minimal() +
+  theme(panel.background = element_blank())+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+print(stplot)
+
+```
 
 # fix values
 ```{r}

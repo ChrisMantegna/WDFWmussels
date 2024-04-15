@@ -1,0 +1,175 @@
+---
+title: "Morphometrics Table Values"
+output:
+  
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 12
+  pdf_document: 
+    fig_width: 10
+    fig_height: 7
+---
+
+# Setup
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 12,       # Set plot width in inches
+  fig.height = 8,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load packages
+
+```{r, eval= FALSE}
+library(tidyr)
+library(tidyverse)
+library(vegan)
+
+```
+
+# Load data
+
+### Note:
+
+For *data* the units are listed below. Weight = g\
+Length, width, height = mm\
+p450, SOD = activity/ (mg/protein)\
+Condition factor, economic factor = unitless\
+For *pah*, *indv*, and *allana* the units are ng/g\
+For *metal* the units are mg/kg
+
+```{r}
+
+getwd()
+#data has all sites, coordinates, p450, sod, condition factor, economic factor data
+data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarker_thickness_condition.csv")
+
+morph <- readxl::read_excel("/Users/cmantegna/Documents/Biomarker Data Analysis/all data table.xlsx", sheet = "Sheet1")
+
+#pah has complete site values and different summed pah analyte whole tissue values 
+#pah<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/individual_pah_analytes.csv")
+
+#indv has complete site values and individual named pah analyte whole tissue values 
+#indv<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/individual_analytes.csv") 
+
+#metal<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/metal.csv")
+
+#all<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/all_analytes.csv")
+
+#man_df <-read.csv("/Users/cmantegna/Documents/WDFWmussels/data/man_df.csv")
+
+```
+
+# fix values
+
+```{r}
+# Data contains 0's and must be adjusted in this order to preserve all usable data.
+
+#sod
+#replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
+data$SOD[data$SOD <= 0] <- 0.0025
+
+#p450
+#remove any p450 values that are 0 - those are true 0's not non-detectable. I am replacing with na so I don't lose the entire row of data, including the SOD values.
+data$p450[data$p450 <= 0] <- NA
+```
+
+#data for basic stats table for biomarkers, condition factor and shell thickness
+
+```{r}
+# Convert 'condition_factor' and 'avg_thickness' to numeric
+data$condition_factor <- as.numeric(data$condition_factor)
+data$avg_thickness <- as.numeric(data$avg_thickness)
+
+```
+
+#quartiles and median values \# adjusting p450 to only include values in the 2.5 - 97.5 percentile
+
+```{r}
+#install.packages("dplyr")
+library(dplyr)
+
+```
+
+```{r}
+library(dplyr)
+
+# Define the calculate_stats function to handle NA and provide clear output
+calculate_stats <- function(x) {
+  valid_x = x[!is.na(x)]  # Remove NA values before calculations
+  range_val <- range(valid_x)
+  percentile_range <- quantile(valid_x, probs = c(0.025, 0.975), na.rm = TRUE)
+  median_val <- median(valid_x, na.rm = TRUE)
+  c(Range_Min = range_val[1], Range_Max = range_val[2], 
+    Percentile_2.5 = percentile_range[1], Percentile_97.5 = percentile_range[2], 
+    Median = median_val)
+}
+
+# Sample data assuming df is your original dataframe
+# Here we ensure to use your actual column names for metrics
+
+result <- data %>%
+  group_by(site_name) %>%
+  summarise(across(c(p450, SOD, condition_factor, avg_thickness), 
+                   .fns = list(
+                     Range_Min = ~min(.x, na.rm = TRUE),
+                     Range_Max = ~max(.x, na.rm = TRUE),
+                     Percentile_2.5 = ~quantile(.x, probs = 0.025, na.rm = TRUE),
+                     Percentile_97.5 = ~quantile(.x, probs = 0.975, na.rm = TRUE),
+                     Median = ~median(.x, na.rm = TRUE)
+                   ),
+                   .names = "{.col}_{.fn}"))
+
+```
+
+```{r}
+print(result)
+
+write.csv(result, "morphometricinfo.csv", row.names = FALSE)
+```
+
+```{r}
+library(dplyr)
+
+# Assuming df is your data frame and metric1, metric2, metric3, metric4 are your columns
+result2 <- data %>%
+  summarise(across(c(p450, SOD, condition_factor, avg_thickness), calculate_stats, .names = "{.col}_{.fn}"))
+
+print(result2)
+write.csv(result2, "morphometricinfo2.csv", row.names = FALSE)
+
+```
+
+```{r}
+library(readxl)
+#install.packages("openxlsx")
+library(openxlsx)
+
+```
+
+```{r}
+
+library(knitr)
+#install.packages("kableExtra")
+library("kableExtra")
+
+# Create a simple table using kable and make headers span across columns
+kable_styled <- kable(morph, "html", escape = FALSE, row.names = FALSE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  add_header_above(c(" " = 1, "Condition Factor" = 3, "Shell Thickness (mm)" = 3, "p450 (activity mg-1 protein)"=3, "SOD (activity mg-1 protein)" =3))   
+
+# Print the styled table 
+kable_styled
+
+```
