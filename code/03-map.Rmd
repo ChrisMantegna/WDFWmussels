@@ -196,8 +196,7 @@ p450boxplot<- ggplot(data, aes(x = site_name, y = p450)) +
 
 print(p450boxplot)
 ```
-
-# anova for p450
+# fix data to the 95%
 ```{r}
 #fix data set to use the 95%
 alldata$SOD[alldata$SOD <= .0030] <- .0030
@@ -205,6 +204,16 @@ alldata$SOD[alldata$SOD > 51.53] <- 51.53
 
 alldata$p450[alldata$p450 < 291641] <- 291641
 alldata$p450[alldata$p450 > 5271800] <- 5271800
+
+alldata$condition_factor[is.na(alldata$condition_factor)] <- 0.001
+alldata$avg_thickness[is.na(alldata$avg_thickness)] <- 0.001
+
+
+```
+
+
+# anova for p450
+```{r}
 
 #anova
 
@@ -221,27 +230,27 @@ write.csv(p450anova, "/Users/cmantegna/Documents/WDFWmussels/output/p450anova.cs
 
 
 ```
-#anova for p450 analytes
+#anova for p450 and SOD, condition factor, avg_thickness
 ```{r}
-#anova
 
-#model <- lm(p450 ~ acenaphthene + acenaphthylene + anthracene + 'C1-flourenes', data = alldata)
+model <- lm(p450 ~ SOD + condition_factor + avg_thickness, data = alldata)
 
 #summary(model)
-p450analyteanova<- anova(model)
-print(p450analyteanova)
+cfanova<- anova(model)
+print(cfanova)
 
 # Save 
-write.csv(p450analyteanova, "/Users/cmantegna/Documents/WDFWmussels/output/p450analyteanova.csv")
+#write.csv(p450analyteanova, "/Users/cmantegna/Documents/WDFWmussels/output/p450analyteanova.csv")
 
 ```
+#anova for SOD and p450, condition factor, avg_thickness
+```{r}
 
+model <- lm(SOD ~ p450 + condition_factor + avg_thickness, data = alldata)
 
-
-
-
-
-
+thickanova<- anova(model)
+print(thickanova)
+```
 # anova for SOD
 ```{r}
 #fix data set to use the 95%
