@@ -328,7 +328,7 @@ library(car)
 dv <- cbind(data$p450, data$SOD)
 
 # Running MANOVA
-manova_result <- manova(dv ~ site_name + condition_factor_median + avg_thickness_median, data = man_df)
+manova_result <- manova(dv ~ site_name + condition_factor + avg_thickness, data = data)
 
 # View the summary of the MANOVA results
 summary(manova_result, test = "Wilks")

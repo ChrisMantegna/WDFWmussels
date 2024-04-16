@@ -62,14 +62,17 @@ SOD values that are negative are changed to 0 signifying that the value was unde
 p450 values that are 0 are missing, not actual 0's.
 
 ```{r}
+# Data contains 0's and must be adjusted in this order to preserve all usable data.
 
-#get rid of the p450 values that are 0
-data <- data[data$p450 != 0, ]
+#sod
+#replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
+data$SOD[data$SOD <= 0] <- 0.0025
 
-#change any negative numbers to 0 to indicate not detectable
-data$SOD <- ifelse(data$SOD <= 0, 0, data$SOD)
-
+#p450
+#remove any p450 values that are 0 - those are true 0's not non-detectable. I am replacing with na so I don't lose the entire row of data, including the SOD values.
+data$p450[data$p450 <= 0] <- NA
 ```
+
 
 # Map of Washington State
 ```{r}
@@ -96,7 +99,7 @@ ggsave(plot=pmap, filename="/Users/cmantegna/Documents/WDFWmussels/output/p450ma
 
 smap<- ggplot() + 
   geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
-  geom_point(data = data, aes(x = longitude, y = latitude, color = SOD), size = 1) +
+  geom_point(data = data, aes(x = longitude, y = latitude, color = SOD), size = 3) +
   scale_color_viridis(option = "C", name = "SOD") +
   theme_minimal() +
   labs(title = "Washington State - SOD Data")
@@ -124,6 +127,140 @@ ggplot(data = washington_map) +
 ```{r}
 
 long_data <- pivot_longer(data, cols = c(SOD, p450), names_to = "type", values_to = "value")
+
+```
+
+# plot zoomed in SOD
+```{r}
+#zoom into puget sound region & note the legend, lighter colors are higher values
+xlim <- c(-124, -122)  # longitude bounds
+ylim <- c(47, 49)  # latitude bounds
+
+sodpugetsound<- ggplot() + 
+  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
+  geom_point(data = data, aes(x = longitude, y = latitude, color = SOD), size = 3) +
+  scale_color_viridis(option = "C", name = "SOD") +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)+
+  theme_minimal() +
+  labs(title = "Washington State - SOD Data")
+
+print(sodpugetsound)
+```
+# zoomed in ps plot for p450
+```{r}
+#zoom into puget sound region & note the legend, lighter colors are higher values
+xlim <- c(-124, -122)  # longitude bounds
+ylim <- c(47, 49)  # latitude bounds
+
+sodpugetsound<- ggplot() + 
+  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
+  geom_point(data = data, aes(x = longitude, y = latitude, color = p450), size = 3) +
+  scale_color_viridis(option = "C", name = "SOD") +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)+
+  theme_minimal() +
+  labs(title = "Washington State - SOD Data")
+
+print(sodpugetsound)
+```
+# plotting SOD by sites
+```{r}
+# data adjust to plot the 95%
+# remove SOD outside of .0025 and 51.58 & p450 outside of 291641 and 5271798
+data$SOD[data$SOD <= .0030] <- NA
+data$SOD[data$SOD > 51.53] <- NA
+
+data$SOD[data$p450 <= 291641] <- NA
+data$SOD[data$p450 >= 5271798] <- NA
+
+# Plot the SOD values in a boxplot with ordered site names
+SODboxplot<- ggplot(data, aes(x = site_name, y = SOD)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+print(SODboxplot)
+```
+
+# plotting corrected p450
+```{r}
+# data adjust to plot the 95%
+# remove SOD outside of .0025 and 51.58 & p450 outside of 291641 and 5271798
+
+
+data$p450[data$p450 < 291641] <- NA
+data$p450[data$p450 > 5271800] <- NA
+
+# Plot the SOD values in a boxplot with ordered site names
+p450boxplot<- ggplot(data, aes(x = site_name, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+print(p450boxplot)
+```
+
+# anova for p450
+```{r}
+#fix data set to use the 95%
+alldata$SOD[alldata$SOD <= .0030] <- .0030
+alldata$SOD[alldata$SOD > 51.53] <- 51.53
+
+alldata$p450[alldata$p450 < 291641] <- 291641
+alldata$p450[alldata$p450 > 5271800] <- 5271800
+
+#anova
+
+model <- lm(p450 ~ SumBDEs + SumDDTs + SumPAHs16 + SumPAHsHMW + SumPCBs2x17, data = alldata)
+
+#summary(model)
+p450anova<- anova(model)
+print(p450anova)
+
+# Save 
+write.csv(p450anova, "/Users/cmantegna/Documents/WDFWmussels/output/p450anova.csv")
+
+
+
+
+```
+#anova for p450 analytes
+```{r}
+#anova
+
+#model <- lm(p450 ~ acenaphthene + acenaphthylene + anthracene + 'C1-flourenes', data = alldata)
+
+#summary(model)
+p450analyteanova<- anova(model)
+print(p450analyteanova)
+
+# Save 
+write.csv(p450analyteanova, "/Users/cmantegna/Documents/WDFWmussels/output/p450analyteanova.csv")
+
+```
+
+
+
+
+
+
+
+# anova for SOD
+```{r}
+#fix data set to use the 95%
+alldata$SOD[alldata$SOD <= .0030] <- .0030
+alldata$SOD[alldata$SOD > 51.53] <- 51.53
+
+alldata$p450[alldata$p450 < 291641] <- 291641
+alldata$p450[alldata$p450 > 5271800] <- 5271800
+
+#anova
+
+model <- lm(SOD ~ SumBDEs + SumDDTs + SumPAHs16 + SumPAHsHMW + SumPCBs2x17, data = alldata)
+
+#summary(model)
+print(SODanova)
+SODanova<- anova(model)
+
+# Save 
+write.csv(SODanova, "/Users/cmantegna/Documents/WDFWmussels/output/SODanova.csv")
 
 ```
 
