@@ -21,19 +21,20 @@ Bench work December 2022 - February 2024\
 Analysis and writing February 2024 - March 2024
 
 ## Kits
-1. [Pierce BCA Protein Assay Kits](https://github.com/ChrisMantegna/WDFWmussels/blob/main/protocol/TFS-Assets_LSG_manuals_MAN0011430_Pierce_BCA_Protein_Asy_UG.pdf)\
-2. [Cayman SOD](https://github.com/ChrisMantegna/WDFWmussels/blob/main/protocol/Cayman_SOD_Assay_Protocol.pdf)\
+1. [Pierce BCA Protein Assay Kits](https://github.com/ChrisMantegna/WDFWmussels/blob/main/protocol/TFS-Assets_LSG_manuals_MAN0011430_Pierce_BCA_Protein_Asy_UG.pdf)
+2. [Cayman SOD](https://github.com/ChrisMantegna/WDFWmussels/blob/main/protocol/Cayman_SOD_Assay_Protocol.pdf)
 ## Protocols 
-1. [Dissection](https://github.com/ChrisMantegna/WDFWmussels/blob/main/protocol/Frozen%20mussel%20dissection%20SOP.docx.pdf)\
+1. [Dissection](https://github.com/ChrisMantegna/WDFWmussels/blob/main/protocol/Frozen%20mussel%20dissection%20SOP.docx.pdf)
 2. BCA- see Pierce protocol above
-3. [p450](https://github.com/ChrisMantegna/WDFWmussels/blob/main/protocol/SOP%20Bivalve%20Biomarkers%20P450.docx.pdf)\
-4. [SOD](https://github.com/ChrisMantegna/WDFWmussels/blob/main/protocol/SOP%20Bivalve%20Biomarkers%20SOD.docx.pdf)\
+3. [p450](https://github.com/ChrisMantegna/WDFWmussels/blob/main/protocol/SOP%20Bivalve%20Biomarkers%20P450.docx.pdf)
+4. [SOD](https://github.com/ChrisMantegna/WDFWmussels/blob/main/protocol/SOP%20Bivalve%20Biomarkers%20SOD.docx.pdf)
 # Repo Contents
 ## Output
-### exploratory
-### figures
-### miscellaneous
-### tables
+### Exploratory: all visualizations used to clarify the data
+### Figures: visualizations that can or will be used in the manuscript
+### Miscellaneous: screenshots or snippets of code used in issue pposting
+### Tables: raw tables, prior to formatting, that will be used in the manuscript
+
 ## Code:
 [01-explore](https://rpubs.com/cmantegna/mb01explore): initial explanatory visualizations\
 [02-statistics](https://rpubs.com/cmantegna/mb02statistics): initial statistics performed on the dataset\
@@ -41,6 +42,7 @@ Analysis and writing February 2024 - March 2024
 [04-spatial](https://rpubs.com/cmantegna/mb04spatial): Geospatial statistical analysis of the biomarkers\
 
 ## Data
+
 ### Primary analysis file
 All work to date utilizing [biomarkerfull.csv](https://github.com/ChrisMantegna/WDFWmussels/blob/main/data/biomarkerfull.csv)\
 lat - latitude\
