@@ -216,24 +216,24 @@ alldata$avg_thickness[is.na(alldata$avg_thickness)] <- 0.001
 ```{r}
 
 #anova
-
-model <- lm(p450 ~ SumBDEs + SumDDTs + SumPAHs16 + SumPAHsHMW + SumPCBs2x17, data = alldata)
+model1 <- lm(p450 ~ SumBDEs + SumDDTs + SumPAHs16 + SumPAHsHMW + SumPCBs2x17 + Zinc, data = alldata)
 
 #summary(model)
-p450anova<- anova(model)
-print(p450anova)
+p450anova1<- anova(model1)
+print(p450anova1)
+
+model2<- lm(p450~ Zinc + cadmium + copper + lead + mercuryTotal, data = alldata)
+p450anova2<- anova(model2)
+print(p450anova2)
 
 # Save 
-write.csv(p450anova, "/Users/cmantegna/Documents/WDFWmussels/output/p450anova.csv")
-
-
-
+#write.csv(p450anova, "/Users/cmantegna/Documents/WDFWmussels/output/p450anova.csv")
 
 ```
 #anova for p450 and SOD, condition factor, avg_thickness
 ```{r}
 
-model <- lm(p450 ~ SOD + condition_factor + avg_thickness, data = alldata)
+model <- lm(p450 ~ site_number + SOD + condition_factor + avg_thickness, data = alldata)
 
 #summary(model)
 cfanova<- anova(model)
@@ -246,11 +246,17 @@ print(cfanova)
 #anova for SOD and p450, condition factor, avg_thickness
 ```{r}
 
-model <- lm(SOD ~ p450 + condition_factor + avg_thickness, data = alldata)
+model <- lm(SOD ~ site_number + p450 + condition_factor + avg_thickness, data = alldata)
 
 thickanova<- anova(model)
 print(thickanova)
 ```
+# Kruskal- Wallis Test
+```{r}
+kruskal.test(p450 ~ SOD, data = alldata)
+
+```
+
 # anova for SOD
 ```{r}
 #fix data set to use the 95%
@@ -272,6 +278,45 @@ SODanova<- anova(model)
 write.csv(SODanova, "/Users/cmantegna/Documents/WDFWmussels/output/SODanova.csv")
 
 ```
+# trying to fix column names so i can run an anova on the individual analytes against the biomarkers.
+```{r}
+
+#rename columns with characters in them
+colnames(all_pah_df)[colnames(all_pah_df) == "benz[a]anthracene" ] <- "benzaanthracene"
+colnames(all_pah_df)[colnames(all_pah_df) == "benzo[a]pyrene" ] <- "benzoapyrene"
+colnames(all_pah_df)[colnames(all_pah_df) == "benzo[b]fluoranthene" ] <- "benzobfluoranthene"
+colnames(all_pah_df)[colnames(all_pah_df) == "benzo[e]pyrene" ] <- "benzoepyrene"
+colnames(all_pah_df)[colnames(all_pah_df) == "benzo[ghi]perylene" ] <- "benzoghiperylene"
+colnames(all_pah_df)[colnames(all_pah_df) == "benzo[k]fluoranthene" ] <- "benzokfluoranthene"
+colnames(all_pah_df)[colnames(all_pah_df) == "dibenz[a,h]anthracene" ] <- "dibenzahanthracene"
+colnames(all_pah_df)[colnames(all_pah_df) == "indeno[1,2,3-cd]pyrene" ] <- "indeno123cdpyrene"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-benzanthracene/schrysenes" ] <- "C1benzanthraceneschrysenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-dibenzothiophenes" ] <- "C1dibenzothiophenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-fluoranthenes/pyrenes" ] <- "C1fluoranthenespyrenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-fluorenes" ] <- "C1fluorenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-naphthalenes" ] <- "C1naphthalenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-phenanthrenes/anthracenes" ] <- "C1phenanthrenesanthracenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-benzanthracenes/chrysenes" ] <- "C2benzanthraceneschrysenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-dibenzothiophenes" ] <- "C2dibenzothiophenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-fluoranthenes/pyrenes" ] <- "C2fluoranthenespyrenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-fluorenes" ] <- "C2fluorenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-naphthalenes" ] <- "C2naphthalenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-phenanthrenes/anthracenes" ] <- "C2phenanthrenesanthracenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-benzanthracenes/chrysenes" ] <- "C3benzanthraceneschrysenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-dibenzothiophenes" ] <- "C3dibenzothiophenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-fluoranthenes/pyrenes" ] <- "C3fluoranthenespyrenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-fluorenes" ] <- "C3fluorenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-naphthalenes" ] <- "C3naphthalenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-phenanthrenes/anthracenes" ] <- "C3phenanthrenesanthracenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C4-benzanthracenes/chrysenes" ] <- "C4benzanthraceneschrysenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C4-dibenzothiophenes" ] <- "C4dibenzothiophenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C4-fluoranthenes/pyrenes" ] <- "C4fluoranthenespyrenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C4-naphthalenes" ] <- "C4naphthalenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C4-phenanthrenes/anthracenes" ] <- "C4phenanthrenesanthracenes" 
+
+```
+
+
 
 ```{r}
 
