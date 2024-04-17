@@ -20,16 +20,20 @@ Mussels from the 2021/22 outplanting season\
 Bench work December 2022 - February 2024\
 Analysis and writing February 2024 - March 2024
 
-# Software/ Programs/ Kits
-1. Pierce BCA Protein Assay Kits
-2. Cayman SOD
+## Kits
+1. [Pierce BCA Protein Assay Kits](https://github.com/ChrisMantegna/WDFWmussels/blob/main/protocol/TFS-Assets_LSG_manuals_MAN0011430_Pierce_BCA_Protein_Asy_UG.pdf)\
+2. [Cayman SOD](https://github.com/ChrisMantegna/WDFWmussels/blob/main/protocol/Cayman_SOD_Assay_Protocol.pdf)\
 ## Protocols 
-1. Dissections + Morphometrics
-2. BCA
-3. p450
-4. SOD
+1. [Dissection](https://github.com/ChrisMantegna/WDFWmussels/blob/main/protocol/Frozen%20mussel%20dissection%20SOP.docx.pdf)\
+2. BCA- see Pierce protocol above
+3. [p450](https://github.com/ChrisMantegna/WDFWmussels/blob/main/protocol/SOP%20Bivalve%20Biomarkers%20P450.docx.pdf)\
+4. [SOD](https://github.com/ChrisMantegna/WDFWmussels/blob/main/protocol/SOP%20Bivalve%20Biomarkers%20SOD.docx.pdf)\
 # Repo Contents
-## Output: visualizations
+## Output
+### exploratory
+### figures
+### miscellaneous
+### tables
 ## Code:
 [01-explore](https://rpubs.com/cmantegna/mb01explore): initial explanatory visualizations\
 [02-statistics](https://rpubs.com/cmantegna/mb02statistics): initial statistics performed on the dataset\
@@ -37,6 +41,7 @@ Analysis and writing February 2024 - March 2024
 [04-spatial](https://rpubs.com/cmantegna/mb04spatial): Geospatial statistical analysis of the biomarkers\
 
 ## Data
+### Primary analysis file
 All work to date utilizing [biomarkerfull.csv](https://github.com/ChrisMantegna/WDFWmussels/blob/main/data/biomarkerfull.csv)\
 lat - latitude\
 long - longitide\
@@ -53,3 +58,6 @@ weight_final - weight of the shells scraped clean in (mg) post dissection.\
 weight_change - the calculation in (mg) of weight_initial  - weight_final.\
 condition_factor	- a unitless calculation of the approximate tissue weight/ length. Tissue weight is the weight_change value in this data set.\
 avg_thickness	- the average in (mm) of four pre-determined measurements per valve of each sample.\
+
+### Not for analysis
+These files are individual files with raw data, not used in analysis but in creating the analysis files
