@@ -30,23 +30,30 @@ Analysis and writing February 2024 - March 2024
 4. [SOD](https://github.com/ChrisMantegna/WDFWmussels/blob/main/protocol/SOP%20Bivalve%20Biomarkers%20SOD.docx.pdf)
 # Repo Contents
 ## Output
-### Exploratory: all visualizations used to clarify the data
-### Figures: visualizations that can or will be used in the manuscript
-### Miscellaneous: screenshots or snippets of code used in issue pposting
-### Tables: raw tables, prior to formatting, that will be used in the manuscript
+### Exploratory
+All visualizations used to clarify the data
+### Figures 
+Visualizations that can or will be used in the manuscript
+### Miscellaneous 
+Screenshots or snippets of code used in issue pposting
+### Tables 
+Raw tables, prior to formatting, that will be used in the manuscript
 
 ## Code:
 [01-explore](https://rpubs.com/cmantegna/mb01explore): initial explanatory visualizations\
 [02-statistics](https://rpubs.com/cmantegna/mb02statistics): initial statistics performed on the dataset\
 [03-map](https://rpubs.com/cmantegna/mb03map): Washington state map of biomarker values plotted by coordinates of sites\
 [04-spatial](https://rpubs.com/cmantegna/mb04spatial): Geospatial statistical analysis of the biomarkers\
+05-analytes: Individual and summed analyte comparisons to biomarker data.
+06 - 08: Docs to be removed or reworked as they contain averaged or median value exploratory work\
+09-data cleaning: Rework to address using the 95% range of biomarker values with the imputed analyte values in exploratory statistics and visualization.
 
 ## Data
 
 ### Primary analysis file
 All work to date utilizing [biomarkerfull.csv](https://github.com/ChrisMantegna/WDFWmussels/blob/main/data/biomarkerfull.csv)\
-lat - latitude\
-long - longitide\
+latitude - latitude\
+longitude - longitide\
 site_name - name of cage location given to us from WDFW\
 site_number - number assigned by our team for labeling ease\
 sample - sample number assigned by our tean for dissection labeling\
