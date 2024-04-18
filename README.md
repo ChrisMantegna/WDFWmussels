@@ -44,7 +44,7 @@ Raw tables, prior to formatting, that will be used in the manuscript
 [02-statistics](https://rpubs.com/cmantegna/mb02statistics): initial statistics performed on the dataset\
 [03-map](https://rpubs.com/cmantegna/mb03map): Washington state map of biomarker values plotted by coordinates of sites\
 [04-spatial](https://rpubs.com/cmantegna/mb04spatial): Geospatial statistical analysis of the biomarkers\
-05-analytes: Individual and summed analyte comparisons to biomarker data.
+05-analytes: Individual and summed analyte comparisons to biomarker data.\
 06 - 08: Docs to be removed or reworked as they contain averaged or median value exploratory work\
 09-data cleaning: Rework to address using the 95% range of biomarker values with the imputed analyte values in exploratory statistics and visualization.
 
