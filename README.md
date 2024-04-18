@@ -57,7 +57,7 @@ longitude - longitide\
 site_name - name of cage location given to us from WDFW\
 site_number - number assigned by our team for labeling ease\
 sample - sample number assigned by our tean for dissection labeling\
-p450 - final cytochrome p450 activity in (activity/ (mg/protein)). All values post standardization by BCA assay values for each tissue sample.\ 
+p450 - final cytochrome p450 activity in (activity/ (mg/protein)). All values post standardization by BCA assay values for each tissue sample.\
 SOD - final superoxide dimutase activity in (activity/ (mg/protein)). All values post assay and standardization by BCA assay values for each tissue sample.\
 weight_initial - full weight of the frozen mussel in (mg) prior to dissection.\
 length	- full length of the frozen mussel in (mm) prior to dissection.\
@@ -66,7 +66,7 @@ height	- full height of the frozen mussel in (mm) prior to dissection.\
 weight_final - weight of the shells scraped clean in (mg) post dissection.\
 weight_change - the calculation in (mg) of weight_initial  - weight_final.\
 condition_factor	- a unitless calculation of the approximate tissue weight/ length. Tissue weight is the weight_change value in this data set.\
-avg_thickness	- the average in (mm) of four pre-determined measurements per valve of each sample.\
+avg_thickness	- the average in (mm) of four pre-determined measurements per valve of each sample.  
 
 ### Not for analysis
 These files are individual files with raw data, not used in analysis but in creating the analysis files
