@@ -61,18 +61,23 @@ alldata$SOD[alldata$SOD <= 0] <- 0.0025
 #remove any p450 values that are 0 - those are true 0's not non-detectable. I am replacing with na so I don't lose the entire row of data, including the SOD values.
 data$p450[data$p450 <= 0] <- NA
 alldata$p450[alldata$p450 <= 0] <- NA
+
+write.csv(alldata, "/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
 ```
 
 ## take a look at the dataframes to ensure values look correct
+
 Weight = g\
 Length, width, height = mm\
 p450, SOD = activity/ (mg/protein)\
 Condition factor, economic factor = unitless
+
 ```{r}
 summary(alldata)
 ```
 
 ## fix row names and remove rows that aren't in my data frame
+
 ```{r}
 
 #this code isn't working. It is functionally correct, but the data frame still reflects the names i don't want.
@@ -139,16 +144,19 @@ ggsave(plot=shist, filename="/Users/cmantegna/Documents/WDFWmussels/output/SODhi
 ```
 
 # shapiro wilkes test for normality, p450: Data is not normally distributed
+
 ```{r}
 shapiro.test(alldata$p450)
 ```
 
 # shapiro wilkes test for normality, SOD: Data is not normally distributed
+
 ```{r}
 shapiro.test(alldata$SOD)
 ```
 
 # log transform the data to see if it reaches normality
+
 ```{r}
 p450log<- log(alldata$p450)
 hist(p450log)
@@ -156,6 +164,7 @@ shapiro.test(p450log) #doesn't help with normality
 ```
 
 # log transform the data to see if it reaches normality
+
 ```{r}
 SODlog<- log(alldata$SOD)
 hist(SODlog)
@@ -163,6 +172,7 @@ shapiro.test(SODlog) #doesn't help with normality
 ```
 
 # use the 95% of biomarker data and test for normality
+
 ```{r}
 #find quartile values for p450
 lower_limitp <- quantile(alldata$p450, probs = 0.025, na.rm= TRUE)
@@ -198,16 +208,21 @@ alldata$SOD[alldata$SOD >= 51.54] <- NA
 ```
 
 ## test for normality one more time, p450
+
 ```{r}
 shapiro.test(alldata$p450)
 ```
 
 ## test for normality one more time, SOD
+
 ```{r}
 shapiro.test(alldata$SOD)
 ```
+
 # Will move forward with the anova and post- hoc. Data is not normally distributed.
+
 ## renaming the individual analytes so that entering data into the anova isn't difficult
+
 ```{r}
 # Generate the first 26 letters of the alphabet
 letters_seq <- letters[1:26]
@@ -228,7 +243,6 @@ new_colnames <- c(letters_seq, extra_letters_seq)[1:num_cols]
 
 ```
 
-
 ```{r}
 # Assuming 'alldata' is your dataframe
 colnames(alldata)[22:57] <- new_colnames
@@ -239,6 +253,7 @@ print(colnames(alldata))
 ```
 
 # anovas for p450, no imputation
+
 ```{r}
 #anova
 model <- lm(p450 ~ site_number + SOD + condition_factor + avg_thickness, data = alldata)
@@ -269,6 +284,7 @@ print(p450anova4)
 ```
 
 ## print model results, p450
+
 ```{r}
 summary(model)
 summary(model1)
@@ -278,6 +294,7 @@ summary(model4)
 ```
 
 # anovas for SOD, no imputation
+
 ```{r}
 #anova
 smodel <- lm(SOD ~ site_number + p450 + condition_factor + avg_thickness, data = alldata)
@@ -315,12 +332,14 @@ summary(smodel3)
 summary(smodel4)
 ```
 
-
 # Results without replacing any missing or purposefully disregarded values.
-## p450~ SOD and average thickness show a statistically significant relationship
-## SOD~ site number, p450, SumDDTs and SumPAHs16 show a statistically significant relationship
+
+## p450\~ SOD and average thickness show a statistically significant relationship
+
+## SOD\~ site number, p450, SumDDTs and SumPAHs16 show a statistically significant relationship
 
 ## anovas with 0 value replacement for all analytes with an NA. The NA means the value is undetected and this is a simple test to see what the anovas would be - 0 may not be the best option, imputing the data is likely the way to go.
+
 ```{r}
 #replacing NA with 0
 library(dplyr)
@@ -332,7 +351,9 @@ alldata <- alldata %>%
 ```
 
 # rerun anova with the O's in the analytes
-## p450~ SOD, average thickness, mercuryTotal and SumPCBs2x17 show a statistically significant relationship
+
+## p450\~ SOD, average thickness, mercuryTotal and SumPCBs2x17 show a statistically significant relationship
+
 ```{r}
 #anova
 model <- lm(p450 ~ site_number + SOD + condition_factor + avg_thickness, data = alldata)
@@ -362,6 +383,7 @@ print(p450anova4)
 ```
 
 ## missing 30/24 values are the p450 values that fall outside of the 95% range
+
 ```{r}
 summary(model)
 summary(model1)
@@ -371,7 +393,9 @@ summary(model4)
 ```
 
 # anovas for SOD, with 0's for missing analytes
-## SOD~ site number, p450, SumBDEs, SumDDTs, SumPAHs16 and SumPAHsHMW show a statistically significant relationship
+
+## SOD\~ site number, p450, SumBDEs, SumDDTs, SumPAHs16 and SumPAHsHMW show a statistically significant relationship
+
 ```{r}
 #anova
 smodel <- lm(SOD ~ site_number + p450 + condition_factor + avg_thickness, data = alldata)
@@ -400,7 +424,9 @@ SODanova4<- anova(smodel4)
 print(SODanova4)
 
 ```
+
 ## missing 30/8 values are the SOD values that fall outside of the 95% range
+
 ```{r}
 summary(smodel)
 summary(smodel1)
@@ -410,6 +436,7 @@ summary(smodel4)
 ```
 
 ### don't think I will need this, but just in case I need to come back to it
+
 ```{r}
 # Convert 'condition_factor' and 'avg_thickness' to numeric
 #alldata$condition_factor <- as.numeric(alldata$condition_factor)
@@ -417,7 +444,9 @@ summary(smodel4)
 ```
 
 # Kruskal Wallis NOT A POST HOC, p450
-## p450~ SOD, average thickness, mercuryTotal and SumPCBs2x17 show a statistically significant relationship
+
+## p450\~ SOD, average thickness, mercuryTotal and SumPCBs2x17 show a statistically significant relationship
+
 ```{r}
 
 kruskal.test(p450 ~ SOD, data = alldata)
@@ -427,19 +456,61 @@ kruskal.test(p450 ~ condition_factor, data = alldata)
 ```
 
 # Kruskal Wallis, SOD
+
 #double check as.numeric for condition factor and average thickness
 
-## SOD~ site number, p450, SumBDEs, SumDDTs, SumPAHs16 and SumPAHsHMW show a statistically significant relationship
+## SOD\~ site number, p450, SumBDEs, SumDDTs, SumPAHs16 and SumPAHsHMW show a statistically significant relationship
+
 ```{r}
 kruskal.test(SOD ~ p450, data = alldata)
-kruskal.test(SOD ~ site_number, data = alldata)
+
 kruskal.test(SOD ~ condition_factor, data = alldata)
 kruskal.test(SOD ~ avg_thickness, data = alldata)
 #kruskal.test(SOD ~ SumPAHs16, data = alldata)
 #kruskal.test(SOD ~ SumPAHsHMW, data = alldata)
 ```
 
+# dunn
+
+```{r}
+install.packages("dunn.test")
+library("dunn.test")
+```
+
+```{r}
+kruskal.test(SOD ~ site_number, data = alldata)
+
+# Perform Dunn's test
+dunn_result <- dunn.test(alldata$SOD, alldata$site_number, method="bonferroni")
+print(dunn_result)
+
+
+```
+
+
+#SOD kruskalmc
+```{r}
+# Load necessary library for pairwise comparisons
+#install.packages("pgirmess")
+library(pgirmess)
+# Pairwise comparisons
+mc_results<- as.data.frame(kruskalmc(alldata$SOD, alldata$site_name, p.adj = "bonferroni"))
+head(mc_results)
+
+```
+#p450 kruskalmc
+```{r}
+library(pgirmess)
+# Pairwise comparisons
+kruskal.test(p450 ~ site_number, data = alldata)
+mc_results2<- as.data.frame(kruskalmc(alldata$p450, alldata$site_name, p.adj = "bonferroni"))
+head(mc_results2)
+
+```
+
+
 # Pearson correlation for SOD
+
 ```{r}
 
 selected_data <- alldata[, c("SOD", "site_number", "p450", "SumBDEs", "SumDDTs", "SumPAHs16", "SumPAHsHMW")]
@@ -466,6 +537,7 @@ ggplot(data = melted_cor_matrix, aes(x = Var1, y = Var2, fill = value)) +
 ```
 
 # PCA, SOD & significant relationships
+
 ```{r}
 # Load FactoMineR for PCA
 library(FactoMineR)
@@ -479,6 +551,7 @@ plot(pca_result, choix = "ind")
 ```
 
 # boxplot for SOD
+
 ```{r}
 plot<- ggplot(data, aes(x = site_name, y = SOD)) +
   geom_boxplot() +
@@ -486,6 +559,3 @@ plot<- ggplot(data, aes(x = site_name, y = SOD)) +
 
 print(plot)
 ```
-
-
-
