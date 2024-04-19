@@ -1,5 +1,5 @@
 ---
-title: "01- Visual Data Exploration"
+title: "01- Data Exploration"
 output:
   html_document:
     df_print: paged
@@ -42,124 +42,53 @@ library(vegan)
 getwd()
 #data has all sites, coordinates, p450, sod, condition factor, economic factor data
 data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
+#alldata has the site names, biomarkers, condition factor, average thickness and analyte data - each row is an individual sample
+alldata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
 
 ```
 
-# Review setup
+## fix zero's in the data frame and alldata frame
 
 ```{r}
 
-str(data)
+# Data contains 0's and must be adjusted in this order to preserve all usable data.
 
+#sod
+#replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
+data$SOD[data$SOD <= 0] <- 0.0025
+alldata$SOD[alldata$SOD <= 0] <- 0.0025
+#p450
+#remove any p450 values that are 0 - those are true 0's not non-detectable. I am replacing with na so I don't lose the entire row of data, including the SOD values.
+data$p450[data$p450 <= 0] <- NA
+alldata$p450[alldata$p450 <= 0] <- NA
 ```
 
-# Data type and summary
-
-## Note
-
+## take a look at the dataframes to ensure values look correct
 Weight = g\
 Length, width, height = mm\
 p450, SOD = activity/ (mg/protein)\
 Condition factor, economic factor = unitless
+```{r}
+summary(alldata)
+```
 
+## fix row names and remove rows that aren't in my data frame
 ```{r}
 
-#the data types are based in str() results, make numeric anything with na in the column.
-summary(data)
+#this code isn't working. It is functionally correct, but the data frame still reflects the names i don't want.
+rownames(alldata)[rownames(alldata) == "Broad Spit"] <- "Broad Spit  (Fisherman's Point)"
+rownames(alldata)[rownames(alldata) == "Penrose Point State Park" ] <- "Pennrose Point State Park"
+rownames(alldata)[rownames(alldata) == "Maristone Island Bridge" ] <- "Maristone Island"
+rownames(alldata)[rownames(alldata) == "Suquamish, Stormwater Outfall" ] <- "Suquamish Stormwater Outfall"
+
+#print(alldata)
+
 
 ```
 
 ```{r}
 
-as.numeric("weight_initial", "weight_change", "length", "width", "height", "condition_factor", "economic_index")
-
-```
-
-# 0's and negative number management
-
-SOD values that are negative are changed to 0 signifying that the value was undetectable.\
-p450 values that are 0 are missing, not actual 0's.
-
-```{r}
-
-#get rid of the p450 values that are 0
-data <- data[data$p450 != 0, ]
-
-#change any negative numbers to 0 to indicate not detectable
-data$SOD <- ifelse(data$SOD <= 0, 0, data$SOD)
-
-```
-
-# Detect outliers and plot them - code a combo of stack overflow and chat gpt.
-
-```{r}
-
-detect_outliers_mad <- function(data, accuracy = 0.99) {
-  # Calculate z-score equivalent for the given accuracy
-  z_threshold <- qnorm(accuracy + (1 - accuracy) / 2)
-
-  # Initialize a list to store outlier indices for each numeric column
-  outliers_list <- list()
-
-  # Initialize a vector to keep track of rows with outliers
-  rows_with_outliers <- rep(FALSE, nrow(data))
-
-  # Loop through each column in the dataframe
-  for (col_name in names(data)) {
-    # Check if the column is numeric
-    if (is.numeric(data[[col_name]])) {
-      # Calculate MAD and median for the column
-      mad_value <- median(abs(data[[col_name]] - median(data[[col_name]])))
-      median_value <- median(data[[col_name]])
-
-      # Calculate the deviation scores (using a modified z-score formula)
-      deviation_scores <- 0.6745 * (data[[col_name]] - median_value) / mad_value
-
-      # Identify indices of outliers
-      outlier_indices <- which(abs(deviation_scores) > z_threshold)
-
-      # Store the indices in the list
-      outliers_list[[col_name]] <- outlier_indices
-
-      # Update rows with outliers
-      rows_with_outliers[outlier_indices] <- TRUE
-    }
-  }
-
-  # Return the list of outliers and rows with outliers
-  list(outliers_list = outliers_list, rows_with_outliers = rows_with_outliers)
-}
-
-outliers_info <- detect_outliers_mad(data)
-
-# Convert the list of outliers to a named vector of counts
-num_outliers_each_col <- sapply(outliers_info$outliers_list, length)
-num_rows_with_outliers <- sum(outliers_info$rows_with_outliers)
-
-# Check if there are any outliers
-if (all(num_outliers_each_col == 0)) {
-  print("There are no outliers in any columns.")
-} else {
-  # Create a data frame for plotting
-  outliers_data_df <- data.frame(
-    Column = names(num_outliers_each_col),
-    Outliers = as.integer(num_outliers_each_col),
-    OutlierPercentage = (as.integer(num_outliers_each_col) / nrow(data)) * 100
-  )
-
-  # Plot the number of outliers for all columns
-  outlier_plot <- ggplot(outliers_data_df, aes(x = Column, y = Outliers, fill = Column)) +
-    geom_bar(stat = "identity") +
-    geom_text(aes(label = sprintf("%.2f%%", OutlierPercentage)), position = position_dodge(width = 0.9), vjust = -0.25) +
-    coord_flip() +
-    labs(title = "Number of Outliers by Column", x = "Column", y = "Number of Outliers") +
-    scale_fill_brewer(palette = "Set3") +
-    theme_minimal()
-
-  print(outlier_plot)
-}
-
-ggsave(plot= outlier_plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/outliers.png", width=15, height=8)
+as.numeric( "condition_factor", "avg_thickness")
 
 ```
 
@@ -174,7 +103,7 @@ ggsave(plot= outlier_plot, filename="/Users/cmantegna/Documents/WDFWmussels/outp
 #ggplot histogram with density curve
 library(scales) # Make sure this package is loaded for label_number()
 
-phist<- ggplot(data, aes(x = p450)) +
+phist<- ggplot(alldata, aes(x = p450)) +
   geom_histogram(aes(y = after_stat(density)), binwidth = diff(range(data$p450))/30, colour = "black", fill = "white") +
   geom_density(alpha = .2, fill = "#FF6666") +
   labs(x = "P450 Values", y = "Density", title = "Histogram of P450 Values with Density Curve") +
@@ -182,7 +111,7 @@ phist<- ggplot(data, aes(x = p450)) +
   scale_x_continuous(labels = label_number()) # This line adjusts the x-axis labels
 
 print(phist)
-ggsave(plot=phist, filename="/Users/cmantegna/Documents/WDFWmussels/output/p450histogram.png", width=15, height=8)
+#ggsave(plot=phist, filename="/Users/cmantegna/Documents/WDFWmussels/output/p450histogram.png", width=15, height=8)
 
 ```
 
@@ -197,7 +126,7 @@ ggsave(plot=phist, filename="/Users/cmantegna/Documents/WDFWmussels/output/p450h
 #ggplot histogram with density curve
 library(scales) # Make sure this package is loaded for label_number()
 
-shist <- ggplot(data, aes(x = SOD)) +
+shist <- ggplot(alldata, aes(x = SOD)) +
   geom_histogram(aes(y = after_stat(density)), binwidth = diff(range(data$SOD))/30, colour = "black", fill = "white") +
   geom_density(alpha = .2, fill = "#FF6666") +
   labs(x = "SOD Values", y = "Density", title = "Histogram of SOD Values with Density Curve") +
@@ -209,119 +138,354 @@ ggsave(plot=shist, filename="/Users/cmantegna/Documents/WDFWmussels/output/SODhi
 
 ```
 
-# Plotting both biomarkers in a box plot
-
+# shapiro wilkes test for normality, p450: Data is not normally distributed
 ```{r}
+shapiro.test(alldata$p450)
+```
 
-all<-plot<- ggplot(data) +
-  geom_point(aes(x = site_name, y = SOD, color = "SOD")) +
-  geom_point(aes(x = site_name, y = p450, color = "P450")) +
-  labs(x = "Site Name", y = "Value", color = "Biomarker") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+# shapiro wilkes test for normality, SOD: Data is not normally distributed
+```{r}
+shapiro.test(alldata$SOD)
+```
 
+# log transform the data to see if it reaches normality
+```{r}
+p450log<- log(alldata$p450)
+hist(p450log)
+shapiro.test(p450log) #doesn't help with normality
+```
 
-print(all)
-ggsave(plot=all, filename="/Users/cmantegna/Documents/WDFWmussels/output/allBoxPlot.png", width=15, height=8)
+# log transform the data to see if it reaches normality
+```{r}
+SODlog<- log(alldata$SOD)
+hist(SODlog)
+shapiro.test(SODlog) #doesn't help with normality
+```
+
+# use the 95% of biomarker data and test for normality
+```{r}
+#find quartile values for p450
+lower_limitp <- quantile(alldata$p450, probs = 0.025, na.rm= TRUE)
+upper_limitp <- quantile(alldata$p450, probs = 0.975, na.rm= TRUE)
+
+# Print the lower and upper limits
+print(lower_limitp)
+print(upper_limitp)
+
+#find quartile values for SOD
+lower_limits <- quantile(alldata$SOD, probs = 0.025, na.rm= TRUE)
+upper_limits <- quantile(alldata$SOD, probs = 0.975, na.rm= TRUE)
+
+# Print the lower and upper limits
+print(lower_limits)
+print(upper_limits)
+
 
 ```
 
-# Plotting both biomarkers in a box plot with a free y-axis to fix the sod v p450 values. The SOD values all look the same and are all at 0.
-
-Note that the color for SOD shifts from teal to salmon between the two plots.
+## replace values outside of the quartiles with NA
 
 ```{r}
-# First, create a basic ggplot object with SOD data
-freey <- ggplot(data, aes(x = site_name)) +
-  geom_point(aes(y = SOD, color = "SOD")) +
-  labs(x = "Site Name", y = "SOD Value") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+# manipulate data frame to analyze on the 95%
+#p450
+alldata$p450[alldata$p450 <= 1002087] <- NA
+alldata$p450[alldata$p450 >= 10831148] <- NA
 
-# Then, add p450 using sec.axis
-freey + geom_point(aes(y = p450/100, color = "p450")) + # Example scaling factor, adjust as needed
-  scale_y_continuous(sec.axis = sec_axis(~.*100, name = "p450 Value")) # Reverse the scaling for the secondary axis label
-
-print(freey)
-#ggsave(plot=freey, filename="/Users/cmantegna/Documents/WDFWmussels/output/allBoxPlotFreeY.png", width=15, height=8)
-```
-
-# Plotting both biomarkers in their own box plots with a facet wrap to try to show the difference in values for both biomarkers since SOD looks the same.
-
-```{r}
-
-# Reshape data from wide to long format
-long_data <- pivot_longer(data, cols = c(SOD, p450), names_to = "Biomarker", values_to = "Value")
-
-# Plotting with faceting
-facetp <- ggplot(long_data, aes(x = site_name, y = Value, color = Biomarker)) +
-  geom_point() +
-  facet_wrap(~Biomarker, scales = "free_y") + # This allows each biomarker to have its own y-axis scale
-  labs(x = "Site Name", y = "Value", color = "Biomarker") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-
-print(facetp)
-# Save the plot
-ggsave(plot=facetp, filename="/Users/cmantegna/Documents/WDFWmussels/output/allBoxPlotFacet.png", width=15, height=8)
+#SOD
+alldata$SOD[alldata$SOD <= .0024] <- NA
+alldata$SOD[alldata$SOD >= 51.54] <- NA
 
 ```
 
-# Plotting separate box plots to investigate the facet, the other options still show the sod values the 'same' when everything is plotted together.
-
+## test for normality one more time, p450
 ```{r}
+shapiro.test(alldata$p450)
+```
 
-# Ensure your data is in the correct format.
-# Reshape your dataframe if it hasn't been done correctly.
-long_data <- pivot_longer(data, cols = c(SOD, p450), names_to = "Biomarker", values_to = "Value")
+## test for normality one more time, SOD
+```{r}
+shapiro.test(alldata$SOD)
+```
+# Will move forward with the anova and post- hoc. Data is not normally distributed.
+## renaming the individual analytes so that entering data into the anova isn't difficult
+```{r}
+# Generate the first 26 letters of the alphabet
+letters_seq <- letters[1:26]
 
-# Faceted plot with separate scales.
-plotf<- ggplot(long_data, aes(x = site_name, y = Value)) +
-  geom_point(aes(color = Biomarker)) +
-  facet_wrap(~ Biomarker, scales = "free_y") +
-  labs(x = "Site Name", y = "Value", color = "Biomarker") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+# Generate additional letters if needed
+extra_letters_seq <- character(0)
+num_cols <- length(22:57)  # Number of columns you want to rename
+if (num_cols > length(letters_seq)) {
+  repeats_needed <- num_cols - length(letters_seq)
+  # Generate double letters like 'aa', 'bb', 'cc', etc.
+  extra_letters_seq <- rep(letters[1:repeats_needed], each=1)
+  extra_letters_seq <- sapply(extra_letters_seq, function(x) paste0(x, x))
+}
 
-print(plotf)
-ggsave(plot=plotf, filename="/Users/cmantegna/Documents/WDFWmussels/output/allBoxPlotFacetPanels.png", width=40, height=25)
+# Combine the original and additional sequences
+new_colnames <- c(letters_seq, extra_letters_seq)[1:num_cols]
+
 
 ```
 
-# Plotting p450 values ranked from smallest to largest
 
 ```{r}
+# Assuming 'alldata' is your dataframe
+colnames(alldata)[22:57] <- new_colnames
 
-# Order the sites by p450 value
-data_ordered <- data[order(data$p450),]
+# View the updated column names to confirm
+print(colnames(alldata))
 
-# Create a factor with the ordered site names
-data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+```
 
-# Plot the SOD values in a boxplot with ordered site names
-rankp<- ggplot(data_ordered, aes(x = site_name, y = p450)) +
+# anovas for p450, no imputation
+```{r}
+#anova
+model <- lm(p450 ~ site_number + SOD + condition_factor + avg_thickness, data = alldata)
+#summary(model)
+p450anova<- anova(model)
+print(p450anova)
+
+#anova1
+model1<- lm(p450~ arsenic + cadmium + copper + lead, data = alldata)
+p450anova1<- anova(model1)
+print(p450anova1)
+
+#anova2
+model2<- lm(p450~ mercuryTotal + Zinc, data = alldata)
+p450anova2<- anova(model2)
+print(p450anova2)
+
+#anova3
+model3<- lm(p450~ SumBDEs + SumCHLDs + SumDDTs + SumHCHs, data = alldata)
+p450anova3<- anova(model3)
+print(p450anova3)
+
+#anova4
+model4<- lm(p450~ SumPAHs16 + SumPAHsHMW + SumPCBs2x17, data = alldata)
+p450anova4<- anova(model4)
+print(p450anova4)
+
+```
+
+## print model results, p450
+```{r}
+summary(model)
+summary(model1)
+summary(model2)
+summary(model3)
+summary(model4)
+```
+
+# anovas for SOD, no imputation
+```{r}
+#anova
+smodel <- lm(SOD ~ site_number + p450 + condition_factor + avg_thickness, data = alldata)
+#summary(model)
+SODanova<- anova(smodel)
+print(SODanova)
+
+#anova1
+smodel1<- lm(SOD~ arsenic + cadmium + copper + lead, data = alldata)
+SODanova1<- anova(smodel1)
+print(SODanova1)
+
+#anova2
+smodel2<- lm(SOD~ mercuryTotal + Zinc, data = alldata)
+SODanova2<- anova(smodel2)
+print(SODanova2)
+
+#anova3
+smodel3<- lm(SOD~ SumBDEs + SumCHLDs + SumDDTs + SumHCHs, data = alldata)
+SODanova3<- anova(smodel3)
+print(SODanova3)
+
+#anova4
+smodel4<- lm(SOD~ SumPAHs16 + SumPAHsHMW + SumPCBs2x17, data = alldata)
+SODanova4<- anova(smodel4)
+print(SODanova4)
+
+```
+
+```{r}
+summary(smodel)
+summary(smodel1)
+summary(smodel2)
+summary(smodel3)
+summary(smodel4)
+```
+
+
+# Results without replacing any missing or purposefully disregarded values.
+## p450~ SOD and average thickness show a statistically significant relationship
+## SOD~ site number, p450, SumDDTs and SumPAHs16 show a statistically significant relationship
+
+## anovas with 0 value replacement for all analytes with an NA. The NA means the value is undetected and this is a simple test to see what the anovas would be - 0 may not be the best option, imputing the data is likely the way to go.
+```{r}
+#replacing NA with 0
+library(dplyr)
+
+# Replace NA values with 0 in columns 9 to 57
+alldata <- alldata %>% 
+  mutate(across(.cols = 7:57, .fns = ~replace_na(., 0)))
+
+```
+
+# rerun anova with the O's in the analytes
+## p450~ SOD, average thickness, mercuryTotal and SumPCBs2x17 show a statistically significant relationship
+```{r}
+#anova
+model <- lm(p450 ~ site_number + SOD + condition_factor + avg_thickness, data = alldata)
+#summary(model)
+p450anova<- anova(model)
+print(p450anova)
+
+#anova1
+model1<- lm(p450~ arsenic + cadmium + copper + lead, data = alldata)
+p450anova1<- anova(model1)
+print(p450anova1)
+
+#anova2
+model2<- lm(p450~ mercuryTotal + Zinc, data = alldata)
+p450anova2<- anova(model2)
+print(p450anova2)
+
+#anova3
+model3<- lm(p450~ SumBDEs + SumCHLDs + SumDDTs + SumHCHs, data = alldata)
+p450anova3<- anova(model3)
+print(p450anova3)
+
+#anova4
+model4<- lm(p450~ SumPAHs16 + SumPAHsHMW + SumPCBs2x17, data = alldata)
+p450anova4<- anova(model4)
+print(p450anova4)
+```
+
+## missing 30/24 values are the p450 values that fall outside of the 95% range
+```{r}
+summary(model)
+summary(model1)
+summary(model2)
+summary(model3)
+summary(model4)
+```
+
+# anovas for SOD, with 0's for missing analytes
+## SOD~ site number, p450, SumBDEs, SumDDTs, SumPAHs16 and SumPAHsHMW show a statistically significant relationship
+```{r}
+#anova
+smodel <- lm(SOD ~ site_number + p450 + condition_factor + avg_thickness, data = alldata)
+#summary(model)
+SODanova<- anova(smodel)
+print(SODanova)
+
+#anova1
+smodel1<- lm(SOD~ arsenic + cadmium + copper + lead, data = alldata)
+SODanova1<- anova(smodel1)
+print(SODanova1)
+
+#anova2
+smodel2<- lm(SOD~ mercuryTotal + Zinc, data = alldata)
+SODanova2<- anova(smodel2)
+print(SODanova2)
+
+#anova3
+smodel3<- lm(SOD~ SumBDEs + SumCHLDs + SumDDTs + SumHCHs, data = alldata)
+SODanova3<- anova(smodel3)
+print(SODanova3)
+
+#anova4
+smodel4<- lm(SOD~ SumPAHs16 + SumPAHsHMW + SumPCBs2x17, data = alldata)
+SODanova4<- anova(smodel4)
+print(SODanova4)
+
+```
+## missing 30/8 values are the SOD values that fall outside of the 95% range
+```{r}
+summary(smodel)
+summary(smodel1)
+summary(smodel2)
+summary(smodel3)
+summary(smodel4)
+```
+
+### don't think I will need this, but just in case I need to come back to it
+```{r}
+# Convert 'condition_factor' and 'avg_thickness' to numeric
+#alldata$condition_factor <- as.numeric(alldata$condition_factor)
+#alldata$avg_thickness <- as.numeric(alldata$avg_thickness)
+```
+
+# Kruskal Wallis NOT A POST HOC, p450
+## p450~ SOD, average thickness, mercuryTotal and SumPCBs2x17 show a statistically significant relationship
+```{r}
+
+kruskal.test(p450 ~ SOD, data = alldata)
+kruskal.test(p450 ~ avg_thickness, data = alldata)
+kruskal.test(p450 ~ site_name, data = alldata)
+kruskal.test(p450 ~ condition_factor, data = alldata)
+```
+
+# Kruskal Wallis, SOD
+#double check as.numeric for condition factor and average thickness
+
+## SOD~ site number, p450, SumBDEs, SumDDTs, SumPAHs16 and SumPAHsHMW show a statistically significant relationship
+```{r}
+kruskal.test(SOD ~ p450, data = alldata)
+kruskal.test(SOD ~ site_number, data = alldata)
+kruskal.test(SOD ~ condition_factor, data = alldata)
+kruskal.test(SOD ~ avg_thickness, data = alldata)
+#kruskal.test(SOD ~ SumPAHs16, data = alldata)
+#kruskal.test(SOD ~ SumPAHsHMW, data = alldata)
+```
+
+# Pearson correlation for SOD
+```{r}
+
+selected_data <- alldata[, c("SOD", "site_number", "p450", "SumBDEs", "SumDDTs", "SumPAHs16", "SumPAHsHMW")]
+
+```
+
+```{r}
+library(ggplot2)
+library(reshape2)
+
+# Calculate the correlation matrix
+cor_matrix <- cor(selected_data, use = "complete.obs")  # This option excludes NA values
+
+# Melt the correlation matrix for visualization
+melted_cor_matrix <- melt(cor_matrix)
+
+# Plotting
+ggplot(data = melted_cor_matrix, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white", midpoint = 0, limit = c(-1,1)) +
+  theme_minimal() +
+  labs(title = "Pearson Correlation Matrix", x = "", y = "")
+
+```
+
+# PCA, SOD & significant relationships
+```{r}
+# Load FactoMineR for PCA
+library(FactoMineR)
+
+# PCA with FactoMineR, which handles NA by default
+pca_result <- PCA(selected_data, scale.unit = TRUE, ncp = 5, graph = FALSE)
+
+# Plotting
+plot(pca_result, choix = "ind")
+
+```
+
+# boxplot for SOD
+```{r}
+plot<- ggplot(data, aes(x = site_name, y = SOD)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
 
-print(rankp)
-ggsave(plot=rankp, filename="/Users/cmantegna/Documents/WDFWmussels/output/p450ranked.png", width=15, height=8)
+print(plot)
 ```
 
-# Plotting SOD values ranked from samllest largest
 
-```{r}
 
-# Order the sites by p450 value
-data_ordered <- data[order(data$SOD),]
-
-# Create a factor with the ordered site names
-data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
-
-# Plot the SOD values in a boxplot with ordered site names
-ranks<- ggplot(data_ordered, aes(x = site_name, y = SOD)) +
-  geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
-
-print(ranks)
-ggsave(plot=ranks, filename="/Users/cmantegna/Documents/WDFWmussels/output/SODranked.png", width=15, height=8)
-```

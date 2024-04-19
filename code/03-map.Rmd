@@ -79,6 +79,7 @@ data$p450[data$p450 <= 0] <- NA
 world <- ne_states(country = "united states of america", returnclass = "sf")
 washington_map <- world[world$name == "Washington", ]
 
+
 ```
 # p450 map
 ```{r}
