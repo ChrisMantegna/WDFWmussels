@@ -98,7 +98,9 @@ print(correlation_matrix)
 ```
 
 ```{r}
-# Split data into North, Central, and South regions based on latitude
+library(dplyr)
+
+# Define regions based on latitude
 data$region <- case_when(
   data$latitude >= 47.78184 & data$latitude <= 48.8208 ~ "North",
   data$latitude >= 47.38566 & data$latitude <= 47.7296079 ~ "Central",
@@ -109,27 +111,46 @@ data$region <- case_when(
 # Filter out rows without a region designation (if any)
 data <- data %>% filter(!is.na(region))
 
-# Calculate Spearman's rank correlation for each region
-north_data <- data %>% filter(region == "North")
-central_data <- data %>% filter(region == "Central")
-south_data <- data %>% filter(region == "South")
+# Function to calculate and format Spearman correlation as a data frame
+calculate_correlation <- function(data, region_name) {
+  corr <- cor(data %>% select(site_number, p450, SOD, condition_factor, avg_thickness), 
+              method = "spearman")
+  corr_df <- as.data.frame(as.table(corr))
+  names(corr_df) <- c("Variable1", "Variable2", "Correlation")
+  corr_df$Region <- region_name
+  return(corr_df)
+}
 
-# Printing correlation for each region
-print(cor(select(north_data, site_number, p450, SOD, condition_factor, avg_thickness), method = "spearman"))
-print(cor(select(central_data, site_number, p450, SOD, condition_factor, avg_thickness), method = "spearman"))
-print(cor(select(south_data, site_number, p450, SOD, condition_factor, avg_thickness), method = "spearman"))
+# Calculate correlations for each region and bind them into a single data frame
+north_corr <- calculate_correlation(data %>% filter(region == "North"), "North")
+central_corr <- calculate_correlation(data %>% filter(region == "Central"), "Central")
+south_corr <- calculate_correlation(data %>% filter(region == "South"), "South")
+
+all_corr <- bind_rows(north_corr, central_corr, south_corr)
+
+# Print the consolidated correlation data frame
+print(all_corr)
+
+write.csv(all_corr, "/Users/cmantegna/Documents/WDFWmussels/output/tables/region_corr.csv")
+
 
 ```
 
+# Boxplots of p450 and SOD by region
 ```{r}
-# Boxplot visualization for 'p450' and 'SOD' across regions
-ggplot(data, aes(x = region, y = p450)) + 
+# p450
+pregion<- ggplot(data, aes(x = region, y = p450)) + 
   geom_boxplot() + 
   labs(title = "p450 Levels by Region", x = "Region", y = "p450 Values")
 
-ggplot(data, aes(x = region, y = SOD)) + 
+ggsave(plot=pregion, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450region.png", width=15, height=8)
+
+# SOD
+sregion<- ggplot(data, aes(x = region, y = SOD)) + 
   geom_boxplot() + 
   labs(title = "SOD Levels by Region", x = "Region", y = "SOD Values")
+
+ggsave(plot=sregion, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/SODregion.png", width=15, height=8)
 
 ```
 
@@ -157,6 +178,64 @@ sites_by_region <- data %>%
 print(sites_by_region)
 
 write.csv(sites_by_region,"/Users/cmantegna/Documents/WDFWmussels/data/regions.csv" )
+
+```
+
+```{r}
+# Load necessary libraries
+library(dplyr)
+
+# Convert all relevant variables to numeric and filter out any NAs
+data <- data %>%
+  mutate(
+    p450 = as.numeric(p450),
+    SOD = as.numeric(SOD),
+    condition_factor = as.numeric(condition_factor),
+    avg_thickness = as.numeric(avg_thickness),
+    site_number = as.numeric(site_number),
+    region = case_when(
+      latitude >= 47.78184 & latitude <= 48.8208 ~ "North",
+      latitude >= 47.38566 & latitude <= 47.7296079 ~ "Central",
+      latitude >= 47.052362 & latitude <= 47.3539722 ~ "South",
+      TRUE ~ NA_character_
+    )
+  ) %>%
+  filter(!is.na(region)) %>%
+  drop_na(p450, SOD, condition_factor, avg_thickness, site_number) # Drops rows with NA in any of these columns
+
+# Define variables for correlation
+variables <- c("site_number", "p450", "SOD", "condition_factor", "avg_thickness")
+
+# Calculate Spearman's rank correlation matrix and p-values
+get_correlation_and_pvalues <- function(df, region) {
+  # Calculate correlation matrix
+  corr_matrix <- cor(df[variables], method = "spearman")
+  
+  # Prepare to store p-values
+  p_values <- matrix(nrow = length(variables), ncol = length(variables), dimnames = list(variables, variables))
+  
+  # Calculate p-values
+  for (i in seq_along(variables)) {
+    for (j in seq_along(variables)) {
+      if (i != j) {
+        test_result <- cor.test(df[[variables[i]]], df[[variables[j]]], method = "spearman")
+        p_values[i, j] <- test_result$p.value
+      } else {
+        p_values[i, j] <- NA # Diagonal elements are not applicable
+      }
+    }
+  }
+  
+  list(correlation = corr_matrix, p_values = p_values, region = region)
+}
+
+# Apply the function to each region
+north_results <- get_correlation_and_pvalues(data %>% filter(region == "North"), "North")
+central_results <- get_correlation_and_pvalues(data %>% filter(region == "Central"), "Central")
+south_results <- get_correlation_and_pvalues(data %>% filter(region == "South"), "South")
+
+# Print results for North region as an example
+print(north_results)
 
 ```
 
