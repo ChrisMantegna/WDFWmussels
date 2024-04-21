@@ -40,8 +40,8 @@ Screenshots or snippets of code used in issue pposting
 Raw tables, prior to formatting, that will be used in the manuscript
 
 ## Code:
-[01-explore](https://rpubs.com/cmantegna/mb01explore): initial explanatory visualizations\
-[02-statistics](https://rpubs.com/cmantegna/mb02statistics): initial statistics performed on the dataset\
+[01-explore](https://rpubs.com/cmantegna/mb01explore): initial data exploration\
+[02-correlations](https://rpubs.com/cmantegna/mb02correlations): Spearman's Correlation of all sites and grouped by laitudinal region\
 [03-map](https://rpubs.com/cmantegna/mb03map): Washington state map of biomarker values plotted by coordinates of sites\
 [04-spatial](https://rpubs.com/cmantegna/mb04spatial): Geospatial statistical analysis of the biomarkers\
 05-analytes: Individual and summed analyte comparisons to biomarker data.\
