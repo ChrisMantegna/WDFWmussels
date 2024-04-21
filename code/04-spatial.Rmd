@@ -1,14 +1,14 @@
 ---
-title: "04- Spatial Analysis of Biomarkers"
+title: "04- Spatial Analysis"
 output:
-  html_document: 
-    fig_width: 8
+  html_document:
+    df_print: paged
   pdf_document: 
-    fig_width: 8
-    fig_height: 5
+    fig_width: 20
+    fig_height: 9
 ---
 
-### Directory and doc rules
+# Directory and doc rules
 
 ```{r, setup, eval=TRUE, include=TRUE}
 
@@ -17,8 +17,8 @@ knitr::opts_chunk$set(
   eval = TRUE,         # Evaluate code chunks
   warning = FALSE,     # Hide warnings
   message = FALSE,     # Hide messages
-  fig.width = 8,       # Set plot width in inches
-  fig.height = 5,      # Set plot height in inches
+  fig.width = 20,       # Set plot width in inches
+  fig.height = 9,      # Set plot height in inches
   fig.align = "center" # Align plots to the center
 )
 
@@ -26,349 +26,189 @@ knitr::opts_chunk$set(
 
 # Load packages
 
-```{r, eval= FALSE}
-
+```{r}
+library(tinytex)
 library(tidyr)
 library(tidyverse)
-library(ggplot2)
 library(vegan)
 
 ```
 
 # Load data
-
+Weight = mg\
+Length, width, height = mm\
+p450, SOD = activity/ (mg/protein)\
+Condition factor, economic factor = unitless
 ```{r}
 
 getwd()
 #data has all sites, coordinates, p450, sod, condition factor, economic factor data
 data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
 
-#ana<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/PAHanalytes.csv")
+#alldata has the site names, biomarkers, condition factor, average thickness and analyte data - each row is an individual sample
+alldata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
 
 ```
 
-### Review setup
+## fix zero's in the data frame and alldata frame
 
 ```{r}
 
-str(data)
+# Data contains 0's and must be adjusted in this order to preserve all usable data.
 
+#sod
+#replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
+data$SOD[data$SOD <= 0] <- 0.0025
+alldata$SOD[alldata$SOD <= 0] <- 0.0025
+#p450
+#remove any p450 values that are 0 - those are true 0's not non-detectable. I am replacing with na so I don't lose the entire row of data, including the SOD values.
+data$p450[data$p450 <= 0] <- NA
+alldata$p450[alldata$p450 <= 0] <- NA
+
+#write.csv(alldata, "/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
 ```
 
-#### Data type and summary
-
-#### Note
-
-Weight = g\
-Length, width, height = mm\
-p450, SOD = activity/ (mg/protein)\
-Condition factor, economic factor = unitless
-
+#Impute missing p450 and condition_factor values 
 ```{r}
-# the data types are based in str() results, make numeric anything with na in the column.
-summary(data)
-```
+#install.packages("mice")
+library(mice)
 
-# SOD log transformation
+# Perform multiple imputation by chained equations
+imputed_data <- mice(alldata[, c("p450", "condition_factor")], method = 'pmm', m = 5)  # m is the number of datasets
 
-### The following spatial analyses require normally distributed data or something close so I am log- transforming to try to attain that. The base code/ concepts came from this repo: <https://github.com/spcanelon/geospatial-learning?tab=readme-ov-file>
+# Create a complete dataset from the imputations
+completed_data <- complete(imputed_data, 1)  # choosing the first imputed dataset for simplicity
 
-```{r}
-
-#trying out some spatial techniques for the biomarkers. If I want to use the MORAN I, I need to have normally distributed data and I do not. 
-#Log transform my SOD data to try to make it normal.
-
-# Create new variable that is the log-transformed 
-slogdata <- log(data$SOD)
-
-# Histogram
-h<- hist(slogdata)
-print(h)
-
-# Boxplot
-b<-boxplot(slogdata, horizontal = TRUE)
-print(b)
-
-```
-# p450 log transformation
-
-```{r}
-#the following spatial analyses require normally distributed data or something close so I am log- transforming to try to attain that. The base code/ concepts came from this repo: <https://github.com/spcanelon/geospatial-learning?tab=readme-ov-file>
-
-#trying out some spatial techniques for the biomarkers. If I want to use the MORAN I, I need to have normally distributed data and I do not. 
-#Log transform my p450 data to try to make it normal.
-
-# Create new variable that is the log-transformed 
-plogdata <- log(data$p450)
-
-# Histogram
-hh<- hist(plogdata)
-print(hh)
-
-# Boxplot
-bb<- boxplot(plogdata, horizontal = TRUE)
-print(bb)
-
-```
-
-# Point pattern analysis
-
-#### Exploratory data analysis tool that looks to interpret the distribution of my values across geographic space - this is the first step in geospatial analysis, the Moran and Geary C statistical tests are what follow to support or debate the hypothesis formed from this step.
-
-```{r}
-#install.packages("spatstat")
-library(spatstat)
-
-#pull out lat, long, site_name, and biomarkers as a dataframe for the following work.
-
-select <- c("latitude", "longitude", "site_name", "p450", "SOD")
-
-# Create a new data frame with only the specified columns
-bdata <- data[,select]
-
-# Create the kind of data frame that works in spatstat package
-sites_pp <- ppp(x = bdata$longitude, y = bdata$latitude, 
-                window = owin(xrange = range(bdata$longitude), 
-                              yrange = range(bdata$latitude)))
+# Replace the original missing values
+alldata$p450 <- ifelse(is.na(alldata$p450), completed_data$p450, alldata$p450)
+alldata$condition_factor <- ifelse(is.na(alldata$condition_factor), completed_data$condition_factor, alldata$condition_factor)
 
 ```
 
 ```{r}
-#Add biomarker layer to the geographical data
-sites_pp$marks <- data.frame(p450 = bdata$p450, 
-                             SOD = bdata$SOD)
-
+# check the data frame
+#summary(alldata)
+#str(alldata)
 ```
 
-### Two different ways to analyze any spatial clustering
-
-## K test, 1 of 2
-
-### Interpretation- the clustering of the black, red, and green lines (isotropic, and two transformations) lie significanlty above the blue line, the Poisson distribution line. This means that the biomarker data is more clustered than random. The proximity of the black, red and green lines show agreement across the isotropic and transformation analyses.
-
+# K-means clustering
+## This spatial analysis test puts the sites into three (because I chose 3 and not 4) clusters that are distinct from the other clusters based on averaging the data to find centroid values.
 ```{r}
+library(dplyr)
 
-K_result <- Kest(sites_pp)
-print(plot(K_result))
+# Prepare the data for clustering - only numeric columns should be included
+clustering_data <- alldata %>%
+  select(p450, SOD, condition_factor, avg_thickness) %>%
+  na.omit()  # Removing rows with NA values
+
+# Scale the data
+clustering_data <- scale(clustering_data)
+
+# Perform K-means clustering with a chosen number of clusters, let's say 3 for this example
+set.seed(123)  # Setting seed for reproducibility
+kmeans_result <- kmeans(clustering_data, centers = 3)
+
+# Add the cluster assignments to the original data
+alldata$cluster <- kmeans_result$cluster[match(rownames(clustering_data), rownames(alldata))]
+
+# Now let's list the unique site names within each cluster
+clustered_sites <- alldata %>%
+  select(site_name, cluster) %>%
+  group_by(cluster) %>%
+  summarise(unique_sites = list(unique(site_name)))  # Using list to keep it all within one dataframe
+
+print(clustered_sites)
+
+# If you want to save the result to a CSV
+#write_csv(clustered_sites, "clustered_sites.csv")
 
 ```
 
-## PPM model, 2 of 2
-
-### Interpretation- I need to dig further to see what this means, I am following a GIS/ Geospatial tutorial and wanted to be able to make the process work.
-
+# Defining the centroid, defining the clusters.
+### these centroids define each cluster
 ```{r}
+library(dplyr)
 
-# Fit a point process model
-#ppm_model <- ppm(sites_pp ~ p450)
-#summary(ppm_model)
+# Selecting and scaling the columns (standardize them because K-means is affected by scale)
+data_selected <- alldata %>% 
+  select(p450, SOD, condition_factor, avg_thickness) %>% 
+  na.omit() %>%  # Removing any NA values to avoid errors in kmeans
+  scale()  # Scale the data to standardize
 
+# Perform K-means clustering, let's say we determine that there are 3 clusters
+set.seed(123)  # For reproducibility
+kmeans_result <- kmeans(data_selected, centers = 3)
 
-#option 2
-sites_pp$marks <- as.factor(cut(sites_pp$marks$p450, breaks = quantile(sites_pp$marks$p450, probs = 0:3/3), include.lowest = TRUE))
+# The centroids (cluster centers) are stored in the 'centers' attribute
+centroids <- kmeans_result$centers
 
-# Now run the ppm model
-ppm_model <- ppm(sites_pp ~ marks, covariates = NULL)
-print(summary(ppm_model))
+# Print the centroids
+print(centroids)
 
 ```
 
-# Spatial Autocorrelation Analysis
 
+# Kruskal-Wallis & kruskalmc post hoc tests to verify if there are any statistically significant differences between the clusters
 ```{r}
-#Load packages & prep dataframe for "sf" package
-#install.packages(spdep)
-#install.packages("/Users/cmantegna/Downloads/spdep_1.2-8.tar.gz", repos = NULL, type = "source")
-library(sf)
-library(sp)
-library(spdep)
+library(dplyr)
+library(pgirmess)
 
-sf_data <- st_as_sf(bdata, coords = c("longitude", "latitude"), crs = 4326)
+# Perform Kruskal-Wallis test for each variable
+kw_p450 <- kruskal.test(p450 ~ cluster, data = alldata)
+kw_SOD <- kruskal.test(SOD ~ cluster, data = alldata)
+kw_condition_factor <- kruskal.test(condition_factor ~ cluster, data = alldata)
+kw_avg_thickness <- kruskal.test(avg_thickness ~ cluster, data = alldata)
 
-# Take a look at your sf object
-print(sf_data)
+# Print the Kruskal-Wallis test results
+print(kw_p450)
+print(kw_SOD)
+print(kw_condition_factor)
+print(kw_avg_thickness)
 
 ```
-
+# p450 kruskalmc post hoc
 ```{r}
+#p450
 
-# Create a spatial weights matrix to assess nearest neighbors and distance-based neighbors to define spatial relationships using Moran's I and Geary's C.
-# You can extract the matrix of coordinates using st_coordinates
-coords <- st_coordinates(sf_data)
-
-# Now use the knearneigh function from the spdep package directly on the coordinates
-neighbors <- knn2nb(knearneigh(coords, k = 4))
-
-# Then convert the neighbors into spatial weights with nb2listw
-weights <- nb2listw(neighbors, style = "W")
+if(kw_p450$p.value < 0.05) {
+  posthoc_p450 <- kruskalmc(p450 ~ cluster, data = alldata)
+  print(posthoc_p450)
+}
 
 ```
 
-#### Moran I and Geary's C statistical analyses tests if we can cluster or not- cluster sites based on the if the distribution of biomarker values is random or non-random. This helps clarify any biomarker patterns that are unclear by visual analysis - at least to me. If it's unclear to me, I assume it will be unclear to those with less familiarity of the data.
-
-## Run Moran's I and Geary's C for p450
-
+# SOD kruskalmc post hoc
 ```{r}
+#SOD
 
-coords <- st_coordinates(sf_data)
-
-# Now use the knearneigh function from the spdep package directly on the coordinates
-neighbors <- knn2nb(knearneigh(coords, k = 4))
-
-# Then convert the neighbors into spatial weights with nb2listw
-weights <- nb2listw(neighbors, style = "W")
-
-geary_result <- geary.test(sf_data$p450, weights)
-print(geary_result)
+if(kw_SOD$p.value < 0.05) {
+  posthoc_SOD <- kruskalmc(SOD ~ cluster, data = alldata)
+  print(posthoc_SOD)
+}
 
 ```
 
-## Run Moran's I and Geary's C for SOD
-
+# condition_factor kruskalmc post hoc
+### no statistically significant difference
 ```{r}
+#condition_factor
 
-moran_result <- moran.test(sf_data$SOD, weights)
-print(moran_result)
-
-geary_result <- geary.test(sf_data$SOD, weights)
-print(geary_result)
+if(kw_condition_factor$p.value < 0.05) {
+  posthoc_condition_factor <- kruskalmc(condition_factor ~ cluster, data = alldata)
+  print(posthoc_condition_factor)
+}
 
 ```
 
-# Spatial Regression Analysis
-
+# avg_thickness kruskalmc post hoc
 ```{r}
-#library(spdep)
-#install.packages("sphet")
-library(sphet)
+#avg_thickness
 
-```
-
-## Spatial Lag Model
-```{r}
-library(spatialreg)
-#accounts for spatial dependence in the dependent variable
-slm_model <- lagsarlm(p450 ~ SOD, data = sf_data, listw = weights)
-print(summary(slm_model))
-
-```
-## Spatial Error Model
-```{r}
-#accounts for the spatial autocorrelation in the error term
-sem_model <- errorsarlm(p450 ~ SOD, data = sf_data, listw = weights)
-print(summary(sem_model))
-
-
-```
-## Spatial Durbin Model
-```{r}
-#install.packages("spatialreg")
-library(spatialreg)
-
-#combines SLM and SEM
-sdm_model <- spatialreg::lagsarlm(p450 ~ SOD, data = sf_data, listw = weights, type="mixed")
-print(summary(sdm_model))
-
-```
-# Local Indicator of Spatial Association (LISA)
-```{r}
-#install.packages("spdep")
-#install.packages("sf")  # for spatial data handling
-#install.packages("tmap")  # for visualization
-library(spdep)
-library(sf)
-library(tmap)
-
-```
-
-```{r}
-
-lisa_values <- localmoran(sf_data$p450, weights)
-
-```
-
-```{r}
-
-# Add LISA values and p-values to your spatial data
-sf_data$lisa <- lisa_values[,1]  # Local Moran's I values
-sf_data$p.value <- lisa_values[,4]  # p-values for significance
-
-# Use tmap for plotting
-library(tmap)
-
-# Define breaks for significance levels, e.g., 0.05 for 95% confidence
-sig_breaks <- c(0, 0.05, 1)  # Change according to your significance level
-
-# Create a map
-tm_shape(sf_data) +
-  tm_dots(col = "lisa", size = 0.5, palette = "-RdBu", title = "LISA Values") +
-  tm_layout(legend.position = c("left", "top")) +
-  tm_shape(sf_data[sf_data$p.value <= 0.05, ]) +  # Add a layer for significant points only
-  tm_dots(col = "red", size = 0.7, title = "Significant Clusters") +
-  tm_layout(main.title = "LISA Cluster Map", main.title.position = "center")
-
-```
-
-# Plot the LISA data over the map from the base Washington State map found in file: 03-map.rmd
-```{r}
-library(sf)
-library(viridis)
-library(rnaturalearth)
-library(rnaturalearthdata)
-library(ggplot2)
-
-```
-
-```{r}
-
-world <- ne_states(country = "united states of america", returnclass = "sf")
-washington_map <- world[world$name == "Washington", ]
-
-pmap <- ggplot() + 
-  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
-  theme_minimal() +
-  labs(title = "Washington State Map")
-
-print(pmap)
+if(kw_avg_thickness$p.value < 0.05) {
+  posthoc_avg_thickness <- kruskalmc(avg_thickness ~ cluster, data = alldata)
+  print(posthoc_avg_thickness)
+}
 
 ```
 
 
-```{r}
-# Ensure CRS compatibility
-sf_data <- st_transform(sf_data, st_crs(washington_map))
-
-# Prepare the base map
-pmap <- ggplot() + 
-  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
-  theme_minimal() +
-  labs(title = "Washington State Map")
-
-# Add the LISA points layer to the map
-complete_map <- pmap + 
-  geom_sf(data = sf_data, aes(color = lisa), size = 2) +
-  scale_color_viridis_c(option = "D", direction = -1, name = "LISA Values")
-
-# Display the combined map
-print(complete_map)
-
-```
-
-```{r}
-#zoom in on the puget sound region
-# Assuming you know the bounding box coordinates you want to zoom in on
-# For example: xmin, xmax, ymin, ymax
-xlim <- c(-124, -122)  # longitude bounds
-ylim <- c(47, 49)  # latitude bounds
-
-complete_map <- pmap + 
-  geom_sf(data = sf_data, aes(color = lisa), size = 2) +
-  scale_color_viridis_c(option = "D", direction = -1, name = "LISA Values") +
-  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)
-
-print(complete_map)
-
-
-```
-
-# Next steps are completing the interpretations and then using this same code path to review the PAH analytes

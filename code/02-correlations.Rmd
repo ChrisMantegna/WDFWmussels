@@ -2,10 +2,10 @@
 title: "02- Correlations"
 output:
   html_document: 
-    fig_width: 8
+    fig_width: 9
   pdf_document: 
-    fig_width: 8
-    fig_height: 5
+    fig_width: 20
+    fig_height: 9
 ---
 
 # Directory and doc rules
@@ -17,8 +17,8 @@ knitr::opts_chunk$set(
   eval = TRUE,         # Evaluate code chunks
   warning = FALSE,     # Hide warnings
   message = FALSE,     # Hide messages
-  fig.width = 8,       # Set plot width in inches
-  fig.height = 5,      # Set plot height in inches
+  fig.width = 20,       # Set plot width in inches
+  fig.height = 9,      # Set plot height in inches
   fig.align = "center" # Align plots to the center
 )
 

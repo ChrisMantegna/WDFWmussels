@@ -372,3 +372,486 @@ colnames(alldata)[22:57] <- new_colnames
 print(colnames(alldata))
 
 ```
+
+# Mapping both biomarkers
+```{r}
+
+# Assuming washington_map is your sf object for Washington State
+ggplot(data = washington_map) + 
+  geom_sf(fill = "lightgrey", color = "white") +
+  geom_point(data = data, aes(x = longitude, y = latitude, color = p450, size = SOD), alpha = 0.6) +
+  scale_color_viridis(name = "p450", option = "D") +
+  scale_size_continuous(name = "SOD", range = c(2, 6)) +
+  theme_minimal() +
+  labs(title = "Washington State: p450 and SOD")
+
+```
+
+# Mapping with shapes to differenciate the biomarkers - change dataframe to accomodate
+```{r}
+
+long_data <- pivot_longer(data, cols = c(SOD, p450), names_to = "type", values_to = "value")
+
+```
+
+# plotting SOD by sites
+```{r}
+# data adjust to plot the 95%
+# remove SOD outside of .0025 and 51.58 & p450 outside of 291641 and 5271798
+data$SOD[data$SOD <= .0030] <- NA
+data$SOD[data$SOD > 51.53] <- NA
+
+data$SOD[data$p450 <= 291641] <- NA
+data$SOD[data$p450 >= 5271798] <- NA
+
+# Plot the SOD values in a boxplot with ordered site names
+SODboxplot<- ggplot(data, aes(x = site_name, y = SOD)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+print(SODboxplot)
+```
+
+# plotting corrected p450
+```{r}
+# data adjust to plot the 95%
+# remove SOD outside of .0025 and 51.58 & p450 outside of 291641 and 5271798
+
+
+data$p450[data$p450 < 291641] <- NA
+data$p450[data$p450 > 5271800] <- NA
+
+# Plot the SOD values in a boxplot with ordered site names
+p450boxplot<- ggplot(data, aes(x = site_name, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+print(p450boxplot)
+```
+
+# fix data to the 95%
+```{r}
+#fix data set to use the 95%
+alldata$SOD[alldata$SOD <= .0030] <- .0030
+alldata$SOD[alldata$SOD > 51.53] <- 51.53
+
+alldata$p450[alldata$p450 < 291641] <- 291641
+alldata$p450[alldata$p450 > 5271800] <- 5271800
+
+alldata$condition_factor[is.na(alldata$condition_factor)] <- 0.001
+alldata$avg_thickness[is.na(alldata$avg_thickness)] <- 0.001
+
+
+```
+
+
+
+
+# anova for p450
+```{r}
+
+#anova
+model1 <- lm(p450 ~ SumBDEs + SumDDTs + SumPAHs16 + SumPAHsHMW + SumPCBs2x17 + Zinc, data = alldata)
+
+#summary(model)
+p450anova1<- anova(model1)
+print(p450anova1)
+
+model2<- lm(p450~ Zinc + cadmium + copper + lead + mercuryTotal, data = alldata)
+p450anova2<- anova(model2)
+print(p450anova2)
+
+# Save 
+#write.csv(p450anova, "/Users/cmantegna/Documents/WDFWmussels/output/p450anova.csv")
+
+```
+#anova for p450 and SOD, condition factor, avg_thickness
+```{r}
+
+model <- lm(p450 ~ site_number + SOD + condition_factor + avg_thickness, data = alldata)
+
+#summary(model)
+cfanova<- anova(model)
+print(cfanova)
+
+# Save 
+#write.csv(p450analyteanova, "/Users/cmantegna/Documents/WDFWmussels/output/p450analyteanova.csv")
+
+```
+#anova for SOD and p450, condition factor, avg_thickness
+```{r}
+
+model <- lm(SOD ~ site_number + p450 + condition_factor + avg_thickness, data = alldata)
+
+thickanova<- anova(model)
+print(thickanova)
+```
+# Kruskal- Wallis Test
+```{r}
+kruskal.test(p450 ~ SOD, data = alldata)
+
+```
+
+# anova for SOD
+```{r}
+#fix data set to use the 95%
+alldata$SOD[alldata$SOD <= .0030] <- .0030
+alldata$SOD[alldata$SOD > 51.53] <- 51.53
+
+alldata$p450[alldata$p450 < 291641] <- 291641
+alldata$p450[alldata$p450 > 5271800] <- 5271800
+
+#anova
+
+model <- lm(SOD ~ SumBDEs + SumDDTs + SumPAHs16 + SumPAHsHMW + SumPCBs2x17, data = alldata)
+
+#summary(model)
+print(SODanova)
+SODanova<- anova(model)
+
+# Save 
+write.csv(SODanova, "/Users/cmantegna/Documents/WDFWmussels/output/SODanova.csv")
+
+```
+# trying to fix column names so i can run an anova on the individual analytes against the biomarkers.
+```{r}
+
+#rename columns with characters in them
+colnames(all_pah_df)[colnames(all_pah_df) == "benz[a]anthracene" ] <- "benzaanthracene"
+colnames(all_pah_df)[colnames(all_pah_df) == "benzo[a]pyrene" ] <- "benzoapyrene"
+colnames(all_pah_df)[colnames(all_pah_df) == "benzo[b]fluoranthene" ] <- "benzobfluoranthene"
+colnames(all_pah_df)[colnames(all_pah_df) == "benzo[e]pyrene" ] <- "benzoepyrene"
+colnames(all_pah_df)[colnames(all_pah_df) == "benzo[ghi]perylene" ] <- "benzoghiperylene"
+colnames(all_pah_df)[colnames(all_pah_df) == "benzo[k]fluoranthene" ] <- "benzokfluoranthene"
+colnames(all_pah_df)[colnames(all_pah_df) == "dibenz[a,h]anthracene" ] <- "dibenzahanthracene"
+colnames(all_pah_df)[colnames(all_pah_df) == "indeno[1,2,3-cd]pyrene" ] <- "indeno123cdpyrene"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-benzanthracene/schrysenes" ] <- "C1benzanthraceneschrysenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-dibenzothiophenes" ] <- "C1dibenzothiophenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-fluoranthenes/pyrenes" ] <- "C1fluoranthenespyrenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-fluorenes" ] <- "C1fluorenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-naphthalenes" ] <- "C1naphthalenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C1-phenanthrenes/anthracenes" ] <- "C1phenanthrenesanthracenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-benzanthracenes/chrysenes" ] <- "C2benzanthraceneschrysenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-dibenzothiophenes" ] <- "C2dibenzothiophenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-fluoranthenes/pyrenes" ] <- "C2fluoranthenespyrenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-fluorenes" ] <- "C2fluorenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-naphthalenes" ] <- "C2naphthalenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C2-phenanthrenes/anthracenes" ] <- "C2phenanthrenesanthracenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-benzanthracenes/chrysenes" ] <- "C3benzanthraceneschrysenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-dibenzothiophenes" ] <- "C3dibenzothiophenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-fluoranthenes/pyrenes" ] <- "C3fluoranthenespyrenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-fluorenes" ] <- "C3fluorenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-naphthalenes" ] <- "C3naphthalenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C3-phenanthrenes/anthracenes" ] <- "C3phenanthrenesanthracenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C4-benzanthracenes/chrysenes" ] <- "C4benzanthraceneschrysenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C4-dibenzothiophenes" ] <- "C4dibenzothiophenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C4-fluoranthenes/pyrenes" ] <- "C4fluoranthenespyrenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C4-naphthalenes" ] <- "C4naphthalenes"
+colnames(all_pah_df)[colnames(all_pah_df) == "C4-phenanthrenes/anthracenes" ] <- "C4phenanthrenesanthracenes" 
+
+```
+
+
+
+```{r}
+
+ggplot(data = washington_map) + 
+  geom_sf(fill = "lightgrey", color = "white") +
+  geom_point(data = long_data, aes(x = longitude, y = latitude, color = value, shape = type), alpha = 0.6, size = 2) +
+  scale_color_viridis(name = "value", option = "C") +
+  scale_shape_manual(values = c("SOD" = 16, "p450" = 17)) + # 16: dot, 17: triangle
+  theme_minimal() +
+  labs(title = "Washington State: SOD & p450")
+
+```
+
+# Mapping with Leaflet instead of ggplot; this is interactive and not helpful
+```{r}
+
+if(!require(leaflet)) install.packages("leaflet")
+library(leaflet)
+
+leaflet(data) %>% addTiles() %>%
+  addCircles(lng = ~longitude, lat = ~latitude, color = ~colorBin(c("red", "yellow", "green"), p450, bins = 3), radius = 500) %>%
+  addCircles(lng = ~longitude, lat = ~latitude, color = ~colorBin(c("blue", "white", "black"), SOD, bins = 3), radius = 200)
+
+```
+
+# Mapping with Plotly, also interactive and plotted on a grid that I don't understand
+```{r}
+if(!require(plotly)) install.packages("plotly")
+library(plotly)
+
+# Assuming data is your dataframe with lat, lon, p450, and SOD columns
+fig <- plot_ly() %>%
+  add_trace(data = data, x = ~longitude, y = ~latitude, type = 'scatter', mode = 'markers',
+            marker = list(size = 10, color = ~p450, colorscale = 'Viridis', showscale = TRUE)) %>%
+  add_trace(data = data, x = ~longitude, y = ~latitude, type = 'scatter', mode = 'markers',
+            marker = list(size = 10, color = ~SOD, colorscale = 'Cividis', showscale = TRUE))
+
+fig
+
+```
+
+## PPM model, 2 of 2
+
+### Interpretation- I need to dig further to see what this means, I am following a GIS/ Geospatial tutorial and wanted to be able to make the process work.
+
+```{r}
+
+# Fit a point process model
+ppm_model <- ppm(sites_pp ~ p450)
+summary(ppm_model)
+
+
+#option 2
+#sites_pp$marks <- as.factor(cut(sites_pp$marks$p450, breaks = quantile(sites_pp$marks$p450, probs = 0:3/3), include.lowest = TRUE))
+
+# Now run the ppm model
+#ppm_model <- ppm(sites_pp ~ marks, covariates = NULL)
+#print(summary(ppm_model))
+
+```
+
+# Spatial Autocorrelation Analysis
+
+```{r}
+#Load packages & prep dataframe for "sf" package
+#install.packages(spdep)
+#install.packages("/Users/cmantegna/Downloads/spdep_1.2-8.tar.gz", repos = NULL, type = "source")
+library(sf)
+library(sp)
+library(spdep)
+
+sf_data <- st_as_sf(bdata, coords = c("longitude", "latitude"), crs = 4326)
+
+# Take a look at your sf object
+print(sf_data)
+
+```
+
+```{r}
+
+# Create a spatial weights matrix to assess nearest neighbors and distance-based neighbors to define spatial relationships using Moran's I and Geary's C.
+# You can extract the matrix of coordinates using st_coordinates
+coords <- st_coordinates(sf_data)
+
+# Now use the knearneigh function from the spdep package directly on the coordinates
+neighbors <- knn2nb(knearneigh(coords, k = 4))
+
+# Then convert the neighbors into spatial weights with nb2listw
+weights <- nb2listw(neighbors, style = "W")
+
+```
+
+#### Moran I and Geary's C statistical analyses tests if we can cluster or not- cluster sites based on the if the distribution of biomarker values is random or non-random. This helps clarify any biomarker patterns that are unclear by visual analysis - at least to me. If it's unclear to me, I assume it will be unclear to those with less familiarity of the data.
+
+## Run Moran's I and Geary's C for p450
+
+```{r}
+
+coords <- st_coordinates(sf_data)
+
+# Now use the knearneigh function from the spdep package directly on the coordinates
+neighbors <- knn2nb(knearneigh(coords, k = 4))
+
+# Then convert the neighbors into spatial weights with nb2listw
+weights <- nb2listw(neighbors, style = "W")
+
+geary_result <- geary.test(sf_data$p450, weights)
+print(geary_result)
+
+```
+
+## Run Moran's I and Geary's C for SOD
+
+```{r}
+
+moran_result <- moran.test(sf_data$SOD, weights)
+print(moran_result)
+
+geary_result <- geary.test(sf_data$SOD, weights)
+print(geary_result)
+
+```
+
+# Spatial Regression Analysis
+
+```{r}
+#library(spdep)
+#install.packages("sphet")
+library(sphet)
+
+```
+
+## Spatial Lag Model
+```{r}
+library(spatialreg)
+#accounts for spatial dependence in the dependent variable
+slm_model <- lagsarlm(p450 ~ SOD, data = sf_data, listw = weights)
+print(summary(slm_model))
+
+```
+## Spatial Error Model
+```{r}
+#accounts for the spatial autocorrelation in the error term
+sem_model <- errorsarlm(p450 ~ SOD, data = sf_data, listw = weights)
+print(summary(sem_model))
+
+
+```
+## Spatial Durbin Model
+```{r}
+#install.packages("spatialreg")
+library(spatialreg)
+
+#combines SLM and SEM
+sdm_model <- spatialreg::lagsarlm(p450 ~ SOD, data = sf_data, listw = weights, type="mixed")
+print(summary(sdm_model))
+
+```
+# Local Indicator of Spatial Association (LISA)
+```{r}
+#install.packages("spdep")
+#install.packages("sf")  # for spatial data handling
+#install.packages("tmap")  # for visualization
+library(spdep)
+library(sf)
+library(tmap)
+
+```
+
+```{r}
+
+lisa_values <- localmoran(sf_data$p450, weights)
+
+```
+
+```{r}
+
+# Add LISA values and p-values to your spatial data
+sf_data$lisa <- lisa_values[,1]  # Local Moran's I values
+sf_data$p.value <- lisa_values[,4]  # p-values for significance
+
+# Use tmap for plotting
+library(tmap)
+
+# Define breaks for significance levels, e.g., 0.05 for 95% confidence
+sig_breaks <- c(0, 0.05, 1)  # Change according to your significance level
+
+# Create a map
+tm_shape(sf_data) +
+  tm_dots(col = "lisa", size = 0.5, palette = "-RdBu", title = "LISA Values") +
+  tm_layout(legend.position = c("left", "top")) +
+  tm_shape(sf_data[sf_data$p.value <= 0.05, ]) +  # Add a layer for significant points only
+  tm_dots(col = "red", size = 0.7, title = "Significant Clusters") +
+  tm_layout(main.title = "LISA Cluster Map", main.title.position = "center")
+
+```
+
+# Plot the LISA data over the map from the base Washington State map found in file: 03-map.rmd
+```{r}
+library(sf)
+library(viridis)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(ggplot2)
+
+```
+
+```{r}
+
+world <- ne_states(country = "united states of america", returnclass = "sf")
+washington_map <- world[world$name == "Washington", ]
+
+pmap <- ggplot() + 
+  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
+  theme_minimal() +
+  labs(title = "Washington State Map")
+
+print(pmap)
+
+```
+
+
+```{r}
+# Ensure CRS compatibility
+sf_data <- st_transform(sf_data, st_crs(washington_map))
+
+# Prepare the base map
+pmap <- ggplot() + 
+  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
+  theme_minimal() +
+  labs(title = "Washington State Map")
+
+# Add the LISA points layer to the map
+complete_map <- pmap + 
+  geom_sf(data = sf_data, aes(color = lisa), size = 2) +
+  scale_color_viridis_c(option = "D", direction = -1, name = "LISA Values")
+
+# Display the combined map
+print(complete_map)
+
+```
+
+```{r}
+#zoom in on the puget sound region
+# Assuming you know the bounding box coordinates you want to zoom in on
+# For example: xmin, xmax, ymin, ymax
+xlim <- c(-124, -122)  # longitude bounds
+ylim <- c(47, 49)  # latitude bounds
+
+complete_map <- pmap + 
+  geom_sf(data = sf_data, aes(color = lisa), size = 2) +
+  scale_color_viridis_c(option = "D", direction = -1, name = "LISA Values") +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)
+
+print(complete_map)
+
+
+```
+
+# Next steps are completing the interpretations and then using this same code path to review the PAH analytes
+
+# Point pattern analysis
+
+#### Exploratory data analysis tool that looks to interpret the distribution of my values across geographic space - this is the first step in geospatial analysis, the Moran and Geary C statistical tests are what follow to support or debate the hypothesis formed from this step.
+
+```{r}
+#install.packages("spatstat")
+library(spatstat)
+
+#pull out lat, long, site_name, and biomarkers as a dataframe for the following work.
+
+select <- c("latitude", "longitude", "site_name", "p450", "SOD", "condition_factor", "avg_thickness")
+
+# Create a new data frame with only the specified columns
+bdata <- data[,select]
+
+# Create the kind of data frame that works in spatstat package
+sites_pp <- ppp(x = bdata$longitude, y = bdata$latitude, 
+                window = owin(xrange = range(bdata$longitude), 
+                              yrange = range(bdata$latitude)))
+
+```
+
+```{r}
+#Add biomarker layer to the geographical data
+sites_pp$marks <- data.frame(p450 = bdata$p450, 
+                             SOD = bdata$SOD)
+
+```
+
+### Two different ways to analyze any spatial clustering
+
+## K test, 1 of 2
+
+### Interpretation- the clustering of the black, red, and green lines (isotropic, and two transformations) lie significanlty above the blue line, the Poisson distribution line. This means that the biomarker data is more clustered than random. The proximity of the black, red and green lines show agreement across the isotropic and transformation analyses.
+
+```{r}
+
+K_result <- Kest(sites_pp)
+print(plot(K_result))
+
+```
+

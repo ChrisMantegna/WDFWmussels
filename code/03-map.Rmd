@@ -4,8 +4,8 @@ output:
   html_document:
     df_print: paged
   pdf_document: 
-    fig_width: 12
-    fig_height: 8
+    fig_width: 20
+    fig_height: 9
 ---
 
 
@@ -18,8 +18,8 @@ knitr::opts_chunk$set(
   eval = TRUE,         # Evaluate code chunks
   warning = FALSE,     # Hide warnings
   message = FALSE,     # Hide messages
-  fig.width = 12,       # Set plot width in inches
-  fig.height = 8,      # Set plot height in inches
+  fig.width = 20,       # Set plot width in inches
+  fig.height = 9,      # Set plot height in inches
   fig.align = "center" # Align plots to the center
 )
 
@@ -42,37 +42,38 @@ library(rnaturalearthdata)
 ```
 
 # Load data
-
+Weight = mg\
+Length, width, height = mm\
+p450, SOD = activity/ (mg/protein)\
+Condition factor, economic factor = unitless
 ```{r}
 
 getwd()
 #data has all sites, coordinates, p450, sod, condition factor, economic factor data
 data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
 
-```
-```{r}
-
-as.numeric("weight_initial", "weight_change", "length", "width", "height", "condition_factor", "economic_index")
+#alldata has the site names, biomarkers, condition factor, average thickness and analyte data - each row is an individual sample
+alldata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
 
 ```
 
-# 0's and negative number management
-
-SOD values that are negative are changed to 0 signifying that the value was undetectable.\
-p450 values that are 0 are missing, not actual 0's.
+## fix zero's in the data frame and alldata frame
 
 ```{r}
+
 # Data contains 0's and must be adjusted in this order to preserve all usable data.
 
 #sod
 #replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
 data$SOD[data$SOD <= 0] <- 0.0025
-
+alldata$SOD[alldata$SOD <= 0] <- 0.0025
 #p450
 #remove any p450 values that are 0 - those are true 0's not non-detectable. I am replacing with na so I don't lose the entire row of data, including the SOD values.
 data$p450[data$p450 <= 0] <- NA
-```
+alldata$p450[alldata$p450 <= 0] <- NA
 
+#write.csv(alldata, "/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
+```
 
 # Map of Washington State
 ```{r}
@@ -81,12 +82,13 @@ washington_map <- world[world$name == "Washington", ]
 
 
 ```
-# p450 map
+
+# p450 map- WA state
 ```{r}
 
 pmap<- ggplot() + 
   geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
-  geom_point(data = data, aes(x = longitude, y = latitude, color = p450), size = 1) +
+  geom_point(data = alldata, aes(x = longitude, y = latitude, color = p450), size = 2) +
   scale_color_viridis(option = "C", name = "p450") +
   theme_minimal() +
   labs(title = "Washington State - p450 Data")
@@ -95,12 +97,61 @@ print(pmap)
 ggsave(plot=pmap, filename="/Users/cmantegna/Documents/WDFWmussels/output/p450map.png", width=15, height=8)
 ```
 
-# SOD map
+# p450 map - Puget Sound
+```{r}
+#zoom into puget sound region & note the legend, lighter colors are higher values
+xlim <- c(-124, -122)  # longitude bounds
+ylim <- c(47, 49)  # latitude bounds
+
+sodpugetsound<- ggplot() + 
+  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
+  geom_point(data = alldata, aes(x = longitude, y = latitude, color = p450), size = 3) +
+  scale_color_viridis(option = "C", name = "SOD") +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)+
+  theme_minimal() +
+  labs(title = "Washington State - SOD Data")
+
+print(sodpugetsound)
+```
+
+# p450 map by regions
+### fix the coordinates and maps, not a priority 4/21
+```{r}
+library(ggplot2)
+library(dplyr)
+library(sf)  
+
+# Prepare data for plotting by adding a region column
+data <- alldata %>%
+  mutate(
+    region = case_when(
+      latitude >= 47.78184 & latitude <= 48.8208 ~ "North",
+      latitude >= 47.38566 & latitude <= 47.7296079 ~ "Central",
+      latitude >= 47.052362 & latitude <= 47.3539722 ~ "South"
+    )
+  ) %>%
+  filter(!is.na(region) & !is.na(p450))
+
+# Plotting p450 values by region over the Washington state map
+ggplot(data = data, aes(x = longitude, y = latitude, color = p450)) +
+  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
+  geom_point() +
+  scale_color_gradient(low = "blue", high = "red") +
+  facet_wrap(~ region) +
+  labs(title = "p450 Levels by Region in Washington State",
+       x = "Longitude",
+       y = "Latitude",
+       color = "p450 Levels") +
+  theme_minimal()
+```
+
+
+# SOD map- WA state
 ```{r}
 
 smap<- ggplot() + 
   geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
-  geom_point(data = data, aes(x = longitude, y = latitude, color = SOD), size = 3) +
+  geom_point(data = alldata, aes(x = longitude, y = latitude, color = SOD), size = 3) +
   scale_color_viridis(option = "C", name = "SOD") +
   theme_minimal() +
   labs(title = "Washington State - SOD Data")
@@ -110,28 +161,7 @@ ggsave(plot=smap, filename="/Users/cmantegna/Documents/WDFWmussels/output/sodmap
 
 ```
 
-# Mapping both biomarkers
-```{r}
-
-# Assuming washington_map is your sf object for Washington State
-ggplot(data = washington_map) + 
-  geom_sf(fill = "lightgrey", color = "white") +
-  geom_point(data = data, aes(x = longitude, y = latitude, color = p450, size = SOD), alpha = 0.6) +
-  scale_color_viridis(name = "p450", option = "D") +
-  scale_size_continuous(name = "SOD", range = c(2, 6)) +
-  theme_minimal() +
-  labs(title = "Washington State: p450 and SOD")
-
-```
-
-# Mapping with shapes to differenciate the biomarkers - change dataframe to accomodate
-```{r}
-
-long_data <- pivot_longer(data, cols = c(SOD, p450), names_to = "type", values_to = "value")
-
-```
-
-# plot zoomed in SOD
+#SOD map -  Puget Sound
 ```{r}
 #zoom into puget sound region & note the legend, lighter colors are higher values
 xlim <- c(-124, -122)  # longitude bounds
@@ -139,7 +169,7 @@ ylim <- c(47, 49)  # latitude bounds
 
 sodpugetsound<- ggplot() + 
   geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
-  geom_point(data = data, aes(x = longitude, y = latitude, color = SOD), size = 3) +
+  geom_point(data = alldata, aes(x = longitude, y = latitude, color = SOD), size = 3) +
   scale_color_viridis(option = "C", name = "SOD") +
   coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)+
   theme_minimal() +
@@ -147,215 +177,35 @@ sodpugetsound<- ggplot() +
 
 print(sodpugetsound)
 ```
-# zoomed in ps plot for p450
-```{r}
-#zoom into puget sound region & note the legend, lighter colors are higher values
-xlim <- c(-124, -122)  # longitude bounds
-ylim <- c(47, 49)  # latitude bounds
 
-sodpugetsound<- ggplot() + 
+# SOD map by regions
+### fix the coordinates and maps, not a priority 4/21
+```{r}
+library(ggplot2)
+library(dplyr)
+library(sf)  
+
+# Prepare data for plotting by adding a region column
+data <- alldata %>%
+  mutate(
+    region = case_when(
+      latitude >= 47.78184 & latitude <= 48.8208 ~ "North",
+      latitude >= 47.38566 & latitude <= 47.7296079 ~ "Central",
+      latitude >= 47.052362 & latitude <= 47.3539722 ~ "South"
+    )
+  ) %>%
+  filter(!is.na(region) & !is.na(SOD))
+
+# Plotting p450 values by region over the Washington state map
+ggplot(data = data, aes(x = longitude, y = latitude, color = SOD)) +
   geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
-  geom_point(data = data, aes(x = longitude, y = latitude, color = p450), size = 3) +
-  scale_color_viridis(option = "C", name = "SOD") +
-  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)+
-  theme_minimal() +
-  labs(title = "Washington State - SOD Data")
-
-print(sodpugetsound)
-```
-# plotting SOD by sites
-```{r}
-# data adjust to plot the 95%
-# remove SOD outside of .0025 and 51.58 & p450 outside of 291641 and 5271798
-data$SOD[data$SOD <= .0030] <- NA
-data$SOD[data$SOD > 51.53] <- NA
-
-data$SOD[data$p450 <= 291641] <- NA
-data$SOD[data$p450 >= 5271798] <- NA
-
-# Plot the SOD values in a boxplot with ordered site names
-SODboxplot<- ggplot(data, aes(x = site_name, y = SOD)) +
-  geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
-
-print(SODboxplot)
-```
-
-# plotting corrected p450
-```{r}
-# data adjust to plot the 95%
-# remove SOD outside of .0025 and 51.58 & p450 outside of 291641 and 5271798
-
-
-data$p450[data$p450 < 291641] <- NA
-data$p450[data$p450 > 5271800] <- NA
-
-# Plot the SOD values in a boxplot with ordered site names
-p450boxplot<- ggplot(data, aes(x = site_name, y = p450)) +
-  geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
-
-print(p450boxplot)
-```
-# fix data to the 95%
-```{r}
-#fix data set to use the 95%
-alldata$SOD[alldata$SOD <= .0030] <- .0030
-alldata$SOD[alldata$SOD > 51.53] <- 51.53
-
-alldata$p450[alldata$p450 < 291641] <- 291641
-alldata$p450[alldata$p450 > 5271800] <- 5271800
-
-alldata$condition_factor[is.na(alldata$condition_factor)] <- 0.001
-alldata$avg_thickness[is.na(alldata$avg_thickness)] <- 0.001
-
-
-```
-
-
-# anova for p450
-```{r}
-
-#anova
-model1 <- lm(p450 ~ SumBDEs + SumDDTs + SumPAHs16 + SumPAHsHMW + SumPCBs2x17 + Zinc, data = alldata)
-
-#summary(model)
-p450anova1<- anova(model1)
-print(p450anova1)
-
-model2<- lm(p450~ Zinc + cadmium + copper + lead + mercuryTotal, data = alldata)
-p450anova2<- anova(model2)
-print(p450anova2)
-
-# Save 
-#write.csv(p450anova, "/Users/cmantegna/Documents/WDFWmussels/output/p450anova.csv")
-
-```
-#anova for p450 and SOD, condition factor, avg_thickness
-```{r}
-
-model <- lm(p450 ~ site_number + SOD + condition_factor + avg_thickness, data = alldata)
-
-#summary(model)
-cfanova<- anova(model)
-print(cfanova)
-
-# Save 
-#write.csv(p450analyteanova, "/Users/cmantegna/Documents/WDFWmussels/output/p450analyteanova.csv")
-
-```
-#anova for SOD and p450, condition factor, avg_thickness
-```{r}
-
-model <- lm(SOD ~ site_number + p450 + condition_factor + avg_thickness, data = alldata)
-
-thickanova<- anova(model)
-print(thickanova)
-```
-# Kruskal- Wallis Test
-```{r}
-kruskal.test(p450 ~ SOD, data = alldata)
-
-```
-
-# anova for SOD
-```{r}
-#fix data set to use the 95%
-alldata$SOD[alldata$SOD <= .0030] <- .0030
-alldata$SOD[alldata$SOD > 51.53] <- 51.53
-
-alldata$p450[alldata$p450 < 291641] <- 291641
-alldata$p450[alldata$p450 > 5271800] <- 5271800
-
-#anova
-
-model <- lm(SOD ~ SumBDEs + SumDDTs + SumPAHs16 + SumPAHsHMW + SumPCBs2x17, data = alldata)
-
-#summary(model)
-print(SODanova)
-SODanova<- anova(model)
-
-# Save 
-write.csv(SODanova, "/Users/cmantegna/Documents/WDFWmussels/output/SODanova.csv")
-
-```
-# trying to fix column names so i can run an anova on the individual analytes against the biomarkers.
-```{r}
-
-#rename columns with characters in them
-colnames(all_pah_df)[colnames(all_pah_df) == "benz[a]anthracene" ] <- "benzaanthracene"
-colnames(all_pah_df)[colnames(all_pah_df) == "benzo[a]pyrene" ] <- "benzoapyrene"
-colnames(all_pah_df)[colnames(all_pah_df) == "benzo[b]fluoranthene" ] <- "benzobfluoranthene"
-colnames(all_pah_df)[colnames(all_pah_df) == "benzo[e]pyrene" ] <- "benzoepyrene"
-colnames(all_pah_df)[colnames(all_pah_df) == "benzo[ghi]perylene" ] <- "benzoghiperylene"
-colnames(all_pah_df)[colnames(all_pah_df) == "benzo[k]fluoranthene" ] <- "benzokfluoranthene"
-colnames(all_pah_df)[colnames(all_pah_df) == "dibenz[a,h]anthracene" ] <- "dibenzahanthracene"
-colnames(all_pah_df)[colnames(all_pah_df) == "indeno[1,2,3-cd]pyrene" ] <- "indeno123cdpyrene"
-colnames(all_pah_df)[colnames(all_pah_df) == "C1-benzanthracene/schrysenes" ] <- "C1benzanthraceneschrysenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C1-dibenzothiophenes" ] <- "C1dibenzothiophenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C1-fluoranthenes/pyrenes" ] <- "C1fluoranthenespyrenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C1-fluorenes" ] <- "C1fluorenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C1-naphthalenes" ] <- "C1naphthalenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C1-phenanthrenes/anthracenes" ] <- "C1phenanthrenesanthracenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C2-benzanthracenes/chrysenes" ] <- "C2benzanthraceneschrysenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C2-dibenzothiophenes" ] <- "C2dibenzothiophenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C2-fluoranthenes/pyrenes" ] <- "C2fluoranthenespyrenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C2-fluorenes" ] <- "C2fluorenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C2-naphthalenes" ] <- "C2naphthalenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C2-phenanthrenes/anthracenes" ] <- "C2phenanthrenesanthracenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C3-benzanthracenes/chrysenes" ] <- "C3benzanthraceneschrysenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C3-dibenzothiophenes" ] <- "C3dibenzothiophenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C3-fluoranthenes/pyrenes" ] <- "C3fluoranthenespyrenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C3-fluorenes" ] <- "C3fluorenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C3-naphthalenes" ] <- "C3naphthalenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C3-phenanthrenes/anthracenes" ] <- "C3phenanthrenesanthracenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C4-benzanthracenes/chrysenes" ] <- "C4benzanthraceneschrysenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C4-dibenzothiophenes" ] <- "C4dibenzothiophenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C4-fluoranthenes/pyrenes" ] <- "C4fluoranthenespyrenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C4-naphthalenes" ] <- "C4naphthalenes"
-colnames(all_pah_df)[colnames(all_pah_df) == "C4-phenanthrenes/anthracenes" ] <- "C4phenanthrenesanthracenes" 
-
-```
-
-
-
-```{r}
-
-ggplot(data = washington_map) + 
-  geom_sf(fill = "lightgrey", color = "white") +
-  geom_point(data = long_data, aes(x = longitude, y = latitude, color = value, shape = type), alpha = 0.6, size = 2) +
-  scale_color_viridis(name = "value", option = "C") +
-  scale_shape_manual(values = c("SOD" = 16, "p450" = 17)) + # 16: dot, 17: triangle
-  theme_minimal() +
-  labs(title = "Washington State: SOD & p450")
-
-```
-
-# Mapping with Leaflet instead of ggplot; this is interactive and not helpful
-```{r}
-
-if(!require(leaflet)) install.packages("leaflet")
-library(leaflet)
-
-leaflet(data) %>% addTiles() %>%
-  addCircles(lng = ~longitude, lat = ~latitude, color = ~colorBin(c("red", "yellow", "green"), p450, bins = 3), radius = 500) %>%
-  addCircles(lng = ~longitude, lat = ~latitude, color = ~colorBin(c("blue", "white", "black"), SOD, bins = 3), radius = 200)
-
-```
-
-# Mapping with Plotly, also interactive and plotted on a grid that I don't understand
-```{r}
-if(!require(plotly)) install.packages("plotly")
-library(plotly)
-
-# Assuming data is your dataframe with lat, lon, p450, and SOD columns
-fig <- plot_ly() %>%
-  add_trace(data = data, x = ~longitude, y = ~latitude, type = 'scatter', mode = 'markers',
-            marker = list(size = 10, color = ~p450, colorscale = 'Viridis', showscale = TRUE)) %>%
-  add_trace(data = data, x = ~longitude, y = ~latitude, type = 'scatter', mode = 'markers',
-            marker = list(size = 10, color = ~SOD, colorscale = 'Cividis', showscale = TRUE))
-
-fig
-
+  geom_point() +
+  scale_color_gradient(low = "blue", high = "red") +
+  facet_wrap(~ region) +
+  labs(title = "p450 Levels by Region in Washington State",
+       x = "Longitude",
+       y = "Latitude",
+       color = "SOD Activity") +
+  theme_minimal()
 ```
 
