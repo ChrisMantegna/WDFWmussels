@@ -1,0 +1,162 @@
+---
+title: "02- Correlations"
+output:
+  html_document: 
+    fig_width: 8
+  pdf_document: 
+    fig_width: 8
+    fig_height: 5
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 8,       # Set plot width in inches
+  fig.height = 5,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load packages
+
+```{r}
+
+library(tidyr)
+library(tidyverse)
+library(vegan)
+
+```
+
+# Load data
+Weight = mg\
+Length, width, height = mm\
+p450, SOD = activity/ (mg/protein)\
+Condition factor, economic factor = unitless
+```{r}
+
+getwd()
+#data has all sites, coordinates, p450, sod, condition factor, economic factor data
+data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
+
+#alldata has the site names, biomarkers, condition factor, average thickness and analyte data - each row is an individual sample
+alldata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
+
+```
+
+## fix zero's in the data frame and alldata frame
+
+```{r}
+
+# Data contains 0's and must be adjusted in this order to preserve all usable data.
+
+#sod
+#replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
+data$SOD[data$SOD <= 0] <- 0.0025
+alldata$SOD[alldata$SOD <= 0] <- 0.0025
+#p450
+#remove any p450 values that are 0 - those are true 0's not non-detectable. I am replacing with na so I don't lose the entire row of data, including the SOD values.
+data$p450[data$p450 <= 0] <- NA
+alldata$p450[alldata$p450 <= 0] <- NA
+
+#write.csv(alldata, "/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
+```
+
+
+```{r}
+# check the data frame
+#summary(alldata)
+#str(alldata)
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+
+# Ensure the columns are numeric by converting them explicitly if necessary
+data$p450 <- as.numeric(data$p450)
+data$SOD <- as.numeric(data$SOD)
+data$condition_factor <- as.numeric(data$condition_factor)
+data$avg_thickness <- as.numeric(data$avg_thickness)
+data$site_number <- as.numeric(data$site_number)
+
+# Fill missing values with median for 'p450' and 'condition_factor'
+data$p450[is.na(data$p450)] <- median(data$p450, na.rm = TRUE)
+data$condition_factor[is.na(data$condition_factor)] <- median(data$condition_factor, na.rm = TRUE)
+
+# Calculate Spearman's rank correlation matrix for selected variables
+selected_vars <- data %>% select(site_number, p450, SOD, condition_factor, avg_thickness)
+correlation_matrix <- cor(selected_vars, method = "spearman")
+print(correlation_matrix)
+```
+
+```{r}
+# Split data into North, Central, and South regions based on latitude
+data$region <- case_when(
+  data$latitude >= 47.78184 & data$latitude <= 48.8208 ~ "North",
+  data$latitude >= 47.38566 & data$latitude <= 47.7296079 ~ "Central",
+  data$latitude >= 47.052362 & data$latitude <= 47.3539722 ~ "South",
+  TRUE ~ NA_character_
+)
+
+# Filter out rows without a region designation (if any)
+data <- data %>% filter(!is.na(region))
+
+# Calculate Spearman's rank correlation for each region
+north_data <- data %>% filter(region == "North")
+central_data <- data %>% filter(region == "Central")
+south_data <- data %>% filter(region == "South")
+
+# Printing correlation for each region
+print(cor(select(north_data, site_number, p450, SOD, condition_factor, avg_thickness), method = "spearman"))
+print(cor(select(central_data, site_number, p450, SOD, condition_factor, avg_thickness), method = "spearman"))
+print(cor(select(south_data, site_number, p450, SOD, condition_factor, avg_thickness), method = "spearman"))
+
+```
+
+```{r}
+# Boxplot visualization for 'p450' and 'SOD' across regions
+ggplot(data, aes(x = region, y = p450)) + 
+  geom_boxplot() + 
+  labs(title = "p450 Levels by Region", x = "Region", y = "p450 Values")
+
+ggplot(data, aes(x = region, y = SOD)) + 
+  geom_boxplot() + 
+  labs(title = "SOD Levels by Region", x = "Region", y = "SOD Values")
+
+```
+
+```{r}
+library(dplyr)
+
+# Split data into North, Central, and South regions based on latitude
+data$region <- case_when(
+  data$latitude >= 47.78184 & data$latitude <= 48.8208 ~ "North",
+  data$latitude >= 47.38566 & data$latitude <= 47.7296079 ~ "Central",
+  data$latitude >= 47.052362 & data$latitude <= 47.3539722 ~ "South",
+  TRUE ~ NA_character_
+)
+
+# Filter out rows without a region designation (if any)
+data <- data %>% filter(!is.na(region))
+
+# Create a data frame listing sites by region
+sites_by_region <- data %>% 
+  select(region, site_name) %>% 
+  distinct() %>%
+  arrange(region, site_name)  # Optional: sort by region and site_name
+
+# Print the data frame
+print(sites_by_region)
+
+write.csv(sites_by_region,"/Users/cmantegna/Documents/WDFWmussels/data/regions.csv" )
+
+```
+
