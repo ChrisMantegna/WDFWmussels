@@ -321,3 +321,54 @@ print(ranks)
 ggsave(plot=ranks, filename="/Users/cmantegna/Documents/WDFWmussels/output/SODranked.png", width=15, height=8)
 ```
 
+# histogram with density curve
+```{r}
+#basic histogram + basic density plot
+#hist(data$p450)
+#plot(density(data$p450), main="Density Plot", xlab="p450 Value")
+
+#ggplot histogram with density curve
+library(scales) # Make sure this package is loaded for label_number()
+
+phist<- ggplot(alldata, aes(x = p450)) +
+  geom_histogram(aes(y = after_stat(density)), binwidth = diff(range(data$p450))/30, colour = "black", fill = "white") +
+  geom_density(alpha = .2, fill = "#FF6666") +
+  labs(x = "P450 Values", y = "Density", title = "Histogram of P450 Values with Density Curve") +
+  theme_minimal() +
+  scale_x_continuous(labels = label_number()) # This line adjusts the x-axis labels
+
+print(phist)
+#ggsave(plot=phist, filename="/Users/cmantegna/Documents/WDFWmussels/output/p450histogram.png", width=15, height=8)
+
+```
+
+## renaming the individual analytes so that entering data into the anova isn't difficult
+
+```{r}
+# Generate the first 26 letters of the alphabet
+letters_seq <- letters[1:26]
+
+# Generate additional letters if needed
+extra_letters_seq <- character(0)
+num_cols <- length(22:57)  # Number of columns you want to rename
+if (num_cols > length(letters_seq)) {
+  repeats_needed <- num_cols - length(letters_seq)
+  # Generate double letters like 'aa', 'bb', 'cc', etc.
+  extra_letters_seq <- rep(letters[1:repeats_needed], each=1)
+  extra_letters_seq <- sapply(extra_letters_seq, function(x) paste0(x, x))
+}
+
+# Combine the original and additional sequences
+new_colnames <- c(letters_seq, extra_letters_seq)[1:num_cols]
+
+
+```
+
+```{r}
+# Assuming 'alldata' is your dataframe
+colnames(alldata)[22:57] <- new_colnames
+
+# View the updated column names to confirm
+print(colnames(alldata))
+
+```

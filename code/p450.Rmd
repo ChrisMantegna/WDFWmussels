@@ -1,0 +1,166 @@
+---
+title: p450 analysis
+---
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 15,       # Set plot width in inches
+  fig.height = 20,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+```{r}
+library(tidyr)
+library(tidyverse)
+library(vegan)
+
+```
+
+```{r}
+getwd()
+#data has all sites, coordinates, p450, sod, condition factor, economic factor data
+data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
+#alldata has the site names, biomarkers, condition factor, average thickness and analyte data - each row is an individual sample
+alldata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
+```
+# prep for plotting. FIX the condition_factor name and the avg_thickness name because they sre not plotting in the stacked plot.
+```{r}
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# Assuming alldata is already loaded and contains your data
+# Calculate means and standard errors for each metric grouped by site, handling NA values properly
+site_stats <- alldata %>%
+  group_by(site_name) %>%
+  summarise(
+    Mean_SOD = mean(SOD, na.rm = TRUE),
+    SE_SOD = ifelse(n() - sum(is.na(SOD)) > 0, sd(SOD, na.rm = TRUE) / sqrt(n() - sum(is.na(SOD))), NA),
+    Mean_p450 = mean(p450, na.rm = TRUE),
+    SE_p450 = ifelse(n() - sum(is.na(p450)) > 0, sd(p450, na.rm = TRUE) / sqrt(n() - sum(is.na(p450))), NA),
+    Mean_avg_thickness = mean(avg_thickness, na.rm = TRUE),
+    SE_avg_thickness = ifelse(n() - sum(is.na(avg_thickness)) > 0, sd(avg_thickness, na.rm = TRUE) / sqrt(n() - sum(is.na(avg_thickness))), NA),
+    Mean_condition_factor = mean(condition_factor, na.rm = TRUE),
+    SE_condition_factor = ifelse(n() - sum(is.na(condition_factor)) > 0, sd(condition_factor, na.rm = TRUE) / sqrt(n() - sum(is.na(condition_factor))), NA),
+    .groups = "drop"
+  ) %>%
+  pivot_longer(
+    cols = -site_name, 
+    names_to = c(".value", "Metric"), 
+    names_pattern = "(.*)_(.*)"
+  )
+
+# Reorder the levels of 'Metric' based on your desired plot order
+site_stats$Metric <- factor(site_stats$Metric, levels = c("p450", "SOD"))
+
+```
+# biomarker plot
+```{r}
+# Filter the dataset for biomarkers
+biomarkers_stats <- site_stats %>%
+  filter(Metric %in% c("p450", "SOD"))
+
+# Plot biomarkers
+p_biomarkers <- ggplot(biomarkers_stats, aes(x = site_name, y = Mean, group = Metric)) +
+  geom_col(aes(fill = Metric), position = position_dodge(width = 0.9)) +
+  geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), width = 0.2, position = position_dodge(width = 0.9)) +
+  facet_wrap(~ Metric, scales = "free_y", ncol = 1) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        strip.background = element_blank(),
+        strip.text.x = element_text(size = 14, face = "bold"),
+        panel.spacing = unit(1, "lines"),
+        axis.title.x = element_blank()) +
+  labs(y = "", title = "Biomarkers Analysis")
+
+# Print the plot for biomarkers
+print(p_biomarkers)
+
+```
+
+# morph plot
+```{r}
+# Filter the dataset for physiological metrics
+physiological_stats <- site_stats %>%
+  filter(Metric %in% c("condition_factor", "avg_thickness"))
+
+# Plot physiological metrics
+p_physiological <- ggplot(physiological_stats, aes(x = site_name, y = Mean, group = Metric)) +
+  geom_col(aes(fill = Metric), position = position_dodge(width = 0.9)) +
+  geom_errorbar(aes(ymin = Mean - SE, ymax = Mean + SE), width = 0.2, position = position_dodge(width = 0.9)) +
+  facet_wrap(~ Metric, scales = "free_y", ncol = 1) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        strip.background = element_blank(),
+        strip.text.x = element_text(size = 14, face = "bold"),
+        panel.spacing = unit(1, "lines"),
+        axis.title.x = element_blank()) +
+  labs(y = "", title = "Physiological Metrics Analysis")
+
+# Print the plot for physiological metrics
+print(p_physiological)
+
+```
+
+# pca
+```{r}
+# Assuming alldata is already loaded
+library(dplyr)
+library(ggplot2)
+
+# Select relevant columns and remove NA values
+data_for_pca <- alldata %>%
+  select(site_number, SOD, p450, condition_factor, avg_thickness) %>%
+  na.omit()
+
+```
+
+```{r}
+# Perform PCA
+pca_result <- prcomp(data_for_pca[, -1], scale. = TRUE)  # Exclude 'site_number' from PCA calculation
+
+```
+
+```{r}
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+
+# Assuming pca_data is already created and pca_result contains your PCA scores
+pca_data <- as.data.frame(pca_result$x) %>%
+  mutate(site_number = data_for_pca$site_number)
+
+# Use k-means to identify clusters (ensure you have enough PCs, here using 1st and 2nd)
+clusters <- kmeans(pca_data[, 1:2], centers = 3)  # assuming you want to identify 3 clusters
+
+# Add cluster information to the data frame
+pca_data$cluster <- as.factor(clusters$cluster)
+
+# Now plot the PCA result with the cluster information
+p <- ggplot(pca_data, aes(x = PC1, y = PC2)) +
+  geom_point(aes(color = cluster), size = 3) +  # Use cluster for color grouping
+  geom_text(aes(label = site_number), vjust = 2, hjust = 0.5) +
+  theme_minimal() +
+  labs(title = "PCA Plot with Clusters",
+       x = "Principal Component 1",
+       y = "Principal Component 2",
+       color = "Cluster")
+
+# Print the plot
+print(p)
+
+```
+
+```{python}
+
+```
+

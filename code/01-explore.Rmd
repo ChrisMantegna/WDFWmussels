@@ -17,8 +17,8 @@ knitr::opts_chunk$set(
   eval = TRUE,         # Evaluate code chunks
   warning = FALSE,     # Hide warnings
   message = FALSE,     # Hide messages
-  fig.width = 8,       # Set plot width in inches
-  fig.height = 5,      # Set plot height in inches
+  fig.width = 20,       # Set plot width in inches
+  fig.height = 9,      # Set plot height in inches
   fig.align = "center" # Align plots to the center
 )
 
@@ -30,18 +30,21 @@ knitr::opts_chunk$set(
 library(tinytex)
 library(tidyr)
 library(tidyverse)
-library(ggplot2)
 library(vegan)
 
 ```
 
 # Load data
-
+Weight = mg\
+Length, width, height = mm\
+p450, SOD = activity/ (mg/protein)\
+Condition factor, economic factor = unitless
 ```{r}
 
 getwd()
 #data has all sites, coordinates, p450, sod, condition factor, economic factor data
 data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
+
 #alldata has the site names, biomarkers, condition factor, average thickness and analyte data - each row is an individual sample
 alldata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
 
@@ -62,88 +65,78 @@ alldata$SOD[alldata$SOD <= 0] <- 0.0025
 data$p450[data$p450 <= 0] <- NA
 alldata$p450[alldata$p450 <= 0] <- NA
 
-write.csv(alldata, "/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
+#write.csv(alldata, "/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
 ```
 
-## take a look at the dataframes to ensure values look correct
-
-Weight = g\
-Length, width, height = mm\
-p450, SOD = activity/ (mg/protein)\
-Condition factor, economic factor = unitless
 
 ```{r}
-summary(alldata)
+# check the data frame
+#summary(alldata)
+#str(alldata)
 ```
 
-## fix row names and remove rows that aren't in my data frame
+# Boxplot of biomarker data, p450 and SOD
+```{r}
+#p450
+pplot<- ggplot(data, aes(x = site_name, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+print(pplot)
+
+#SOD
+splot<- ggplot(data, aes(x = site_name, y = SOD)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+print(splot)
+```
+
+
+# Histograms of p450, SOD, condition_factor and avg_thickness 
+### Only avg_thickness looks normally distributed.
+```{r}
+# p450 basic histogram + basic density plot
+hist(alldata$p450)
+plot(density(alldata$p450, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+
+# SOD basic histogram + basic density plot
+hist(alldata$SOD)
+plot(density(alldata$SOD, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+
+# Condition_factor basic histogram + basic density plot
+hist(alldata$condition_factor)
+plot(density(alldata$condition_factor, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+
+# Avg_thickness basic histogram + basic density plot
+hist(alldata$avg_thickness)
+plot(density(alldata$avg_thickness, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+
+```
+
+# Shapiro-Wilkes test for normality
+### Only avg_thickness is normally distributed.
+```{r}
+shapiro.test(alldata$p450)
+shapiro.test(alldata$SOD)
+shapiro.test(alldata$condition_factor)
+shapiro.test(alldata$avg_thickness)
+
+```
+
+# Kruskal-Wallis 
+```{r}
+
+
+```
+
 
 ```{r}
 
-#this code isn't working. It is functionally correct, but the data frame still reflects the names i don't want.
-rownames(alldata)[rownames(alldata) == "Broad Spit"] <- "Broad Spit  (Fisherman's Point)"
-rownames(alldata)[rownames(alldata) == "Penrose Point State Park" ] <- "Pennrose Point State Park"
-rownames(alldata)[rownames(alldata) == "Maristone Island Bridge" ] <- "Maristone Island"
-rownames(alldata)[rownames(alldata) == "Suquamish, Stormwater Outfall" ] <- "Suquamish Stormwater Outfall"
-
-#print(alldata)
-
 
 ```
 
-```{r}
 
-as.numeric( "condition_factor", "avg_thickness")
-
-```
-
-# p450 histogram
-
-```{r}
-
-#basic histogram + basic density plot
-#hist(data$p450)
-#plot(density(data$p450), main="Density Plot", xlab="p450 Value")
-
-#ggplot histogram with density curve
-library(scales) # Make sure this package is loaded for label_number()
-
-phist<- ggplot(alldata, aes(x = p450)) +
-  geom_histogram(aes(y = after_stat(density)), binwidth = diff(range(data$p450))/30, colour = "black", fill = "white") +
-  geom_density(alpha = .2, fill = "#FF6666") +
-  labs(x = "P450 Values", y = "Density", title = "Histogram of P450 Values with Density Curve") +
-  theme_minimal() +
-  scale_x_continuous(labels = label_number()) # This line adjusts the x-axis labels
-
-print(phist)
-#ggsave(plot=phist, filename="/Users/cmantegna/Documents/WDFWmussels/output/p450histogram.png", width=15, height=8)
-
-```
-
-# SOD histogram
-
-```{r}
-
-#basic histogram + basic density plot
-#hist(data$SOD)
-#plot(density(data$SOD), main="Density Plot", xlab="SOD Value")
-
-#ggplot histogram with density curve
-library(scales) # Make sure this package is loaded for label_number()
-
-shist <- ggplot(alldata, aes(x = SOD)) +
-  geom_histogram(aes(y = after_stat(density)), binwidth = diff(range(data$SOD))/30, colour = "black", fill = "white") +
-  geom_density(alpha = .2, fill = "#FF6666") +
-  labs(x = "SOD Values", y = "Density", title = "Histogram of SOD Values with Density Curve") +
-  theme_minimal() +
-  scale_x_continuous(labels = label_number()) # This line adjusts the x-axis labels
-
-print(shist)
-ggsave(plot=shist, filename="/Users/cmantegna/Documents/WDFWmussels/output/SODhistogram.png", width=15, height=8)
-
-```
-
-# shapiro wilkes test for normality, p450: Data is not normally distributed
 
 ```{r}
 shapiro.test(alldata$p450)
