@@ -75,6 +75,8 @@ alldata$p450[alldata$p450 <= 0] <- NA
 #str(alldata)
 ```
 
+# Spearman's Correlation, all sites, biomarkers, condition_factor and avg_thickness
+### SC is read from -1 to 1. Values of either -1 or 1 indicate perfect correlations, 0 indicates no correlations and all other values indicate some correlation but that value must be viewed in relation to the associated p-value.
 ```{r}
 library(dplyr)
 library(ggplot2)
@@ -94,9 +96,13 @@ data$condition_factor[is.na(data$condition_factor)] <- median(data$condition_fac
 # Calculate Spearman's rank correlation matrix for selected variables
 selected_vars <- data %>% select(site_number, p450, SOD, condition_factor, avg_thickness)
 correlation_matrix <- cor(selected_vars, method = "spearman")
-print(correlation_matrix)
+head(correlation_matrix)
+
+#write.csv(correlation_matrix, "/Users/cmantegna/Documents/WDFWmussels/output/tables/all_corr.csv")
+
 ```
 
+# Spearman's Correlation by region, biomarkers, condition_factor and avg_thickness
 ```{r}
 library(dplyr)
 
@@ -129,31 +135,14 @@ south_corr <- calculate_correlation(data %>% filter(region == "South"), "South")
 all_corr <- bind_rows(north_corr, central_corr, south_corr)
 
 # Print the consolidated correlation data frame
-print(all_corr)
+head(all_corr)
 
-write.csv(all_corr, "/Users/cmantegna/Documents/WDFWmussels/output/tables/region_corr.csv")
+#write.csv(all_corr, "/Users/cmantegna/Documents/WDFWmussels/output/tables/region_corr.csv")
 
-
-```
-
-# Boxplots of p450 and SOD by region
-```{r}
-# p450
-pregion<- ggplot(data, aes(x = region, y = p450)) + 
-  geom_boxplot() + 
-  labs(title = "p450 Levels by Region", x = "Region", y = "p450 Values")
-
-ggsave(plot=pregion, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450region.png", width=15, height=8)
-
-# SOD
-sregion<- ggplot(data, aes(x = region, y = SOD)) + 
-  geom_boxplot() + 
-  labs(title = "SOD Levels by Region", x = "Region", y = "SOD Values")
-
-ggsave(plot=sregion, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/SODregion.png", width=15, height=8)
 
 ```
 
+# List of sites included in each region (North, Central, South) based on latitude
 ```{r}
 library(dplyr)
 
@@ -175,14 +164,13 @@ sites_by_region <- data %>%
   arrange(region, site_name)  # Optional: sort by region and site_name
 
 # Print the data frame
-print(sites_by_region)
+head(sites_by_region)
 
-write.csv(sites_by_region,"/Users/cmantegna/Documents/WDFWmussels/data/regions.csv" )
+#write.csv(sites_by_region,"/Users/cmantegna/Documents/WDFWmussels/data/regions.csv" )
 
 ```
 
 ```{r}
-# Load necessary libraries
 library(dplyr)
 
 # Convert all relevant variables to numeric and filter out any NAs
@@ -234,8 +222,35 @@ north_results <- get_correlation_and_pvalues(data %>% filter(region == "North"),
 central_results <- get_correlation_and_pvalues(data %>% filter(region == "Central"), "Central")
 south_results <- get_correlation_and_pvalues(data %>% filter(region == "South"), "South")
 
-# Print results for North region as an example
-print(north_results)
+head(north_results)
+#write.csv(north_results,"/Users/cmantegna/Documents/WDFWmussels/output/tables/north_spearman.csv" )
+
+head(central_results)
+#write.csv(central_results,"/Users/cmantegna/Documents/WDFWmussels/output/tables/central_spearman.csv" )
+
+head(south_results)
+#write.csv(south_results,"/Users/cmantegna/Documents/WDFWmussels/output/tables/south_spearman.csv" )
 
 ```
 
+# Boxplots of p450 and SOD by region
+```{r}
+# p450
+pregion<- ggplot(data, aes(x = region, y = p450)) + 
+  geom_boxplot() + 
+  labs(title = "p450 Levels by Region", x = "Region", y = "p450 Values")
+
+print(pregion)
+
+#ggsave(plot=pregion, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450region.png", width=15, height=8)
+
+# SOD
+sregion<- ggplot(data, aes(x = region, y = SOD)) + 
+  geom_boxplot() + 
+  labs(title = "SOD Levels by Region", x = "Region", y = "SOD Values")
+
+print(sregion)
+
+#ggsave(plot=sregion, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/SODregion.png", width=15, height=8)
+
+```
