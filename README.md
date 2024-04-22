@@ -40,13 +40,12 @@ Screenshots or snippets of code used in issue pposting
 Raw tables, prior to formatting, that will be used in the manuscript
 
 ## Code:
-[01-explore](https://rpubs.com/cmantegna/mb01explore): initial data exploration\
-[02-correlations](https://rpubs.com/cmantegna/mb02correlations): Spearman's Correlation of all sites and grouped by laitudinal region\
-[03-map](https://rpubs.com/cmantegna/mb03map): Washington state map of biomarker values plotted by coordinates of sites\
-[04-spatial](https://rpubs.com/cmantegna/mb04spatial): Geospatial statistical analysis of the biomarkers\
+[01-explore](https://rpubs.com/cmantegna/mb01explore): initial data exploration.\
+[02-correlations](https://rpubs.com/cmantegna/mb02correlations): Spearman's Correlation of all sites and grouped by laitudinal region.\
+[03-map](https://rpubs.com/cmantegna/mb03map): Washington state map of biomarker values plotted by coordinates of sites.\
+[04-spatial](https://rpubs.com/cmantegna/mb04spatial): Geospatial statistical analysis of the biomarkers.\
 05-analytes: Individual and summed analyte comparisons to biomarker data.\
-06 - 08: Docs to be removed or reworked as they contain averaged or median value exploratory work\
-09-data cleaning: Rework to address using the 95% range of biomarker values with the imputed analyte values in exploratory statistics and visualization.
+06 - 09: Docs to be removed or reworked.
 
 ## Data
 
