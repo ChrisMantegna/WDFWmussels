@@ -1,11 +1,16 @@
 ---
 title: "03- Mapping Biomarkers"
 output:
-  html_document:
-    df_print: paged
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
   pdf_document: 
     fig_width: 20
     fig_height: 9
+
 ---
 
 # Directory and doc rules

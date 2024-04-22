@@ -1,8 +1,12 @@
 ---
 title: "01- Data Exploration"
 output:
-  html_document:
-    df_print: paged
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
   pdf_document: 
     fig_width: 20
     fig_height: 9
@@ -164,5 +168,8 @@ library(pgirmess)
 
 mc_p450<- as.data.frame(kruskalmc(p450 ~ site_name, data = alldata, method = "bonferroni"))
 mc_SOD<- as.data.frame(kruskalmc(SOD ~ site_name, data = alldata, method = "bonferroni")) 
+
+head(mc_p450)
+head(mc_SOD)
 
 ```

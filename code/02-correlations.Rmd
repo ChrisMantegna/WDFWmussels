@@ -2,7 +2,11 @@
 title: "02- Correlations"
 output:
   html_document: 
-    fig_width: 9
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
   pdf_document: 
     fig_width: 20
     fig_height: 9

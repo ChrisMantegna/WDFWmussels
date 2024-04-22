@@ -1,11 +1,16 @@
 ---
 title: "04- Spatial Analysis"
 output:
-  html_document:
-    df_print: paged
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
   pdf_document: 
     fig_width: 20
     fig_height: 9
+
 ---
 
 # Directory and doc rules
@@ -70,7 +75,7 @@ alldata$p450[alldata$p450 <= 0] <- NA
 
 #Impute missing p450 and condition_factor values
 ### Using the 'mice' package, the most common imputation method is predictive mean matching (pmm) based on the package documentation, so that is used here. 
-```{r}
+```{r, eval=TRUE,include=FALSE}
 #install.packages("mice")
 library(mice)
 
@@ -93,7 +98,7 @@ alldata$condition_factor <- ifelse(is.na(alldata$condition_factor), completed_da
 ```
 
 # K-means clustering
-## This spatial analysis test puts the sites into three (because I chose 3 and not 4) clusters that are distinct from the other clusters based on averaging the data to find centroid values.
+### This spatial analysis test uses the complete data set to statistically determine clusters of difference in the data. Standard cluster choice is 3 or 4 (I chose 3 and not 4; 4 clusters yield a cluster of 1 site) clusters that are distinct from the other clusters based on averaging the data to find centroid values. This is a tool to help identify patterns that may not be visible in basic analyses.
 ```{r}
 library(dplyr)
 
@@ -120,8 +125,12 @@ clustered_sites <- alldata %>%
 
 print(clustered_sites)
 
-# If you want to save the result to a CSV
-#write_csv(clustered_sites, "clustered_sites.csv")
+# Expanding the list into separate rows
+clustered_sites_expanded <- clustered_sites %>%
+  unnest(unique_sites)
+
+#write to CSV
+#write.csv(clustered_sites_expanded, "/Users/cmantegna/Documents/WDFWmussels/output/clustered_sites.csv", row.names = FALSE)
 
 ```
 
@@ -150,12 +159,6 @@ centroids <- kmeans_result$centers
 print(centroids)
 
 ```
-
-# Defining the actual values by going through the centroid assignment in reverse
-```{r}
-
-```
-
 
 # Kruskal-Wallis & kruskalmc post hoc tests to verify if there are any statistically significant differences between the clusters
 ### K-W shows a significant relationship between p450, SOD, condition_factor and avg_thickness and clustered sites. A post hoc test on each of these metrics will determine if the relationship is truly significant. 
