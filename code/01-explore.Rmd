@@ -35,10 +35,12 @@ library(vegan)
 ```
 
 # Load data
+
 Weight = mg\
 Length, width, height = mm\
 p450, SOD = activity/ (mg/protein)\
 Condition factor, economic factor = unitless
+
 ```{r}
 
 getwd()
@@ -75,6 +77,7 @@ alldata$p450[alldata$p450 <= 0] <- NA
 ```
 
 # Boxplot of biomarker data, p450 and SOD
+
 ```{r}
 #p450
 pplot<- ggplot(data, aes(x = site_name, y = p450)) +
@@ -91,9 +94,10 @@ splot<- ggplot(data, aes(x = site_name, y = SOD)) +
 print(splot)
 ```
 
+# Histograms of p450, SOD, condition_factor and avg_thickness
 
-# Histograms of p450, SOD, condition_factor and avg_thickness 
 ### Only avg_thickness looks normally distributed.
+
 ```{r}
 # p450 basic histogram + basic density plot
 hist(alldata$p450)
@@ -114,7 +118,9 @@ plot(density(alldata$avg_thickness, na.rm= TRUE), main="Density Plot", xlab="p45
 ```
 
 # Shapiro-Wilkes test for normality
+
 ### Only avg_thickness is normally distributed.
+
 ```{r}
 shapiro.test(alldata$p450)
 shapiro.test(alldata$SOD)
@@ -124,7 +130,9 @@ shapiro.test(alldata$avg_thickness)
 ```
 
 # Kruskal-Wallis, p450
-### p450 and site have a statistically significant relationship, p< 0.0000008077
+
+### p450 and site have a statistically significant relationship, p\< 0.0000008077
+
 ```{r}
 kruskal.test(p450 ~ site_name, data = alldata)
 kruskal.test(p450 ~ SOD, data = alldata)
@@ -134,7 +142,9 @@ kruskal.test(p450 ~ avg_thickness, data = alldata)
 ```
 
 # Kruskal-Wallis, SOD
-### SOD and site have a statistically significant relationship, p< 0.0000005669
+
+### SOD and site have a statistically significant relationship, p\< 0.0000005669
+
 ```{r}
 kruskal.test(SOD ~ site_name, data = alldata)
 kruskal.test(SOD ~ p450, data = alldata)
@@ -144,8 +154,11 @@ kruskal.test(SOD ~ avg_thickness, data = alldata)
 ```
 
 # Post hoc test. Kruskal-Wallac Multiple Comparisons
+
 ### p450 and site_name show no true differences despite K-W test result.
+
 ### SOD and site_name show a true site difference between Elliott Bay, Mrytle Edwards and Hood Canal only.
+
 ```{r}
 library(pgirmess)
 
@@ -153,4 +166,3 @@ mc_p450<- as.data.frame(kruskalmc(p450 ~ site_name, data = alldata, method = "bo
 mc_SOD<- as.data.frame(kruskalmc(SOD ~ site_name, data = alldata, method = "bonferroni")) 
 
 ```
-

@@ -8,7 +8,6 @@ output:
     fig_height: 9
 ---
 
-
 # Directory and doc rules
 
 ```{r, setup, eval=TRUE, include=TRUE}
@@ -42,10 +41,12 @@ library(rnaturalearthdata)
 ```
 
 # Load data
+
 Weight = mg\
 Length, width, height = mm\
 p450, SOD = activity/ (mg/protein)\
 Condition factor, economic factor = unitless
+
 ```{r}
 
 getwd()
@@ -76,6 +77,7 @@ alldata$p450[alldata$p450 <= 0] <- NA
 ```
 
 # Map of Washington State
+
 ```{r}
 world <- ne_states(country = "united states of america", returnclass = "sf")
 washington_map <- world[world$name == "Washington", ]
@@ -84,6 +86,7 @@ washington_map <- world[world$name == "Washington", ]
 ```
 
 # p450 map- WA state
+
 ```{r}
 
 pmap<- ggplot() + 
@@ -98,6 +101,7 @@ ggsave(plot=pmap, filename="/Users/cmantegna/Documents/WDFWmussels/output/p450ma
 ```
 
 # p450 map - Puget Sound
+
 ```{r}
 #zoom into puget sound region & note the legend, lighter colors are higher values
 xlim <- c(-124, -122)  # longitude bounds
@@ -115,7 +119,9 @@ print(sodpugetsound)
 ```
 
 # p450 map by regions
+
 ### fix the coordinates and maps, not a priority 4/21
+
 ```{r}
 library(ggplot2)
 library(dplyr)
@@ -145,8 +151,8 @@ ggplot(data = data, aes(x = longitude, y = latitude, color = p450)) +
   theme_minimal()
 ```
 
-
 # SOD map- WA state
+
 ```{r}
 
 smap<- ggplot() + 
@@ -161,7 +167,8 @@ ggsave(plot=smap, filename="/Users/cmantegna/Documents/WDFWmussels/output/sodmap
 
 ```
 
-#SOD map -  Puget Sound
+#SOD map - Puget Sound
+
 ```{r}
 #zoom into puget sound region & note the legend, lighter colors are higher values
 xlim <- c(-124, -122)  # longitude bounds
@@ -179,7 +186,9 @@ print(sodpugetsound)
 ```
 
 # SOD map by regions
+
 ### fix the coordinates and maps, not a priority 4/21
+
 ```{r}
 library(ggplot2)
 library(dplyr)
@@ -208,4 +217,3 @@ ggplot(data = data, aes(x = longitude, y = latitude, color = SOD)) +
        color = "SOD Activity") +
   theme_minimal()
 ```
-
