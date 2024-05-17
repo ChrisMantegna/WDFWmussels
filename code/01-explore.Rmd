@@ -98,6 +98,27 @@ splot<- ggplot(data, aes(x = site_name, y = SOD)) +
 print(splot)
 ```
 
+# Violin plots
+```{r}
+#p450
+ggplot(data, aes(x = as.factor(site_name), y = p450)) +
+  geom_violin() +
+  labs(title = "Variation of p450 within Sites", x = "Site", y = "p450 Value") +
+  theme_minimal()
+
+
+# SOD
+ggplot(data, aes(x = as.factor(site_name), y = SOD)) +
+  geom_violin() +
+  labs(title = "Variation of SOD within Sites", x = "Site", y = "SOD Value") +
+  theme_minimal()
+
+```
+
+
+```
+
+
 # Histograms of p450, SOD, condition_factor and avg_thickness
 
 ### Only avg_thickness looks normally distributed.
