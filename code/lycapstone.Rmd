@@ -124,7 +124,7 @@ lyranks<- ggplot(data_ordered, aes(x = site_name, y = SOD)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
 
 print(lyranks)
-#ggsave(plot=lyrankp, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/sodboxplotranked.png", width=20, height=9)
+#ggsave(plot=lyranks, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/sodboxplotranked.png", width=20, height=9)
 
 ```
 
