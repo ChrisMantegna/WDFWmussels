@@ -61,21 +61,27 @@ str(data)
 
 ```{r}
 #remove any p450 values that are 0 - those are true 0's not non-detectable. I am replacing with na so I don't lose the entire row of data, including the SOD values.
-data$p450[data$p450 <= 0] <- NA
-1
+#data$SOD[data$SOD <= 0] <- .0025
+
 ```
 
 # Boxplots
 ## p450 - these are non ranked from lowest to highest activity, all sites listed alphabetically.
 ```{r}
 
-#plot with ordered site names
 p450ly<- ggplot(data, aes(x = site_name, y = p450)) +
   geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),  # Tilt the site names on the X axis to a 45 degree angle
+    panel.grid = element_blank(),                      # Remove the grid background
+    axis.line = element_line(color = "black")          # Print axis lines on the X and Y axis
+  ) +
+  labs( x = "Site Name",y = "P450 (units mg-1 protein)")
+
 
 print(p450ly)
-#ggsave(plot=p450ly, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/p450boxplot.png", width=20, height=9)
+ggsave(plot=p450ly, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/p450boxplotUSETHISONE.png", width=20, height=9)
 ```
 
 ## p450 - these are ranked from lowest to highest activity.
@@ -99,13 +105,18 @@ print(lyrankp)
 ## SOD - these are non ranked from lowest to highest activity, all sites listed alphabetically.
 ```{r}
 
-#plot with ordered site names
 sodly<- ggplot(data, aes(x = site_name, y = SOD)) +
   geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+  theme_minimal() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),  # Tilt the site names on the X axis to a 45 degree angle
+    panel.grid = element_blank(),                      # Remove the grid background
+    axis.line = element_line(color = "black")          # Print axis lines on the X and Y axis
+  ) +
+  labs( x = "Site Name",y = "SOD (activity mg-1 protein)")
 
 print(sodly)
-#ggsave(plot=sodly, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/sodboxplot.png", width=20, height=9)
+ggsave(plot=sodly, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/sodboxplotUSETHISONE.png", width=20, height=9)
 
 ```
 
@@ -148,11 +159,11 @@ washington_map <- world[world$name == "Washington", ]
 xlim <- c(-124, -122)  # longitude bounds
 ylim <- c(47, 49)  # latitude bounds
 
-lyp450pugetsound<- ggplot() + 
+lyp450pugetsound <- ggplot() + 
   geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
   geom_point(data = data, aes(x = longitude, y = latitude, color = p450), size = 3) +
-  scale_color_viridis(option = "C", name = "p450") +
-  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)+
+  scale_color_viridis(option = "C", name = "p450", guide = guide_legend(reverse = FALSE)) +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE) +
   theme_minimal() +
   labs(title = "Puget Sound - P450 Values")
 
@@ -166,18 +177,83 @@ print(lyp450pugetsound)
 
 #zoom into puget sound region & note the legend, lighter colors are higher values
 xlim <- c(-124, -122)  # longitude bounds
-ylim <- c(47, 49)  # latitude bounds
+ylim <- c(47.5, 48)  # latitude bounds
 
-lySODpugetsound<- ggplot() + 
+lySODpugetsoundsea<- ggplot() + 
   geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
   geom_point(data = data, aes(x = longitude, y = latitude, color = SOD), size = 3) +
-  scale_color_viridis(option = "C", name = "SOD") +
+  scale_color_viridis(option = "C", name = "p450", guide = guide_legend(reverse = FALSE)) +
   coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)+
   theme_minimal() +
   labs(title = "Puget Sound - SOD Values")
 
-print(lySODpugetsound)
-#ggsave(plot=lySODpugetsound, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/lySODpugetsound.png", width=20, height=9)
+print(lySODpugetsoundsea)
+ggsave(plot=lySODpugetsoundsea, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/lySODpugetsoundsea.png", width=20, height=9)
+
+```
+
+# different mapping to make the sites pop out more
+```{r}
+library(ggplot2)
+library(rnaturalearth)
+library(rnaturalearthdata)
+#install.packages("ggspatial")
+library(ggspatial)
+library(viridis)
+
+# Load the topographical map and major cities
+world <- ne_countries(scale = "medium", returnclass = "sf")
+cities <- ne_cities(scale = "medium", returnclass = "sf")
+
+# Filter the cities to include only those in the Puget Sound region
+puget_cities <- subset(cities, LAT >= ylim[1] & LAT <= ylim[2] & LON >= xlim[1] & LON <= xlim[2])
+
+# Plot the map
+lyp450pugetsound <- ggplot() + 
+  geom_sf(data = world, fill = "lightgrey", color = "white") +  # Plot the world map
+  geom_sf(data = puget_cities, aes(geometry = geometry), color = "red") +  # Plot the major cities
+  geom_point(data = data, aes(x = longitude, y = latitude, color = p450), size = 3) +
+  scale_color_viridis(option = "C", name = "p450", guide = guide_legend(reverse = FALSE)) +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE) +
+  theme_minimal() +
+  labs(title = "Puget Sound - P450 Values") +
+  annotation_scale(location = "bl", width_hint = 0.5) +  # Add a scale bar
+  annotation_north_arrow(location = "tl", which_north = "true", style = north_arrow_fancy_orienteering())  # Add a north arrow
+
+# Print the map
+print(lyp450pugetsound)
+
+```
+
+#another map
+```{r}
+library(ggplot2)
+#install.packages("maps")
+library(maps)
+#install.packages("ggmap")
+library(ggmap)
+library(viridis)
+
+# Get the map data for Washington state
+washington_map <- map_data("state", region = "washington")
+
+# Get the city data
+cities <- map_data("world.cities")
+puget_cities <- subset(cities, country.etc == "USA" & lat >= ylim[1] & lat <= ylim[2] & long >= xlim[1] & long <= xlim[2])
+
+# Plot the map
+lyp450pugetsound <- ggplot() + 
+  geom_polygon(data = washington_map, aes(x = long, y = lat, group = group), fill = "lightgrey", color = "white") +  # Plot the Washington map
+  geom_point(data = puget_cities, aes(x = long, y = lat), color = "red", size = 2) +  # Plot the major cities
+  geom_text(data = puget_cities, aes(x = long, y = lat, label = name), hjust = -0.1, vjust = 0, size = 3) +  # Add city names
+  geom_point(data = data, aes(x = longitude, y = latitude, color = p450), size = 3) +
+  scale_color_viridis(option = "C", name = "p450", guide = guide_legend(reverse = FALSE)) +
+  coord_fixed(xlim = xlim, ylim = ylim) +  # Use coord_fixed to keep the aspect ratio
+  theme_minimal() +
+  labs(title = "Puget Sound - P450 Values")
+
+# Print the map
+print(lyp450pugetsound)
 
 ```
 
