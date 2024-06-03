@@ -301,3 +301,47 @@ print(lySODpugetsound)
 #ggsave(plot=lySODpugetsound, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/lySODpugetsoundUSETHISONE.png", width=20, height=9)
 ```
 
+#stats
+```{r}
+
+#data isn't normally distributed - have to use the Kruskal-Wallis test for significance
+shapiro.test(data$p450)
+shapiro.test(data$SOD)
+
+```
+
+```{r}
+library(dplyr)
+library(stats)
+
+# Replace region names
+data$Region <- recode(data$Region, 'HC' = 'Hood Canal', 'PC' = 'Penn Cove')
+
+# Calculate mean, standard deviation, and count for each biomarker by region
+summary_stats <- data %>%
+  group_by(Region) %>%
+  summarise(
+    n = n(),
+    p450_mean = mean(p450, na.rm = TRUE),
+    p450_sd = sd(p450, na.rm = TRUE),
+    SOD_mean = mean(SOD, na.rm = TRUE),
+    SOD_sd = sd(SOD, na.rm = TRUE)
+  )
+
+# Perform Kruskal-Wallis test for p450 and SOD
+kruskal_p450 <- kruskal.test(p450 ~ Region, data = data)
+kruskal_sod <- kruskal.test(SOD ~ Region, data = data)
+
+# Add p-values to the summary table in scientific notation
+summary_stats <- summary_stats %>%
+  mutate(
+    p450_kruskal_p = formatC(kruskal_p450$p.value, format = "e", digits = 2),
+    SOD_kruskal_p = formatC(kruskal_sod$p.value, format = "e", digits = 2)
+  )
+
+# Display the summary table
+print(summary_stats)
+
+write.csv(summary_stats, "/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/biomarker_summary_by_region.csv", row.names = FALSE)
+```
+
