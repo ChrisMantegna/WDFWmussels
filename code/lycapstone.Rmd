@@ -73,11 +73,14 @@ p450ly<- ggplot(data, aes(x = site_name, y = p450)) +
   geom_boxplot() +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),  # Tilt the site names on the X axis to a 45 degree angle
-    panel.grid = element_blank(),                      # Remove the grid background
-    axis.line = element_line(color = "black")          # Print axis lines on the X and Y axis
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 12),  # Tilt the site names on the X axis to a 45 degree angle and set font size
+    axis.text.y = element_text(size = 16),                        # Set Y axis text size
+    axis.title.x = element_text(size = 18),                       # Set X axis title size
+    axis.title.y = element_text(size = 18),                       # Set Y axis title size
+    panel.grid = element_blank(),                                 # Remove the grid background
+    axis.line = element_line(color = "black")                     # Print axis lines on the X and Y axis
   ) +
-  labs( x = "Site Name",y = "P450 (units mg-1 protein)")
+  labs(x = "Site Name", y = "P450 (activity mg-1 protein)")
 
 
 print(p450ly)
@@ -105,15 +108,18 @@ print(lyrankp)
 ## SOD - these are non ranked from lowest to highest activity, all sites listed alphabetically.
 ```{r}
 
-sodly<- ggplot(data, aes(x = site_name, y = SOD)) +
+sodly <- ggplot(data, aes(x = site_name, y = SOD)) +
   geom_boxplot() +
   theme_minimal() +
   theme(
-    axis.text.x = element_text(angle = 45, hjust = 1),  # Tilt the site names on the X axis to a 45 degree angle
-    panel.grid = element_blank(),                      # Remove the grid background
-    axis.line = element_line(color = "black")          # Print axis lines on the X and Y axis
+    axis.text.x = element_text(angle = 45, hjust = 1, size = 12),  # Tilt the site names on the X axis to a 45 degree angle and set font size
+    axis.text.y = element_text(size = 16),                        # Set Y axis text size
+    axis.title.x = element_text(size = 18),                       # Set X axis title size
+    axis.title.y = element_text(size = 18),                       # Set Y axis title size
+    panel.grid = element_blank(),                                 # Remove the grid background
+    axis.line = element_line(color = "black")                     # Print axis lines on the X and Y axis
   ) +
-  labs( x = "Site Name",y = "SOD (activity mg-1 protein)")
+  labs(x = "Site Name", y = "SOD (activity mg-1 protein)")
 
 print(sodly)
 #ggsave(plot=sodly, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/sodboxplotUSETHISONE.png", width=20, height=9)
@@ -246,7 +252,6 @@ cities <- ne_download(scale = 10, type = "populated_places", category = "cultura
 # Filter the cities to include only those in the Puget Sound region
 puget_cities <- cities[cities$LATITUDE >= 46 & cities$LATITUDE <= 49 & cities$LONGITUDE >= -126 & cities$LONGITUDE <= -121, ]
 
-# Plot the map
 lyp450pugetsound <- ggplot() + 
   geom_sf(data = world, fill = "lightgrey", color = "white") +  # Plot the world map
   geom_point(data = puget_cities, aes(x = LONGITUDE, y = LATITUDE), color = "black", size = 2) +  # Plot the major cities
@@ -257,10 +262,18 @@ lyp450pugetsound <- ggplot() +
   theme_minimal() +
   labs(title = "Puget Sound - P450 Activity") +
   annotation_scale(location = "bl", width_hint = 0.5) +  # Add a scale bar
-  annotation_north_arrow(location = "tl", which_north = "true", style = north_arrow_fancy_orienteering())  # Add a north arrow
+  annotation_north_arrow(location = "tl", which_north = "true", style = north_arrow_fancy_orienteering()) +  # Add a north arrow
+  theme(
+    plot.title = element_text(size = 20),        # Title text size
+    axis.title = element_text(size = 16),        # Axis title text size
+    axis.text = element_text(size = 14),         # Axis text size
+    legend.title = element_text(size = 14),      # Legend title text size
+    legend.text = element_text(size = 12)        # Legend text size
+  )
 
-# Print the map
+# Display the plot
 print(lyp450pugetsound)
+
 #ggsave(plot=lyp450pugetsound, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/lyp450pugetsoundUSETHISONE.png", width=20, height=9)
 
 
