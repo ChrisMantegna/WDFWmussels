@@ -228,32 +228,71 @@ print(lyp450pugetsound)
 #another map
 ```{r}
 library(ggplot2)
-#install.packages("maps")
-library(maps)
-#install.packages("ggmap")
-library(ggmap)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(ggspatial)
 library(viridis)
 
-# Get the map data for Washington state
-washington_map <- map_data("state", region = "washington")
+# Load the topographical map data
+world <- ne_countries(scale = "medium", returnclass = "sf")
 
-# Get the city data
-cities <- map_data("world.cities")
-puget_cities <- subset(cities, country.etc == "USA" & lat >= ylim[1] & lat <= ylim[2] & long >= xlim[1] & long <= xlim[2])
+# Load the cities data
+cities <- ne_download(scale = 10, type = "populated_places", category = "cultural", returnclass = "sf")
+
+# Filter the cities to include only those in the Puget Sound region
+puget_cities <- cities[cities$LATITUDE >= 46 & cities$LATITUDE <= 49 & cities$LONGITUDE >= -126 & cities$LONGITUDE <= -121, ]
 
 # Plot the map
 lyp450pugetsound <- ggplot() + 
-  geom_polygon(data = washington_map, aes(x = long, y = lat, group = group), fill = "lightgrey", color = "white") +  # Plot the Washington map
-  geom_point(data = puget_cities, aes(x = long, y = lat), color = "red", size = 2) +  # Plot the major cities
-  geom_text(data = puget_cities, aes(x = long, y = lat, label = name), hjust = -0.1, vjust = 0, size = 3) +  # Add city names
+  geom_sf(data = world, fill = "lightgrey", color = "white") +  # Plot the world map
+  geom_point(data = puget_cities, aes(x = LONGITUDE, y = LATITUDE), color = "black", size = 2) +  # Plot the major cities
+  geom_text(data = puget_cities, aes(x = LONGITUDE, y = LATITUDE, label = NAME), hjust = -0.1, vjust = 0, size = 3) +  # Add city names
   geom_point(data = data, aes(x = longitude, y = latitude, color = p450), size = 3) +
   scale_color_viridis(option = "C", name = "p450", guide = guide_legend(reverse = FALSE)) +
-  coord_fixed(xlim = xlim, ylim = ylim) +  # Use coord_fixed to keep the aspect ratio
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE) +
   theme_minimal() +
-  labs(title = "Puget Sound - P450 Values")
+  labs(title = "Puget Sound - P450 Activity") +
+  annotation_scale(location = "bl", width_hint = 0.5) +  # Add a scale bar
+  annotation_north_arrow(location = "tl", which_north = "true", style = north_arrow_fancy_orienteering())  # Add a north arrow
 
 # Print the map
 print(lyp450pugetsound)
 
+```
+
+#adjusted map for SOD
+```{r}
+library(ggplot2)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(ggspatial)
+library(viridis)
+
+# Load the topographical map data
+world <- ne_countries(scale = "medium", returnclass = "sf")
+
+# Load the cities data
+cities <- ne_download(scale = 10, type = "populated_places", category = "cultural", returnclass = "sf")
+
+# Filter the cities to include only those in the Puget Sound region
+puget_cities <- cities[cities$LATITUDE >= 46 & cities$LATITUDE <= 49 & cities$LONGITUDE >= -126 & cities$LONGITUDE <= -121, ]
+
+# Plot the map
+lySODpugetsound <- ggplot() + 
+  geom_sf(data = world, fill = "lightgrey", color = "white") +  # Plot the world map
+  geom_point(data = puget_cities, aes(x = LONGITUDE, y = LATITUDE), color = "black", size = 2) +  # Plot the major cities
+  geom_text(data = puget_cities, aes(x = LONGITUDE, y = LATITUDE, label = NAME), hjust = -0.1, vjust = 0, size = 3) +  # Add city names
+  geom_point(data = data, aes(x = longitude, y = latitude, color = p450), size = 3) +
+  scale_color_viridis(option = "C", name = "SOD", guide = guide_legend(reverse = FALSE)) +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE) +
+  theme_minimal() +
+  labs(title = "Puget Sound - SOD Activity") +
+  annotation_scale(location = "bl", width_hint = 0.5) +  # Add a scale bar
+  annotation_north_arrow(location = "tl", which_north = "true", style = north_arrow_fancy_orienteering())  # Add a north arrow
+
+# Print the map
+print(lypSODpugetsound)
 ```
 
