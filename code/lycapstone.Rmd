@@ -81,7 +81,7 @@ p450ly<- ggplot(data, aes(x = site_name, y = p450)) +
 
 
 print(p450ly)
-ggsave(plot=p450ly, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/p450boxplotUSETHISONE.png", width=20, height=9)
+#ggsave(plot=p450ly, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/p450boxplotUSETHISONE.png", width=20, height=9)
 ```
 
 ## p450 - these are ranked from lowest to highest activity.
@@ -116,7 +116,7 @@ sodly<- ggplot(data, aes(x = site_name, y = SOD)) +
   labs( x = "Site Name",y = "SOD (activity mg-1 protein)")
 
 print(sodly)
-ggsave(plot=sodly, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/sodboxplotUSETHISONE.png", width=20, height=9)
+#ggsave(plot=sodly, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/sodboxplotUSETHISONE.png", width=20, height=9)
 
 ```
 
@@ -234,6 +234,9 @@ library(rnaturalearthdata)
 library(ggspatial)
 library(viridis)
 
+xlim <- c(-124, -122)  # longitude bounds
+ylim <- c(47, 49)  # latitude bounds
+
 # Load the topographical map data
 world <- ne_countries(scale = "medium", returnclass = "sf")
 
@@ -258,6 +261,8 @@ lyp450pugetsound <- ggplot() +
 
 # Print the map
 print(lyp450pugetsound)
+#ggsave(plot=lyp450pugetsound, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/lyp450pugetsoundUSETHISONE.png", width=20, height=9)
+
 
 ```
 
@@ -279,13 +284,12 @@ cities <- ne_download(scale = 10, type = "populated_places", category = "cultura
 # Filter the cities to include only those in the Puget Sound region
 puget_cities <- cities[cities$LATITUDE >= 46 & cities$LATITUDE <= 49 & cities$LONGITUDE >= -126 & cities$LONGITUDE <= -121, ]
 
-# Plot the map
 lySODpugetsound <- ggplot() + 
   geom_sf(data = world, fill = "lightgrey", color = "white") +  # Plot the world map
   geom_point(data = puget_cities, aes(x = LONGITUDE, y = LATITUDE), color = "black", size = 2) +  # Plot the major cities
   geom_text(data = puget_cities, aes(x = LONGITUDE, y = LATITUDE, label = NAME), hjust = -0.1, vjust = 0, size = 3) +  # Add city names
-  geom_point(data = data, aes(x = longitude, y = latitude, color = p450), size = 3) +
-  scale_color_viridis(option = "C", name = "SOD", guide = guide_legend(reverse = FALSE)) +
+  geom_point(data = data, aes(x = longitude, y = latitude, color = SOD), size = 3) +
+  scale_color_viridis_c(option = "C", name = "SOD", guide = guide_colorbar(reverse = FALSE)) +
   coord_sf(xlim = xlim, ylim = ylim, expand = FALSE) +
   theme_minimal() +
   labs(title = "Puget Sound - SOD Activity") +
@@ -294,5 +298,6 @@ lySODpugetsound <- ggplot() +
 
 # Print the map
 print(lySODpugetsound)
+#ggsave(plot=lySODpugetsound, filename="/Users/cmantegna/Documents/WDFWmussels/output/lycapstone/lySODpugetsoundUSETHISONE.png", width=20, height=9)
 ```
 
