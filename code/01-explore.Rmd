@@ -49,10 +49,11 @@ Condition factor, economic factor = unitless
 
 getwd()
 #data has all sites, coordinates, p450, sod, condition factor, economic factor data
-data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
+#data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
 
 #alldata has the site names, biomarkers, condition factor, average thickness and analyte data - each row is an individual sample
-alldata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
+data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450data.csv")
+sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/soddata.csv")
 
 ```
 
@@ -64,23 +65,23 @@ alldata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
 
 #sod
 #replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
-data$SOD[data$SOD <= 0] <- 0.0025
-alldata$SOD[alldata$SOD <= 0] <- 0.0025
+sdata$sod[data$sod <= 0] <- 0.0025
+#alldata$SOD[alldata$SOD <= 0] <- 0.0025
 #p450
 #remove any p450 values that are 0 - those are true 0's not non-detectable. I am replacing with na so I don't lose the entire row of data, including the SOD values.
-data$p450[data$p450 <= 0] <- NA
-alldata$p450[alldata$p450 <= 0] <- NA
+#data$p450[data$p450 <= 0] <- NA
+#alldata$p450[alldata$p450 <= 0] <- NA
 
 #write.csv(alldata, "/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
 ```
 
 ```{r}
 # check the data frame
-#summary(alldata)
+summary(sdata)
 #str(alldata)
 ```
 
-# Boxplot of biomarker data, p450 and SOD
+# boxplot of biomarker data, p450 by site
 
 ```{r}
 #p450
@@ -91,13 +92,80 @@ pplot<- ggplot(data, aes(x = site_name, y = p450)) +
 print(pplot)
 
 #SOD
-splot<- ggplot(data, aes(x = site_name, y = SOD)) +
+#splot<- ggplot(data, aes(x = site_name, y = SOD)) +
+ # geom_boxplot() +
+  #theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+#print(splot)
+```
+
+# ranked box plot, p450 by site
+```{r}
+#order the sites by value
+data_ordered <- data[order(data$p450),]
+
+#create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+#plot with ordered site names
+ranked<- ggplot(data_ordered, aes(x = site_name, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+print(ranked)
+```
+
+# boxplot of p450 by reporting area
+```{r}
+
+data$reporting_area <- as.character(data$reporting_area)
+
+#p450
+pplot<- ggplot(data, aes(x = reporting_area, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+print(pplot)
+
+```
+
+# boxplot of p450 ranked by reporting area
+```{r}
+
+data$reporting_area <- as.character(data$reporting_area)
+
+#order the sites by value
+data_ordered <- data[order(data$p450),]
+
+#create a factor with the ordered site names
+data_ordered$reporting_area <- factor(data_ordered$reporting_area, levels = unique(data_ordered$reporting_area))
+
+#plot with ordered site names
+rankedra<- ggplot(data_ordered, aes(x = reporting_area, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+print(rankedra)
+```
+
+```{r}
+#sod
+sdata$sod <- as.numeric(sdata$sod)
+sdata$reporting_area <- as.character(sdata$reporting_area)
+
+splot<- ggplot(sdata, aes(x = reporting_area, y = sod)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(splot)
-```
 
+#SOD
+#splot<- ggplot(data, aes(x = site_name, y = SOD)) +
+ # geom_boxplot() +
+  #theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+#print(splot)
+```
 # Violin plots
 ```{r}
 #p450
@@ -112,9 +180,6 @@ ggplot(data, aes(x = as.factor(site_name), y = SOD)) +
   geom_violin() +
   labs(title = "Variation of SOD within Sites", x = "Site", y = "SOD Value") +
   theme_minimal()
-
-```
-
 
 ```
 
@@ -147,10 +212,10 @@ plot(density(alldata$avg_thickness, na.rm= TRUE), main="Density Plot", xlab="p45
 ### Only avg_thickness is normally distributed.
 
 ```{r}
-shapiro.test(alldata$p450)
-shapiro.test(alldata$SOD)
-shapiro.test(alldata$condition_factor)
-shapiro.test(alldata$avg_thickness)
+shapiro.test(data$p450)
+#shapiro.test(alldata$SOD)
+#shapiro.test(alldata$condition_factor)
+#shapiro.test(alldata$avg_thickness)
 
 ```
 
@@ -159,10 +224,10 @@ shapiro.test(alldata$avg_thickness)
 ### p450 and site have a statistically significant relationship, p\< 0.0000008077
 
 ```{r}
-kruskal.test(p450 ~ site_name, data = alldata)
-kruskal.test(p450 ~ SOD, data = alldata)
-kruskal.test(p450 ~ condition_factor, data = alldata)
-kruskal.test(p450 ~ avg_thickness, data = alldata)
+kruskal.test(p450 ~ site_name, data = data)
+kruskal.test(p450 ~ reporting_area, data = data)
+#kruskal.test(p450 ~ condition_factor, data = alldata)
+#kruskal.test(p450 ~ avg_thickness, data = alldata)
 
 ```
 
@@ -171,10 +236,10 @@ kruskal.test(p450 ~ avg_thickness, data = alldata)
 ### SOD and site have a statistically significant relationship, p\< 0.0000005669
 
 ```{r}
-kruskal.test(SOD ~ site_name, data = alldata)
-kruskal.test(SOD ~ p450, data = alldata)
-kruskal.test(SOD ~ condition_factor, data = alldata)
-kruskal.test(SOD ~ avg_thickness, data = alldata)
+#kruskal.test(SOD ~ site_name, data = alldata)
+#kruskal.test(SOD ~ p450, data = alldata)
+#kruskal.test(SOD ~ condition_factor, data = alldata)
+#kruskal.test(SOD ~ avg_thickness, data = alldata)
 
 ```
 
@@ -182,15 +247,27 @@ kruskal.test(SOD ~ avg_thickness, data = alldata)
 
 ### p450 and site_name show no true differences despite K-W test result.
 
-### SOD and site_name show a true site difference between Elliott Bay, Mrytle Edwards and Hood Canal only.
+# significant differences across reporting area pairwise matches:
+8.2-12, 10-13, 11-12, and 12-13
+
+Reporting Areas Are:
+6 - East Juan de Fuca Strait
+7 - San Juan Islands
+8.1 - Deception Pass, Hope Island, and Skagit Bay
+8.2 - Port Susan and Port Gardner
+9 - Admiralty Inlet
+10 - Seattle-Bremerton
+11 - Tacoma-Vashon
+12 - Hood Canal
+13 - South Puget Sound
 
 ```{r}
 library(pgirmess)
 
-mc_p450<- as.data.frame(kruskalmc(p450 ~ site_name, data = alldata, method = "bonferroni"))
-mc_SOD<- as.data.frame(kruskalmc(SOD ~ site_name, data = alldata, method = "bonferroni")) 
+mc_site<- as.data.frame(kruskalmc(p450 ~ site_name, data = data, method = "bonferroni"))
+mc_reporting<- as.data.frame(kruskalmc(p450 ~ reporting_area, data = data, method = "bonferroni")) 
 
-head(mc_p450)
-head(mc_SOD)
+head(mc_site)
+head(mc_reporting)
 
 ```
