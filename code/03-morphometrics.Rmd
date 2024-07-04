@@ -1,0 +1,221 @@
+---
+title: "03- Morphometrics Data Exploration"
+output:
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 20,       # Set plot width in inches
+  fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load packages
+
+```{r}
+library(tinytex)
+library(tidyr)
+library(tidyverse)
+library(vegan)
+
+```
+
+# Load data
+
+```{r}
+
+getwd()
+mdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/morphometricdata.csv")
+
+```
+
+# Check data
+
+```{r}
+summary(mdata)
+```
+
+# Plot data - boxplot, all condition factor values by site name
+
+```{r}
+
+mplot<- ggplot(mdata, aes(x = site_name, y = cf)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+print(mplot)
+
+```
+
+# Plot data - boxplot, all shell thickness values by site name
+
+```{r}
+
+mplot<- ggplot(mdata, aes(x = site_name, y = at)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+print(mplot)
+
+```
+
+# Plot data - ranked box plot, all condition factor by site name
+```{r}
+
+#order the sites by value
+
+data_ordered <- mdata[order(mdata$cf),]
+
+#create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+#plot with ordered site names
+ranked<- ggplot(data_ordered, aes(x = site_name, y = cf)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+print(ranked)
+```
+
+# Plot data - ranked box plot, all shell thickness by site name
+```{r}
+
+#order the sites by value
+
+data_ordered <- mdata[order(mdata$at),]
+
+#create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+#plot with ordered site names
+ranked<- ggplot(data_ordered, aes(x = site_name, y = at)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+print(ranked)
+```
+
+# Plot data - boxplot, all condition factor values by reporting area
+```{r}
+
+mdata$reporting_area <- as.character(mdata$reporting_area)
+
+
+mplot<- ggplot(mdata, aes(x = reporting_area, y = cf)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+print(mplot)
+
+```
+
+# Plot data - boxplot, all shell thickness values by reporting area
+```{r}
+
+mdata$reporting_area <- as.character(mdata$reporting_area)
+
+
+mplot<- ggplot(mdata, aes(x = reporting_area, y = at)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+print(mplot)
+
+```
+
+# Shapiro-Wilkes 
+```{r}
+
+#test for normality
+
+# condition factor is not normally distributed
+# average shell thickness is normally distributed. 
+shapiro.test(mdata$cf)
+shapiro.test(mdata$at)
+
+```
+
+# Kruskal-Wallis (non-parametric data)
+
+```{r}
+
+#test for significant differences 
+
+#cf
+kruskal.test(cf ~ site_name, data = mdata)
+kruskal.test(cf ~ reporting_area, data = mdata)
+
+```
+
+# Kruskal-Wallac Multiple Comparisons (post hoc)
+
+Reporting Areas Are:
+6 - East Juan de Fuca Strait
+7 - San Juan Islands
+8.1 - Deception Pass, Hope Island, and Skagit Bay
+8.2 - Port Susan and Port Gardner
+9 - Admiralty Inlet
+10 - Seattle-Bremerton
+11 - Tacoma-Vashon
+12 - Hood Canal
+13 - South Puget Sound
+
+```{r}
+library(pgirmess)
+
+# significant differences across the sites in pairwise matches: Blair Waterway #2-Port Angeles Yacht Club, Cap Sante-Port Angeles Yacht Club, Eastsound, Fishing Bay-Port Angeles Yacht Club, Everett Harbor-Port Angeles Yacht Club
+
+# significant differences across reporting area pairwise matches: 6-7, 6-8.2
+
+mc_site<- as.data.frame(kruskalmc(cf ~ site_name, data = mdata, method = "bonferroni"))
+mc_reporting<- as.data.frame(kruskalmc(cf ~ reporting_area, data = mdata, method = "bonferroni")) 
+
+head(mc_site)
+head(mc_reporting)
+
+```
+
+# ANOVA (parametric data)
+```{r}
+
+#at
+anova_site <- aov(at ~ site_name, data = mdata)
+summary(anova_site)
+
+anova_ra <- aov(at ~ reporting_area, data = mdata)
+summary(anova_ra)
+
+
+```
+
+# Tukey (post hoc)
+```{r}
+
+library(broom)
+
+tukey_site<- TukeyHSD(anova_site)
+ttable_site<- tidy(tukey_site)
+
+tukey_ra<- TukeyHSD(anova_ra)
+ttable_ra<- tidy(tukey_ra)
+
+```
+

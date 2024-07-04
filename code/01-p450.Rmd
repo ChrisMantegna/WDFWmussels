@@ -1,0 +1,147 @@
+---
+title: "01- p450 Data Exploration"
+output:
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 20,       # Set plot width in inches
+  fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load packages
+
+```{r}
+library(tinytex)
+library(tidyr)
+library(tidyverse)
+library(vegan)
+
+```
+
+# Load data
+
+```{r}
+
+getwd()
+pdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450data.csv")
+
+```
+
+# Check data
+
+```{r}
+summary(pdata)
+```
+
+# Plot data - boxplot, all p450 values by site name
+
+```{r}
+
+#p450 is in activity/ mg protein
+
+pplot<- ggplot(pdata, aes(x = site_name, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+print(pplot)
+
+```
+
+# Plot data - ranked box plot, all p450 values by site name
+```{r}
+
+#order the sites by value
+
+data_ordered <- pdata[order(pdata$p450),]
+
+#create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+#plot with ordered site names
+ranked<- ggplot(data_ordered, aes(x = site_name, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+print(ranked)
+```
+
+# Plot data - boxplot, all p450 values by reporting area
+```{r}
+
+pdata$reporting_area <- as.character(pdata$reporting_area)
+
+#p450
+pplot<- ggplot(pdata, aes(x = reporting_area, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+print(pplot)
+
+```
+
+# Shapiro-Wilkes 
+```{r}
+
+#test for normality
+
+shapiro.test(pdata$p450)
+
+```
+
+# Kruskal-Wallis
+
+```{r}
+
+#test for significant interaction
+
+kruskal.test(p450 ~ site_name, data = pdata)
+kruskal.test(p450 ~ reporting_area, data = pdata)
+
+```
+
+# Kruskal-Wallac Multiple Comparisons (post hoc)
+
+Reporting Areas Are:
+6 - East Juan de Fuca Strait
+7 - San Juan Islands
+8.1 - Deception Pass, Hope Island, and Skagit Bay
+8.2 - Port Susan and Port Gardner
+9 - Admiralty Inlet
+10 - Seattle-Bremerton
+11 - Tacoma-Vashon
+12 - Hood Canal
+13 - South Puget Sound
+
+```{r}
+library(pgirmess)
+
+# no significance confirmed between sites
+# significant differences across reporting area pairwise matches: 8.2-12, 10-13, 11-12, and 12-13
+
+mc_site<- as.data.frame(kruskalmc(p450 ~ site_name, data = pdata, method = "bonferroni"))
+mc_reporting<- as.data.frame(kruskalmc(p450 ~ reporting_area, data = pdata, method = "bonferroni")) 
+
+head(mc_site)
+head(mc_reporting)
+
+```
