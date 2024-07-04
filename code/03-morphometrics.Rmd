@@ -211,11 +211,15 @@ summary(anova_ra)
 
 library(broom)
 
+#significant differences between 104 site comparisons
 tukey_site<- TukeyHSD(anova_site)
 ttable_site<- tidy(tukey_site)
+sigttable_site <- ttable_site %>% filter(adj.p.value < 0.05)
 
+# significant differences between the following reporting area comparisons: 11-10, 12-11, 6-11, 7-11, 8.1-11, 13-12 
 tukey_ra<- TukeyHSD(anova_ra)
 ttable_ra<- tidy(tukey_ra)
+sigttable_ra <- ttable_ra %>% filter(adj.p.value < 0.05)
 
 ```
 
