@@ -63,6 +63,7 @@ mplot<- ggplot(mdata, aes(x = site_name, y = cf)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(mplot)
+ggsave(plot=mplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/CFboxplotSITE.png", width=20, height=9)
 
 ```
 
@@ -75,7 +76,7 @@ mplot<- ggplot(mdata, aes(x = site_name, y = at)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(mplot)
-
+ggsave(plot=mplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/ATboxplotSITE.png", width=20, height=9)
 ```
 
 # Plot data - ranked box plot, all condition factor by site name
@@ -94,6 +95,7 @@ ranked<- ggplot(data_ordered, aes(x = site_name, y = cf)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
 
 print(ranked)
+ggsave(plot=ranked, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/CFboxplotSITEranked.png", width=20, height=9)
 ```
 
 # Plot data - ranked box plot, all shell thickness by site name
@@ -112,6 +114,7 @@ ranked<- ggplot(data_ordered, aes(x = site_name, y = at)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
 
 print(ranked)
+ggsave(plot=ranked, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/ATboxplotSITE.png", width=20, height=9)
 ```
 
 # Plot data - boxplot, all condition factor values by reporting area
@@ -125,6 +128,7 @@ mplot<- ggplot(mdata, aes(x = reporting_area, y = cf)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(mplot)
+ggsave(plot=mplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/CFboxplotRA.png", width=20, height=9)
 
 ```
 
@@ -139,6 +143,7 @@ mplot<- ggplot(mdata, aes(x = reporting_area, y = at)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(mplot)
+ggsave(plot=mplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/ATboxplotRA.png", width=20, height=9)
 
 ```
 
