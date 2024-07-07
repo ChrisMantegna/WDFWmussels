@@ -44,14 +44,14 @@ library(vegan)
 
 getwd()
 pdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450data.csv")
-apdata<- read.csv("/Users/cmantegna/Documents/Biomarkers Data Analysis/analytes_p450.csv")
+apdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/analytes_p450.csv")
 
 ```
 
 # Check data
 
 ```{r}
-summary(pdata)
+summary(apdata)
 ```
 
 # Plot data - boxplot, all p450 values by site name
@@ -86,6 +86,20 @@ ranked<- ggplot(data_ordered, aes(x = site_name, y = p450)) +
 print(ranked)
 ```
 
+# Plot data - boxplot, all SumPAH values by site name
+
+```{r}
+
+#SumPAHs in ng/g tissue
+
+pplot<- ggplot(apdata, aes(x = site_name, y = sumPAH)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+print(pplot)
+
+```
+
 # Plot data - boxplot, all p450 values by reporting area
 ```{r}
 
@@ -99,6 +113,19 @@ pplot<- ggplot(pdata, aes(x = reporting_area, y = p450)) +
 print(pplot)
 
 ```
+# Plot data - boxplot, all SumPAH values by reporting area
+```{r}
+
+apdata$reporting_area <- as.character(apdata$reporting_area)
+
+#p450
+pplot<- ggplot(apdata, aes(x = reporting_area, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+print(pplot)
+
+```
 
 # Shapiro-Wilkes 
 ```{r}
@@ -106,6 +133,7 @@ print(pplot)
 #test for normality
 
 shapiro.test(pdata$p450)
+shapiro.test(apdata$sumPAH)
 
 ```
 
@@ -140,9 +168,16 @@ library(pgirmess)
 # significant differences across reporting area pairwise matches: 8.2-12, 10-13, 11-12, and 12-13
 
 mc_site<- as.data.frame(kruskalmc(p450 ~ site_name, data = pdata, method = "bonferroni"))
-mc_reporting<- as.data.frame(kruskalmc(p450 ~ reporting_area, data = pdata, method = "bonferroni")) 
+mc_reporting<- as.data.frame(kruskalmc(p450 ~ reporting_area, data = pdata, method = "bonferroni"))
 
-head(mc_site)
-head(mc_reporting)
+#head(mc_site)
+#head(mc_reporting)
 
 ```
+
+# Correlation test - p450 and SumPAH
+```{r}
+correlation_result <- cor.test(apdata$p450, apdata$sumPAH, method = "pearson")
+print(correlation_result)
+```
+
