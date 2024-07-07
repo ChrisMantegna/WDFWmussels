@@ -68,11 +68,12 @@ summary(sdata)
 
 #sod is in unit/ mg protein
 
-splot<- ggplot(sdata, aes(x = site_name, y = sod)) +
+pplot<- ggplot(sdata, aes(x = site_name, y = sod)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
-print(splot)
+print(pplot)
+ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/SODboxplotSITE.png", width=20, height=9)
 
 ```
 
@@ -92,6 +93,8 @@ ranked<- ggplot(data_ordered, aes(x = site_name, y = sod)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
 
 print(ranked)
+
+ggsave(plot=ranked, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/SODboxplotSITEranked.png", width=20, height=9)
 ```
 
 # *All analytes were plotted by site and reporting area in p450 flow.*
@@ -107,6 +110,8 @@ splot<- ggplot(sdata, aes(x = reporting_area, y = sod)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(splot)
+
+ggsave(plot=splot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/SODboxplotRA.png", width=20, height=9)
 
 ```
 
