@@ -62,11 +62,11 @@ sdata$sod[sdata$sod <= 0] <- 0.0025
 summary(sdata)
 ```
 
-# Plot data - boxplot, all p450 values by site name
+# Plot data - boxplot, all SOD values by site name
 
 ```{r}
 
-#p450 is in activity/ mg protein
+#sod is in unit/ mg protein
 
 splot<- ggplot(sdata, aes(x = site_name, y = sod)) +
   geom_boxplot() +
@@ -76,7 +76,7 @@ print(splot)
 
 ```
 
-# Plot data - ranked box plot, all p450 values by site name
+# Plot data - ranked box plot, all SOD values by site name
 ```{r}
 
 #order the sites by value
@@ -94,12 +94,14 @@ ranked<- ggplot(data_ordered, aes(x = site_name, y = sod)) +
 print(ranked)
 ```
 
+# *All analytes were plotted by site and reporting area in p450 flow.*
+
 # Plot data - boxplot, all p450 values by reporting area
 ```{r}
 
 sdata$reporting_area <- as.character(sdata$reporting_area)
 
-#p450
+#sod
 splot<- ggplot(sdata, aes(x = reporting_area, y = sod)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
@@ -111,7 +113,8 @@ print(splot)
 # Shapiro-Wilkes 
 ```{r}
 
-#test for normality
+#test for normality. Data is not normally distributed.
+# *All analytes were plotted by site and reporting area in p450 flow.* 
 
 shapiro.test(sdata$sod)
 
@@ -154,3 +157,29 @@ head(mc_site)
 head(mc_reporting)
 
 ```
+
+# Correlation test - SOD and SumPAH
+```{r}
+
+# no correlation
+correlation_result <- cor.test(sdata$sod, sdata$sumPAH, method = "pearson")
+print(correlation_result)
+```
+
+# Correlation test - SOD and hmwPAH
+```{r}
+
+# no correlation
+correlation_result <- cor.test(sdata$sod, sdata$hmwPAH, method = "pearson")
+print(correlation_result)
+```
+
+# Correlation test - SOD and SumPCB
+```{r}
+
+# correlation= 0.1557987 with a p-value of .0059. This is a significant weak correlation?
+
+correlation_result <- cor.test(sdata$sod, sdata$sumPCB, method = "pearson")
+print(correlation_result)
+```
+
