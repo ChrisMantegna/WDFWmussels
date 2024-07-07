@@ -62,9 +62,12 @@ apdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/analytes_p450.csv
 
 pplot<- ggplot(pdata, aes(x = site_name, y = p450)) +
   geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 14),  
+    axis.text.y = element_text(size = 14) 
+  )
 
 print(pplot)
+ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotSITE.png", width=20, height=9)
 
 ```
 
@@ -84,6 +87,8 @@ ranked<- ggplot(data_ordered, aes(x = site_name, y = p450)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
 
 print(ranked)
+print(pplot)
+ggsave(plot=ranked, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotSITEranked.png", width=20, height=9)
 ```
 
 # Plot data - boxplot, all SumPAH values by site name
@@ -98,6 +103,8 @@ pplot<- ggplot(apdata, aes(x = site_name, y = sumPAH)) +
 
 print(pplot)
 
+ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/SumPAHboxplotSITE.png", width=20, height=9)
+
 ```
 
 # Plot data - boxplot, all hmwPAH values by site name
@@ -111,6 +118,7 @@ pplot<- ggplot(apdata, aes(x = site_name, y = hmwPAH)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(pplot)
+ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/hmwPAHboxplotSITE.png", width=20, height=9)
 
 ```
 
@@ -118,13 +126,14 @@ print(pplot)
 
 ```{r}
 
-#SumPAHs in ng/g tissue
+#SumPCBss in ng/g tissue
 
 pplot<- ggplot(apdata, aes(x = site_name, y = sumPCB)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(pplot)
+ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/sumPCBboxplotSITE.png", width=20, height=9)
 
 ```
 
@@ -139,6 +148,7 @@ pplot<- ggplot(pdata, aes(x = reporting_area, y = p450)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(pplot)
+ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotRA.png", width=20, height=9)
 
 ```
 # Plot data - boxplot, all SumPAH values by reporting area
@@ -152,6 +162,7 @@ pplot<- ggplot(apdata, aes(x = reporting_area, y = p450)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(pplot)
+ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/sumPAHboxplotRA.png", width=20, height=9)
 
 ```
 
@@ -166,6 +177,7 @@ pplot<- ggplot(apdata, aes(x = reporting_area, y = hmwPAH)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(pplot)
+ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/hmwPAHboxplotRA.png", width=20, height=9)
 
 ```
 
@@ -180,6 +192,7 @@ pplot<- ggplot(apdata, aes(x = reporting_area, y = sumPCB)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(pplot)
+ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/sumPCBboxplotRA.png", width=20, height=9)
 
 ```
 
