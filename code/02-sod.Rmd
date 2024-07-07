@@ -177,7 +177,7 @@ print(correlation_result)
 # Correlation test - SOD and SumPCB
 ```{r}
 
-# correlation= 0.1557987 with a p-value of .0059. This is a significant weak correlation?
+# correlation= 0.1557987 with a p-value of .0059. This is a significant weak correlation.
 
 correlation_result <- cor.test(sdata$sod, sdata$sumPCB, method = "pearson")
 print(correlation_result)

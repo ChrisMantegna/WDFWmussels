@@ -54,6 +54,7 @@ summary(mdata)
 ```
 
 # Plot data - boxplot, all condition factor values by site name
+# *All analytes were plotted by site and reporting area in p450 flow.*
 
 ```{r}
 
@@ -145,6 +146,7 @@ print(mplot)
 ```{r}
 
 #test for normality
+# *All analytes were plotted by site and reporting area in p450 flow.* 
 
 # condition factor is not normally distributed
 # average shell thickness is normally distributed. 
@@ -210,16 +212,68 @@ summary(anova_ra)
 ```{r}
 
 library(broom)
+library(readr)
 
-#significant differences between 104 site comparisons
+#significant differences between 104 site comparisons. Table printed and added to GH for review.
 tukey_site<- TukeyHSD(anova_site)
 ttable_site<- tidy(tukey_site)
 sigttable_site <- ttable_site %>% filter(adj.p.value < 0.05)
+write.csv(sigttable_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessSite.csv", row.names = FALSE)
 
 # significant differences between the following reporting area comparisons: 11-10, 12-11, 6-11, 7-11, 8.1-11, 13-12 
 tukey_ra<- TukeyHSD(anova_ra)
 ttable_ra<- tidy(tukey_ra)
 sigttable_ra <- ttable_ra %>% filter(adj.p.value < 0.05)
+write.csv(sigttable_ra, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessRA.csv", row.names = FALSE)
 
 ```
 
+# Correlation test - cf and SumPAH
+```{r}
+
+# no correlation
+correlation_result <- cor.test(mdata$cf, mdata$sumPAH, method = "pearson")
+print(correlation_result)
+```
+
+# Correlation test - at and SumPAH
+```{r}
+
+# # correlation= 0.144847 with a p-value= .01041. This is a significant weak correlation.
+correlation_result <- cor.test(mdata$at, mdata$sumPAH, method = "pearson")
+print(correlation_result)
+```
+
+# Correlation test - cf and hmwPAH
+```{r}
+
+# no correlation
+correlation_result <- cor.test(mdata$cf, mdata$hmwPAH, method = "pearson")
+print(correlation_result)
+```
+
+# Correlation test - at and hmwPAH
+```{r}
+
+# correlation= 0.1297819 with a p-value of .02185. This is a significant weak correlation.
+correlation_result <- cor.test(mdata$at, mdata$hmwPAH, method = "pearson")
+print(correlation_result)
+```
+
+# Correlation test - cf and SumPCB
+```{r}
+
+# no correlation
+
+correlation_result <- cor.test(mdata$cf, mdata$sumPCB, method = "pearson")
+print(correlation_result)
+```
+
+# Correlation test - at and SumPCB
+```{r}
+
+# no correlation
+
+correlation_result <- cor.test(mdata$at, mdata$sumPCB, method = "pearson")
+print(correlation_result)
+```
