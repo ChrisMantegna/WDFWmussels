@@ -1,0 +1,463 @@
+﻿SiteName,Latitude,Longitude,Analyte,WetValue,Qualifier,Units,PctSolids,DryValue
+Arroyo Beach,47.50159,-122.38577,mercuryTotal,0.00612,D,mg/Kg,17,0.036
+Brackenwood Ln,47.68203,-122.50668,mercuryTotal,0.00633,D,mg/Kg,16.9,0.037455621
+Salmon Beach,47.294692,-122.530504,mercuryTotal,0.00426,D,mg/Kg,17.9,0.023798883
+Chimacum Creek delta,48.04887,-122.7711,mercuryTotal,0.00555,D,mg/Kg,17,0.032647059
+Skiff Point,47.6614139,-122.498892,mercuryTotal,0.007,D,mg/Kg,17.8,0.039325843
+S of Skunk Island,48.02655,-122.75089,mercuryTotal,0.00502,D,mg/Kg,17.5,0.028685714
+Blair Waterway,47.2758,-122.4174,mercuryTotal,0.00561,D,mg/Kg,17.5,0.032057143
+"Chuckanut, Clark's Point",48.691084,-122.504012,mercuryTotal,0.00636,D,mg/Kg,18.1,0.035138122
+Kitsap St Boat Launch,47.541533,-122.640383,mercuryTotal,0.00616,D,mg/Kg,19.5,0.031589744
+"Eastsound, Fishing Bay",48.69395,-122.909933,mercuryTotal,0.00555,D,mg/Kg,18.5,0.03
+"Elliott Bay, Harbor Island, Pier 17",47.5876989,-122.3505105,mercuryTotal,0.00581,D,mg/Kg,17.4,0.033390805
+Williams Olson Park,47.6609,-122.5668,mercuryTotal,0.00539,D,mg/Kg,17.5,0.0308
+Rocky Point,47.60253,-122.66991,mercuryTotal,0.00575,D,mg/Kg,16.8,0.03422619
+N Avenue Park,48.52108,-122.61531,mercuryTotal,0.00641,D,mg/Kg,17.6,0.036420455
+Port Angeles Yacht Club,48.128267,-123.457133,mercuryTotal,0.00481,D,mg/Kg,17.1,0.028128655
+Discovery Bay,48.064974,-122.857218,mercuryTotal,0.00596,D,mg/Kg,18.3,0.032568306
+Squaxin Island,47.176735,-122.905337,mercuryTotal,0.00508,D,mg/Kg,15.7,0.032356688
+Eld Inlet,47.0769,-123.0034725,mercuryTotal,0.00497,D,mg/Kg,17.4,0.028563218
+North Camano,48.25523,-122.50817,mercuryTotal,0.00784,D,mg/Kg,17.2,0.045581395
+Reach Island,47.346817,-122.822363,mercuryTotal,0.00417,D,mg/Kg,16.7,0.02497006
+Friday Harbor,48.5069444,-123.0194444,mercuryTotal,0.006,D,mg/Kg,18,0.033333333
+Tulalip Reservation,48.069978,-122.300216,mercuryTotal,0.0051,D,mg/Kg,16.4,0.031097561
+Three Tree Point,47.4485721,-122.3723967,mercuryTotal,0.0051,D,mg/Kg,17.4,0.029310345
+Cap Sante,48.52093,-122.600725,mercuryTotal,0.00486,D,mg/Kg,16.4,0.029634146
+Locust Beach,48.76652,-122.5395,mercuryTotal,0.00513,D,mg/Kg,16.4,0.031280488
+Blair Waterway #2,47.2632,-122.3856,mercuryTotal,-0.00392,U,mg/Kg,16.6,-0.0236
+West Bay Park,47.052373,-122.9101963,mercuryTotal,0.00494,D,mg/Kg,15.6,0.031666667
+Lions Park,47.583016,-122.64217,mercuryTotal,0.00584,D,mg/Kg,16,0.0365
+Madrona Pont,47.579985,-122.67853,mercuryTotal,0.00538,D,mg/Kg,17.6,0.030568182
+Aiston Preserve,48.6793778,-122.6300583,mercuryTotal,0.00552,D,mg/Kg,16.7,0.033053892
+Penn Cove Reference,48.214071,-122.719097,mercuryTotal,0.00667,D,mg/Kg,14.4,0.046319444
+Hood Canal Holly,47.570193,-122.971775,mercuryTotal,0.00444,D,mg/Kg,15.4,0.028831169
+Broad Spit,47.80934,-122.81556,mercuryTotal,-0.00393,U,mg/Kg,15.3,-0.0257
+Penn Cove Baseline 1,48.218626,-122.707972,mercuryTotal,-0.0039,U,mg/Kg,21.2,-0.0184
+Penn Cove Baseline 2,48.218626,-122.707972,mercuryTotal,-0.00386,U,mg/Kg,19.3,-0.02
+Penn Cove Baseline 3,48.218626,-122.707972,mercuryTotal,-0.00393,U,mg/Kg,19.8,-0.0198
+"Manchester, Stormwater Outfall",47.556111,-122.542778,mercuryTotal,0.00471,D,mg/Kg,15.8,0.029810127
+"Suquamish, Stormwater Outfall",47.729875,-122.550882,mercuryTotal,0.00543,D,mg/Kg,16.6,0.032710843
+"Silverdale, Dyes Inlet",47.6428,-122.6967,mercuryTotal,0.00624,D,mg/Kg,15.9,0.039245283
+Kingston Marina,47.7947,-122.5003,mercuryTotal,0.00727,D,mg/Kg,15.1,0.048145695
+Eagle Harbor Dr,47.618875,-122.527234,mercuryTotal,0.00754,D,mg/Kg,16.4,0.04597561
+Point Defiance Ferry,47.3061098,-122.514771,mercuryTotal,0.00501,D,mg/Kg,18.3,0.027377049
+"Smith Cove, Terminal 91",47.6325,-122.3786,mercuryTotal,0.00548,D,mg/Kg,16.7,0.032814371
+Donkey Creek Delta,47.337909,-122.59023,mercuryTotal,0.00502,D,mg/Kg,16.6,0.030240964
+Comm Bay Skookum,47.28915,-122.4096,mercuryTotal,0.00523,D,mg/Kg,15.4,0.033961039
+Thea Foss Waterway,47.25934,-122.43479,mercuryTotal,0.0041,D,mg/Kg,16.1,0.025465839
+"Salmon Bay, Commodore Park",47.666244,-122.401894,mercuryTotal,0.00533,D,mg/Kg,13.5,0.039481481
+"Seattle Aquarium, Pier 59",47.607334,-122.344055,mercuryTotal,0.00632,D,mg/Kg,16.1,0.039254658
+"Cherry Point Aquatic Reserve, Conoco Phillips",48.820783,-122.710133,mercuryTotal,0.00575,D,mg/Kg,17.4,0.033045977
+Mukilteo,47.949831,-122.301703,mercuryTotal,0.00785,D,mg/Kg,15.5,0.050645161
+Everett Harbor,47.97252,-122.22982,mercuryTotal,0.00653,D,mg/Kg,15.8,0.041329114
+Tulalip Bay,48.0616613,-122.293939,mercuryTotal,0.00661,D,mg/Kg,15.9,0.041572327
+Edmonds Marina,47.81094,-122.387955,mercuryTotal,0.00904,D,mg/Kg,17.4,0.051954023
+Edmonds Ferry,47.8142069,-122.3822018,mercuryTotal,0.00645,D,mg/Kg,17.6,0.036647727
+Rich Passage,47.578117,-122.524833,mercuryTotal,0.00581,D,mg/Kg,17.6,0.033011364
+Meyer's Point - Henderson Inlet,47.117944,-122.833528,mercuryTotal,0.00527,D,mg/Kg,15,0.035133333
+"Purdy, Burley Lagoon",47.387021,-122.6367,mercuryTotal,0.00614,D,mg/Kg,17.1,0.035906433
+"Comm Bay, Dick Gilmur Launch",47.2925,-122.4122,mercuryTotal,0.00545,D,mg/Kg,16.6,0.032831325
+"Comm Bay, Milwaukee Waterway",47.2694,-122.4243,mercuryTotal,0.00554,D,mg/Kg,15.6,0.035512821
+"Fidalgo Bay Aq Reserve, Weaverling Spit",48.48425,-122.58392,mercuryTotal,0.0066,D,mg/Kg,16.6,0.039759036
+Shilshole Bay,47.6707,-122.40605,mercuryTotal,0.00618,D,mg/Kg,14.7,0.042040816
+Elliot Bay Myrtle Edwards,47.62052,-122.36373,mercuryTotal,0.00645,D,mg/Kg,16.4,0.039329268
+Jamestown,48.027069,-122.999191,mercuryTotal,0.005,D,mg/Kg,15.7,0.031847134
+Oak Bay County Park,48.022466,-122.728123,mercuryTotal,0.00594,D,mg/Kg,16.5,0.036
+Maristone Island Bridge,48.018181,-122.699838,mercuryTotal,0.00464,D,mg/Kg,14.8,0.031351351
+Penrose Point State Park,47.2609094,-122.7447771,mercuryTotal,0.00588,D,mg/Kg,15.7,0.037452229
+Maple Hollow Park,47.29954,-122.74554,mercuryTotal,0.00619,D,mg/Kg,15.6,0.039679487
+Kopachuck State Park,47.3115,-122.68725,mercuryTotal,0.00613,D,mg/Kg,15.3,0.040065359
+Raft Island Park,47.32622,-122.66715,mercuryTotal,0.00525,D,mg/Kg,14.7,0.035714286
+Miller Creek,47.443611,-122.361944,mercuryTotal,0.00678,D,mg/Kg,16.3,0.041595092
+Des Moines Marina,47.402778,-122.331667,mercuryTotal,0.0067,D,mg/Kg,16.4,0.040853659
+Browns Point Lighthouse,47.304906,-122.44427,mercuryTotal,0.0058,D,mg/Kg,17.6,0.032954545
+Minter Bay,47.35399,-122.69176,mercuryTotal,0.00578,D,mg/Kg,15.6,0.037051282
+Chambers Bay Park,47.2009,-122.58342,mercuryTotal,0.00503,D,mg/Kg,17.2,0.029244186
+Purdy - Dexters,47.385334,-122.628902,mercuryTotal,0.00669,D,mg/Kg,17.1,0.039122807
+Gig Harbor Boat Launch,47.3372,-122.58284,mercuryTotal,0.00599,D,mg/Kg,16.3,0.036748466
+Filucy Bay,47.19483,-122.748665,mercuryTotal,0.0072,D,mg/Kg,17,0.042352941
+Arroyo Beach,47.50159,-122.38577,arsenic,1.64,D,mg/Kg,17,9.647058824
+Brackenwood Ln,47.68203,-122.50668,arsenic,1.47,D,mg/Kg,16.9,8.698224852
+Salmon Beach,47.294692,-122.530504,arsenic,1.41,D,mg/Kg,17.9,7.877094972
+Chimacum Creek delta,48.04887,-122.7711,arsenic,1.42,D,mg/Kg,17,8.352941176
+Skiff Point,47.6614139,-122.498892,arsenic,1.57,D,mg/Kg,17.8,8.820224719
+S of Skunk Island,48.02655,-122.75089,arsenic,1.4,D,mg/Kg,17.5,8
+Blair Waterway,47.2758,-122.4174,arsenic,1.42,D,mg/Kg,17.5,8.114285714
+"Chuckanut, Clark's Point",48.691084,-122.504012,arsenic,1.36,D,mg/Kg,18.1,7.513812155
+Kitsap St Boat Launch,47.541533,-122.640383,arsenic,1.59,D,mg/Kg,19.5,8.153846154
+"Eastsound, Fishing Bay",48.69395,-122.909933,arsenic,1.67,D,mg/Kg,18.5,9.027027027
+"Elliott Bay, Harbor Island, Pier 17",47.5876989,-122.3505105,arsenic,1.39,D,mg/Kg,17.4,7.988505747
+Williams Olson Park,47.6609,-122.5668,arsenic,1.5,D,mg/Kg,17.5,8.571428571
+Rocky Point,47.60253,-122.66991,arsenic,1.46,D,mg/Kg,16.8,8.69047619
+N Avenue Park,48.52108,-122.61531,arsenic,1.81,D,mg/Kg,17.6,10.28409091
+Port Angeles Yacht Club,48.128267,-123.457133,arsenic,1.47,D,mg/Kg,17.1,8.596491228
+Discovery Bay,48.064974,-122.857218,arsenic,1.56,D,mg/Kg,18.3,8.524590164
+Squaxin Island,47.176735,-122.905337,arsenic,1.29,D,mg/Kg,15.7,8.21656051
+Eld Inlet,47.0769,-123.0034725,arsenic,1.54,D,mg/Kg,17.4,8.850574713
+North Camano,48.25523,-122.50817,arsenic,1.56,D,mg/Kg,17.2,9.069767442
+Reach Island,47.346817,-122.822363,arsenic,1.56,D,mg/Kg,16.7,9.341317365
+Friday Harbor,48.5069444,-123.0194444,arsenic,1.69,D,mg/Kg,18,9.388888889
+Tulalip Reservation,48.069978,-122.300216,arsenic,1.27,D,mg/Kg,16.4,7.743902439
+Three Tree Point,47.4485721,-122.3723967,arsenic,1.47,D,mg/Kg,17.4,8.448275862
+Cap Sante,48.52093,-122.600725,arsenic,1.27,D,mg/Kg,16.4,7.743902439
+Locust Beach,48.76652,-122.5395,arsenic,1.47,D,mg/Kg,16.4,8.963414634
+Blair Waterway #2,47.2632,-122.3856,arsenic,1.39,D,mg/Kg,16.6,8.373493976
+West Bay Park,47.052373,-122.9101963,arsenic,1.28,D,mg/Kg,15.6,8.205128205
+Lions Park,47.583016,-122.64217,arsenic,1.37,D,mg/Kg,16,8.5625
+Madrona Pont,47.579985,-122.67853,arsenic,1.54,D,mg/Kg,17.6,8.75
+Aiston Preserve,48.6793778,-122.6300583,arsenic,1.21,D,mg/Kg,16.7,7.245508982
+Penn Cove Reference,48.214071,-122.719097,arsenic,1.44,D,mg/Kg,14.4,10
+Hood Canal Holly,47.570193,-122.971775,arsenic,1.43,D,mg/Kg,15.4,9.285714286
+Broad Spit,47.80934,-122.81556,arsenic,1.18,D,mg/Kg,15.3,7.712418301
+Penn Cove Baseline 1,48.218626,-122.707972,arsenic,1.51,D,mg/Kg,21.2,7.122641509
+Penn Cove Baseline 2,48.218626,-122.707972,arsenic,1.6,D,mg/Kg,19.3,8.29015544
+Penn Cove Baseline 3,48.218626,-122.707972,arsenic,1.47,D,mg/Kg,19.8,7.424242424
+"Manchester, Stormwater Outfall",47.556111,-122.542778,arsenic,1.29,D,mg/Kg,15.8,8.164556962
+"Suquamish, Stormwater Outfall",47.729875,-122.550882,arsenic,1.44,D,mg/Kg,16.6,8.674698795
+"Silverdale, Dyes Inlet",47.6428,-122.6967,arsenic,1.51,D,mg/Kg,15.9,9.496855346
+Kingston Marina,47.7947,-122.5003,arsenic,1.23,D,mg/Kg,15.1,8.145695364
+Eagle Harbor Dr,47.618875,-122.527234,arsenic,1.4,D,mg/Kg,16.4,8.536585366
+Point Defiance Ferry,47.3061098,-122.514771,arsenic,1.48,D,mg/Kg,18.3,8.087431694
+"Smith Cove, Terminal 91",47.6325,-122.3786,arsenic,1.43,D,mg/Kg,16.7,8.562874251
+Donkey Creek Delta,47.337909,-122.59023,arsenic,1.48,D,mg/Kg,16.6,8.915662651
+Comm Bay Skookum,47.28915,-122.4096,arsenic,1.3,D,mg/Kg,15.4,8.441558442
+Thea Foss Waterway,47.25934,-122.43479,arsenic,1.21,D,mg/Kg,16.1,7.51552795
+"Salmon Bay, Commodore Park",47.666244,-122.401894,arsenic,1.04,D,mg/Kg,13.5,7.703703704
+"Seattle Aquarium, Pier 59",47.607334,-122.344055,arsenic,1.42,D,mg/Kg,16.1,8.819875776
+"Cherry Point Aquatic Reserve, Conoco Phillips",48.820783,-122.710133,arsenic,1.38,D,mg/Kg,17.4,7.931034483
+Mukilteo,47.949831,-122.301703,arsenic,1.26,D,mg/Kg,15.5,8.129032258
+Everett Harbor,47.97252,-122.22982,arsenic,1.32,D,mg/Kg,15.8,8.35443038
+Tulalip Bay,48.0616613,-122.293939,arsenic,1.41,D,mg/Kg,15.9,8.867924528
+Edmonds Marina,47.81094,-122.387955,arsenic,1.44,D,mg/Kg,17.4,8.275862069
+Edmonds Ferry,47.8142069,-122.3822018,arsenic,1.47,D,mg/Kg,17.6,8.352272727
+Rich Passage,47.578117,-122.524833,arsenic,1.49,D,mg/Kg,17.6,8.465909091
+Meyer's Point - Henderson Inlet,47.117944,-122.833528,arsenic,1.17,D,mg/Kg,15,7.8
+"Purdy, Burley Lagoon",47.387021,-122.6367,arsenic,1.54,D,mg/Kg,17.1,9.005847953
+"Comm Bay, Dick Gilmur Launch",47.2925,-122.4122,arsenic,1.22,D,mg/Kg,16.6,7.34939759
+"Comm Bay, Milwaukee Waterway",47.2694,-122.4243,arsenic,1.27,D,mg/Kg,15.6,8.141025641
+"Fidalgo Bay Aq Reserve, Weaverling Spit",48.48425,-122.58392,arsenic,1.41,D,mg/Kg,16.6,8.493975904
+Shilshole Bay,47.6707,-122.40605,arsenic,1.18,D,mg/Kg,14.7,8.027210884
+Elliot Bay Myrtle Edwards,47.62052,-122.36373,arsenic,1.34,D,mg/Kg,16.4,8.170731707
+Jamestown,48.027069,-122.999191,arsenic,1.38,D,mg/Kg,15.7,8.789808917
+Oak Bay County Park,48.022466,-122.728123,arsenic,1.34,D,mg/Kg,16.5,8.121212121
+Maristone Island Bridge,48.018181,-122.699838,arsenic,1.3,D,mg/Kg,14.8,8.783783784
+Penrose Point State Park,47.2609094,-122.7447771,arsenic,1.39,D,mg/Kg,15.7,8.853503185
+Maple Hollow Park,47.29954,-122.74554,arsenic,1.51,D,mg/Kg,15.6,9.679487179
+Kopachuck State Park,47.3115,-122.68725,arsenic,1.28,D,mg/Kg,15.3,8.366013072
+Raft Island Park,47.32622,-122.66715,arsenic,1.19,D,mg/Kg,14.7,8.095238095
+Miller Creek,47.443611,-122.361944,arsenic,1.42,D,mg/Kg,16.3,8.711656442
+Des Moines Marina,47.402778,-122.331667,arsenic,1.4,D,mg/Kg,16.4,8.536585366
+Browns Point Lighthouse,47.304906,-122.44427,arsenic,1.49,D,mg/Kg,17.6,8.465909091
+Minter Bay,47.35399,-122.69176,arsenic,1.48,D,mg/Kg,15.6,9.487179487
+Chambers Bay Park,47.2009,-122.58342,arsenic,1.39,D,mg/Kg,17.2,8.081395349
+Purdy - Dexters,47.385334,-122.628902,arsenic,1.57,D,mg/Kg,17.1,9.18128655
+Gig Harbor Boat Launch,47.3372,-122.58284,arsenic,1.36,D,mg/Kg,16.3,8.343558282
+Filucy Bay,47.19483,-122.748665,arsenic,1.38,D,mg/Kg,17,8.117647059
+Arroyo Beach,47.50159,-122.38577,cadmium,0.332,D,mg/Kg,17,1.952941176
+Brackenwood Ln,47.68203,-122.50668,cadmium,0.314,D,mg/Kg,16.9,1.857988166
+Salmon Beach,47.294692,-122.530504,cadmium,0.328,D,mg/Kg,17.9,1.832402235
+Chimacum Creek delta,48.04887,-122.7711,cadmium,0.312,D,mg/Kg,17,1.835294118
+Skiff Point,47.6614139,-122.498892,cadmium,0.337,D,mg/Kg,17.8,1.893258427
+S of Skunk Island,48.02655,-122.75089,cadmium,0.306,D,mg/Kg,17.5,1.748571429
+Blair Waterway,47.2758,-122.4174,cadmium,0.284,D,mg/Kg,17.5,1.622857143
+"Chuckanut, Clark's Point",48.691084,-122.504012,cadmium,0.29,D,mg/Kg,18.1,1.602209945
+Kitsap St Boat Launch,47.541533,-122.640383,cadmium,0.302,D,mg/Kg,19.5,1.548717949
+"Eastsound, Fishing Bay",48.69395,-122.909933,cadmium,0.32,D,mg/Kg,18.5,1.72972973
+"Elliott Bay, Harbor Island, Pier 17",47.5876989,-122.3505105,cadmium,0.316,D,mg/Kg,17.4,1.816091954
+Williams Olson Park,47.6609,-122.5668,cadmium,0.291,D,mg/Kg,17.5,1.662857143
+Rocky Point,47.60253,-122.66991,cadmium,0.336,D,mg/Kg,16.8,2
+N Avenue Park,48.52108,-122.61531,cadmium,0.339,D,mg/Kg,17.6,1.926136364
+Port Angeles Yacht Club,48.128267,-123.457133,cadmium,0.305,D,mg/Kg,17.1,1.783625731
+Discovery Bay,48.064974,-122.857218,cadmium,0.353,D,mg/Kg,18.3,1.928961749
+Squaxin Island,47.176735,-122.905337,cadmium,0.359,D,mg/Kg,15.7,2.286624204
+Eld Inlet,47.0769,-123.0034725,cadmium,0.298,D,mg/Kg,17.4,1.712643678
+North Camano,48.25523,-122.50817,cadmium,0.304,D,mg/Kg,17.2,1.76744186
+Reach Island,47.346817,-122.822363,cadmium,0.341,D,mg/Kg,16.7,2.041916168
+Friday Harbor,48.5069444,-123.0194444,cadmium,0.32,D,mg/Kg,18,1.777777778
+Tulalip Reservation,48.069978,-122.300216,cadmium,0.301,D,mg/Kg,16.4,1.835365854
+Three Tree Point,47.4485721,-122.3723967,cadmium,0.303,D,mg/Kg,17.4,1.74137931
+Cap Sante,48.52093,-122.600725,cadmium,0.312,D,mg/Kg,16.4,1.902439024
+Locust Beach,48.76652,-122.5395,cadmium,0.291,D,mg/Kg,16.4,1.774390244
+Blair Waterway #2,47.2632,-122.3856,cadmium,0.283,D,mg/Kg,16.6,1.704819277
+West Bay Park,47.052373,-122.9101963,cadmium,0.289,D,mg/Kg,15.6,1.852564103
+Lions Park,47.583016,-122.64217,cadmium,0.308,D,mg/Kg,16,1.925
+Madrona Pont,47.579985,-122.67853,cadmium,0.303,D,mg/Kg,17.6,1.721590909
+Aiston Preserve,48.6793778,-122.6300583,cadmium,0.276,D,mg/Kg,16.7,1.652694611
+Penn Cove Reference,48.214071,-122.719097,cadmium,0.325,D,mg/Kg,14.4,2.256944444
+Hood Canal Holly,47.570193,-122.971775,cadmium,0.356,D,mg/Kg,15.4,2.311688312
+Broad Spit,47.80934,-122.81556,cadmium,0.315,D,mg/Kg,15.3,2.058823529
+Penn Cove Baseline 1,48.218626,-122.707972,cadmium,0.35,D,mg/Kg,21.2,1.650943396
+Penn Cove Baseline 2,48.218626,-122.707972,cadmium,0.416,D,mg/Kg,19.3,2.155440415
+Penn Cove Baseline 3,48.218626,-122.707972,cadmium,0.333,D,mg/Kg,19.8,1.681818182
+"Manchester, Stormwater Outfall",47.556111,-122.542778,cadmium,0.305,D,mg/Kg,15.8,1.930379747
+"Suquamish, Stormwater Outfall",47.729875,-122.550882,cadmium,0.314,D,mg/Kg,16.6,1.891566265
+"Silverdale, Dyes Inlet",47.6428,-122.6967,cadmium,0.296,D,mg/Kg,15.9,1.86163522
+Kingston Marina,47.7947,-122.5003,cadmium,0.292,D,mg/Kg,15.1,1.933774834
+Eagle Harbor Dr,47.618875,-122.527234,cadmium,0.317,D,mg/Kg,16.4,1.932926829
+Point Defiance Ferry,47.3061098,-122.514771,cadmium,0.283,D,mg/Kg,18.3,1.546448087
+"Smith Cove, Terminal 91",47.6325,-122.3786,cadmium,0.296,D,mg/Kg,16.7,1.77245509
+Donkey Creek Delta,47.337909,-122.59023,cadmium,0.321,D,mg/Kg,16.6,1.93373494
+Comm Bay Skookum,47.28915,-122.4096,cadmium,0.304,D,mg/Kg,15.4,1.974025974
+Thea Foss Waterway,47.25934,-122.43479,cadmium,0.31,D,mg/Kg,16.1,1.925465839
+"Salmon Bay, Commodore Park",47.666244,-122.401894,cadmium,0.264,D,mg/Kg,13.5,1.955555556
+"Seattle Aquarium, Pier 59",47.607334,-122.344055,cadmium,0.319,D,mg/Kg,16.1,1.98136646
+"Cherry Point Aquatic Reserve, Conoco Phillips",48.820783,-122.710133,cadmium,0.331,D,mg/Kg,17.4,1.902298851
+Mukilteo,47.949831,-122.301703,cadmium,0.288,D,mg/Kg,15.5,1.858064516
+Everett Harbor,47.97252,-122.22982,cadmium,0.269,D,mg/Kg,15.8,1.702531646
+Tulalip Bay,48.0616613,-122.293939,cadmium,0.315,D,mg/Kg,15.9,1.981132075
+Edmonds Marina,47.81094,-122.387955,cadmium,0.304,D,mg/Kg,17.4,1.747126437
+Edmonds Ferry,47.8142069,-122.3822018,cadmium,0.305,D,mg/Kg,17.6,1.732954545
+Rich Passage,47.578117,-122.524833,cadmium,0.301,D,mg/Kg,17.6,1.710227273
+Meyer's Point - Henderson Inlet,47.117944,-122.833528,cadmium,0.298,D,mg/Kg,15,1.986666667
+"Purdy, Burley Lagoon",47.387021,-122.6367,cadmium,0.315,D,mg/Kg,17.1,1.842105263
+"Comm Bay, Dick Gilmur Launch",47.2925,-122.4122,cadmium,0.267,D,mg/Kg,16.6,1.608433735
+"Comm Bay, Milwaukee Waterway",47.2694,-122.4243,cadmium,0.264,D,mg/Kg,15.6,1.692307692
+"Fidalgo Bay Aq Reserve, Weaverling Spit",48.48425,-122.58392,cadmium,0.29,D,mg/Kg,16.6,1.746987952
+Shilshole Bay,47.6707,-122.40605,cadmium,0.226,D,mg/Kg,14.7,1.537414966
+Elliot Bay Myrtle Edwards,47.62052,-122.36373,cadmium,0.295,D,mg/Kg,16.4,1.798780488
+Jamestown,48.027069,-122.999191,cadmium,0.294,D,mg/Kg,15.7,1.872611465
+Oak Bay County Park,48.022466,-122.728123,cadmium,0.312,D,mg/Kg,16.5,1.890909091
+Maristone Island Bridge,48.018181,-122.699838,cadmium,0.309,D,mg/Kg,14.8,2.087837838
+Penrose Point State Park,47.2609094,-122.7447771,cadmium,0.311,D,mg/Kg,15.7,1.98089172
+Maple Hollow Park,47.29954,-122.74554,cadmium,0.349,D,mg/Kg,15.6,2.237179487
+Kopachuck State Park,47.3115,-122.68725,cadmium,0.318,D,mg/Kg,15.3,2.078431373
+Raft Island Park,47.32622,-122.66715,cadmium,0.311,D,mg/Kg,14.7,2.115646259
+Miller Creek,47.443611,-122.361944,cadmium,0.321,D,mg/Kg,16.3,1.969325153
+Des Moines Marina,47.402778,-122.331667,cadmium,0.323,D,mg/Kg,16.4,1.969512195
+Browns Point Lighthouse,47.304906,-122.44427,cadmium,0.301,D,mg/Kg,17.6,1.710227273
+Minter Bay,47.35399,-122.69176,cadmium,0.352,D,mg/Kg,15.6,2.256410256
+Chambers Bay Park,47.2009,-122.58342,cadmium,0.308,D,mg/Kg,17.2,1.790697674
+Purdy - Dexters,47.385334,-122.628902,cadmium,0.331,D,mg/Kg,17.1,1.935672515
+Gig Harbor Boat Launch,47.3372,-122.58284,cadmium,0.31,D,mg/Kg,16.3,1.901840491
+Filucy Bay,47.19483,-122.748665,cadmium,0.296,D,mg/Kg,17,1.741176471
+Arroyo Beach,47.50159,-122.38577,copper,0.956,D,mg/Kg,17,5.623529412
+Brackenwood Ln,47.68203,-122.50668,copper,1.05,D,mg/Kg,16.9,6.213017751
+Salmon Beach,47.294692,-122.530504,copper,0.854,D,mg/Kg,17.9,4.770949721
+Chimacum Creek delta,48.04887,-122.7711,copper,5.18,D,mg/Kg,17,30.47058824
+Skiff Point,47.6614139,-122.498892,copper,1.11,D,mg/Kg,17.8,6.235955056
+S of Skunk Island,48.02655,-122.75089,copper,0.998,D,mg/Kg,17.5,5.702857143
+Blair Waterway,47.2758,-122.4174,copper,1.02,D,mg/Kg,17.5,5.828571429
+"Chuckanut, Clark's Point",48.691084,-122.504012,copper,1.79,D,mg/Kg,18.1,9.889502762
+Kitsap St Boat Launch,47.541533,-122.640383,copper,1.62,D,mg/Kg,19.5,8.307692308
+"Eastsound, Fishing Bay",48.69395,-122.909933,copper,1.11,D,mg/Kg,18.5,6
+"Elliott Bay, Harbor Island, Pier 17",47.5876989,-122.3505105,copper,1.58,D,mg/Kg,17.4,9.08045977
+Williams Olson Park,47.6609,-122.5668,copper,1.78,D,mg/Kg,17.5,10.17142857
+Rocky Point,47.60253,-122.66991,copper,1.03,D,mg/Kg,16.8,6.130952381
+N Avenue Park,48.52108,-122.61531,copper,1.02,D,mg/Kg,17.6,5.795454545
+Port Angeles Yacht Club,48.128267,-123.457133,copper,1.22,D,mg/Kg,17.1,7.134502924
+Discovery Bay,48.064974,-122.857218,copper,1.03,D,mg/Kg,18.3,5.628415301
+Squaxin Island,47.176735,-122.905337,copper,1,D,mg/Kg,15.7,6.369426752
+Eld Inlet,47.0769,-123.0034725,copper,1.08,D,mg/Kg,17.4,6.206896552
+North Camano,48.25523,-122.50817,copper,1.15,D,mg/Kg,17.2,6.686046512
+Reach Island,47.346817,-122.822363,copper,1.51,D,mg/Kg,16.7,9.041916168
+Friday Harbor,48.5069444,-123.0194444,copper,1.26,D,mg/Kg,18,7
+Tulalip Reservation,48.069978,-122.300216,copper,0.96,D,mg/Kg,16.4,5.853658537
+Three Tree Point,47.4485721,-122.3723967,copper,1.05,D,mg/Kg,17.4,6.034482759
+Cap Sante,48.52093,-122.600725,copper,0.869,D,mg/Kg,16.4,5.298780488
+Locust Beach,48.76652,-122.5395,copper,1.12,D,mg/Kg,16.4,6.829268293
+Blair Waterway #2,47.2632,-122.3856,copper,1.35,D,mg/Kg,16.6,8.13253012
+West Bay Park,47.052373,-122.9101963,copper,1.03,D,mg/Kg,15.6,6.602564103
+Lions Park,47.583016,-122.64217,copper,0.987,D,mg/Kg,16,6.16875
+Madrona Pont,47.579985,-122.67853,copper,0.998,D,mg/Kg,17.6,5.670454545
+Aiston Preserve,48.6793778,-122.6300583,copper,0.825,D,mg/Kg,16.7,4.94011976
+Penn Cove Reference,48.214071,-122.719097,copper,0.972,D,mg/Kg,14.4,6.75
+Hood Canal Holly,47.570193,-122.971775,copper,1.04,D,mg/Kg,15.4,6.753246753
+Broad Spit,47.80934,-122.81556,copper,0.774,D,mg/Kg,15.3,5.058823529
+Penn Cove Baseline 1,48.218626,-122.707972,copper,1.01,D,mg/Kg,21.2,4.764150943
+Penn Cove Baseline 2,48.218626,-122.707972,copper,0.921,D,mg/Kg,19.3,4.772020725
+Penn Cove Baseline 3,48.218626,-122.707972,copper,1.25,D,mg/Kg,19.8,6.313131313
+"Manchester, Stormwater Outfall",47.556111,-122.542778,copper,0.808,D,mg/Kg,15.8,5.113924051
+"Suquamish, Stormwater Outfall",47.729875,-122.550882,copper,1.06,D,mg/Kg,16.6,6.385542169
+"Silverdale, Dyes Inlet",47.6428,-122.6967,copper,1.25,D,mg/Kg,15.9,7.86163522
+Kingston Marina,47.7947,-122.5003,copper,0.853,D,mg/Kg,15.1,5.649006623
+Eagle Harbor Dr,47.618875,-122.527234,copper,1.39,D,mg/Kg,16.4,8.475609756
+Point Defiance Ferry,47.3061098,-122.514771,copper,1.27,D,mg/Kg,18.3,6.93989071
+"Smith Cove, Terminal 91",47.6325,-122.3786,copper,1.29,D,mg/Kg,16.7,7.724550898
+Donkey Creek Delta,47.337909,-122.59023,copper,1.22,D,mg/Kg,16.6,7.34939759
+Comm Bay Skookum,47.28915,-122.4096,copper,1.03,D,mg/Kg,15.4,6.688311688
+Thea Foss Waterway,47.25934,-122.43479,copper,1.47,D,mg/Kg,16.1,9.130434783
+"Salmon Bay, Commodore Park",47.666244,-122.401894,copper,1.02,D,mg/Kg,13.5,7.555555556
+"Seattle Aquarium, Pier 59",47.607334,-122.344055,copper,1.25,D,mg/Kg,16.1,7.763975155
+"Cherry Point Aquatic Reserve, Conoco Phillips",48.820783,-122.710133,copper,0.923,D,mg/Kg,17.4,5.304597701
+Mukilteo,47.949831,-122.301703,copper,1.12,D,mg/Kg,15.5,7.225806452
+Everett Harbor,47.97252,-122.22982,copper,1.02,D,mg/Kg,15.8,6.455696203
+Tulalip Bay,48.0616613,-122.293939,copper,1.2,D,mg/Kg,15.9,7.547169811
+Edmonds Marina,47.81094,-122.387955,copper,1.49,D,mg/Kg,17.4,8.563218391
+Edmonds Ferry,47.8142069,-122.3822018,copper,1.23,D,mg/Kg,17.6,6.988636364
+Rich Passage,47.578117,-122.524833,copper,1.25,D,mg/Kg,17.6,7.102272727
+Meyer's Point - Henderson Inlet,47.117944,-122.833528,copper,0.866,D,mg/Kg,15,5.773333333
+"Purdy, Burley Lagoon",47.387021,-122.6367,copper,1.12,D,mg/Kg,17.1,6.549707602
+"Comm Bay, Dick Gilmur Launch",47.2925,-122.4122,copper,0.975,D,mg/Kg,16.6,5.873493976
+"Comm Bay, Milwaukee Waterway",47.2694,-122.4243,copper,1.66,D,mg/Kg,15.6,10.64102564
+"Fidalgo Bay Aq Reserve, Weaverling Spit",48.48425,-122.58392,copper,1.54,D,mg/Kg,16.6,9.277108434
+Shilshole Bay,47.6707,-122.40605,copper,1.17,D,mg/Kg,14.7,7.959183673
+Elliot Bay Myrtle Edwards,47.62052,-122.36373,copper,1.05,D,mg/Kg,16.4,6.402439024
+Jamestown,48.027069,-122.999191,copper,1.16,D,mg/Kg,15.7,7.388535032
+Oak Bay County Park,48.022466,-122.728123,copper,0.912,D,mg/Kg,16.5,5.527272727
+Maristone Island Bridge,48.018181,-122.699838,copper,0.869,D,mg/Kg,14.8,5.871621622
+Penrose Point State Park,47.2609094,-122.7447771,copper,0.956,D,mg/Kg,15.7,6.089171975
+Maple Hollow Park,47.29954,-122.74554,copper,0.889,D,mg/Kg,15.6,5.698717949
+Kopachuck State Park,47.3115,-122.68725,copper,0.837,D,mg/Kg,15.3,5.470588235
+Raft Island Park,47.32622,-122.66715,copper,1.14,D,mg/Kg,14.7,7.755102041
+Miller Creek,47.443611,-122.361944,copper,0.873,D,mg/Kg,16.3,5.355828221
+Des Moines Marina,47.402778,-122.331667,copper,1.06,D,mg/Kg,16.4,6.463414634
+Browns Point Lighthouse,47.304906,-122.44427,copper,1.22,D,mg/Kg,17.6,6.931818182
+Minter Bay,47.35399,-122.69176,copper,1.31,D,mg/Kg,15.6,8.397435897
+Chambers Bay Park,47.2009,-122.58342,copper,0.924,D,mg/Kg,17.2,5.372093023
+Purdy - Dexters,47.385334,-122.628902,copper,1.01,D,mg/Kg,17.1,5.906432749
+Gig Harbor Boat Launch,47.3372,-122.58284,copper,1.08,D,mg/Kg,16.3,6.625766871
+Filucy Bay,47.19483,-122.748665,copper,0.977,D,mg/Kg,17,5.747058824
+Arroyo Beach,47.50159,-122.38577,lead,0.0412,D,mg/Kg,17,0.242352941
+Brackenwood Ln,47.68203,-122.50668,lead,0.0372,D,mg/Kg,16.9,0.220118343
+Salmon Beach,47.294692,-122.530504,lead,0.0335,D,mg/Kg,17.9,0.187150838
+Chimacum Creek delta,48.04887,-122.7711,lead,0.0496,D,mg/Kg,17,0.291764706
+Skiff Point,47.6614139,-122.498892,lead,0.0396,D,mg/Kg,17.8,0.22247191
+S of Skunk Island,48.02655,-122.75089,lead,0.0809,D,mg/Kg,17.5,0.462285714
+Blair Waterway,47.2758,-122.4174,lead,0.0447,D,mg/Kg,17.5,0.255428571
+"Chuckanut, Clark's Point",48.691084,-122.504012,lead,0.0431,D,mg/Kg,18.1,0.238121547
+Kitsap St Boat Launch,47.541533,-122.640383,lead,0.0994,D,mg/Kg,19.5,0.50974359
+"Eastsound, Fishing Bay",48.69395,-122.909933,lead,0.0382,D,mg/Kg,18.5,0.206486486
+"Elliott Bay, Harbor Island, Pier 17",47.5876989,-122.3505105,lead,0.0486,D,mg/Kg,17.4,0.279310345
+Williams Olson Park,47.6609,-122.5668,lead,0.0611,D,mg/Kg,17.5,0.349142857
+Rocky Point,47.60253,-122.66991,lead,0.0692,D,mg/Kg,16.8,0.411904762
+N Avenue Park,48.52108,-122.61531,lead,0.0787,D,mg/Kg,17.6,0.447159091
+Port Angeles Yacht Club,48.128267,-123.457133,lead,0.044,D,mg/Kg,17.1,0.257309942
+Discovery Bay,48.064974,-122.857218,lead,0.0384,D,mg/Kg,18.3,0.209836066
+Squaxin Island,47.176735,-122.905337,lead,0.0285,D,mg/Kg,15.7,0.181528662
+Eld Inlet,47.0769,-123.0034725,lead,0.0436,D,mg/Kg,17.4,0.250574713
+North Camano,48.25523,-122.50817,lead,0.0457,D,mg/Kg,17.2,0.265697674
+Reach Island,47.346817,-122.822363,lead,0.0265,D,mg/Kg,16.7,0.158682635
+Friday Harbor,48.5069444,-123.0194444,lead,0.0331,D,mg/Kg,18,0.183888889
+Tulalip Reservation,48.069978,-122.300216,lead,0.033,D,mg/Kg,16.4,0.201219512
+Three Tree Point,47.4485721,-122.3723967,lead,0.0325,D,mg/Kg,17.4,0.186781609
+Cap Sante,48.52093,-122.600725,lead,0.0295,D,mg/Kg,16.4,0.179878049
+Locust Beach,48.76652,-122.5395,lead,0.041,D,mg/Kg,16.4,0.25
+Blair Waterway #2,47.2632,-122.3856,lead,0.0307,D,mg/Kg,16.6,0.184939759
+West Bay Park,47.052373,-122.9101963,lead,0.0316,D,mg/Kg,15.6,0.202564103
+Lions Park,47.583016,-122.64217,lead,0.0558,D,mg/Kg,16,0.34875
+Madrona Pont,47.579985,-122.67853,lead,0.09,D,mg/Kg,17.6,0.511363636
+Aiston Preserve,48.6793778,-122.6300583,lead,0.0296,D,mg/Kg,16.7,0.177245509
+Penn Cove Reference,48.214071,-122.719097,lead,0.0336,D,mg/Kg,14.4,0.233333333
+Hood Canal Holly,47.570193,-122.971775,lead,0.0131,D,mg/Kg,15.4,0.085064935
+Broad Spit,47.80934,-122.81556,lead,0.0107,D,mg/Kg,15.3,0.069934641
+Penn Cove Baseline 1,48.218626,-122.707972,lead,0.0262,D,mg/Kg,21.2,0.123584906
+Penn Cove Baseline 2,48.218626,-122.707972,lead,0.0295,D,mg/Kg,19.3,0.152849741
+Penn Cove Baseline 3,48.218626,-122.707972,lead,0.0319,D,mg/Kg,19.8,0.161111111
+"Manchester, Stormwater Outfall",47.556111,-122.542778,lead,0.0427,D,mg/Kg,15.8,0.270253165
+"Suquamish, Stormwater Outfall",47.729875,-122.550882,lead,0.0346,D,mg/Kg,16.6,0.208433735
+"Silverdale, Dyes Inlet",47.6428,-122.6967,lead,0.0745,D,mg/Kg,15.9,0.468553459
+Kingston Marina,47.7947,-122.5003,lead,0.0331,D,mg/Kg,15.1,0.219205298
+Eagle Harbor Dr,47.618875,-122.527234,lead,0.103,D,mg/Kg,16.4,0.62804878
+Point Defiance Ferry,47.3061098,-122.514771,lead,0.0727,D,mg/Kg,18.3,0.39726776
+"Smith Cove, Terminal 91",47.6325,-122.3786,lead,0.0931,D,mg/Kg,16.7,0.55748503
+Donkey Creek Delta,47.337909,-122.59023,lead,0.147,D,mg/Kg,16.6,0.885542169
+Comm Bay Skookum,47.28915,-122.4096,lead,0.0451,D,mg/Kg,15.4,0.292857143
+Thea Foss Waterway,47.25934,-122.43479,lead,0.0743,D,mg/Kg,16.1,0.461490683
+"Salmon Bay, Commodore Park",47.666244,-122.401894,lead,0.0751,D,mg/Kg,13.5,0.556296296
+"Seattle Aquarium, Pier 59",47.607334,-122.344055,lead,0.0673,D,mg/Kg,16.1,0.418012422
+"Cherry Point Aquatic Reserve, Conoco Phillips",48.820783,-122.710133,lead,0.0335,D,mg/Kg,17.4,0.192528736
+Mukilteo,47.949831,-122.301703,lead,0.0412,D,mg/Kg,15.5,0.265806452
+Everett Harbor,47.97252,-122.22982,lead,0.0577,D,mg/Kg,15.8,0.365189873
+Tulalip Bay,48.0616613,-122.293939,lead,0.0421,D,mg/Kg,15.9,0.264779874
+Edmonds Marina,47.81094,-122.387955,lead,0.0576,D,mg/Kg,17.4,0.331034483
+Edmonds Ferry,47.8142069,-122.3822018,lead,0.0575,D,mg/Kg,17.6,0.326704545
+Rich Passage,47.578117,-122.524833,lead,0.0534,D,mg/Kg,17.6,0.303409091
+Meyer's Point - Henderson Inlet,47.117944,-122.833528,lead,0.0307,D,mg/Kg,15,0.204666667
+"Purdy, Burley Lagoon",47.387021,-122.6367,lead,0.0422,D,mg/Kg,17.1,0.246783626
+"Comm Bay, Dick Gilmur Launch",47.2925,-122.4122,lead,0.0451,D,mg/Kg,16.6,0.271686747
+"Comm Bay, Milwaukee Waterway",47.2694,-122.4243,lead,0.0389,D,mg/Kg,15.6,0.249358974
+"Fidalgo Bay Aq Reserve, Weaverling Spit",48.48425,-122.58392,lead,0.0397,D,mg/Kg,16.6,0.239156627
+Shilshole Bay,47.6707,-122.40605,lead,0.0608,D,mg/Kg,14.7,0.413605442
+Elliot Bay Myrtle Edwards,47.62052,-122.36373,lead,0.0467,D,mg/Kg,16.4,0.284756098
+Jamestown,48.027069,-122.999191,lead,0.0275,D,mg/Kg,15.7,0.175159236
+Oak Bay County Park,48.022466,-122.728123,lead,0.0302,D,mg/Kg,16.5,0.183030303
+Maristone Island Bridge,48.018181,-122.699838,lead,0.0249,D,mg/Kg,14.8,0.168243243
+Penrose Point State Park,47.2609094,-122.7447771,lead,0.0254,D,mg/Kg,15.7,0.161783439
+Maple Hollow Park,47.29954,-122.74554,lead,0.0249,D,mg/Kg,15.6,0.159615385
+Kopachuck State Park,47.3115,-122.68725,lead,0.0266,D,mg/Kg,15.3,0.173856209
+Raft Island Park,47.32622,-122.66715,lead,0.0321,D,mg/Kg,14.7,0.218367347
+Miller Creek,47.443611,-122.361944,lead,0.0384,D,mg/Kg,16.3,0.235582822
+Des Moines Marina,47.402778,-122.331667,lead,0.0457,D,mg/Kg,16.4,0.278658537
+Browns Point Lighthouse,47.304906,-122.44427,lead,0.0459,D,mg/Kg,17.6,0.260795455
+Minter Bay,47.35399,-122.69176,lead,0.0412,D,mg/Kg,15.6,0.264102564
+Chambers Bay Park,47.2009,-122.58342,lead,0.0394,D,mg/Kg,17.2,0.229069767
+Purdy - Dexters,47.385334,-122.628902,lead,0.0339,D,mg/Kg,17.1,0.198245614
+Gig Harbor Boat Launch,47.3372,-122.58284,lead,0.0755,D,mg/Kg,16.3,0.463190184
+Filucy Bay,47.19483,-122.748665,lead,0.0389,D,mg/Kg,17,0.228823529
+Arroyo Beach,47.50159,-122.38577,Zinc,17.7,D,mg/Kg,17,104.1176471
+Brackenwood Ln,47.68203,-122.50668,Zinc,15.3,D,mg/Kg,16.9,90.53254438
+Salmon Beach,47.294692,-122.530504,Zinc,14.2,D,mg/Kg,17.9,79.32960894
+Chimacum Creek delta,48.04887,-122.7711,Zinc,16.1,D,mg/Kg,17,94.70588235
+Skiff Point,47.6614139,-122.498892,Zinc,16.5,D,mg/Kg,17.8,92.69662921
+S of Skunk Island,48.02655,-122.75089,Zinc,13.3,D,mg/Kg,17.5,76
+Blair Waterway,47.2758,-122.4174,Zinc,17.3,D,mg/Kg,17.5,98.85714286
+"Chuckanut, Clark's Point",48.691084,-122.504012,Zinc,15.8,D,mg/Kg,18.1,87.29281768
+Kitsap St Boat Launch,47.541533,-122.640383,Zinc,17,D,mg/Kg,19.5,87.17948718
+"Eastsound, Fishing Bay",48.69395,-122.909933,Zinc,16.8,D,mg/Kg,18.5,90.81081081
+"Elliott Bay, Harbor Island, Pier 17",47.5876989,-122.3505105,Zinc,16.5,D,mg/Kg,17.4,94.82758621
+Williams Olson Park,47.6609,-122.5668,Zinc,15.2,D,mg/Kg,17.5,86.85714286
+Rocky Point,47.60253,-122.66991,Zinc,17,D,mg/Kg,16.8,101.1904762
+N Avenue Park,48.52108,-122.61531,Zinc,16.7,D,mg/Kg,17.6,94.88636364
+Port Angeles Yacht Club,48.128267,-123.457133,Zinc,15.7,D,mg/Kg,17.1,91.8128655
+Discovery Bay,48.064974,-122.857218,Zinc,16.9,D,mg/Kg,18.3,92.34972678
+Squaxin Island,47.176735,-122.905337,Zinc,14,D,mg/Kg,15.7,89.17197452
+Eld Inlet,47.0769,-123.0034725,Zinc,16,D,mg/Kg,17.4,91.95402299
+North Camano,48.25523,-122.50817,Zinc,12.9,D,mg/Kg,17.2,75
+Reach Island,47.346817,-122.822363,Zinc,17.7,D,mg/Kg,16.7,105.988024
+Friday Harbor,48.5069444,-123.0194444,Zinc,16.8,D,mg/Kg,18,93.33333333
+Tulalip Reservation,48.069978,-122.300216,Zinc,11.2,D,mg/Kg,16.4,68.29268293
+Three Tree Point,47.4485721,-122.3723967,Zinc,15,D,mg/Kg,17.4,86.20689655
+Cap Sante,48.52093,-122.600725,Zinc,13.3,D,mg/Kg,16.4,81.09756098
+Locust Beach,48.76652,-122.5395,Zinc,13.6,D,mg/Kg,16.4,82.92682927
+Blair Waterway #2,47.2632,-122.3856,Zinc,14.2,D,mg/Kg,16.6,85.54216867
+West Bay Park,47.052373,-122.9101963,Zinc,12.2,D,mg/Kg,15.6,78.20512821
+Lions Park,47.583016,-122.64217,Zinc,15.1,D,mg/Kg,16,94.375
+Madrona Pont,47.579985,-122.67853,Zinc,15,D,mg/Kg,17.6,85.22727273
+Aiston Preserve,48.6793778,-122.6300583,Zinc,12.9,D,mg/Kg,16.7,77.24550898
+Penn Cove Reference,48.214071,-122.719097,Zinc,12.7,D,mg/Kg,14.4,88.19444444
+Hood Canal Holly,47.570193,-122.971775,Zinc,12.7,D,mg/Kg,15.4,82.46753247
+Broad Spit,47.80934,-122.81556,Zinc,10.4,D,mg/Kg,15.3,67.97385621
+Penn Cove Baseline 1,48.218626,-122.707972,Zinc,14.5,D,mg/Kg,21.2,68.39622642
+Penn Cove Baseline 2,48.218626,-122.707972,Zinc,15.5,D,mg/Kg,19.3,80.31088083
+Penn Cove Baseline 3,48.218626,-122.707972,Zinc,13.4,D,mg/Kg,19.8,67.67676768
+"Manchester, Stormwater Outfall",47.556111,-122.542778,Zinc,13.2,D,mg/Kg,15.8,83.5443038
+"Suquamish, Stormwater Outfall",47.729875,-122.550882,Zinc,13.7,D,mg/Kg,16.6,82.53012048
+"Silverdale, Dyes Inlet",47.6428,-122.6967,Zinc,13.1,D,mg/Kg,15.9,82.38993711
+Kingston Marina,47.7947,-122.5003,Zinc,12.5,D,mg/Kg,15.1,82.78145695
+Eagle Harbor Dr,47.618875,-122.527234,Zinc,13,D,mg/Kg,16.4,79.26829268
+Point Defiance Ferry,47.3061098,-122.514771,Zinc,17,D,mg/Kg,18.3,92.89617486
+"Smith Cove, Terminal 91",47.6325,-122.3786,Zinc,18.5,D,mg/Kg,16.7,110.7784431
+Donkey Creek Delta,47.337909,-122.59023,Zinc,15.4,D,mg/Kg,16.6,92.77108434
+Comm Bay Skookum,47.28915,-122.4096,Zinc,14.2,D,mg/Kg,15.4,92.20779221
+Thea Foss Waterway,47.25934,-122.43479,Zinc,14,D,mg/Kg,16.1,86.95652174
+"Salmon Bay, Commodore Park",47.666244,-122.401894,Zinc,10.9,D,mg/Kg,13.5,80.74074074
+"Seattle Aquarium, Pier 59",47.607334,-122.344055,Zinc,13.7,D,mg/Kg,16.1,85.0931677
+"Cherry Point Aquatic Reserve, Conoco Phillips",48.820783,-122.710133,Zinc,12.8,D,mg/Kg,17.4,73.56321839
+Mukilteo,47.949831,-122.301703,Zinc,11,D,mg/Kg,15.5,70.96774194
+Everett Harbor,47.97252,-122.22982,Zinc,11.5,D,mg/Kg,15.8,72.78481013
+Tulalip Bay,48.0616613,-122.293939,Zinc,11.1,D,mg/Kg,15.9,69.81132075
+Edmonds Marina,47.81094,-122.387955,Zinc,14.2,D,mg/Kg,17.4,81.6091954
+Edmonds Ferry,47.8142069,-122.3822018,Zinc,15.7,D,mg/Kg,17.6,89.20454545
+Rich Passage,47.578117,-122.524833,Zinc,15.7,D,mg/Kg,17.6,89.20454545
+Meyer's Point - Henderson Inlet,47.117944,-122.833528,Zinc,11.3,D,mg/Kg,15,75.33333333
+"Purdy, Burley Lagoon",47.387021,-122.6367,Zinc,15.5,D,mg/Kg,17.1,90.64327485
+"Comm Bay, Dick Gilmur Launch",47.2925,-122.4122,Zinc,12.6,D,mg/Kg,16.6,75.90361446
+"Comm Bay, Milwaukee Waterway",47.2694,-122.4243,Zinc,12.3,D,mg/Kg,15.6,78.84615385
+"Fidalgo Bay Aq Reserve, Weaverling Spit",48.48425,-122.58392,Zinc,13.6,D,mg/Kg,16.6,81.92771084
+Shilshole Bay,47.6707,-122.40605,Zinc,11.3,D,mg/Kg,14.7,76.8707483
+Elliot Bay Myrtle Edwards,47.62052,-122.36373,Zinc,14.6,D,mg/Kg,16.4,89.02439024
+Jamestown,48.027069,-122.999191,Zinc,12.4,D,mg/Kg,15.7,78.98089172
+Oak Bay County Park,48.022466,-122.728123,Zinc,12.2,D,mg/Kg,16.5,73.93939394
+Maristone Island Bridge,48.018181,-122.699838,Zinc,12,D,mg/Kg,14.8,81.08108108
+Penrose Point State Park,47.2609094,-122.7447771,Zinc,14,D,mg/Kg,15.7,89.17197452
+Maple Hollow Park,47.29954,-122.74554,Zinc,14,D,mg/Kg,15.6,89.74358974
+Kopachuck State Park,47.3115,-122.68725,Zinc,12.9,D,mg/Kg,15.3,84.31372549
+Raft Island Park,47.32622,-122.66715,Zinc,11.9,D,mg/Kg,14.7,80.95238095
+Miller Creek,47.443611,-122.361944,Zinc,14.3,D,mg/Kg,16.3,87.73006135
+Des Moines Marina,47.402778,-122.331667,Zinc,15.4,D,mg/Kg,16.4,93.90243902
+Browns Point Lighthouse,47.304906,-122.44427,Zinc,15.9,D,mg/Kg,17.6,90.34090909
+Minter Bay,47.35399,-122.69176,Zinc,15.6,D,mg/Kg,15.6,100
+Chambers Bay Park,47.2009,-122.58342,Zinc,14.4,D,mg/Kg,17.2,83.72093023
+Purdy - Dexters,47.385334,-122.628902,Zinc,15,D,mg/Kg,17.1,87.71929825
+Gig Harbor Boat Launch,47.3372,-122.58284,Zinc,13.8,D,mg/Kg,16.3,84.66257669
+Filucy Bay,47.19483,-122.748665,Zinc,13.2,D,mg/Kg,17,77.64705882
