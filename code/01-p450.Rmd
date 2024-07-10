@@ -46,6 +46,8 @@ getwd()
 pdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450data.csv")
 apdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/analytes_p450.csv")
 
+metal<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/metals.csv")
+
 ```
 
 # Check data
