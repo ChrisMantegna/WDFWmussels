@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
   message = FALSE,     # Hide messages
   fig.width = 20,       # Set plot width in inches
   fig.height = 9,      # Set plot height in inches
-  fig.align = "center" # Align plots to the center
+  fig.align = "center" )# Align plots to the center
 )
 
 ```
@@ -72,5 +72,37 @@ print(pplot)
 #ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotSITE.png", width=20, height=9)
 ```
 
+# Box plot, ranked p450 values (lowest to highest) by site name
+```{r}
 
+#order the sites by value
 
+data_ordered <- apdata[order(apdata$p450),]
+
+#create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+#plot with ordered site names
+ranked<- ggplot(data_ordered, aes(x = site_name, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+print(ranked)
+
+#ggsave(plot=ranked, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotSITEranked.png", width=20, height=9)
+```
+
+# Box plot, p450 values by reporting area
+```{r}
+
+apdata$reporting_area <- as.character(apdata$reporting_area)
+
+#p450
+pplot<- ggplot(apdata, aes(x = reporting_area, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+print(pplot)
+#ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotRA.png", width=20, height=9)
+
+```
