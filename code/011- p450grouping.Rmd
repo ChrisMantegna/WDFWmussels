@@ -1,0 +1,76 @@
+---
+  title: "011- p450 Site, Reporting Area and PAH grouping"
+output:
+  html_document: 
+  toc: true
+toc_float:
+  collapsed: false
+smooth_scroll: true
+fig_width: 20
+pdf_document: 
+  fig_width: 20
+fig_height: 9
+---
+  
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 20,       # Set plot width in inches
+  fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load packages
+
+```{r}
+
+library(tinytex)
+library(tidyr)
+library(tidyverse)
+library(vegan)
+
+```
+
+# Load data
+
+```{r}
+
+#getwd()
+apdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450_analytes.csv")
+
+```
+
+# Check data
+
+```{r}
+
+summary(apdata)
+#quantiles <- quantile(apdata$sumPAH, probs = c(1/3, 2/3))
+#print(quantiles)
+```
+
+# Boxplot, p450 by site name
+
+```{r}
+#p450 is in activity/ mg protein
+
+pplot<- ggplot(apdata, aes(x = site_name, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 14),  
+    axis.text.y = element_text(size = 14) 
+  )
+
+print(pplot)
+#ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotSITE.png", width=20, height=9)
+```
+
+
+
