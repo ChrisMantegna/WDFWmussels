@@ -1,4 +1,4 @@
-﻿SiteName,Analyte,DryValue
+﻿site_name,analyte,dryvalue
 Arroyo Beach,mercuryTotal,0.036
 Brackenwood Ln,mercuryTotal,0.037455621
 Salmon Beach,mercuryTotal,0.023798883
@@ -617,3 +617,237 @@ Chambers Bay Park,SumPAHs16,70.78364566
 Purdy - Dexters,SumPAHs16,68.84158821
 Gig Harbor Boat Launch,SumPAHs16,233.949692
 Filucy Bay,SumPAHs16,65.24017003
+Arroyo Beach,SumPCBs2x17,49.22729694
+Brackenwood Ln,SumPCBs2x17,44.24625468
+Salmon Beach,SumPCBs2x17,47.62862669
+Chimacum Creek delta,SumPCBs2x17,29.32440191
+Skiff Point,SumPCBs2x17,31.37320132
+S of Skunk Island,SumPCBs2x17,28.22725356
+Blair Waterway,SumPCBs2x17,50.60661236
+"Chuckanut, Clark's Point",SumPCBs2x17,31.55985037
+Kitsap St Boat Launch,SumPCBs2x17,146.6777822
+"Eastsound, Fishing Bay",SumPCBs2x17,24.79818781
+"Elliott Bay, Harbor Island, Pier 17",SumPCBs2x17,136.9357496
+Williams Olson Park,SumPCBs2x17,58.44309291
+Rocky Point,SumPCBs2x17,85.2408313
+N Avenue Park,SumPCBs2x17,35.81687345
+Port Angeles Yacht Club,SumPCBs2x17,72.12371134
+Discovery Bay,SumPCBs2x17,16.94547449
+Squaxin Island,SumPCBs2x17,35.60477528
+Eld Inlet,SumPCBs2x17,42.36328638
+North Camano,SumPCBs2x17,26.66131387
+Reach Island,SumPCBs2x17,30.35819672
+Friday Harbor,SumPCBs2x17,25.69463647
+Tulalip Reservation,SumPCBs2x17,29.47563559
+Drayton Harbor,SumPCBs2x17,25.88789238
+Three Tree Point,SumPCBs2x17,48.30745527
+Cap Sante,SumPCBs2x17,29.28554745
+Locust Beach,SumPCBs2x17,28.80098414
+Blair Waterway #2,SumPCBs2x17,54.98552822
+West Bay Park,SumPCBs2x17,64.78661936
+Lions Park,SumPCBs2x17,85.56150583
+Madrona Pont,SumPCBs2x17,72.31804281
+Aiston Preserve,SumPCBs2x17,28.00337691
+Penn Cove Reference,SumPCBs2x17,34.38069722
+Hood Canal Holly,SumPCBs2x17,25.26912442
+Broad Spit,SumPCBs2x17,30.14070352
+Penn Cove Baseline 1,SumPCBs2x17,26.47515978
+Penn Cove Baseline 2,SumPCBs2x17,22.36734694
+Penn Cove Baseline 3,SumPCBs2x17,31.44149545
+"Manchester, Stormwater Outfall",SumPCBs2x17,55.41320358
+"Suquamish, Stormwater Outfall",SumPCBs2x17,63.7968318
+"Silverdale, Dyes Inlet",SumPCBs2x17,95.95701357
+Kingston Marina,SumPCBs2x17,49.40198433
+Eagle Harbor Dr,SumPCBs2x17,103.119294
+Point Defiance Ferry,SumPCBs2x17,63.69219791
+"Smith Cove, Terminal 91",SumPCBs2x17,175.5804369
+Donkey Creek Delta,SumPCBs2x17,105.793765
+Comm Bay Skookum,SumPCBs2x17,92.32674853
+Thea Foss Waterway,SumPCBs2x17,84.37723658
+"Salmon Bay, Commodore Park",SumPCBs2x17,126.5
+"Seattle Aquarium, Pier 59",SumPCBs2x17,136.0866142
+"Cherry Point Aquatic Reserve, Conoco Phillips",SumPCBs2x17,39.23843268
+Mukilteo,SumPCBs2x17,42.07771487
+Everett Harbor,SumPCBs2x17,46.60192525
+Tulalip Bay,SumPCBs2x17,46.07148235
+Edmonds Marina,SumPCBs2x17,52.71357341
+Edmonds Ferry,SumPCBs2x17,47.93934579
+Rich Passage,SumPCBs2x17,71.35973597
+Meyer's Point - Henderson Inlet,SumPCBs2x17,56.50373134
+"Purdy, Burley Lagoon",SumPCBs2x17,59.08699464
+"Comm Bay, Dick Gilmur Launch",SumPCBs2x17,84.6379717
+"Comm Bay, Milwaukee Waterway",SumPCBs2x17,56.53584906
+"Fidalgo Bay Aq Reserve, Weaverling Spit",SumPCBs2x17,26.71054904
+Shilshole Bay,SumPCBs2x17,112.757079
+Elliot Bay Myrtle Edwards,SumPCBs2x17,140.9149199
+Jamestown,SumPCBs2x17,39.11015096
+Oak Bay County Park,SumPCBs2x17,36.54994929
+Maristone Island,SumPCBs2x17,36.68872686
+Penrose Point State Park,SumPCBs2x17,50.16966732
+Maple Hollow Park,SumPCBs2x17,49.07407407
+Kopachuck State Park,SumPCBs2x17,43.18322212
+Raft Island Park,SumPCBs2x17,43.62103387
+Miller Creek,SumPCBs2x17,54.01506672
+Des Moines Marina,SumPCBs2x17,55.12759097
+Browns Point Lighthouse,SumPCBs2x17,53.2411965
+Minter Bay,SumPCBs2x17,42.10612245
+Chambers Bay Park,SumPCBs2x17,45.41950596
+Purdy - Dexters,SumPCBs2x17,44.74703234
+Gig Harbor Boat Launch,SumPCBs2x17,73.8788501
+Filucy Bay,SumPCBs2x17,54.56450584
+Arroyo Beach,SumPAHsHMW,186.1031957
+Arroyo Beach,SumPAHs,408.2263648
+Brackenwood Ln,SumPAHsHMW,176.9850187
+Brackenwood Ln,SumPAHs,389.3670412
+Salmon Beach,SumPAHsHMW,226.2359768
+Salmon Beach,SumPAHs,428.6576402
+Chimacum Creek delta,SumPAHsHMW,56.77703349
+Chimacum Creek delta,SumPAHs,168.4593301
+Skiff Point,SumPAHsHMW,213.1009901
+Skiff Point,SumPAHs,449.879868
+S of Skunk Island,SumPAHsHMW,132.1275698
+S of Skunk Island,SumPAHs,294.2841328
+Blair Waterway,SumPAHsHMW,280.5366555
+Blair Waterway,SumPAHs,715.0934356
+"Chuckanut, Clark's Point",SumPAHsHMW,74.59600998
+"Chuckanut, Clark's Point",SumPAHs,206.5735661
+Kitsap St Boat Launch,SumPAHsHMW,354.0498192
+Kitsap St Boat Launch,SumPAHs,758.678184
+"Eastsound, Fishing Bay",SumPAHsHMW,270.0247117
+"Eastsound, Fishing Bay",SumPAHs,512.4958814
+"Elliott Bay, Harbor Island, Pier 17",SumPAHsHMW,2054.036244
+"Elliott Bay, Harbor Island, Pier 17",SumPAHs,3195.16749
+Williams Olson Park,SumPAHsHMW,156.6515892
+Williams Olson Park,SumPAHs,301.2530562
+Rocky Point,SumPAHsHMW,133.9498778
+Rocky Point,SumPAHs,310.5201711
+N Avenue Park,SumPAHsHMW,1085.359801
+N Avenue Park,SumPAHs,2333.523573
+Port Angeles Yacht Club,SumPAHsHMW,1202.061856
+Port Angeles Yacht Club,SumPAHs,1983.402062
+Discovery Bay,SumPAHsHMW,98.84860121
+Discovery Bay,SumPAHs,235.3538124
+Squaxin Island,SumPAHsHMW,77.68314607
+Squaxin Island,SumPAHs,174.7870787
+Eld Inlet,SumPAHsHMW,75.0741784
+Eld Inlet,SumPAHs,171.5981221
+North Camano,SumPAHsHMW,54.59221411
+North Camano,SumPAHs,165.0462287
+Reach Island,SumPAHsHMW,81.73360656
+Reach Island,SumPAHs,192.6577869
+Friday Harbor,SumPAHsHMW,319.6162098
+Friday Harbor,SumPAHs,532.693683
+Tulalip Reservation,SumPAHsHMW,117.9025424
+Tulalip Reservation,SumPAHs,253.4904661
+Drayton Harbor,SumPAHsHMW,20.7103139
+Drayton Harbor,SumPAHs,119.0843049
+Three Tree Point,SumPAHsHMW,141.387674
+Three Tree Point,SumPAHs,312.2311133
+Cap Sante,SumPAHsHMW,120.9620438
+Cap Sante,SumPAHs,375.6189781
+Locust Beach,SumPAHsHMW,27.5209404
+Locust Beach,SumPAHs,147.2050301
+Blair Waterway #2,SumPAHsHMW,403.2272069
+Blair Waterway #2,SumPAHs,1038.615533
+West Bay Park,SumPAHsHMW,202.4581855
+West Bay Park,SumPAHs,391.4191586
+Lions Park,SumPAHsHMW,131.6330859
+Lions Park,SumPAHs,289.592789
+Madrona Pont,SumPAHsHMW,120.5300714
+Madrona Pont,SumPAHs,259.1396534
+Aiston Preserve,SumPAHsHMW,19.48061002
+Aiston Preserve,SumPAHs,97.40305011
+Penn Cove Reference,SumPAHsHMW,46.81626856
+Penn Cove Reference,SumPAHs,160.9309232
+Hood Canal Holly,SumPAHsHMW,11.61013825
+Hood Canal Holly,SumPAHs,116.1013825
+Broad Spit,SumPAHsHMW,18.75421552
+Broad Spit,SumPAHs,127.2607482
+Penn Cove Baseline 1,SumPAHsHMW,15.48547081
+Penn Cove Baseline 1,SumPAHs,89.91563698
+Penn Cove Baseline 2,SumPAHsHMW,12.30204082
+Penn Cove Baseline 2,SumPAHs,100.6530612
+Penn Cove Baseline 3,SumPAHsHMW,17.58592119
+Penn Cove Baseline 3,SumPAHs,101.2522735
+"Manchester, Stormwater Outfall",SumPAHsHMW,171.0284061
+"Manchester, Stormwater Outfall",SumPAHs,369.4213572
+"Suquamish, Stormwater Outfall",SumPAHsHMW,193.3237327
+"Suquamish, Stormwater Outfall",SumPAHs,425.312212
+"Silverdale, Dyes Inlet",SumPAHsHMW,150.7895928
+"Silverdale, Dyes Inlet",SumPAHs,363.2658371
+Kingston Marina,SumPAHsHMW,123.5049608
+Kingston Marina,SumPAHs,273.0109661
+Eagle Harbor Dr,SumPAHsHMW,653.0888618
+Eagle Harbor Dr,SumPAHs,1031.19294
+Point Defiance Ferry,SumPAHsHMW,335.831589
+Point Defiance Ferry,SumPAHs,694.8239772
+"Smith Cove, Terminal 91",SumPAHsHMW,4682.144985
+"Smith Cove, Terminal 91",SumPAHs,7153.277061
+Donkey Creek Delta,SumPAHsHMW,284.3207434
+Donkey Creek Delta,SumPAHs,522.3567146
+Comm Bay Skookum,SumPAHsHMW,369.3069941
+Comm Bay Skookum,SumPAHs,857.3198078
+Thea Foss Waterway,SumPAHsHMW,545.2067594
+Thea Foss Waterway,SumPAHs,1103.394632
+"Salmon Bay, Commodore Park",SumPAHsHMW,535.7647059
+"Salmon Bay, Commodore Park",SumPAHs,1041.764706
+"Seattle Aquarium, Pier 59",SumPAHsHMW,2203.307087
+"Seattle Aquarium, Pier 59",SumPAHs,3304.96063
+"Cherry Point Aquatic Reserve, Conoco Phillips",SumPAHsHMW,150.9170488
+"Cherry Point Aquatic Reserve, Conoco Phillips",SumPAHs,325.9808253
+Mukilteo,SumPAHsHMW,194.2048379
+Mukilteo,SumPAHs,440.1976325
+Everett Harbor,SumPAHsHMW,166.4354473
+Everett Harbor,SumPAHs,372.815402
+Tulalip Bay,SumPAHsHMW,168.7124706
+Tulalip Bay,SumPAHs,356.8917647
+Edmonds Marina,SumPAHsHMW,374.8520776
+Edmonds Marina,SumPAHs,702.8476454
+Edmonds Ferry,SumPAHsHMW,268.9280374
+Edmonds Ferry,SumPAHs,532.0098131
+Rich Passage,SumPAHsHMW,142.7194719
+Rich Passage,SumPAHs,338.9587459
+Meyer's Point - Henderson Inlet,SumPAHsHMW,52.7863806
+Meyer's Point - Henderson Inlet,SumPAHs,200.7369403
+"Purdy, Burley Lagoon",SumPAHsHMW,86.16853385
+"Purdy, Burley Lagoon",SumPAHs,215.4213346
+"Comm Bay, Dick Gilmur Launch",SumPAHsHMW,338.5518868
+"Comm Bay, Dick Gilmur Launch",SumPAHs,781.2735849
+"Comm Bay, Milwaukee Waterway",SumPAHsHMW,215.3746631
+"Comm Bay, Milwaukee Waterway",SumPAHs,599.0107817
+"Fidalgo Bay Aq Reserve, Weaverling Spit",SumPAHsHMW,254.3861814
+"Fidalgo Bay Aq Reserve, Weaverling Spit",SumPAHs,699.5619988
+Shilshole Bay,SumPAHsHMW,1277.913562
+Shilshole Bay,SumPAHs,2029.627422
+Elliot Bay Myrtle Edwards,SumPAHsHMW,9394.32799
+Elliot Bay Myrtle Edwards,SumPAHs,12078.4217
+Jamestown,SumPAHsHMW,15.24633004
+Jamestown,SumPAHs,119.3191046
+Oak Bay County Park,SumPAHsHMW,33.98504057
+Oak Bay County Park,SumPAHs,141.0699797
+Maristone Island,SumPAHsHMW,23.98878295
+Maristone Island,SumPAHs,134.0549635
+Penrose Point State Park,SumPAHsHMW,85.8165362
+Penrose Point State Park,SumPAHs,204.6394325
+Maple Hollow Park,SumPAHsHMW,64.77777778
+Maple Hollow Park,SumPAHs,176.6666667
+Kopachuck State Park,SumPAHsHMW,53.97902765
+Kopachuck State Park,SumPAHs,141.6949476
+Raft Island Park,SumPAHsHMW,61.91372549
+Raft Island Park,SumPAHs,147.7486631
+Miller Creek,SumPAHsHMW,120.7395609
+Miller Creek,SumPAHs,292.3168317
+Des Moines Marina,SumPAHsHMW,8575.40304
+Des Moines Marina,SumPAHs,14700.69093
+Browns Point Lighthouse,SumPAHsHMW,181.3711089
+Browns Point Lighthouse,SumPAHs,438.80107
+Minter Bay,SumPAHsHMW,65.79081633
+Minter Bay,SumPAHs,164.4770408
+Chambers Bay Park,SumPAHsHMW,76.68228279
+Chambers Bay Park,SumPAHs,182.8577513
+Purdy - Dexters,SumPAHsHMW,57.36799018
+Purdy - Dexters,SumPAHs,149.1567745
+Gig Harbor Boat Launch,SumPAHsHMW,246.2628337
+Gig Harbor Boat Launch,SumPAHs,418.6468172
+Filucy Bay,SumPAHsHMW,59.30924548
+Filucy Bay,SumPAHs,148.2731137
