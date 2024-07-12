@@ -64,14 +64,14 @@ print(quantiles)
 
 #p450 is in activity/ mg protein
 
-pplot<- ggplot(pdata, aes(x = site_name, y = p450)) +
+pplot<- ggplot(apdata, aes(x = site_name, y = p450)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 14),  
     axis.text.y = element_text(size = 14) 
   )
 
 print(pplot)
-ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotSITE.png", width=20, height=9)
+#ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotSITE.png", width=20, height=9)
 
 ```
 
@@ -80,7 +80,7 @@ ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figur
 
 #order the sites by value
 
-data_ordered <- pdata[order(pdata$p450),]
+data_ordered <- apdata[order(apdata$p450),]
 
 #create a factor with the ordered site names
 data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
@@ -91,8 +91,8 @@ ranked<- ggplot(data_ordered, aes(x = site_name, y = p450)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
 
 print(ranked)
-print(pplot)
-ggsave(plot=ranked, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotSITEranked.png", width=20, height=9)
+
+#ggsave(plot=ranked, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotSITEranked.png", width=20, height=9)
 ```
 
 # Plot data - boxplot, all SumPAH values by site name
@@ -107,7 +107,7 @@ pplot<- ggplot(apdata, aes(x = site_name, y = sumPAH)) +
 
 print(pplot)
 
-ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/SumPAHboxplotSITE.png", width=20, height=9)
+#ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/SumPAHboxplotSITE.png", width=20, height=9)
 
 ```
 
@@ -122,7 +122,7 @@ pplot<- ggplot(apdata, aes(x = site_name, y = hmwPAH)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(pplot)
-ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/hmwPAHboxplotSITE.png", width=20, height=9)
+#ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/hmwPAHboxplotSITE.png", width=20, height=9)
 
 ```
 
@@ -137,22 +137,22 @@ pplot<- ggplot(apdata, aes(x = site_name, y = sumPCB)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(pplot)
-ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/sumPCBboxplotSITE.png", width=20, height=9)
+#ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/sumPCBboxplotSITE.png", width=20, height=9)
 
 ```
 
 # Plot data - boxplot, all p450 values by reporting area
 ```{r}
 
-pdata$reporting_area <- as.character(pdata$reporting_area)
+apdata$reporting_area <- as.character(apdata$reporting_area)
 
 #p450
-pplot<- ggplot(pdata, aes(x = reporting_area, y = p450)) +
+pplot<- ggplot(apdata, aes(x = reporting_area, y = p450)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(pplot)
-ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotRA.png", width=20, height=9)
+#ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotRA.png", width=20, height=9)
 
 ```
 # Plot data - boxplot, all SumPAH values by reporting area
@@ -166,7 +166,7 @@ pplot<- ggplot(apdata, aes(x = reporting_area, y = p450)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(pplot)
-ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/sumPAHboxplotRA.png", width=20, height=9)
+#ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/sumPAHboxplotRA.png", width=20, height=9)
 
 ```
 
@@ -181,7 +181,7 @@ pplot<- ggplot(apdata, aes(x = reporting_area, y = hmwPAH)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(pplot)
-ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/hmwPAHboxplotRA.png", width=20, height=9)
+#ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/hmwPAHboxplotRA.png", width=20, height=9)
 
 ```
 
@@ -196,19 +196,34 @@ pplot<- ggplot(apdata, aes(x = reporting_area, y = sumPCB)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
 print(pplot)
-ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/sumPCBboxplotRA.png", width=20, height=9)
+#ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/sumPCBboxplotRA.png", width=20, height=9)
 
 ```
+
+# Plot - boxplot, p450 by PAH group
+```{r}
+
+#p450
+pplot<- ggplot(apdata, aes(x = PAHgroup, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+print(pplot)
+ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotPAHgroup.png", width=20, height=9)
+```
+
 
 # Shapiro-Wilkes 
 ```{r}
 
 #test for normality. No data is normally distributed.
 
-shapiro.test(pdata$p450)
+shapiro.test(apdata$p450)
 shapiro.test(apdata$sumPAH)
 shapiro.test(apdata$hmwPAH)
 shapiro.test(apdata$sumPCB)
+shapiro.test(apdata$lmwPAH)
+shapiro.test(apdata$PAH16)
 
 ```
 
@@ -218,8 +233,9 @@ shapiro.test(apdata$sumPCB)
 
 #test for significant interaction
 
-kruskal.test(p450 ~ site_name, data = pdata)
-kruskal.test(p450 ~ reporting_area, data = pdata)
+kruskal.test(p450 ~ site_name, data = apdata)
+kruskal.test(p450 ~ reporting_area, data = apdata)
+kruskal.test(p450 ~ PAHgroup, data = apdata)
 
 ```
 
@@ -242,8 +258,8 @@ library(pgirmess)
 # no significance confirmed between sites
 # significant differences across reporting area pairwise matches: 8.2-12, 10-13, 11-12, and 12-13
 
-mc_site<- as.data.frame(kruskalmc(p450 ~ site_name, data = pdata, method = "bonferroni"))
-mc_reporting<- as.data.frame(kruskalmc(p450 ~ reporting_area, data = pdata, method = "bonferroni"))
+mc_site<- as.data.frame(kruskalmc(p450 ~ site_name, data = apdata, method = "bonferroni"))
+mc_reporting<- as.data.frame(kruskalmc(p450 ~ reporting_area, data = apdata, method = "bonferroni"))
 
 #head(mc_site)
 #head(mc_reporting)
