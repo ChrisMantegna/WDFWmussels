@@ -43,7 +43,8 @@ library(vegan)
 ```{r}
 
 getwd()
-sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/soddata.csv")
+#sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/soddata.csv")
+asdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/sod_analytes.csv")
 
 ```
 
