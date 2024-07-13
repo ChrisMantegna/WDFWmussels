@@ -54,16 +54,16 @@ asdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/sod_analytes.csv"
 
 
 #replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
-sdata$sod[sdata$sod <= 0] <- 0.0025
+asdata$sod[asdata$sod <= 0] <- 0.0025
 
 ```
 # Check data
 
 ```{r}
-summary(sdata)
+summary(asdata)
 ```
 
-# Plot data - boxplot, all SOD values by site name
+# Box plot, SOD by site name
 
 ```{r}
 
@@ -75,44 +75,6 @@ pplot<- ggplot(sdata, aes(x = site_name, y = sod)) +
 
 print(pplot)
 ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/SODboxplotSITE.png", width=20, height=9)
-
-```
-
-# Plot data - ranked box plot, all SOD values by site name
-```{r}
-
-#order the sites by value
-
-data_ordered <- sdata[order(sdata$sod),]
-
-#create a factor with the ordered site names
-data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
-
-#plot with ordered site names
-ranked<- ggplot(data_ordered, aes(x = site_name, y = sod)) +
-  geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
-
-print(ranked)
-
-ggsave(plot=ranked, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/SODboxplotSITEranked.png", width=20, height=9)
-```
-
-# *All analytes were plotted by site and reporting area in p450 flow.*
-
-# Plot data - boxplot, all p450 values by reporting area
-```{r}
-
-sdata$reporting_area <- as.character(sdata$reporting_area)
-
-#sod
-splot<- ggplot(sdata, aes(x = reporting_area, y = sod)) +
-  geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
-
-print(splot)
-
-ggsave(plot=splot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/SODboxplotRA.png", width=20, height=9)
 
 ```
 
@@ -132,8 +94,10 @@ shapiro.test(sdata$sod)
 
 #test for significant interaction
 
-kruskal.test(sod ~ site_name, data = sdata)
-kruskal.test(sod ~ reporting_area, data = sdata)
+kruskal.test(sod ~ site_name, data = asdata)
+kruskal.test(sod ~ reporting_area, data = asdata)
+kruskal.test(sod ~ PAHgroup, data = asdata)
+kruskal.test(sod ~ PAHgroup2, data = asdata)
 
 ```
 
@@ -156,8 +120,8 @@ library(pgirmess)
 # no significance confirmed between sites
 # no significance confirmed between reporting areas
 
-mc_site<- as.data.frame(kruskalmc(sod ~ site_name, data = sdata, method = "bonferroni"))
-mc_reporting<- as.data.frame(kruskalmc(sod ~ reporting_area, data = sdata, method = "bonferroni")) 
+mc_site<- as.data.frame(kruskalmc(sod ~ site_name, data = asdata, method = "bonferroni"))
+mc_reporting<- as.data.frame(kruskalmc(sod ~ reporting_area, data = asdata, method = "bonferroni")) 
 
 head(mc_site)
 head(mc_reporting)
@@ -168,7 +132,7 @@ head(mc_reporting)
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(sdata$sod, sdata$sumPAH, method = "pearson")
+correlation_result <- cor.test(asdata$sod, asdata$sumPAH, method = "pearson")
 print(correlation_result)
 ```
 
@@ -176,16 +140,79 @@ print(correlation_result)
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(sdata$sod, sdata$hmwPAH, method = "pearson")
+correlation_result <- cor.test(asdata$sod, asdata$hmwPAH, method = "pearson")
+print(correlation_result)
+```
+
+# Correlation test - SOD and lmwPAH
+```{r}
+
+# no correlation
+correlation_result <- cor.test(asdata$sod, asdata$lmwPAH, method = "pearson")
+print(correlation_result)
+```
+
+# Correlation test - SOD and PAH16
+```{r}
+
+# no correlation
+correlation_result <- cor.test(asdata$sod, asdata$PAH16, method = "pearson")
 print(correlation_result)
 ```
 
 # Correlation test - SOD and SumPCB
 ```{r}
 
-# correlation= 0.1557987 with a p-value of .0059. This is a significant weak correlation.
+# correlation= 0.1558 with a p-value of .0059. This is a significant weak correlation.
 
-correlation_result <- cor.test(sdata$sod, sdata$sumPCB, method = "pearson")
+correlation_result <- cor.test(asdata$sod, asdata$sumPCB, method = "pearson")
 print(correlation_result)
 ```
 
+# Correlation test - SOD and mercury
+```{r}
+
+# no correlation
+correlation_result <- cor.test(asdata$sod, asdata$mercury, method = "pearson")
+print(correlation_result)
+```
+
+# Correlation test - SOD and arsenic
+```{r}
+
+# no correlation
+correlation_result <- cor.test(asdata$sod, asdata$arsenic, method = "pearson")
+print(correlation_result)
+```
+
+# Correlation test - SOD and cadmium
+```{r}
+
+# no correlation
+correlation_result <- cor.test(asdata$sod, asdata$cadmium, method = "pearson")
+print(correlation_result)
+```
+
+# Correlation test - SOD and copper
+```{r}
+
+# no correlation
+correlation_result <- cor.test(asdata$sod, asdata$copper, method = "pearson")
+print(correlation_result)
+```
+
+# Correlation test - SOD and lead
+```{r}
+
+# no correlation
+correlation_result <- cor.test(asdata$sod, asdata$lead, method = "pearson")
+print(correlation_result)
+```
+
+# Correlation test - SOD and zinc
+```{r}
+
+# no correlation
+correlation_result <- cor.test(asdata$sod, asdata$zinc, method = "pearson")
+print(correlation_result)
+```

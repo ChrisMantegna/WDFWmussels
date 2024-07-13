@@ -1,17 +1,17 @@
 ---
-  title: "011- p450 Site, Reporting Area and PAH grouping"
+title: "021- SOD grouping"
 output:
   html_document: 
-  toc: true
-toc_float:
-  collapsed: false
-smooth_scroll: true
-fig_width: 20
-pdf_document: 
-  fig_width: 20
-fig_height: 9
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
 ---
-  
+
 # Directory and doc rules
 
 ```{r, setup, eval=TRUE, include=TRUE}
@@ -23,14 +23,14 @@ knitr::opts_chunk$set(
   message = FALSE,     # Hide messages
   fig.width = 20,       # Set plot width in inches
   fig.height = 9,      # Set plot height in inches
-  fig.align = "center" )# Align plots to the center
+  fig.align = "center" # Align plots to the center
+)
 
 ```
 
 # Load packages
 
 ```{r}
-
 library(tinytex)
 library(tidyr)
 library(tidyverse)
@@ -42,26 +42,34 @@ library(vegan)
 
 ```{r}
 
-#getwd()
-apdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450_analytes.csv")
+getwd()
+#sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/soddata.csv")
+asdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/sod_analytes.csv")
+
+```
+
+```{r}
+
+# Data contains numbers below 0 that must be adjusted.These numbers represent samples whose values were below the limit of quantification using the SOD kit. There was some activity in the raw sample, but it is too far below the limit of the standard curve to be accurately quantified.
+
+
+#replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
+asdata$sod[asdata$sod <= 0] <- 0.0025
 
 ```
 
 # Check data
 
 ```{r}
-
-summary(apdata)
-#quantiles <- quantile(apdata$sumPAH, probs = c(1/3, 2/3))
-#print(quantiles)
+summary(asdata)
 ```
 
-# Boxplot, p450 by site name
+# Boxplot, sod by site name
 
 ```{r}
 #p450 is in activity/ mg protein
 
-pplot<- ggplot(apdata, aes(x = site_name, y = p450)) +
+pplot<- ggplot(asdata, aes(x = site_name, y = sod)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size = 14),  
     axis.text.y = element_text(size = 14) 
@@ -71,18 +79,18 @@ print(pplot)
 #ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotSITE.png", width=20, height=9)
 ```
 
-# Box plot, ranked p450 values (lowest to highest) by site name
+# Box plot, ranked sod values (lowest to highest) by site name
 ```{r}
 
 #order the sites by value
 
-data_ordered <- apdata[order(apdata$p450),]
+data_ordered <- asdata[order(asdata$sod),]
 
 #create a factor with the ordered site names
 data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
 
 #plot with ordered site names
-ranked<- ggplot(data_ordered, aes(x = site_name, y = p450)) +
+ranked<- ggplot(data_ordered, aes(x = site_name, y = sod)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
 
@@ -91,13 +99,13 @@ print(ranked)
 #ggsave(plot=ranked, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotSITEranked.png", width=20, height=9)
 ```
 
-# Box plot, p450 values by reporting area
+# Box plot, sod values by reporting area
 ```{r}
 
-apdata$reporting_area <- as.character(apdata$reporting_area)
+asdata$reporting_area <- as.character(asdata$reporting_area)
 
 #p450
-pplot<- ggplot(apdata, aes(x = reporting_area, y = p450)) +
+pplot<- ggplot(asdata, aes(x = reporting_area, y = sod)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
@@ -106,10 +114,10 @@ print(pplot)
 
 ```
 
-# Box plot, p450 values by PAH groups (determined by quantiles)
+# Box plot, sod values by PAH groups (determined by quantiles)
 ```{r}
 
-pplot<- ggplot(apdata, aes(x = PAHgroup, y = p450)) +
+pplot<- ggplot(asdata, aes(x = PAHgroup, y = sod)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
@@ -118,10 +126,10 @@ print(pplot)
 
 ```
 
-# Box plot, p450 values by PAH groups (manually created)
+# Box plot, sod values by PAH groups (manually created)
 ```{r}
 
-pplot<- ggplot(apdata, aes(x = PAHgroup2, y = p450)) +
+pplot<- ggplot(asdata, aes(x = PAHgroup2, y = sod)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 
