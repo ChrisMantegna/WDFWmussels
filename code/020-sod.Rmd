@@ -98,6 +98,7 @@ kruskal.test(sod ~ site_name, data = asdata)
 kruskal.test(sod ~ reporting_area, data = asdata)
 kruskal.test(sod ~ PAHgroup, data = asdata)
 kruskal.test(sod ~ PAHgroup2, data = asdata)
+kruskal.test(sod ~ PAHgroup3, data = asdata)
 
 ```
 

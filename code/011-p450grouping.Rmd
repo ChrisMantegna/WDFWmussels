@@ -118,10 +118,22 @@ print(pplot)
 
 ```
 
-# Box plot, p450 values by PAH groups (manually created)
+# Box plot, p450 values by PAH groups2 (manually created)
 ```{r}
 
 pplot<- ggplot(apdata, aes(x = PAHgroup2, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+print(pplot)
+#ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotRA.png", width=20, height=9)
+
+```
+
+# Box plot, p450 values by PAH groups3 (manually created)
+```{r}
+
+pplot<- ggplot(apdata, aes(x = PAHgroup3, y = p450)) +
   geom_boxplot() +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
 

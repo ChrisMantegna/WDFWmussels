@@ -104,6 +104,7 @@ kruskal.test(p450 ~ site_name, data = apdata)
 kruskal.test(p450 ~ reporting_area, data = apdata)
 kruskal.test(p450 ~ PAHgroup, data = apdata)
 kruskal.test(p450 ~ PAHgroup2, data = apdata)
+kruskal.test(p450 ~ PAHgroup3, data = apdata)
 
 ```
 
@@ -125,9 +126,11 @@ library(pgirmess)
 
 # no significance confirmed between sites
 # significant differences across reporting area pairwise matches: 8.2-12, 10-13, 11-12, and 12-13
+# significant difference between group A and group D
 
 mc_site<- as.data.frame(kruskalmc(p450 ~ site_name, data = apdata, method = "bonferroni"))
 mc_reporting<- as.data.frame(kruskalmc(p450 ~ reporting_area, data = apdata, method = "bonferroni"))
+mc_group3<- as.data.frame(kruskalmc(p450 ~ PAHgroup3, data = apdata, method = "bonferroni"))
 
 #head(mc_site)
 #head(mc_reporting)
