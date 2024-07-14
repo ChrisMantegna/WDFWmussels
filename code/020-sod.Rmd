@@ -63,28 +63,13 @@ asdata$sod[asdata$sod <= 0] <- 0.0025
 summary(asdata)
 ```
 
-# Box plot, SOD by site name
-
-```{r}
-
-#sod is in unit/ mg protein
-
-pplot<- ggplot(sdata, aes(x = site_name, y = sod)) +
-  geom_boxplot() +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
-
-print(pplot)
-ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/SODboxplotSITE.png", width=20, height=9)
-
-```
-
 # Shapiro-Wilkes 
 ```{r}
 
 #test for normality. Data is not normally distributed.
 # *All analytes were plotted by site and reporting area in p450 flow.* 
 
-shapiro.test(sdata$sod)
+shapiro.test(asdata$sod)
 
 ```
 
@@ -119,13 +104,13 @@ Reporting Areas Are:
 library(pgirmess)
 
 # no significance confirmed between sites
-# no significance confirmed between reporting areas
+# significance confirmed between low and veryhigh
 
 mc_site<- as.data.frame(kruskalmc(sod ~ site_name, data = asdata, method = "bonferroni"))
-mc_reporting<- as.data.frame(kruskalmc(sod ~ reporting_area, data = asdata, method = "bonferroni")) 
+mc_group3<- as.data.frame(kruskalmc(sod ~ PAHgroup3, data = asdata, method = "bonferroni")) 
 
 head(mc_site)
-head(mc_reporting)
+head(mc_group3)
 
 ```
 
