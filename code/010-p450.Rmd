@@ -1,5 +1,5 @@
 ---
-title: "01- p450 Data Exploration"
+title: "010- p450 tests for significance and correlation"
 output:
   html_document: 
     toc: true
@@ -85,6 +85,11 @@ shapiro.test(apdata$zinc)
 
 #test for significant interaction
 
+# Change to character for the kw test AFTER keeping as numeric for the correlation tests - if necessary
+#apdata$PAHgroup <- as.character(apdata$PAHgroup)
+#apdata$PAHgroup2 <- as.character(apdata$PAHgroup2)
+#apdata$PAHgroup3 <- as.character(apdata$PAHgroup3)
+
 kruskal.test(p450 ~ site_name, data = apdata)
 kruskal.test(p450 ~ reporting_area, data = apdata)
 kruskal.test(p450 ~ PAHgroup, data = apdata)
@@ -111,7 +116,6 @@ library(pgirmess)
 
 # no significance confirmed between sites
 # significant differences across reporting area pairwise matches: 8.2-12, 10-13, 11-12, and 12-13
-# 
 
 mc_site<- as.data.frame(kruskalmc(p450 ~ site_name, data = apdata, method = "bonferroni"))
 mc_reporting<- as.data.frame(kruskalmc(p450 ~ reporting_area, data = apdata, method = "bonferroni"))
@@ -121,7 +125,32 @@ mc_reporting<- as.data.frame(kruskalmc(p450 ~ reporting_area, data = apdata, met
 
 ```
 
-# Correlation- sumPAH, lmwPAH, hmwPAH and PAH16 
+# Correlation- PAHgroup, PAHgroup2 and PAHgroup3
+
+1= Low\
+2= Mid\
+3= High\
+4= Very High\
+PAHgroup= broken into 3rds by quantile in chunk 55-59\
+PAHgroup2= broken into quarters manually by vibes\
+PAHgroup3= broken into quarters by quartiles listed in data summary in chunk 55-59
+
+```{r}
+
+#no correlation
+correlation_result <- cor.test(apdata$p450, apdata$PAHgroup, method = "pearson")
+print(correlation_result)
+
+#no correlation
+correlation_result <- cor.test(apdata$p450, apdata$PAHgroup2, method = "pearson")
+print(correlation_result)
+
+#no correlation
+correlation_result <- cor.test(apdata$p450, apdata$PAHgroup3, method = "pearson")
+print(correlation_result)
+```
+
+# Correlation- sumPAH, lmwPAH, hmwPAH and PAH16
 
 ```{r}
 
@@ -150,6 +179,7 @@ print(correlation_result)
 # no correlation
 correlation_result <- cor.test(apdata$p450, apdata$sumPCB, method = "pearson")
 print(correlation_result)
+
 ```
 
 # Correlation test - mercury, arsenic, cadmium, copper, lead and zinc
@@ -181,4 +211,3 @@ correlation_result <- cor.test(apdata$p450, apdata$zinc, method = "pearson")
 print(correlation_result)
 
 ```
-
