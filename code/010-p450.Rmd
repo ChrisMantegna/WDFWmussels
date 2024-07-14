@@ -54,8 +54,6 @@ apdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450_analytes.csv
 
 ```{r}
 summary(apdata)
-quantiles <- quantile(apdata$sumPAH, probs = c(1/3, 2/3))
-print(quantiles)
 ```
 
 # Shapiro-Wilkes
@@ -92,9 +90,10 @@ shapiro.test(apdata$zinc)
 
 kruskal.test(p450 ~ site_name, data = apdata)
 kruskal.test(p450 ~ reporting_area, data = apdata)
-kruskal.test(p450 ~ PAHgroup, data = apdata)
-kruskal.test(p450 ~ PAHgroup2, data = apdata)
 kruskal.test(p450 ~ PAHgroup3, data = apdata)
+kruskal.test(p450 ~ PAHgroup4, data = apdata)
+kruskal.test(p450 ~ PAHgroup5, data = apdata)
+kruskal.test(p450 ~ PAHgroup6, data = apdata)
 
 ```
 
@@ -125,28 +124,31 @@ mc_reporting<- as.data.frame(kruskalmc(p450 ~ reporting_area, data = apdata, met
 
 ```
 
-# Correlation- PAHgroup, PAHgroup2 and PAHgroup3
-
+# Correlation- PAHgroup3, PAHgroup4, PAHgroup5 and PAHgroup6
+0= VLow\
 1= Low\
 2= Mid\
 3= High\
-4= Very High\
-PAHgroup= broken into 3rds by quantile in chunk 55-59\
-PAHgroup2= broken into quarters manually by vibes\
-PAHgroup3= broken into quarters by quartiles listed in data summary in chunk 55-59
-
+4= VHigh\
+5= EHigh
+PAH groups determined by set quantiles found in grouping.rmd.\
+Group3= 1-3 | Group4= 1-4 | Group5= 0-4 | Group6= 0-5
 ```{r}
 
 #no correlation
-correlation_result <- cor.test(apdata$p450, apdata$PAHgroup, method = "pearson")
-print(correlation_result)
-
-#no correlation
-correlation_result <- cor.test(apdata$p450, apdata$PAHgroup2, method = "pearson")
-print(correlation_result)
-
-#no correlation
 correlation_result <- cor.test(apdata$p450, apdata$PAHgroup3, method = "pearson")
+print(correlation_result)
+
+#no correlation
+correlation_result <- cor.test(apdata$p450, apdata$PAHgroup4, method = "pearson")
+print(correlation_result)
+
+#no correlation
+correlation_result <- cor.test(apdata$p450, apdata$PAHgroup5, method = "pearson")
+print(correlation_result)
+
+#no correlation
+correlation_result <- cor.test(apdata$p450, apdata$PAHgroup6, method = "pearson")
 print(correlation_result)
 ```
 

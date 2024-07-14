@@ -86,9 +86,10 @@ shapiro.test(asdata$sod)
 
 kruskal.test(sod ~ site_name, data = asdata)
 kruskal.test(sod ~ reporting_area, data = asdata)
-kruskal.test(sod ~ PAHgroup, data = asdata)
-kruskal.test(sod ~ PAHgroup2, data = asdata)
 kruskal.test(sod ~ PAHgroup3, data = asdata)
+kruskal.test(sod ~ PAHgroup4, data = asdata)
+kruskal.test(sod ~ PAHgroup5, data = asdata)
+kruskal.test(sod ~ PAHgroup6, data = asdata)
 
 ```
 
@@ -119,28 +120,33 @@ head(mc_group3)
 
 ```
 
-# Correlation- PAHgroup, PAHgroup2 and PAHgroup3
-
+# Correlation- PAHgroup3, PAHgroup4, PAHgroup5 and PAHgroup6
+0= VLow\
 1= Low\
 2= Mid\
 3= High\
-4= Very High\
-PAHgroup= broken into 3rds by quantile in chunk 55-59in 010-p450.rmd\
-PAHgroup2= broken into quarters manually by vibes\
-PAHgroup3= broken into quarters by quartiles listed in data summary in chunk 55-59 in 010-p450.rmd
+4= VHigh\
+5= EHigh
+PAH groups determined by set quantiles found in grouping.rmd.\
+Group3= 1-3 | Group4= 1-4 | Group5= 0-4 | Group6= 0-5
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(asdata$sod, asdata$PAHgroup, method = "pearson")
+correlation_result <- cor.test(asdata$sod, asdata$PAHgroup3, method = "pearson")
 print(correlation_result)
 
 # correlation= 0.1308783 with a p-value= 0.02096 indicates a weak positive correlation.
-correlation_result <- cor.test(asdata$sod, asdata$PAHgroup2, method = "pearson")
+correlation_result <- cor.test(asdata$sod, asdata$PAHgroup4, method = "pearson")
 print(correlation_result)
 
 # correlation= 0.1774695 with a p-value= 0.001677 indicates a weak positive correlation.
-correlation_result <- cor.test(asdata$sod, asdata$PAHgroup3, method = "pearson")
+correlation_result <- cor.test(asdata$sod, asdata$PAHgroup5, method = "pearson")
 print(correlation_result)
+
+# correlation= 0.1774695 with a p-value= 0.001677 indicates a weak positive correlation.
+correlation_result <- cor.test(asdata$sod, asdata$PAHgroup6, method = "pearson")
+print(correlation_result)
+
 ```
 
 

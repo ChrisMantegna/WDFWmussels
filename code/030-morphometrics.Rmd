@@ -82,9 +82,10 @@ shapiro.test(mdata$at)
 
 kruskal.test(cf ~ site_name, data = mdata)
 kruskal.test(cf ~ reporting_area, data = mdata)
-kruskal.test(cf ~ PAHgroup, data = mdata)
-kruskal.test(cf ~ PAHgroup2, data = mdata)
 kruskal.test(cf ~ PAHgroup3, data = mdata)
+kruskal.test(cf ~ PAHgroup4, data = mdata)
+kruskal.test(cf ~ PAHgroup5, data = mdata)
+kruskal.test(cf ~ PAHgroup6, data = mdata)
 
 ```
 
@@ -129,14 +130,17 @@ summary(anova_site)
 anova_ra <- aov(at ~ reporting_area, data = mdata)
 summary(anova_ra)
 
-anova_group <- aov(at ~ PAHgroup, data = mdata)
-summary(anova_group)
-
-anova_group2 <- aov(at ~ PAHgroup2, data = mdata)
-summary(anova_group2)
-
 anova_group3 <- aov(at ~ PAHgroup3, data = mdata)
 summary(anova_group3)
+
+anova_group4 <- aov(at ~ PAHgroup4, data = mdata)
+summary(anova_group4)
+
+anova_group5 <- aov(at ~ PAHgroup5, data = mdata)
+summary(anova_group5)
+
+anova_group6 <- aov(at ~ PAHgroup6, data = mdata)
+summary(anova_group6)
 
 ```
 
@@ -171,30 +175,36 @@ write.csv(sigttable_group3, "/Users/cmantegna/Documents/WDFWmussels/output/table
 
 # Correlations
 
-##cf- PAHgroup, PAHgroup2 and PAHgroup3
+##cf- PAHgroup3, PAHgroup4, PAHgroup5 and PAHgroup6
+0= VLow\
 1= Low\
 2= Mid\
 3= High\
-4= Very High\
-PAHgroup= broken into 3rds by quantile in chunk 55-59in 010-p450.rmd\
-PAHgroup2= broken into quarters manually by vibes\
-PAHgroup3= broken into quarters by quartiles listed in data summary in chunk 55-59 in 010-p450.rmd
+4= VHigh\
+5= EHigh
+PAH groups determined by set quantiles found in grouping.rmd.\
+Group3= 1-3 | Group4= 1-4 | Group5= 0-4 | Group6= 0-5
 ```{r}
 
-mdata$PAHgroup <- as.numeric(mdata$PAHgroup)
-mdata$PAHgroup2 <- as.numeric(mdata$PAHgroup2)
 mdata$PAHgroup3 <- as.numeric(mdata$PAHgroup3)
-
-# no correlation
-correlation_result <- cor.test(mdata$cf, mdata$PAHgroup, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(mdata$cf, mdata$PAHgroup2, method = "pearson")
-print(correlation_result)
+mdata$PAHgroup4 <- as.numeric(mdata$PAHgroup4)
+mdata$PAHgroup5 <- as.numeric(mdata$PAHgroup5)
+mdata$PAHgroup6 <- as.numeric(mdata$PAHgroup6)
 
 # no correlation
 correlation_result <- cor.test(mdata$cf, mdata$PAHgroup3, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(mdata$cf, mdata$PAHgroup4, method = "pearson")
+print(correlation_result)
+
+# correlation= 0.1205069 with a p-value= 0.03511 indicates a weak positive correlation.
+correlation_result <- cor.test(mdata$cf, mdata$PAHgroup5, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(mdata$cf, mdata$PAHgroup6, method = "pearson")
 print(correlation_result)
 ```
 
@@ -259,31 +269,36 @@ print(correlation_result)
 
 #Correlations
 
-## at- PAHgroup, PAHgroup2 and PAHgroup3
-
+##at- PAHgroup3, PAHgroup4, PAHgroup5 and PAHgroup6
+0= VLow\
 1= Low\
 2= Mid\
 3= High\
-4= Very High\
-PAHgroup= broken into 3rds by quantile in chunk 55-59in 010-p450.rmd\
-PAHgroup2= broken into quarters manually by vibes\
-PAHgroup3= broken into quarters by quartiles listed in data summary in chunk 55-59 in 010-p450.rmd
+4= VHigh\
+5= EHigh
+PAH groups determined by set quantiles found in grouping.rmd.\
+Group3= 1-3 | Group4= 1-4 | Group5= 0-4 | Group6= 0-5
 ```{r}
 
-mdata$PAHgroup <- as.numeric(mdata$PAHgroup)
-mdata$PAHgroup2 <- as.numeric(mdata$PAHgroup2)
 mdata$PAHgroup3 <- as.numeric(mdata$PAHgroup3)
+mdata$PAHgroup4 <- as.numeric(mdata$PAHgroup4)
+mdata$PAHgroup5 <- as.numeric(mdata$PAHgroup5)
+mdata$PAHgroup6 <- as.numeric(mdata$PAHgroup6)
 
 # no correlation
-correlation_result <- cor.test(mdata$at, mdata$PAHgroup, method = "pearson")
+correlation_result <- cor.test(mdata$at, mdata$PAHgroup3, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(mdata$at, mdata$PAHgroup2, method = "pearson")
+correlation_result <- cor.test(mdata$at, mdata$PAHgroup4, method = "pearson")
 print(correlation_result)
 
 # correlation= 0.1205069 with a p-value= 0.03511 indicates a weak positive correlation.
-correlation_result <- cor.test(mdata$at, mdata$PAHgroup3, method = "pearson")
+correlation_result <- cor.test(mdata$at, mdata$PAHgroup5, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(mdata$at, mdata$PAHgroup6, method = "pearson")
 print(correlation_result)
 ```
 
