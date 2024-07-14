@@ -106,7 +106,7 @@ print(pplot)
 
 ```
 
-# Box plot, p450 values by PAH groups (determined by quantiles)
+# Box plot, p450 values by PAH groups (determined by quantiles, 3rds)
 ```{r}
 
 pplot<- ggplot(apdata, aes(x = PAHgroup, y = p450)) +
@@ -130,7 +130,7 @@ print(pplot)
 
 ```
 
-# Box plot, p450 values by PAH groups3 (manually created)
+# Box plot, p450 values by PAH groups3 (manually created, quartiles)
 ```{r}
 
 pplot<- ggplot(apdata, aes(x = PAHgroup3, y = p450)) +

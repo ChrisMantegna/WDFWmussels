@@ -114,7 +114,7 @@ print(pplot)
 
 ```
 
-# Box plot, sod values by PAH groups (determined by quantiles)
+# Box plot, sod values by PAH groups (determined by quantiles in 3rds)
 ```{r}
 
 pplot<- ggplot(asdata, aes(x = PAHgroup, y = sod)) +
@@ -127,6 +127,18 @@ print(pplot)
 ```
 
 # Box plot, sod values by PAH groups (manually created)
+```{r}
+
+pplot<- ggplot(asdata, aes(x = PAHgroup2, y = sod)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+
+print(pplot)
+#ggsave(plot=pplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplotRA.png", width=20, height=9)
+
+```
+
+# Box plot, sod values by PAH groups (manually created, quartiles)
 ```{r}
 
 pplot<- ggplot(asdata, aes(x = PAHgroup2, y = sod)) +
