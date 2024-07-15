@@ -1,15 +1,15 @@
 ---
 title: "010- p450 tests for significance and correlation"
 output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
   html_document: 
     toc: true
     toc_float:
         collapsed: false
         smooth_scroll: true
     fig_width: 20
-  pdf_document: 
-    fig_width: 20
-    fig_height: 9
 ---
 
 # Directory and doc rules
@@ -78,7 +78,7 @@ shapiro.test(apdata$zinc)
 ```
 
 # Kruskal-Wallis
-
+## site and reporting area
 ```{r}
 
 #test for significant interaction
@@ -90,11 +90,15 @@ shapiro.test(apdata$zinc)
 
 kruskal.test(p450 ~ site_name, data = apdata)
 kruskal.test(p450 ~ reporting_area, data = apdata)
+
+```
+
+## PAH groups
+```{r}
 kruskal.test(p450 ~ PAHgroup3, data = apdata)
 kruskal.test(p450 ~ PAHgroup4, data = apdata)
 kruskal.test(p450 ~ PAHgroup5, data = apdata)
 kruskal.test(p450 ~ PAHgroup6, data = apdata)
-
 ```
 
 # Kruskal-Wallac Multiple Comparisons (post hoc)

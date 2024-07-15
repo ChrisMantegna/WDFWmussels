@@ -1,15 +1,15 @@
 ---
 title: "030- Morphometrics tests for significance and correlation"
 output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
   html_document: 
     toc: true
     toc_float:
         collapsed: false
         smooth_scroll: true
     fig_width: 20
-  pdf_document: 
-    fig_width: 20
-    fig_height: 9
 ---
 
 # Directory and doc rules
@@ -69,7 +69,7 @@ shapiro.test(mdata$at)
 
 # Significant Differences
 
-## cf- Kruskal-Wallis (non-parametric data)
+## cf- reporting area & site - Kruskal-Wallis (non-parametric data)
 
 ```{r}
 
@@ -82,6 +82,12 @@ shapiro.test(mdata$at)
 
 kruskal.test(cf ~ site_name, data = mdata)
 kruskal.test(cf ~ reporting_area, data = mdata)
+
+```
+
+## cf- PAH groups - Kruskal-Wallis (non-parametric data)
+```{r}
+
 kruskal.test(cf ~ PAHgroup3, data = mdata)
 kruskal.test(cf ~ PAHgroup4, data = mdata)
 kruskal.test(cf ~ PAHgroup5, data = mdata)
@@ -123,6 +129,9 @@ head(mc_reporting)
 #test for significant differences - at
 mdata$reporting_area <- as.character(mdata$reporting_area)
 mdata$PAHgroup3 <- as.character(mdata$PAHgroup3)
+mdata$PAHgroup4 <- as.character(mdata$PAHgroup4)
+mdata$PAHgroup5 <- as.character(mdata$PAHgroup5)
+mdata$PAHgroup6 <- as.character(mdata$PAHgroup6)
 
 anova_site <- aov(at ~ site_name, data = mdata)
 summary(anova_site)
@@ -151,7 +160,9 @@ library(broom)
 library(readr)
 
 mdata$reporting_area <- as.character(mdata$reporting_area)
-mdata$PAHgroup3 <- as.character(mdata$PAHgroup3)
+mdata$PAHgroup4 <- as.character(mdata$PAHgroup4)
+mdata$PAHgroup5 <- as.character(mdata$PAHgroup5)
+mdata$PAHgroup6 <- as.character(mdata$PAHgroup6)
 
 #significant differences between 112 pairwise comparisons. Table written to GH repo.
 tukey_site<- TukeyHSD(anova_site)
@@ -166,11 +177,22 @@ sigttable_ra <- ttable_ra %>% filter(adj.p.value < 0.05)
 write.csv(sigttable_ra, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessRA.csv", row.names = FALSE)
 
 # significant  differences between Low(1) and Mid(2) as well as Low(1) and Very High(4). Table written to GH repo.
-tukey_group3<- TukeyHSD(anova_group3)
-ttable_group3<- tidy(tukey_group3)
-sigttable_group3 <- ttable_group3 %>% filter(adj.p.value < 0.05)
-write.csv(sigttable_group3, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessGROUP3.csv", row.names = FALSE)
+tukey_group4<- TukeyHSD(anova_group4)
+ttable_group4<- tidy(tukey_group4)
+sigttable_group4 <- ttable_group4 %>% filter(adj.p.value < 0.05)
+write.csv(sigttable_group4, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessGROUP4.csv", row.names = FALSE)
 
+# significant  differences between Extremely Low(0) and Low(1) as well as Extremely Low(O) and Very High(4). Table written to GH repo.
+tukey_group5<- TukeyHSD(anova_group5)
+ttable_group5<- tidy(tukey_group5)
+sigttable_group5 <- ttable_group5 %>% filter(adj.p.value < 0.05)
+write.csv(sigttable_group5, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessGROUP5.csv", row.names = FALSE)
+
+# significant  differences between 15 pairwise comparisons. Table written to GH repo.
+tukey_group6<- TukeyHSD(anova_group6)
+ttable_group6<- tidy(tukey_group6)
+sigttable_group6 <- ttable_group6 %>% filter(adj.p.value < 0.05)
+write.csv(sigttable_group6, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessGROUP6.csv", row.names = FALSE)
 ```
 
 # Correlations
@@ -199,7 +221,7 @@ print(correlation_result)
 correlation_result <- cor.test(mdata$cf, mdata$PAHgroup4, method = "pearson")
 print(correlation_result)
 
-# correlation= 0.1205069 with a p-value= 0.03511 indicates a weak positive correlation.
+# no correlation
 correlation_result <- cor.test(mdata$cf, mdata$PAHgroup5, method = "pearson")
 print(correlation_result)
 
@@ -289,11 +311,11 @@ mdata$PAHgroup6 <- as.numeric(mdata$PAHgroup6)
 correlation_result <- cor.test(mdata$at, mdata$PAHgroup3, method = "pearson")
 print(correlation_result)
 
-# no correlation
+# correlation= 0.1205069 with a p-value= 0.03511 indicates a weak positive correlation.
 correlation_result <- cor.test(mdata$at, mdata$PAHgroup4, method = "pearson")
 print(correlation_result)
 
-# correlation= 0.1205069 with a p-value= 0.03511 indicates a weak positive correlation.
+# correlation= 0.1382479 with a p-value= 0.01552 indicates a weak positive correlation.
 correlation_result <- cor.test(mdata$at, mdata$PAHgroup5, method = "pearson")
 print(correlation_result)
 

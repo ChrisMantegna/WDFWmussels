@@ -1,15 +1,15 @@
 ---
 title: "020- SOD tests for significance and correlation"
 output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
   html_document: 
     toc: true
     toc_float:
         collapsed: false
         smooth_scroll: true
     fig_width: 20
-  pdf_document: 
-    fig_width: 20
-    fig_height: 9
 ---
 
 # Directory and doc rules
@@ -74,6 +74,7 @@ shapiro.test(asdata$sod)
 ```
 
 # Kruskal-Wallis
+## site and reporting area
 
 ```{r}
 
@@ -86,6 +87,13 @@ shapiro.test(asdata$sod)
 
 kruskal.test(sod ~ site_name, data = asdata)
 kruskal.test(sod ~ reporting_area, data = asdata)
+
+
+```
+
+## PAH groups
+```{r}
+
 kruskal.test(sod ~ PAHgroup3, data = asdata)
 kruskal.test(sod ~ PAHgroup4, data = asdata)
 kruskal.test(sod ~ PAHgroup5, data = asdata)
@@ -113,10 +121,10 @@ library(pgirmess)
 # significance confirmed between low(1) and very high(4)
 
 mc_site<- as.data.frame(kruskalmc(sod ~ site_name, data = asdata, method = "bonferroni"))
-mc_group3<- as.data.frame(kruskalmc(sod ~ PAHgroup3, data = asdata, method = "bonferroni")) 
+mc_group4<- as.data.frame(kruskalmc(sod ~ PAHgroup4, data = asdata, method = "bonferroni")) 
 
 head(mc_site)
-head(mc_group3)
+head(mc_group4)
 
 ```
 
@@ -135,15 +143,15 @@ Group3= 1-3 | Group4= 1-4 | Group5= 0-4 | Group6= 0-5
 correlation_result <- cor.test(asdata$sod, asdata$PAHgroup3, method = "pearson")
 print(correlation_result)
 
-# correlation= 0.1308783 with a p-value= 0.02096 indicates a weak positive correlation.
+# correlation= 0.1774695 with a p-value= 0.001677 indicates a weak positive correlation.
 correlation_result <- cor.test(asdata$sod, asdata$PAHgroup4, method = "pearson")
 print(correlation_result)
 
-# correlation= 0.1774695 with a p-value= 0.001677 indicates a weak positive correlation.
+# correlation= 0.1351344 with a p-value= 0.0171 indicates a weak positive correlation.
 correlation_result <- cor.test(asdata$sod, asdata$PAHgroup5, method = "pearson")
 print(correlation_result)
 
-# correlation= 0.1774695 with a p-value= 0.001677 indicates a weak positive correlation.
+# correlation= 0.132161 with a p-value= 0.01973 indicates a weak positive correlation.
 correlation_result <- cor.test(asdata$sod, asdata$PAHgroup6, method = "pearson")
 print(correlation_result)
 
