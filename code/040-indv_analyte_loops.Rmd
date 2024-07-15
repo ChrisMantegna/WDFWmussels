@@ -1,0 +1,102 @@
+---
+title: "p450 loops through individual analytes"
+output:
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 20,       # Set plot width in inches
+  fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load packages
+
+```{r}
+library(tidyr)
+library(tidyverse)
+library(vegan)
+
+```
+
+# Load data
+
+```{r}
+
+#getwd()
+pdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450_analytes2.csv")
+sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/sod_analytes2.csv")
+
+```
+
+#p450
+```{r}
+
+# Loop to perform Spearman correlation
+spearman_results <- list()
+for (i in 12:140) {
+  correlation_result <- cor.test(pdata[[7]], pdata[[i]], method = "spearman")
+  spearman_results[[colnames(pdata)[i]]] <- correlation_result
+}
+
+# Extracting p-values and correlation coefficients for Spearman correlation
+spearman_pvalues <- sapply(spearman_results, function(x) x$p.value)
+spearman_correlations <- sapply(spearman_results, function(x) x$estimate)
+
+# Creating a data frame for the results
+spearman_results_df <- data.frame(
+  analyte = names(spearman_pvalues),
+  p.value = spearman_pvalues,
+  correlation = spearman_correlations
+)
+
+# Displaying the results
+print(spearman_results_df)
+#write.csv(spearman_results_df, "/Users/cmantegna/Documents/WDFWmussels/output/tables/p450indvanalytesCORR.csv", row.names = FALSE)
+
+```
+
+#sod
+```{r}
+
+# Loop to perform Spearman correlation
+spearman_results <- list()
+for (i in 12:140) {
+  correlation_result <- cor.test(sdata[[7]], sdata[[i]], method = "spearman")
+  spearman_results[[colnames(sdata)[i]]] <- correlation_result
+}
+
+# Extracting p-values and correlation coefficients for Spearman correlation
+spearman_pvalues <- sapply(spearman_results, function(x) x$p.value)
+spearman_correlations <- sapply(spearman_results, function(x) x$estimate)
+
+# Creating a data frame for the results
+spearman_results_df2 <- data.frame(
+  analyte = names(spearman_pvalues),
+  p.value = spearman_pvalues,
+  correlation = spearman_correlations
+)
+
+# Displaying the results
+print(spearman_results_df2)
+write.csv(spearman_results_df2, "/Users/cmantegna/Documents/WDFWmussels/output/tables/sodindvanalytesCORR.csv", row.names = FALSE)
+
+```

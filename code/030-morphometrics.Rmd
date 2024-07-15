@@ -44,7 +44,8 @@ library(vegan)
 
 #Port Angeles Yacht Club has been removed due to being an abnormally high outlier in comparison to all other locations.
 #getwd()
-mdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/morphometricdata.csv")
+#mdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/morphometricdata.csv")
+mdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/morphometric_analytes2.csv")
 
 ```
 
@@ -289,6 +290,31 @@ print(correlation_result)
 
 ```
 
+## other summed analytes
+```{r}
+
+# no correlation
+correlation_result <- cor.test(mdata$cf, mdata$Sum40CBs, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(mdata$cf, mdata$SumBDEs, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(mdata$cf, mdata$SumCHLDs, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(mdata$cf, mdata$SumDDTs, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(mdata$cf, mdata$SumHCHs, method = "pearson")
+print(correlation_result)
+
+```
+
 #Correlations
 
 ##at- PAHgroup3, PAHgroup4, PAHgroup5 and PAHgroup6
@@ -378,6 +404,31 @@ print(correlation_result)
 
 # no correlation
 correlation_result <- cor.test(mdata$at, mdata$zinc, method = "pearson")
+print(correlation_result)
+
+```
+
+## other summed analytes
+```{r}
+
+# no correlation
+correlation_result <- cor.test(mdata$at, mdata$Sum40CBs, method = "pearson")
+print(correlation_result)
+
+# There is a correlation= .1574918 with a p-value= p-value = 0.005763. This indicates a weak positive correlation.
+correlation_result <- cor.test(mdata$at, mdata$SumBDEs, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(mdata$at, mdata$SumCHLDs, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(mdata$at, mdata$SumDDTs, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(mdata$at, mdata$SumHCHs, method = "pearson")
 print(correlation_result)
 
 ```

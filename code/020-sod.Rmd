@@ -43,7 +43,7 @@ library(vegan)
 ```{r}
 
 #getwd()
-#sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/soddata.csv")
+sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/sod_analytes3.csv")
 asdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/sod_analytes.csv")
 
 ```
@@ -55,12 +55,13 @@ asdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/sod_analytes.csv"
 
 #replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
 asdata$sod[asdata$sod <= 0] <- 0.0025
+sdata$sod[sdata$sod <= 0] <- 0.0025
 
 ```
 # Check data
 
 ```{r}
-summary(asdata)
+summary(sdata)
 ```
 
 # Shapiro-Wilkes 
@@ -217,4 +218,27 @@ print(correlation_result)
 
 ```
 
-# Other summed analytes
+## other summed analytes
+```{r}
+
+# correlation= 0.1542415 with a p-value= 0.006421. This is a significant weak correlation.
+correlation_result <- cor.test(sdata$sod, sdata$Sum40CBs, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(sdata$sod, sdata$SumBDEs, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(sdata$sod, sdata$SumCHLDs, method = "pearson")
+print(correlation_result)
+
+# correlation= 0.1228194 with a p-value= 0.03036. This is a significant weak correlation.
+correlation_result <- cor.test(sdata$sod, sdata$SumDDTs, method = "pearson")
+print(correlation_result)
+
+# correlation= 0.1150957 with a p-value= 0.04253. This is a significant weak correlation.
+correlation_result <- cor.test(sdata$sod, sdata$SumHCHs, method = "pearson")
+print(correlation_result)
+
+```
