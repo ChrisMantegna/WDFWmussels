@@ -50,6 +50,14 @@ odata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/othersummed.csv")
 
 ```
 
+```{r}
+summary(odata)
+```
+
+```{r}
+summary(idata)
+```
+
 # Pivot data table
 
 ```{r}
