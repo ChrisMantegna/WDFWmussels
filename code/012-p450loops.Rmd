@@ -1,0 +1,84 @@
+---
+title: "p450 loops through individual analytes"
+output:
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 20,       # Set plot width in inches
+  fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load packages
+
+```{r}
+library(tidyr)
+library(tidyverse)
+library(vegan)
+
+```
+
+# Load data
+
+```{r}
+
+#getwd()
+pdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450_analytes2.csv")
+
+```
+
+#from chatgpt - haven't run or double checked
+```{r}
+# Loop to perform Kruskal-Wallis
+library(dplyr)
+library(kruskal)
+
+kruskal_results <- list()
+for (i in 2:130) {
+  test_result <- kruskal.test(df[[i]] ~ df[[1]])
+  kruskal_results[[colnames(df)[i]]] <- test_result
+}
+
+```
+
+```{r}
+# Loop to perform Kruskal-Wallis post hoc test
+posthoc_results <- list()
+significant_vars <- names(kruskal_results)[sapply(kruskal_results, function(x) x$p.value) < 0.05]
+
+for (var in significant_vars) {
+  posthoc_result <- kruskal.mc(df[[var]] ~ df[[1]])
+  posthoc_results[[var]] <- posthoc_result
+}
+
+```
+
+```{r}
+# Loop to perform Spearman correlation
+spearman_results <- list()
+for (i in 2:130) {
+  correlation_result <- cor.test(df[[1]], df[[i]], method = "spearman")
+  spearman_results[[colnames(df)[i]]] <- correlation_result
+}
+
+```
+
