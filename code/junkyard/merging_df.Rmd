@@ -63,7 +63,7 @@ write.csv(df_wide, "/Users/cmantegna/Documents/WDFWmussels/data/individual_wide.
 
 #other summed
 df_wide2 <- odata %>%
-  pivot_wider(names_from = analyte, values_from = dryvalue)
+  pivot_wider(names_from = analyte , values_from = dryvalue )
 
 # Print the reshaped data frame
 print(df_wide2)
