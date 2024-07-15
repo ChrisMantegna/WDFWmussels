@@ -43,17 +43,15 @@ library(vegan)
 ```{r}
 
 #getwd()
-#pdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450data.csv")
 apdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450_analytes.csv")
-
-#metal<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/metals.csv")
+pdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450_analytes3.csv")
 
 ```
 
 # Check data
 
 ```{r}
-summary(apdata)
+summary(pdata)
 ```
 
 # Shapiro-Wilkes
@@ -128,7 +126,8 @@ mc_reporting<- as.data.frame(kruskalmc(p450 ~ reporting_area, data = apdata, met
 
 ```
 
-# Correlation- PAHgroup3, PAHgroup4, PAHgroup5 and PAHgroup6
+# Correlation
+## PAHgroup3, PAHgroup4, PAHgroup5 and PAHgroup6
 0= VLow\
 1= Low\
 2= Mid\
@@ -156,7 +155,7 @@ correlation_result <- cor.test(apdata$p450, apdata$PAHgroup6, method = "pearson"
 print(correlation_result)
 ```
 
-# Correlation- sumPAH, lmwPAH, hmwPAH and PAH16
+## sumPAH, lmwPAH, hmwPAH and PAH16
 
 ```{r}
 
@@ -178,7 +177,7 @@ print(correlation_result)
 
 ```
 
-# Correlation test - sumPCB
+## sumPCB
 
 ```{r}
 
@@ -188,7 +187,7 @@ print(correlation_result)
 
 ```
 
-# Correlation test - mercury, arsenic, cadmium, copper, lead and zinc
+## mercury, arsenic, cadmium, copper, lead and zinc
 
 ```{r}
 
@@ -214,6 +213,32 @@ print(correlation_result)
 
 # no correlation
 correlation_result <- cor.test(apdata$p450, apdata$zinc, method = "pearson")
+print(correlation_result)
+
+```
+
+## other summed analytes
+
+```{r}
+
+# no correlation
+correlation_result <- cor.test(pdata$p450, pdata$Sum40CBs, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(pdata$p450, pdata$SumBDEs, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(pdata$p450, pdata$SumCHLDs, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(pdata$p450, pdata$SumDDTs, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(pdata$p450, pdata$SumHCHs, method = "pearson")
 print(correlation_result)
 
 ```
