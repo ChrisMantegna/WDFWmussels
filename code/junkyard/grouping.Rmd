@@ -72,3 +72,28 @@ print(quantiles_6)
 
 ```
 
+#PAHgroup6 - 7 classifications
+```{r}
+
+quantiles_7 <- quantile(asdata$sumPAH, probs = seq(0, 1, length.out = 8))
+
+# Create the new column for 6 categories
+asdata$PAHgroup6 <- cut(asdata$sumPAH, breaks = quantiles_6, include.lowest = TRUE, labels = FALSE)
+
+print(quantiles_7)
+#table(asdata$PAHgroup6)
+
+```
+
+#PAHgroup8 - 8 classifications
+```{r}
+
+quantiles_8 <- quantile(asdata$sumPAH, probs = seq(0, 1, length.out = 9))
+
+# Create the new column for 6 categories
+asdata$PAHgroup6 <- cut(asdata$sumPAH, breaks = quantiles_6, include.lowest = TRUE, labels = FALSE)
+
+print(quantiles_8)
+#table(asdata$PAHgroup6)
+
+```
