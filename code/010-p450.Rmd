@@ -180,7 +180,34 @@ print(correlation_result)
 
 ```
 
-## mercury, arsenic, cadmium, copper, lead and zinc
+## other summed analytes
+
+```{r}
+
+# no correlation
+correlation_result <- cor.test(summed$avg_value, summed$sum40CB, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(summed$avg_value, summed$sumBDE, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(summed$avg_value, summed$sumCHLD, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(summed$avg_value, summed$sumDDT, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(summed$avg_value, summed$sumHCH, method = "pearson")
+print(correlation_result)
+
+```
+
+## Metals
+### mercury, arsenic, cadmium, copper, lead and zinc
 
 ```{r}
 
@@ -206,32 +233,6 @@ print(correlation_result)
 
 # no correlation
 correlation_result <- cor.test(apdata$p450, apdata$zinc, method = "pearson")
-print(correlation_result)
-
-```
-
-## other summed analytes
-
-```{r}
-
-# no correlation
-correlation_result <- cor.test(pdata$p450, pdata$Sum40CBs, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(pdata$p450, pdata$SumBDEs, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(pdata$p450, pdata$SumCHLDs, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(pdata$p450, pdata$SumDDTs, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(pdata$p450, pdata$SumHCHs, method = "pearson")
 print(correlation_result)
 
 ```
