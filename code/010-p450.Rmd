@@ -44,8 +44,8 @@ library(vegan)
 
 #getwd()
 pdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450data.csv")
-p_indvdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_analytes.csv")
-p_sumdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_analytes2.csv")
+indv<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_analytes.csv")
+summed<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_analytes2.csv")
 ```
 
 # Check data
@@ -149,19 +149,19 @@ write.csv(mc_group8, "/Users/cmantegna/Documents/WDFWmussels/output/tables/Signi
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(p_sumdata$p450, p_sumdata$sumPAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_value, summed$sumPAH, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(p_sumdata$p450, p_sumdata$hmwPAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_value, summed$hmwPAH, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(p_sumdata$p450, p_sumdata$lmwPAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_value, summed$lmwPAH, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(p_sumdata$p450, p_sumdata$PAH16, method = "pearson")
+correlation_result <- cor.test(summed$avg_value, summed$sum16PAH, method = "pearson")
 print(correlation_result)
 
 ```
@@ -171,11 +171,11 @@ print(correlation_result)
 ```{r}
 
 #no correlation
-correlation_result <- cor.test(p_sumdata$p450, p_sumdata$PAH16, method = "pearson")
+correlation_result <- cor.test(summed$avg_value, summed$sum42PAH, method = "pearson")
 print(correlation_result)
 
 #no correlation
-correlation_result <- cor.test(p_sumdata$p450, p_sumdataapdata$p450, apdata$sumPCB, method = "pearson")
+correlation_result <- cor.test(summed$avg_value, summed$sumPCB, method = "pearson")
 print(correlation_result)
 
 ```
