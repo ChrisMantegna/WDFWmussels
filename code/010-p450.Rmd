@@ -44,14 +44,14 @@ library(vegan)
 
 #getwd()
 pdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450data.csv")
-#pdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450_analytes3.csv")
-
+p_indvdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_analytes.csv")
+p_sumdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_analytes2.csv")
 ```
 
 # Check data
 
 ```{r}
-summary(pdata)
+#summary(pdata)
 ```
 
 # Shapiro-Wilkes
@@ -144,62 +144,38 @@ write.csv(mc_group8, "/Users/cmantegna/Documents/WDFWmussels/output/tables/Signi
 ```
 
 # Correlation
-## PAHgroup3, PAHgroup4, PAHgroup5 and PAHgroup6
-0= VLow\
-1= Low\
-2= Mid\
-3= High\
-4= VHigh\
-5= EHigh
-PAH groups determined by set quantiles found in grouping.rmd.\
-Group3= 1-3 | Group4= 1-4 | Group5= 0-4 | Group6= 0-5
-```{r}
-
-#no correlation
-correlation_result <- cor.test(apdata$p450, apdata$PAHgroup3, method = "pearson")
-print(correlation_result)
-
-#no correlation
-correlation_result <- cor.test(apdata$p450, apdata$PAHgroup4, method = "pearson")
-print(correlation_result)
-
-#no correlation
-correlation_result <- cor.test(apdata$p450, apdata$PAHgroup5, method = "pearson")
-print(correlation_result)
-
-#no correlation
-correlation_result <- cor.test(apdata$p450, apdata$PAHgroup6, method = "pearson")
-print(correlation_result)
-```
-
 ## sumPAH, lmwPAH, hmwPAH and PAH16
 
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(apdata$p450, apdata$sumPAH, method = "pearson")
+correlation_result <- cor.test(p_sumdata$p450, p_sumdata$sumPAH, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(apdata$p450, apdata$hmwPAH, method = "pearson")
+correlation_result <- cor.test(p_sumdata$p450, p_sumdata$hmwPAH, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(apdata$p450, apdata$lmwPAH, method = "pearson")
+correlation_result <- cor.test(p_sumdata$p450, p_sumdata$lmwPAH, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(apdata$p450, apdata$PAH16, method = "pearson")
+correlation_result <- cor.test(p_sumdata$p450, p_sumdata$PAH16, method = "pearson")
 print(correlation_result)
 
 ```
 
-## sumPCB
+## sum42PAH and sumPCB
 
 ```{r}
 
-# no correlation
-correlation_result <- cor.test(apdata$p450, apdata$sumPCB, method = "pearson")
+#no correlation
+correlation_result <- cor.test(p_sumdata$p450, p_sumdata$PAH16, method = "pearson")
+print(correlation_result)
+
+#no correlation
+correlation_result <- cor.test(p_sumdata$p450, p_sumdataapdata$p450, apdata$sumPCB, method = "pearson")
 print(correlation_result)
 
 ```

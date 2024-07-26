@@ -104,26 +104,25 @@ write.csv(merged_df, "/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_analyte
 
 ```
 
-## All of the data frames are merged but only the p450_analytes3 has been adjusted for analysis. all others need to be adjusted before completing the next merge step.
 ```{r}
 #p450
 merged_df2 <- merge(pdata, df_wide2, by = "site_name", all = TRUE)
 
 # Print the merged data frame
 head(merged_df2)
-#write.csv(merged_df2, "/Users/cmantegna/Documents/WDFWmussels/data/p450_analytes3.csv", row.names = FALSE)
+write.csv(merged_df2, "/Users/cmantegna/Documents/WDFWmussels/data/avgP450_analytes2.csv", row.names = FALSE)
 
 #sod
 merged_df2 <- merge(sdata, df_wide2, by = "site_name", all = TRUE)
 
 # Print the merged data frame
 head(merged_df2)
-#write.csv(merged_df2, "/Users/cmantegna/Documents/WDFWmussels/data/sod_analytes3.csv", row.names = FALSE)
+write.csv(merged_df2, "/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_analytes2.csv", row.names = FALSE)
 
 #morphometric
-merged_df2 <- merge(mdata, df_wide2, by = "site_name", all = TRUE)
+#merged_df2 <- merge(mdata, df_wide2, by = "site_name", all = TRUE)
 
 # Print the merged data frame
-print(merged_df2)
+#print(merged_df2)
 #write.csv(merged_df2, "/Users/cmantegna/Documents/WDFWmussels/data/morphometric_analytes2.csv", row.names = FALSE)
 ```
