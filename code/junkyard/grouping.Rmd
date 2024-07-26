@@ -109,6 +109,7 @@ averaged_pdata <- pdata %>%
 
 # View the result
 print(averaged_pdata)
+write.csv(averaged_pdata, "/Users/cmantegna/Documents/WDFWmussels/data/avgP450.csv", row.names = FALSE)
 
 #sod
 # Calculate the average value for each site
@@ -118,5 +119,7 @@ averaged_sdata <- sdata %>%
 
 # View the result
 print(averaged_sdata)
+write.csv(averaged_sdata, "/Users/cmantegna/Documents/WDFWmussels/data/avgSOD.csv", row.names = FALSE)
+
 ```
 
