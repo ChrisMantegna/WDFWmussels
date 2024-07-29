@@ -67,6 +67,17 @@ shapiro.test(pdata$p450)
 
 # Kruskal-Wallis
 ## site and reporting area
+
+Reporting Areas Are:\
+6 - East Juan de Fuca Strait\
+7 - San Juan Islands\
+8.1 - Deception Pass, Hope Island, and Skagit Bay\
+8.2 - Port Susan and Port Gardner\
+9 - Admiralty Inlet\
+10 - Seattle-Bremerton\
+11 - Tacoma-Vashon\
+12 - Hood Canal\
+13 - South Puget Sound
 ```{r}
 
 #test for significant interaction
@@ -98,17 +109,10 @@ kruskal.test(p450 ~ PAHgroup8, data = pdata)
 
 # Kruskal-Wallac Multiple Comparisons (post hoc)
 
-Reporting Areas Are:\
-6 - East Juan de Fuca Strait\
-7 - San Juan Islands\
-8.1 - Deception Pass, Hope Island, and Skagit Bay\
-8.2 - Port Susan and Port Gardner\
-9 - Admiralty Inlet\
-10 - Seattle-Bremerton\
-11 - Tacoma-Vashon\
-12 - Hood Canal\
-13 - South Puget Sound
-
+### no significance confirmed between sites
+### significant differences across reporting area pairwise matches: 8.2-12, 10-13, 11-12, and 12-13
+### significant differences across PAHgroup7 pairwise comparisons
+### significant differences across PAHgroup8 pairwise comparisons
 ```{r}
 library(pgirmess)
 

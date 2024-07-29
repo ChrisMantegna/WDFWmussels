@@ -44,9 +44,11 @@ library(vegan)
 
 #Port Angeles Yacht Club has been removed due to being an abnormally high outlier in comparison to all other locations.
 #getwd()
-#mdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/morphometricdata.csv")
-mdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/morphometric_analytes2.csv")
 
+data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/morphdata.csv")
+indiv<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgMORPH_analytes.csv")
+summed<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgMORPH_analytes2.csv")
+metal<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgMORPH_metals.csv")
 ```
 
 # Check data
@@ -61,42 +63,14 @@ summary(mdata)
 #test for normality. 
 #Condition factor (cf) is not normally distributed. 
 #Average shell thickness (at) is normally distributed.
-# *All analytes were determined not normally distributed in 010-p450.Rmd* 
 
-shapiro.test(mdata$cf)
-shapiro.test(mdata$at)
+shapiro.test(data$cf)
+shapiro.test(data$at)
 
 ```
 
 # Significant Differences
-
-## cf- reporting area & site - Kruskal-Wallis (non-parametric data)
-
-```{r}
-
-#test for significant differences - cf
-
-# Change to character for the kw test AFTER keeping as numeric for the correlation tests - if necessary
-#apdata$PAHgroup <- as.character(apdata$PAHgroup)
-#apdata$PAHgroup2 <- as.character(apdata$PAHgroup2)
-#apdata$PAHgroup3 <- as.character(apdata$PAHgroup3)
-
-kruskal.test(cf ~ site_name, data = mdata)
-kruskal.test(cf ~ reporting_area, data = mdata)
-
-```
-
-## cf- PAH groups - Kruskal-Wallis (non-parametric data)
-```{r}
-
-kruskal.test(cf ~ PAHgroup3, data = mdata)
-kruskal.test(cf ~ PAHgroup4, data = mdata)
-kruskal.test(cf ~ PAHgroup5, data = mdata)
-kruskal.test(cf ~ PAHgroup6, data = mdata)
-
-```
-
-##cf- Kruskal-Wallac Multiple Comparisons (post hoc)
+## cf- reporting area & site, PAH group 3 and 4 - Kruskal-Wallis (non-parametric data)
 Reporting Areas Are:\
 6 - East Juan de Fuca Strait\
 7 - San Juan Islands\
@@ -109,18 +83,50 @@ Reporting Areas Are:\
 13 - South Puget Sound
 
 ```{r}
+
+#test for significant differences - cf
+
+# Change to character for the kw test AFTER keeping as numeric for the correlation tests - if necessary
+#apdata$PAHgroup <- as.character(apdata$PAHgroup)
+#apdata$PAHgroup2 <- as.character(apdata$PAHgroup2)
+#apdata$PAHgroup3 <- as.character(apdata$PAHgroup3)
+
+kruskal.test(cf ~ site_name, data = data)
+kruskal.test(cf ~ reporting_area, data = data)
+kruskal.test(cf ~ PAHgroup3, data = data)
+kruskal.test(cf ~ PAHgroup4, data = data)
+
+```
+
+## cf- PAH groups 5-8 - Kruskal-Wallis (non-parametric data)
+```{r}
+
+kruskal.test(cf ~ PAHgroup5, data = data)
+kruskal.test(cf ~ PAHgroup6, data = data)
+kruskal.test(cf ~ PAHgroup7, data = data)
+kruskal.test(cf ~ PAHgroup8, data = data)
+
+```
+
+##cf- Kruskal-Wallac Multiple Comparisons (post hoc)
+### no significant differences across site, reporting area or PAHgroup 8
+
+```{r}
 library(pgirmess)
 
-mdata$reporting_area <- as.character(mdata$reporting_area)
+data$reporting_area <- as.character(data$reporting_area)
 
 # no significant differences across site.
 # no significant differences across reporting area
+# no signifciant differences across PAHgroup8
 
-mc_site<- as.data.frame(kruskalmc(cf ~ site_name, data = mdata, method = "bonferroni"))
-mc_reporting<- as.data.frame(kruskalmc(cf ~ reporting_area, data = mdata, method = "bonferroni")) 
+mc_site<- as.data.frame(kruskalmc(cf ~ site_name, data = data, method = "bonferroni"))
+mc_reporting<- as.data.frame(kruskalmc(cf ~ reporting_area, data = data, method = "bonferroni")) 
+mc_group8<- as.data.frame(kruskalmc(cf ~ PAHgroup8, data = data, method = "bonferroni"))
 
 head(mc_site)
 head(mc_reporting)
+head(mc_group8)
 
 ```
 
@@ -128,31 +134,48 @@ head(mc_reporting)
 ```{r}
 
 #test for significant differences - at
-mdata$reporting_area <- as.character(mdata$reporting_area)
-mdata$PAHgroup3 <- as.character(mdata$PAHgroup3)
-mdata$PAHgroup4 <- as.character(mdata$PAHgroup4)
-mdata$PAHgroup5 <- as.character(mdata$PAHgroup5)
-mdata$PAHgroup6 <- as.character(mdata$PAHgroup6)
+data$reporting_area <- as.character(data$reporting_area)
+data$PAHgroup3 <- as.character(data$PAHgroup3)
+data$PAHgroup4 <- as.character(data$PAHgroup4)
+data$PAHgroup5 <- as.character(data$PAHgroup5)
 
-anova_site <- aov(at ~ site_name, data = mdata)
+
+anova_site <- aov(at ~ site_name, data = data)
 summary(anova_site)
 
-anova_ra <- aov(at ~ reporting_area, data = mdata)
+anova_ra <- aov(at ~ reporting_area, data = data)
 summary(anova_ra)
 
-anova_group3 <- aov(at ~ PAHgroup3, data = mdata)
+anova_group3 <- aov(at ~ PAHgroup3, data = data)
 summary(anova_group3)
 
-anova_group4 <- aov(at ~ PAHgroup4, data = mdata)
+anova_group4 <- aov(at ~ PAHgroup4, data = data)
 summary(anova_group4)
 
-anova_group5 <- aov(at ~ PAHgroup5, data = mdata)
+anova_group5 <- aov(at ~ PAHgroup5, data = data)
 summary(anova_group5)
 
-anova_group6 <- aov(at ~ PAHgroup6, data = mdata)
-summary(anova_group6)
+
 
 ```
+
+## PAH group 6-8
+```{r}
+
+data$PAHgroup6 <- as.character(data$PAHgroup6)
+data$PAHgroup7 <- as.character(data$PAHgroup7)
+data$PAHgroup8 <- as.character(data$PAHgroup8)
+
+anova_group6 <- aov(at ~ PAHgroup6, data = data)
+summary(anova_group6)
+
+anova_group7 <- aov(at ~ PAHgroup7, data = data)
+summary(anova_group7)
+
+anova_group8 <- aov(at ~ PAHgroup8, data = data)
+summary(anova_group8)
+```
+
 
 ## at- TukeyHSD (post hoc)
 ```{r}
@@ -160,10 +183,12 @@ summary(anova_group6)
 library(broom)
 library(readr)
 
-mdata$reporting_area <- as.character(mdata$reporting_area)
-mdata$PAHgroup4 <- as.character(mdata$PAHgroup4)
-mdata$PAHgroup5 <- as.character(mdata$PAHgroup5)
-mdata$PAHgroup6 <- as.character(mdata$PAHgroup6)
+data$reporting_area <- as.character(data$reporting_area)
+data$PAHgroup4 <- as.character(data$PAHgroup4)
+data$PAHgroup5 <- as.character(data$PAHgroup5)
+data$PAHgroup6 <- as.character(data$PAHgroup6)
+data$PAHgroup7 <- as.character(data$PAHgroup7)
+data$PAHgroup8 <- as.character(data$PAHgroup8)
 
 #significant differences between 112 pairwise comparisons. Table written to GH repo.
 tukey_site<- TukeyHSD(anova_site)
@@ -194,241 +219,214 @@ tukey_group6<- TukeyHSD(anova_group6)
 ttable_group6<- tidy(tukey_group6)
 sigttable_group6 <- ttable_group6 %>% filter(adj.p.value < 0.05)
 write.csv(sigttable_group6, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessGROUP6.csv", row.names = FALSE)
+
+# significant  differences between 15 pairwise comparisons. Table written to GH repo.
+tukey_group7<- TukeyHSD(anova_group7)
+ttable_group7<- tidy(tukey_group7)
+sigttable_group7 <- ttable_group7 %>% filter(adj.p.value < 0.05)
+write.csv(sigttable_group7, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessGROUP7.csv", row.names = FALSE)
+
+# significant  differences between 15 pairwise comparisons. Table written to GH repo.
+tukey_group8<- TukeyHSD(anova_group8)
+ttable_group8<- tidy(tukey_group8)
+sigttable_group8 <- ttable_group8 %>% filter(adj.p.value < 0.05)
+write.csv(sigttable_group8, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessGROUP8.csv", row.names = FALSE)
 ```
+
 
 # Correlations
 
-##cf- PAHgroup3, PAHgroup4, PAHgroup5 and PAHgroup6
-0= VLow\
-1= Low\
-2= Mid\
-3= High\
-4= VHigh\
-5= EHigh
-PAH groups determined by set quantiles found in grouping.rmd.\
-Group3= 1-3 | Group4= 1-4 | Group5= 0-4 | Group6= 0-5
-```{r}
-
-mdata$PAHgroup3 <- as.numeric(mdata$PAHgroup3)
-mdata$PAHgroup4 <- as.numeric(mdata$PAHgroup4)
-mdata$PAHgroup5 <- as.numeric(mdata$PAHgroup5)
-mdata$PAHgroup6 <- as.numeric(mdata$PAHgroup6)
-
-# no correlation
-correlation_result <- cor.test(mdata$cf, mdata$PAHgroup3, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(mdata$cf, mdata$PAHgroup4, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(mdata$cf, mdata$PAHgroup5, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(mdata$cf, mdata$PAHgroup6, method = "pearson")
-print(correlation_result)
-```
-
 ## cf- sumPAH, lmwPAH, hmwPAH and PAH16
+### No correlations
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(mdata$cf, mdata$sumPAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$sumPAH, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(mdata$cf, mdata$lmwPAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$lmwPAH, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(mdata$cf, mdata$hmwPAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$hmwPAH, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(mdata$cf, mdata$PAH16, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$sum16PAH, method = "pearson")
 print(correlation_result)
 
 ```
 
-## cf- sumPCB
+## cf- sumPCBs and sum42PAH
+### No correlation
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(mdata$cf, mdata$sumPCB, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$sumPCB, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(summed$avg_cf, summed$sum42PAH, method = "pearson")
+print(correlation_result)
+
+```
+
+## cf- other summed analytes
+### No correlation
+```{r}
+
+# no correlation
+correlation_result <- cor.test(summed$avg_cf, summed$um40CB, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(summed$avg_cf, summed$sumBDE, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(summed$avg_cf, summed$sumCHLD, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(summed$avg_cf, summed$sumDDT, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(summed$avg_cf, summed$sumHCH, method = "pearson")
 print(correlation_result)
 
 ```
 
 ## cf- mercury, arsenic, cadmium, copper, lead, zinc
+### No correlation
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(mdata$cf, mdata$mercury, method = "pearson")
+correlation_result <- cor.test(metal$avg_cf, metal$mercuryTotal, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(mdata$cf, mdata$arsenic, method = "pearson")
+correlation_result <- cor.test(metal$avg_cf, metal$arsenic, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(mdata$cf, mdata$cadmium, method = "pearson")
+correlation_result <- cor.test(metal$avg_cf, metal$cadmium, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(mdata$cf, mdata$copper, method = "pearson")
+correlation_result <- cor.test(metal$avg_cf, metal$copper, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(mdata$cf, mdata$lead, method = "pearson")
+correlation_result <- cor.test(metal$avg_cf, metal$lead, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(mdata$cf, mdata$zinc, method = "pearson")
+correlation_result <- cor.test(metal$avg_cf, metal$Zinc, method = "pearson")
 print(correlation_result)
 
 ```
 
-## other summed analytes
-```{r}
 
-# no correlation
-correlation_result <- cor.test(mdata$cf, mdata$Sum40CBs, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(mdata$cf, mdata$SumBDEs, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(mdata$cf, mdata$SumCHLDs, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(mdata$cf, mdata$SumDDTs, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(mdata$cf, mdata$SumHCHs, method = "pearson")
-print(correlation_result)
-
-```
 
 #Correlations
-
-##at- PAHgroup3, PAHgroup4, PAHgroup5 and PAHgroup6
-0= VLow\
-1= Low\
-2= Mid\
-3= High\
-4= VHigh\
-5= EHigh
-PAH groups determined by set quantiles found in grouping.rmd.\
-Group3= 1-3 | Group4= 1-4 | Group5= 0-4 | Group6= 0-5
-```{r}
-
-mdata$PAHgroup3 <- as.numeric(mdata$PAHgroup3)
-mdata$PAHgroup4 <- as.numeric(mdata$PAHgroup4)
-mdata$PAHgroup5 <- as.numeric(mdata$PAHgroup5)
-mdata$PAHgroup6 <- as.numeric(mdata$PAHgroup6)
-
-# no correlation
-correlation_result <- cor.test(mdata$at, mdata$PAHgroup3, method = "pearson")
-print(correlation_result)
-
-# correlation= 0.1205069 with a p-value= 0.03511 indicates a weak positive correlation.
-correlation_result <- cor.test(mdata$at, mdata$PAHgroup4, method = "pearson")
-print(correlation_result)
-
-# correlation= 0.1382479 with a p-value= 0.01552 indicates a weak positive correlation.
-correlation_result <- cor.test(mdata$at, mdata$PAHgroup5, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(mdata$at, mdata$PAHgroup6, method = "pearson")
-print(correlation_result)
-```
-
 ## at- sumPAH, lmwPAH, hmwPAH and PAH16
+### No correlations
 ```{r}
 
-# correlation= 0.1459292 with a p-value= 0.01059 indicates a weak positive correlation.
-correlation_result <- cor.test(mdata$at, mdata$sumPAH, method = "pearson")
+# no correlation
+correlation_result <- cor.test(summed$avg_at, summed$sumPAH, method = "pearson")
 print(correlation_result)
 
-# correlation= 0.1698226 with a p-value= 0.002881 indicates a weak positive correlation.
-correlation_result <- cor.test(mdata$at, mdata$lmwPAH, method = "pearson")
+# no correlation
+correlation_result <- cor.test(summed$avg_at, summed$lmwPAH, method = "pearson")
 print(correlation_result)
 
-# correlation= 0.1306227 with a p-value= 0.02229 indicates a weak positive correlation.
-correlation_result <- cor.test(mdata$at, mdata$hmwPAH, method = "pearson")
+# no correlation
+correlation_result <- cor.test(summed$avg_at, summed$hmwPAH, method = "pearson")
 print(correlation_result)
 
-# correlation= 0.1457735 with a p-value= 0.01067 indicates a weak positive correlation.
-correlation_result <- cor.test(mdata$at, mdata$PAH16, method = "pearson")
+# no correlation
+correlation_result <- cor.test(summed$avg_at, summed$sum16PAH, method = "pearson")
 print(correlation_result)
 
 ```
 
-## at- sumPCB
+## at- sumPCBs and sum42PAH
+### No correlation
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(mdata$at, mdata$sumPCB, method = "pearson")
+correlation_result <- cor.test(summed$avg_at, summed$sumPCB, method = "pearson")
 print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(summed$avg_cf, summed$sum42PAH, method = "pearson")
+print(correlation_result)
+
+```
+
+## at- other summed analytes
+### No correlation
+```{r}
+
+# no correlation
+correlation_result <- cor.test(summed$avg_at, summed$um40CB, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(summed$avg_at, summed$sumBDE, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(summed$avg_at, summed$sumCHLD, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(summed$avg_at, summed$sumDDT, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(summed$avg_at, summed$sumHCH, method = "pearson")
+print(correlation_result)
+
 ```
 
 ## at- mercury, arsenic, cadmium, copper, lead, zinc
+### No correlation
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(mdata$at, mdata$mercury, method = "pearson")
+correlation_result <- cor.test(metal$avg_at, metal$mercuryTotal, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(mdata$at, mdata$arsenic, method = "pearson")
+correlation_result <- cor.test(metal$avg_at, metal$arsenic, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(mdata$at, mdata$cadmium, method = "pearson")
+correlation_result <- cor.test(metal$avg_at, metal$cadmium, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(mdata$at, mdata$copper, method = "pearson")
+correlation_result <- cor.test(metal$avg_at, metal$copper, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(mdata$at, mdata$lead, method = "pearson")
+correlation_result <- cor.test(metal$avg_at, metal$lead, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(mdata$at, mdata$zinc, method = "pearson")
+correlation_result <- cor.test(metal$avg_at, metal$Zinc, method = "pearson")
 print(correlation_result)
 
 ```
 
-## other summed analytes
-```{r}
 
-# no correlation
-correlation_result <- cor.test(mdata$at, mdata$Sum40CBs, method = "pearson")
-print(correlation_result)
 
-# There is a correlation= .1574918 with a p-value= p-value = 0.005763. This indicates a weak positive correlation.
-correlation_result <- cor.test(mdata$at, mdata$SumBDEs, method = "pearson")
-print(correlation_result)
 
-# no correlation
-correlation_result <- cor.test(mdata$at, mdata$SumCHLDs, method = "pearson")
-print(correlation_result)
 
-# no correlation
-correlation_result <- cor.test(mdata$at, mdata$SumDDTs, method = "pearson")
-print(correlation_result)
 
-# no correlation
-correlation_result <- cor.test(mdata$at, mdata$SumHCHs, method = "pearson")
-print(correlation_result)
 
-```
+

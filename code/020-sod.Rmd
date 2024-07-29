@@ -43,10 +43,11 @@ library(vegan)
 ```{r}
 
 #getwd()
+data <- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/soddata.csv")
 sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD.csv")
 indv<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_analytes.csv")
 summed<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_analytes2.csv")
-metal<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_metals.csv")
+smetal<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_metals.csv")
 
 ```
 
@@ -56,6 +57,7 @@ metal<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_metals.csv"
 
 
 #replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
+data$sod[data$sod <= 0] <- 0.0025
 sdata$avg_value[sdata$avg_value <= 0] <- 0.0025
 indv$avg_value[indv$avg_value <= 0] <- 0.0025
 summed$avg_value[summed$avg_value <= 0] <- 0.0025
@@ -74,41 +76,12 @@ summary(sdata)
 #test for normality. Data is not normally distributed.
 # *All analytes were determined not normally distributed in 010-p450.Rmd* 
 
-shapiro.test(asdata$sod)
+shapiro.test(data$sod)
 
 ```
 
 # Kruskal-Wallis
 ## site and reporting area
-
-```{r}
-
-#test for significant interaction
-
-# Change to character for the kw test AFTER keeping as numeric for the correlation tests - if necessary
-#spdata$PAHgroup <- as.character(spdata$PAHgroup)
-#sapdata$PAHgroup2 <- as.character(spdata$PAHgroup2)
-#spdata$PAHgroup3 <- as.character(spdata$PAHgroup3)
-
-kruskal.test(sod ~ site_name, data = asdata)
-kruskal.test(sod ~ reporting_area, data = asdata)
-kruskal.test(sod ~ PAHgroup3, data = asdata)
-kruskal.test(sod ~ PAHgroup4, data = asdata)
-
-```
-
-## PAH groups
-```{r}
-
-kruskal.test(sod ~ PAHgroup5, data = sdata)
-kruskal.test(sod ~ PAHgroup6, data = sdata)
-kruskal.test(sod ~ PAHgroup7, data = sdata)
-kruskal.test(sod ~ PAHgroup8, data = sdata)
-
-```
-
-# Kruskal-Wallac Multiple Comparisons (post hoc)
-
 Reporting Areas Are:\
 6 - East Juan de Fuca Strait\
 7 - San Juan Islands\
@@ -121,16 +94,55 @@ Reporting Areas Are:\
 13 - South Puget Sound
 
 ```{r}
+
+#test for significant interaction
+
+# Change to character for the kw test AFTER keeping as numeric for the correlation tests - if necessary
+#spdata$PAHgroup <- as.character(spdata$PAHgroup)
+#sapdata$PAHgroup2 <- as.character(spdata$PAHgroup2)
+#spdata$PAHgroup3 <- as.character(spdata$PAHgroup3)
+
+kruskal.test(sod ~ site_name, data = data)
+kruskal.test(sod ~ reporting_area, data = data)
+kruskal.test(sod ~ PAHgroup3, data = data)
+kruskal.test(sod ~ PAHgroup4, data = data)
+
+```
+
+## PAH groups
+```{r}
+
+kruskal.test(sod ~ PAHgroup5, data = data)
+kruskal.test(sod ~ PAHgroup6, data = data)
+kruskal.test(sod ~ PAHgroup7, data = data)
+kruskal.test(sod ~ PAHgroup8, data = data)
+
+```
+
+# Kruskal-Wallac Multiple Comparisons (post hoc)
+
+### no significance confirmed between sites
+### Group 4 - significance confirmed between low(1) and very high(4)
+### Group 7 - significance confirmed between 1-3, 1-4, 1-5, 1-6
+### Group 8 - significance confirmed between 1-2, 1-4, 1-5, 1-6, 1-7
+
+```{r}
 library(pgirmess)
 
 # no significance confirmed between sites
-# significance confirmed between low(1) and very high(4)
+# Group 4 - significance confirmed between low(1) and very high(4)
+# Group 7 - significance confirmed between 1-3, 1-4, 1-5, 1-6
+# Group 8 - significance confirmed between 1-2, 1-4, 1-5, 1-6, 1-7
 
-mc_site<- as.data.frame(kruskalmc(sod ~ site_name, data = asdata, method = "bonferroni"))
-mc_group4<- as.data.frame(kruskalmc(sod ~ PAHgroup4, data = asdata, method = "bonferroni")) 
+mc_site<- as.data.frame(kruskalmc(sod ~ site_name, data = data, method = "bonferroni"))
+mc_group4<- as.data.frame(kruskalmc(sod ~ PAHgroup4, data = data, method = "bonferroni")) 
+mc_group7<- as.data.frame(kruskalmc(sod ~ PAHgroup7, data = data, method = "bonferroni")) 
+mc_group8<- as.data.frame(kruskalmc(sod ~ PAHgroup8, data = data, method = "bonferroni")) 
 
 head(mc_site)
 head(mc_group4)
+head(mc_group7)
+head(mc_group8)
 
 ```
 
@@ -159,7 +171,7 @@ print(correlation_result)
 ```
 
 ## sum42PAH and sumPCB
-### Significant correlation with sumPCBs at .2730476 (p-value = 0.01858)
+### No correlations
 ```{r}
 
 # no correlation
@@ -173,7 +185,7 @@ print(correlation_result)
 ```
 
 ## other summed analytes
-### Correlation to Sum40CBs at .271325 (p-value = 0.01937) and SumHCHs at .2020124 (p-value = 0.08434)
+### No correlation
 ```{r}
 
 # correlation
@@ -202,27 +214,27 @@ print(correlation_result)
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(metal$avg_value, metal$mercuryTotal, method = "pearson")
+correlation_result <- cor.test(smetal$avg_value, smetal$mercuryTotal, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(metal$avg_value, metal$arsenic, method = "pearson")
+correlation_result <- cor.test(smetal$avg_value, smetal$arsenic, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(metal$avg_value, metal$cadmium, method = "pearson")
+correlation_result <- cor.test(smetal$avg_value, smetal$cadmium, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(metal$avg_value, metal$copper, method = "pearson")
+correlation_result <- cor.test(smetal$avg_value, smetal$copper, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(metal$avg_value, metal$lead, method = "pearson")
+correlation_result <- cor.test(smetal$avg_value, smetal$lead, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(metal$avg_value, metal$Zinc, method = "pearson")
+correlation_result <- cor.test(smetal$avg_value, smetal$Zinc, method = "pearson")
 print(correlation_result)
 
 ```
