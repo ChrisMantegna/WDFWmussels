@@ -44,7 +44,7 @@ library(vegan)
 #getwd()
 #pdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450.csv")
 #sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD.csv")
-morph<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/morphometricdata.csv")
+morph<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgMORPH.csv")
 idata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/not_for_analysis/individual_wide.csv")
 odata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/not_for_analysis/othersummed_wide.csv")
 mdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/not_for_analysis/metal_wide.csv")
@@ -96,11 +96,11 @@ head(merged_df)
 write.csv(merged_df, "/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_analytes.csv", row.names = FALSE)
 
 #morphometric
-merged_df <- merge(mdata, idata, by = "site_name", all = TRUE)
+merged_df <- merge(morph, idata, by = "site_name", all = TRUE)
 
 # Print the merged data frame
 print(merged_df)
-write.csv(merged_df, "/Users/cmantegna/Documents/WDFWmussels/data/morph_analytes.csv", row.names = FALSE)
+write.csv(merged_df, "/Users/cmantegna/Documents/WDFWmussels/data/avgMORPH_analytes.csv", row.names = FALSE)
 
 ```
 
@@ -120,11 +120,11 @@ head(merged_df2)
 write.csv(merged_df2, "/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_analytes2.csv", row.names = FALSE)
 
 #morphometric
-merged_df <- merge(mdata, data, by = "site_name", all = TRUE)
+merged_df2 <- merge(morph, odata, by = "site_name", all = TRUE)
 
 # Print the merged data frame
-print(merged_df)
-write.csv(merged_df, "/Users/cmantegna/Documents/WDFWmussels/data/morph_analytes.csv", row.names = FALSE)
+print(merged_df2)
+write.csv(merged_df2, "/Users/cmantegna/Documents/WDFWmussels/data/avgMORPH_analytes2.csv", row.names = FALSE)
 
 ```
 #metal table merge
@@ -137,12 +137,12 @@ merged_df3 <- merge(pdata, metal_wide, by = "site_name", all = TRUE)
 head(merged_df3)
 write.csv(merged_df3, "/Users/cmantegna/Documents/WDFWmussels/data/avgP450_metals.csv", row.names = FALSE)
 
-#sod
-merged_df3 <- merge(sdata, metal_wide, by = "site_name", all = TRUE)
+#morph
+merged_df3 <- merge(morph, mdata, by = "site_name", all = TRUE)
 
 # Print the merged data frame
 head(merged_df3)
-write.csv(merged_df3, "/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_metals.csv", row.names = FALSE)
+write.csv(merged_df3, "/Users/cmantegna/Documents/WDFWmussels/data/avgMORPH_metals.csv", row.names = FALSE)
 
 ```
 

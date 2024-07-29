@@ -43,8 +43,10 @@ library(vegan)
 ```{r}
 
 #getwd()
-sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/sod_analytes3.csv")
-asdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/sod_analytes.csv")
+sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD.csv")
+indv<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_analytes.csv")
+summed<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_analytes2.csv")
+metal<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_metals.csv")
 
 ```
 
@@ -54,8 +56,10 @@ asdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/sod_analytes.csv"
 
 
 #replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
-asdata$sod[asdata$sod <= 0] <- 0.0025
-sdata$sod[sdata$sod <= 0] <- 0.0025
+sdata$avg_value[sdata$avg_value <= 0] <- 0.0025
+indv$avg_value[indv$avg_value <= 0] <- 0.0025
+summed$avg_value[summed$avg_value <= 0] <- 0.0025
+metal$avg_value[metal$avg_value <= 0] <- 0.0025
 
 ```
 # Check data
@@ -82,23 +86,24 @@ shapiro.test(asdata$sod)
 #test for significant interaction
 
 # Change to character for the kw test AFTER keeping as numeric for the correlation tests - if necessary
-#apdata$PAHgroup <- as.character(apdata$PAHgroup)
-#apdata$PAHgroup2 <- as.character(apdata$PAHgroup2)
-#apdata$PAHgroup3 <- as.character(apdata$PAHgroup3)
+#spdata$PAHgroup <- as.character(spdata$PAHgroup)
+#sapdata$PAHgroup2 <- as.character(spdata$PAHgroup2)
+#spdata$PAHgroup3 <- as.character(spdata$PAHgroup3)
 
 kruskal.test(sod ~ site_name, data = asdata)
 kruskal.test(sod ~ reporting_area, data = asdata)
-
+kruskal.test(sod ~ PAHgroup3, data = asdata)
+kruskal.test(sod ~ PAHgroup4, data = asdata)
 
 ```
 
 ## PAH groups
 ```{r}
 
-kruskal.test(sod ~ PAHgroup3, data = asdata)
-kruskal.test(sod ~ PAHgroup4, data = asdata)
-kruskal.test(sod ~ PAHgroup5, data = asdata)
-kruskal.test(sod ~ PAHgroup6, data = asdata)
+kruskal.test(sod ~ PAHgroup5, data = sdata)
+kruskal.test(sod ~ PAHgroup6, data = sdata)
+kruskal.test(sod ~ PAHgroup7, data = sdata)
+kruskal.test(sod ~ PAHgroup8, data = sdata)
 
 ```
 
@@ -129,116 +134,96 @@ head(mc_group4)
 
 ```
 
-# Correlations
-## PAHgroup3, PAHgroup4, PAHgroup5 and PAHgroup6
-0= VLow\
-1= Low\
-2= Mid\
-3= High\
-4= VHigh\
-5= EHigh
-PAH groups determined by set quantiles found in grouping.rmd.\
-Group3= 1-3 | Group4= 1-4 | Group5= 0-4 | Group6= 0-5
-```{r}
-
-# no correlation
-correlation_result <- cor.test(asdata$sod, asdata$PAHgroup3, method = "pearson")
-print(correlation_result)
-
-# correlation= 0.1774695 with a p-value= 0.001677 indicates a weak positive correlation.
-correlation_result <- cor.test(asdata$sod, asdata$PAHgroup4, method = "pearson")
-print(correlation_result)
-
-# correlation= 0.1351344 with a p-value= 0.0171 indicates a weak positive correlation.
-correlation_result <- cor.test(asdata$sod, asdata$PAHgroup5, method = "pearson")
-print(correlation_result)
-
-# correlation= 0.132161 with a p-value= 0.01973 indicates a weak positive correlation.
-correlation_result <- cor.test(asdata$sod, asdata$PAHgroup6, method = "pearson")
-print(correlation_result)
-
-```
-
-
+# Correlation
 ## sumPAH, lmwPAH, hmwPAH and PAH16
+### No correlations
+
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(asdata$sod, asdata$sumPAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_value, summed$sumPAH, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(asdata$sod, asdata$lmwPAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_value, summed$lmwPAH, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(asdata$sod, asdata$hmwPAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_value, summed$hmwPAH, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(asdata$sod, asdata$PAH16, method = "pearson")
+correlation_result <- cor.test(summed$avg_value, summed$sum16PAH, method = "pearson")
 print(correlation_result)
 
 ```
 
-## sumPCB
-```{r}
-
-# correlation= 0.1557987 with a p-value= .0059. This is a significant weak correlation.
-correlation_result <- cor.test(asdata$sod, asdata$sumPCB, method = "pearson")
-print(correlation_result)
-```
-
-## mercury, arsenic, cadmium, copper, lead and zinc
+## sum42PAH and sumPCB
+### Significant correlation with sumPCBs at .2730476 (p-value = 0.01858)
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(asdata$sod, asdata$mercury, method = "pearson")
+correlation_result <- cor.test(summed$avg_value, summed$sum42PAH, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(asdata$sod, asdata$arsenic, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(asdata$sod, asdata$cadmium, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(asdata$sod, asdata$copper, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(asdata$sod, asdata$lead, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(asdata$sod, asdata$zinc, method = "pearson")
+correlation_result <- cor.test(summed$avg_value, summed$sumPCB, method = "pearson")
 print(correlation_result)
 
 ```
 
 ## other summed analytes
+### Correlation to Sum40CBs at .271325 (p-value = 0.01937) and SumHCHs at .2020124 (p-value = 0.08434)
 ```{r}
 
-# correlation= 0.1542415 with a p-value= 0.006421. This is a significant weak correlation.
-correlation_result <- cor.test(sdata$sod, sdata$Sum40CBs, method = "pearson")
+# correlation
+correlation_result <- cor.test(summed$avg_value, summed$sum40CB, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(sdata$sod, sdata$SumBDEs, method = "pearson")
+correlation_result <- cor.test(summed$avg_value, summed$sumBDE, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(sdata$sod, sdata$SumCHLDs, method = "pearson")
+correlation_result <- cor.test(summed$avg_value, summed$sumCHLD, method = "pearson")
 print(correlation_result)
 
-# correlation= 0.1228194 with a p-value= 0.03036. This is a significant weak correlation.
-correlation_result <- cor.test(sdata$sod, sdata$SumDDTs, method = "pearson")
+# no correlation
+correlation_result <- cor.test(summed$avg_value, summed$sumDDT, method = "pearson")
 print(correlation_result)
 
-# correlation= 0.1150957 with a p-value= 0.04253. This is a significant weak correlation.
-correlation_result <- cor.test(sdata$sod, sdata$SumHCHs, method = "pearson")
+# no correlation
+correlation_result <- cor.test(summed$avg_value, summed$sumHCH, method = "pearson")
+print(correlation_result)
+```
+
+## mercury, arsenic, cadmium, copper, lead and zinc
+### No correlation
+```{r}
+
+# no correlation
+correlation_result <- cor.test(metal$avg_value, metal$mercuryTotal, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(metal$avg_value, metal$arsenic, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(metal$avg_value, metal$cadmium, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(metal$avg_value, metal$copper, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(metal$avg_value, metal$lead, method = "pearson")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(metal$avg_value, metal$Zinc, method = "pearson")
 print(correlation_result)
 
 ```
+
