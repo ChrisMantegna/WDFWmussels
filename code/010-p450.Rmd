@@ -46,6 +46,7 @@ library(vegan)
 pdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450data.csv")
 indv<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_analytes.csv")
 summed<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_analytes2.csv")
+metal <- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_metals.csv")
 ```
 
 # Check data
@@ -196,32 +197,32 @@ print(correlation_result)
 ```
 
 ## Metals
-### mercury, arsenic, cadmium, copper, lead and zinc
-
+## mercury, arsenic, cadmium, copper, lead and zinc
+### Positive correlation to mercury (p-value = 0.01882)
 ```{r}
 
-# Correlation of .1505; p-value= .0092
-correlation_result <- cor.test(apdata$p450, apdata$mercury, method = "pearson")
+# Correlation of 0.2725316, p-value = 0.01882
+correlation_result <- cor.test(metal$avg_value, metal$mercury, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(apdata$p450, apdata$arsenic, method = "pearson")
+correlation_result <- cor.test(metal$avg_value, metal$arsenic, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(apdata$p450, apdata$cadmium, method = "pearson")
+correlation_result <- cor.test(metal$avg_value, metal$cadmium, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(apdata$p450, apdata$copper, method = "pearson")
+correlation_result <- cor.test(metal$avg_value, metal$copper, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(apdata$p450, apdata$lead, method = "pearson")
+correlation_result <- cor.test(metal$avg_value, metal$lead, method = "pearson")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(apdata$p450, apdata$zinc, method = "pearson")
+correlation_result <- cor.test(metal$avg_value, metal$Zinc, method = "pearson")
 print(correlation_result)
 
 ```
