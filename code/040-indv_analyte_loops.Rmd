@@ -52,7 +52,7 @@ mdata <- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgMORPH_analytes
 
 # Loop to perform Spearman correlation
 spearman_results <- list()
-for (i in 12:140) {
+for (i in 3:130) {
   correlation_result <- cor.test(pdata[[2]], pdata[[i]], method = "spearman")
   spearman_results[[colnames(pdata)[i]]] <- correlation_result
 }
@@ -70,7 +70,8 @@ spearman_results_df <- data.frame(
 
 # Displaying the results
 print(spearman_results_df)
-#write.csv(spearman_results_df, "/Users/cmantegna/Documents/WDFWmussels/output/tables/p450indvanalytesCORR.csv", row.names = FALSE)
+
+write.csv(spearman_results_df, "/Users/cmantegna/Documents/WDFWmussels/output/tables/p450indvidualCORR.csv", row.names = FALSE)
 
 ```
 
@@ -79,8 +80,8 @@ print(spearman_results_df)
 
 # Loop to perform Spearman correlation
 spearman_results <- list()
-for (i in 12:140) {
-  correlation_result <- cor.test(sdata[[7]], sdata[[i]], method = "spearman")
+for (i in 3:130) {
+  correlation_result <- cor.test(sdata[[2]], sdata[[i]], method = "spearman")
   spearman_results[[colnames(sdata)[i]]] <- correlation_result
 }
 
@@ -97,7 +98,8 @@ spearman_results_df2 <- data.frame(
 
 # Displaying the results
 print(spearman_results_df2)
-write.csv(spearman_results_df2, "/Users/cmantegna/Documents/WDFWmussels/output/tables/sodindvanalytesCORR.csv", row.names = FALSE)
+
+write.csv(spearman_results_df2, "/Users/cmantegna/Documents/WDFWmussels/output/tables/sodindividualCORR.csv", row.names = FALSE)
 
 ```
 
@@ -106,9 +108,9 @@ write.csv(spearman_results_df2, "/Users/cmantegna/Documents/WDFWmussels/output/t
 
 # Loop to perform Spearman correlation
 spearman_results <- list()
-for (i in 12:140) {
-  correlation_result <- cor.test(sdata[[7]], sdata[[i]], method = "spearman")
-  spearman_results[[colnames(sdata)[i]]] <- correlation_result
+for (i in 4:130) {
+  correlation_result <- cor.test(mdata[[2]], mdata[[i]], method = "spearman")
+  spearman_results[[colnames(mdata)[i]]] <- correlation_result
 }
 
 # Extracting p-values and correlation coefficients for Spearman correlation
@@ -116,15 +118,15 @@ spearman_pvalues <- sapply(spearman_results, function(x) x$p.value)
 spearman_correlations <- sapply(spearman_results, function(x) x$estimate)
 
 # Creating a data frame for the results
-spearman_results_df2 <- data.frame(
+spearman_results_df3 <- data.frame(
   analyte = names(spearman_pvalues),
   p.value = spearman_pvalues,
   correlation = spearman_correlations
 )
 
 # Displaying the results
-print(spearman_results_df2)
-write.csv(spearman_results_df2, "/Users/cmantegna/Documents/WDFWmussels/output/tables/sodindvanalytesCORR.csv", row.names = FALSE)
+print(spearman_results_df3)
+write.csv(spearman_results_df3, "/Users/cmantegna/Documents/WDFWmussels/output/tables/cfindividualCORR.csv", row.names = FALSE)
 
 ```
 
@@ -133,9 +135,9 @@ write.csv(spearman_results_df2, "/Users/cmantegna/Documents/WDFWmussels/output/t
 
 # Loop to perform Spearman correlation
 spearman_results <- list()
-for (i in 12:140) {
-  correlation_result <- cor.test(sdata[[7]], sdata[[i]], method = "spearman")
-  spearman_results[[colnames(sdata)[i]]] <- correlation_result
+for (i in 4:130) {
+  correlation_result <- cor.test(mdata[[3]], mdata[[i]], method = "spearman")
+  spearman_results[[colnames(mdata)[i]]] <- correlation_result
 }
 
 # Extracting p-values and correlation coefficients for Spearman correlation
@@ -143,14 +145,14 @@ spearman_pvalues <- sapply(spearman_results, function(x) x$p.value)
 spearman_correlations <- sapply(spearman_results, function(x) x$estimate)
 
 # Creating a data frame for the results
-spearman_results_df2 <- data.frame(
+spearman_results_df4 <- data.frame(
   analyte = names(spearman_pvalues),
   p.value = spearman_pvalues,
   correlation = spearman_correlations
 )
 
 # Displaying the results
-print(spearman_results_df2)
-write.csv(spearman_results_df2, "/Users/cmantegna/Documents/WDFWmussels/output/tables/sodindvanalytesCORR.csv", row.names = FALSE)
+print(spearman_results_df4)
+write.csv(spearman_results_df4, "/Users/cmantegna/Documents/WDFWmussels/output/tables/atindividualCORR.csv", row.names = FALSE)
 
 ```
