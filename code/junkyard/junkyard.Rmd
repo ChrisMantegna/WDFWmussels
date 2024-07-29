@@ -855,3 +855,18 @@ print(plot(K_result))
 
 ```
 
+# shapiro- wilkes test for normality
+```{r}
+#shapiro.test(apdata$sumPAH)
+#shapiro.test(apdata$lmwPAH)
+#shapiro.test(apdata$hmwPAH)
+#shapiro.test(apdata$PAH16)
+#shapiro.test(apdata$sumPCB)
+#shapiro.test(apdata$mercury)
+#shapiro.test(apdata$arsenic)
+#shapiro.test(apdata$cadmium)
+#shapiro.test(apdata$copper)
+#shapiro.test(apdata$lead)
+#shapiro.test(apdata$zinc)
+```
+

@@ -58,20 +58,9 @@ summed<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_analytes2
 
 ```{r}
 
-#test for normality. No data is normally distributed.
+#test for normality. Data is not normally distributed.
 
 shapiro.test(pdata$p450)
-#shapiro.test(apdata$sumPAH)
-#shapiro.test(apdata$lmwPAH)
-#shapiro.test(apdata$hmwPAH)
-#shapiro.test(apdata$PAH16)
-#shapiro.test(apdata$sumPCB)
-#shapiro.test(apdata$mercury)
-#shapiro.test(apdata$arsenic)
-#shapiro.test(apdata$cadmium)
-#shapiro.test(apdata$copper)
-#shapiro.test(apdata$lead)
-#shapiro.test(apdata$zinc)
 
 ```
 
@@ -145,7 +134,7 @@ write.csv(mc_group8, "/Users/cmantegna/Documents/WDFWmussels/output/tables/Signi
 
 # Correlation
 ## sumPAH, lmwPAH, hmwPAH and PAH16
-
+### No correlations are significant
 ```{r}
 
 # no correlation
@@ -167,7 +156,7 @@ print(correlation_result)
 ```
 
 ## sum42PAH and sumPCB
-
+### No correlations are significant
 ```{r}
 
 #no correlation
@@ -181,7 +170,7 @@ print(correlation_result)
 ```
 
 ## other summed analytes
-
+### No correlations are significant
 ```{r}
 
 # no correlation
