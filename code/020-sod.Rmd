@@ -61,7 +61,7 @@ data$sod[data$sod <= 0] <- 0.0025
 sdata$avg_value[sdata$avg_value <= 0] <- 0.0025
 indv$avg_value[indv$avg_value <= 0] <- 0.0025
 summed$avg_value[summed$avg_value <= 0] <- 0.0025
-metal$avg_value[metal$avg_value <= 0] <- 0.0025
+#metal$avg_value[metal$avg_value <= 0] <- 0.0025
 
 ```
 # Check data
