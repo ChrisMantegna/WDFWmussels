@@ -86,10 +86,9 @@ Reporting Areas Are:\
 
 #test for significant differences - cf
 
-# Change to character for the kw test AFTER keeping as numeric for the correlation tests - if necessary
-#apdata$PAHgroup <- as.character(apdata$PAHgroup)
-#apdata$PAHgroup2 <- as.character(apdata$PAHgroup2)
 #apdata$PAHgroup3 <- as.character(apdata$PAHgroup3)
+#apdata$PAHgroup4 <- as.character(apdata$PAHgroup4)
+
 
 kruskal.test(cf ~ site_name, data = data)
 kruskal.test(cf ~ reporting_area, data = data)
@@ -101,15 +100,16 @@ kruskal.test(cf ~ PAHgroup4, data = data)
 ## cf- PAH groups 5-8 - Kruskal-Wallis (non-parametric data)
 ```{r}
 
-kruskal.test(cf ~ PAHgroup5, data = data)
+#apdata$PAHgroup6 <- as.character(apdata$PAHgroup6)
+#apdata$PAHgroup8 <- as.character(apdata$PAHgroup8)
+
 kruskal.test(cf ~ PAHgroup6, data = data)
-kruskal.test(cf ~ PAHgroup7, data = data)
 kruskal.test(cf ~ PAHgroup8, data = data)
 
 ```
 
 ##cf- Kruskal-Wallac Multiple Comparisons (post hoc)
-### no significant differences across site, reporting area or PAHgroup 8
+### no significant differences across site, reporting area 
 
 ```{r}
 library(pgirmess)
@@ -122,11 +122,10 @@ data$reporting_area <- as.character(data$reporting_area)
 
 mc_site<- as.data.frame(kruskalmc(cf ~ site_name, data = data, method = "bonferroni"))
 mc_reporting<- as.data.frame(kruskalmc(cf ~ reporting_area, data = data, method = "bonferroni")) 
-mc_group8<- as.data.frame(kruskalmc(cf ~ PAHgroup8, data = data, method = "bonferroni"))
 
 head(mc_site)
 head(mc_reporting)
-head(mc_group8)
+
 
 ```
 
@@ -137,7 +136,6 @@ head(mc_group8)
 data$reporting_area <- as.character(data$reporting_area)
 data$PAHgroup3 <- as.character(data$PAHgroup3)
 data$PAHgroup4 <- as.character(data$PAHgroup4)
-data$PAHgroup5 <- as.character(data$PAHgroup5)
 
 
 anova_site <- aov(at ~ site_name, data = data)
@@ -152,25 +150,16 @@ summary(anova_group3)
 anova_group4 <- aov(at ~ PAHgroup4, data = data)
 summary(anova_group4)
 
-anova_group5 <- aov(at ~ PAHgroup5, data = data)
-summary(anova_group5)
-
-
-
 ```
 
 ## PAH group 6-8
 ```{r}
 
 data$PAHgroup6 <- as.character(data$PAHgroup6)
-data$PAHgroup7 <- as.character(data$PAHgroup7)
 data$PAHgroup8 <- as.character(data$PAHgroup8)
 
 anova_group6 <- aov(at ~ PAHgroup6, data = data)
 summary(anova_group6)
-
-anova_group7 <- aov(at ~ PAHgroup7, data = data)
-summary(anova_group7)
 
 anova_group8 <- aov(at ~ PAHgroup8, data = data)
 summary(anova_group8)
@@ -178,55 +167,41 @@ summary(anova_group8)
 
 
 ## at- TukeyHSD (post hoc)
+### Site: significant differences between 112 pairwise comparisons.
+### Reporting Areas: significant differences between 7 pairwise comparisons.
+### PAH Group 4: significant differences between 2 pairwise comparisons.
+### PAH Group 6: significant differences between 4 pairwise comparisons.
+### PAH Group 8: significant differences between 3 pairwise comparisons.
 ```{r}
 
 library(broom)
 library(readr)
 
-data$reporting_area <- as.character(data$reporting_area)
-data$PAHgroup4 <- as.character(data$PAHgroup4)
-data$PAHgroup5 <- as.character(data$PAHgroup5)
-data$PAHgroup6 <- as.character(data$PAHgroup6)
-data$PAHgroup7 <- as.character(data$PAHgroup7)
-data$PAHgroup8 <- as.character(data$PAHgroup8)
-
-#significant differences between 112 pairwise comparisons. Table written to GH repo.
+#site
 tukey_site<- TukeyHSD(anova_site)
 ttable_site<- tidy(tukey_site)
 sigttable_site <- ttable_site %>% filter(adj.p.value < 0.05)
 write.csv(sigttable_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessSite.csv", row.names = FALSE)
 
-# significant  differences between reporting area comparisons: 11-10, 12-11, 6-11, 7-11, 8.1-11, 13-12, 6-13. Table written to GH repo.
+#reporting area 
 tukey_ra<- TukeyHSD(anova_ra)
 ttable_ra<- tidy(tukey_ra)
 sigttable_ra <- ttable_ra %>% filter(adj.p.value < 0.05)
 write.csv(sigttable_ra, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessRA.csv", row.names = FALSE)
 
-# significant  differences between Low(1) and Mid(2) as well as Low(1) and Very High(4). Table written to GH repo.
+#PAH Group 4
 tukey_group4<- TukeyHSD(anova_group4)
 ttable_group4<- tidy(tukey_group4)
 sigttable_group4 <- ttable_group4 %>% filter(adj.p.value < 0.05)
 write.csv(sigttable_group4, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessGROUP4.csv", row.names = FALSE)
 
-# significant  differences between Extremely Low(0) and Low(1) as well as Extremely Low(O) and Very High(4). Table written to GH repo.
-tukey_group5<- TukeyHSD(anova_group5)
-ttable_group5<- tidy(tukey_group5)
-sigttable_group5 <- ttable_group5 %>% filter(adj.p.value < 0.05)
-write.csv(sigttable_group5, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessGROUP5.csv", row.names = FALSE)
-
-# significant  differences between 15 pairwise comparisons. Table written to GH repo.
+#PAH Group 6
 tukey_group6<- TukeyHSD(anova_group6)
 ttable_group6<- tidy(tukey_group6)
 sigttable_group6 <- ttable_group6 %>% filter(adj.p.value < 0.05)
 write.csv(sigttable_group6, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessGROUP6.csv", row.names = FALSE)
 
-# significant  differences between 15 pairwise comparisons. Table written to GH repo.
-tukey_group7<- TukeyHSD(anova_group7)
-ttable_group7<- tidy(tukey_group7)
-sigttable_group7 <- ttable_group7 %>% filter(adj.p.value < 0.05)
-write.csv(sigttable_group7, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessGROUP7.csv", row.names = FALSE)
-
-# significant  differences between 15 pairwise comparisons. Table written to GH repo.
+#PAH Group 8
 tukey_group8<- TukeyHSD(anova_group8)
 ttable_group8<- tidy(tukey_group8)
 sigttable_group8 <- ttable_group8 %>% filter(adj.p.value < 0.05)

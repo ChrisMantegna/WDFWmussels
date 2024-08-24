@@ -56,10 +56,10 @@ metal <- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_metals.cs
 ```
 
 # Shapiro-Wilkes
-
+## test for normality. Data is not normally distributed.
 ```{r}
 
-#test for normality. Data is not normally distributed.
+
 
 shapiro.test(pdata$p450)
 
@@ -96,14 +96,10 @@ kruskal.test(p450 ~ PAHgroup4, data = pdata)
 ## PAH groups
 ```{r}
 
-pdata$PAHgroup3 <- as.character(pdata$PAHgroup5)
 pdata$PAHgroup3 <- as.character(pdata$PAHgroup6)
-pdata$PAHgroup3 <- as.character(pdata$PAHgroup7)
 pdata$PAHgroup3 <- as.character(pdata$PAHgroup8)
 
-kruskal.test(p450 ~ PAHgroup5, data = pdata)
 kruskal.test(p450 ~ PAHgroup6, data = pdata)
-kruskal.test(p450 ~ PAHgroup7, data = pdata)
 kruskal.test(p450 ~ PAHgroup8, data = pdata)
 ```
 
@@ -111,26 +107,17 @@ kruskal.test(p450 ~ PAHgroup8, data = pdata)
 
 ### no significance confirmed between sites
 ### significant differences across reporting area pairwise matches: 8.2-12, 10-13, 11-12, and 12-13
-### significant differences across PAHgroup7 pairwise comparisons
 ### significant differences across PAHgroup8 pairwise comparisons
 ```{r}
 library(pgirmess)
 
-# no significance confirmed between sites
-# significant differences across reporting area pairwise matches: 8.2-12, 10-13, 11-12, and 12-13
-# significant differences across PAHgroup7 pairwise comparisons
-# significant differences across PAHgroup8 pairwise comparisons
-
 mc_site<- as.data.frame(kruskalmc(p450 ~ site_name, data = pdata, method = "bonferroni"))
 
 mc_reporting<- as.data.frame(kruskalmc(p450 ~ reporting_area, data = pdata, method = "bonferroni"))
-write.csv(mc_reporting, "/Users/cmantegna/Documents/WDFWmussels/output/tables/Significantp450RA.csv", row.names = FALSE)
-
-mc_group7<- as.data.frame(kruskalmc(p450 ~ PAHgroup7, data = pdata, method = "bonferroni"))
-write.csv(mc_group7, "/Users/cmantegna/Documents/WDFWmussels/output/tables/Significantp450group7.csv", row.names = FALSE)
+#write.csv(mc_reporting, "/Users/cmantegna/Documents/WDFWmussels/output/tables/Significantp450RA.csv", row.names = FALSE)
 
 mc_group8<- as.data.frame(kruskalmc(p450 ~ PAHgroup8, data = pdata, method = "bonferroni"))
-write.csv(mc_group8, "/Users/cmantegna/Documents/WDFWmussels/output/tables/Significantp450group8.csv", row.names = FALSE)
+#write.csv(mc_group8, "/Users/cmantegna/Documents/WDFWmussels/output/tables/Significantp450group8.csv", row.names = FALSE)
 
 #head(mc_site)
 #head(mc_reporting)
