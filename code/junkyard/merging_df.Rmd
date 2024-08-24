@@ -79,7 +79,6 @@ write.csv(df_wide2, "/Users/cmantegna/Documents/WDFWmussels/data/othersummed_wid
 ```
 
 # Merge 
-## All of the data frames are merged but only the p450_analytes2 has been adjusted for analysis. all others need to be adjusted before completing the next merge step.
 ```{r}
 #p450
 merged_df <- merge(pdata, df_wide, by = "site_name", all = TRUE)
