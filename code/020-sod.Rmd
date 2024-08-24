@@ -67,7 +67,7 @@ summed$avg_value[summed$avg_value <= 0] <- 0.0025
 # Check data
 
 ```{r}
-summary(sdata)
+summary(data)
 ```
 
 # Shapiro-Wilkes 

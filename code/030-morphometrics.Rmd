@@ -109,7 +109,7 @@ kruskal.test(cf ~ PAHgroup8, data = data)
 ```
 
 ##cf- Kruskal-Wallac Multiple Comparisons (post hoc)
-### no significant differences across site, reporting area 
+### no significant differences across site oe reporting area
 
 ```{r}
 library(pgirmess)
