@@ -99,7 +99,7 @@ spearman_results_df2 <- data.frame(
 # Displaying the results
 print(spearman_results_df2)
 
-write.csv(spearman_results_df2, "/Users/cmantegna/Documents/WDFWmussels/output/tables/sodindividualCORR.csv", row.names = FALSE)
+write.csv(spearman_results_df2, "/Users/cmantegna/Documents/WDFWmussels/output/tables/CORRECTEDsodindividualCORR.csv", row.names = FALSE)
 
 ```
 
