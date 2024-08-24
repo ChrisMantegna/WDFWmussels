@@ -103,25 +103,55 @@ kruskal.test(p450 ~ PAHgroup6, data = pdata)
 kruskal.test(p450 ~ PAHgroup8, data = pdata)
 ```
 
-# Kruskal-Wallac Multiple Comparisons (post hoc)
+# Dunn Test (post hoc)
 
 ### no significance confirmed between sites
 ### significant differences across reporting area pairwise matches: 8.2-12, 10-13, 11-12, and 12-13
-### significant differences across PAHgroup8 pairwise comparisons
+### significant differences across PAHgroup8 pairwise comparison: 2-1
 ```{r}
-library(pgirmess)
 
-mc_site<- as.data.frame(kruskalmc(p450 ~ site_name, data = pdata, method = "bonferroni"))
+library(dunn.test)
 
-mc_reporting<- as.data.frame(kruskalmc(p450 ~ reporting_area, data = pdata, method = "bonferroni"))
+# Site
+dunn_site <- dunn.test(pdata$p450, pdata$site_name, method = "bonferroni", list = TRUE)
+mc_site <- data.frame(
+    Comparison = dunn_site$comparisons,
+    Z = dunn_site$Z,
+    P.adjusted = dunn_site$P.adjusted
+)
+# Write results to a table
+#write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/Significantp450RA.csv", row.names = FALSE)
+```
+
+```{r}
+
+library(dunn.test)
+
+# Reporting Area
+dunn_result <- dunn.test(pdata$p450, pdata$reporting_area, method = "bonferroni", list = TRUE)
+mc_reporting <- data.frame(
+    Comparison = dunn_result$comparisons,
+    Z = dunn_result$Z,
+    P.adjusted = dunn_result$P.adjusted
+)
+# Write results to a table
 #write.csv(mc_reporting, "/Users/cmantegna/Documents/WDFWmussels/output/tables/Significantp450RA.csv", row.names = FALSE)
+```
 
-mc_group8<- as.data.frame(kruskalmc(p450 ~ PAHgroup8, data = pdata, method = "bonferroni"))
+```{r}
+
+library(dunn.test)
+
+# PAH Group 8
+dunn_group8 <- dunn.test(pdata$p450, pdata$PAHgroup8, method = "bonferroni", list = TRUE)
+mc_group8 <- data.frame(
+    Comparison = dunn_group8$comparisons,
+    Z = dunn_group8$Z,
+    P.adjusted = dunn_group8$P.adjusted
+)
+
+# Write results to a table
 #write.csv(mc_group8, "/Users/cmantegna/Documents/WDFWmussels/output/tables/Significantp450group8.csv", row.names = FALSE)
-
-#head(mc_site)
-#head(mc_reporting)
-
 ```
 
 # Correlation

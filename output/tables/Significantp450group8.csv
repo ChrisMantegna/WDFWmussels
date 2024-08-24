@@ -1,29 +1,29 @@
-"statistic","alpha","dif.com.obs.dif","dif.com.critical.dif","dif.com.stat.signif"
-"Multiple comparison test after Kruskal-Wallis",0.05,88.9092273068267,63.6327241405618,TRUE
-"Multiple comparison test after Kruskal-Wallis",0.05,97.5913978494624,66.17364158225,TRUE
-"Multiple comparison test after Kruskal-Wallis",0.05,24.458064516129,66.6096005823746,FALSE
-"Multiple comparison test after Kruskal-Wallis",0.05,15.4692082111437,63.3290797621292,FALSE
-"Multiple comparison test after Kruskal-Wallis",0.05,5.70250896057348,66.17364158225,FALSE
-"Multiple comparison test after Kruskal-Wallis",0.05,24.1747311827957,73.4301825292943,FALSE
-"Multiple comparison test after Kruskal-Wallis",0.05,26.958064516129,61.738545134135,FALSE
-"Multiple comparison test after Kruskal-Wallis",0.05,8.68217054263566,61.010951520283,FALSE
-"Multiple comparison test after Kruskal-Wallis",0.05,64.4511627906977,61.4835283218011,TRUE
-"Multiple comparison test after Kruskal-Wallis",0.05,104.37843551797,57.913363817623,TRUE
-"Multiple comparison test after Kruskal-Wallis",0.05,83.2067183462532,61.010951520283,TRUE
-"Multiple comparison test after Kruskal-Wallis",0.05,64.734496124031,68.8140761141186,FALSE
-"Multiple comparison test after Kruskal-Wallis",0.05,61.9511627906977,56.1696832858604,TRUE
-"Multiple comparison test after Kruskal-Wallis",0.05,73.1333333333334,64.1096834620556,TRUE
-"Multiple comparison test after Kruskal-Wallis",0.05,113.060606060606,60.694192204688,TRUE
-"Multiple comparison test after Kruskal-Wallis",0.05,91.8888888888889,63.6566058168166,TRUE
-"Multiple comparison test after Kruskal-Wallis",0.05,73.4166666666667,71.1702489116552,TRUE
-"Multiple comparison test after Kruskal-Wallis",0.05,70.6333333333334,59.032707706331,TRUE
-"Multiple comparison test after Kruskal-Wallis",0.05,39.9272727272727,61.1692162518615,FALSE
-"Multiple comparison test after Kruskal-Wallis",0.05,18.7555555555555,64.1096834620556,FALSE
-"Multiple comparison test after Kruskal-Wallis",0.05,0.283333333333331,71.5757806777848,FALSE
-"Multiple comparison test after Kruskal-Wallis",0.05,2.5,59.5209931757569,FALSE
-"Multiple comparison test after Kruskal-Wallis",0.05,21.1717171717172,60.694192204688,FALSE
-"Multiple comparison test after Kruskal-Wallis",0.05,39.6439393939394,68.5333921049367,FALSE
-"Multiple comparison test after Kruskal-Wallis",0.05,42.4272727272727,55.8254608794513,FALSE
-"Multiple comparison test after Kruskal-Wallis",0.05,18.4722222222222,71.1702489116552,FALSE
-"Multiple comparison test after Kruskal-Wallis",0.05,21.2555555555555,59.032707706331,FALSE
-"Multiple comparison test after Kruskal-Wallis",0.05,2.78333333333333,67.0663957967811,FALSE
+"Comparison","Z","P.adjusted"
+"1 - 2",-2.95843360842914,0.0432889576714151
+"1 - 3",-2.31811958074599,0.2861995223194
+"2 - 3",0.782845115655557,1
+"1 - 4",-2.55886107203474,0.147021980188647
+"2 - 4",0.242228719566483,1
+"3 - 4",-0.478898401611682,1
+"1 - 5",-1.04058887563322,1
+"2 - 5",2.13996789919149,0.45300305489239
+"3 - 5",1.41071620208975,1
+"4 - 5",1.74400052700514,1
+"1 - 6",-2.04147077275627,0.576856785428251
+"2 - 6",0.815641405894792,1
+"3 - 6",0.105134175136178,1
+"4 - 6",0.537618764831561,1
+"5 - 6",-1.1744611441785,1
+"1 - 7",-0.524854665580113,1
+"2 - 7",2.58457631580897,0.136498214683468
+"3 - 7",1.89450499360922,0.814212170471966
+"4 - 7",2.1762722392136,0.413488740782796
+"5 - 7",0.532928051446908,1
+"6 - 7",1.6274441194318,1
+"1 - 8",-1.93536355118738,0.741239782857664
+"2 - 8",0.996229937429412,1
+"3 - 8",0.273460815449143,1
+"4 - 8",0.6998982063197,1
+"5 - 8",-1.04025553406522,1
+"6 - 8",0.151833523971173,1
+"7 - 8",-1.50766961919367,1
