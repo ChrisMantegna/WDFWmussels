@@ -51,6 +51,7 @@ smetal<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_metals.csv
 
 ```
 
+# Adjust SOD individual values to reflect LOQ limitations
 ```{r}
 
 # Data contains numbers below 0 that must be adjusted.These numbers represent samples whose values were below the limit of quantification using the SOD kit. There was some activity in the raw sample, but it is too far below the limit of the standard curve to be accurately quantified.
@@ -58,24 +59,20 @@ smetal<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_metals.csv
 
 #replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
 data$sod[data$sod <= 0] <- 0.0025
-sdata$avg_value[sdata$avg_value <= 0] <- 0.0025
-indv$avg_value[indv$avg_value <= 0] <- 0.0025
-summed$avg_value[summed$avg_value <= 0] <- 0.0025
-#metal$avg_value[metal$avg_value <= 0] <- 0.0025
+
 
 ```
 # Check data
 
 ```{r}
-summary(data)
+summary(sdata)
 ```
 
 # Shapiro-Wilkes 
+## Data is not normally distributed
 ```{r}
 
-#test for normality. Data is not normally distributed.
-# *All analytes were determined not normally distributed in 010-p450.Rmd* 
-
+#test for normality 
 shapiro.test(data$sod)
 
 ```
@@ -97,9 +94,8 @@ Reporting Areas Are:\
 
 #test for significant interaction
 
-#spdata$PAHgroup <- as.character(spdata$PAHgroup)
-#sapdata$PAHgroup2 <- as.character(spdata$PAHgroup2)
-#spdata$PAHgroup3 <- as.character(spdata$PAHgroup3)
+data$PAHgroup3 <- as.character(data$PAHgroup3)
+data$PAHgroup4 <- as.character(data$PAHgroup4)
 
 kruskal.test(sod ~ site_name, data = data)
 kruskal.test(sod ~ reporting_area, data = data)
@@ -111,16 +107,21 @@ kruskal.test(sod ~ PAHgroup4, data = data)
 ## PAH groups
 ```{r}
 
+#test for significant interaction
+
+data$PAHgroup6 <- as.character(data$PAHgroup6)
+data$PAHgroup8 <- as.character(data$PAHgroup8)
+
 kruskal.test(sod ~ PAHgroup6, data = data)
 kruskal.test(sod ~ PAHgroup8, data = data)
 
 ```
 
-# Kruskal-Wallac Multiple Comparisons (post hoc)
+# Dunn Test (post hoc)
 
 ### no significance confirmed between sites
-### Group 4 - significance confirmed between low(1) and very high(4)
-### Group 8 - significance confirmed between 1-2, 1-4, 1-5, 1-6, 1-7
+### Group 4 - significance confirmed between 
+### Group 8 - significance confirmed between 
 
 ```{r}
 library(dunn.test)
@@ -132,6 +133,9 @@ mc_site <- data.frame(
     Z = dunn_site$Z,
     P.adjusted = dunn_site$P.adjusted
 )
+
+# Write results to a table
+write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODsite.csv", row.names = FALSE)
 
 ```
 
