@@ -97,7 +97,6 @@ Reporting Areas Are:\
 
 #test for significant interaction
 
-# Change to character for the kw test AFTER keeping as numeric for the correlation tests - if necessary
 #spdata$PAHgroup <- as.character(spdata$PAHgroup)
 #sapdata$PAHgroup2 <- as.character(spdata$PAHgroup2)
 #spdata$PAHgroup3 <- as.character(spdata$PAHgroup3)
@@ -124,23 +123,55 @@ kruskal.test(sod ~ PAHgroup8, data = data)
 ### Group 8 - significance confirmed between 1-2, 1-4, 1-5, 1-6, 1-7
 
 ```{r}
-library(pgirmess)
+library(dunn.test)
 
-
-mc_site<- as.data.frame(kruskalmc(sod ~ site_name, data = data, method = "bonferroni"))
-mc_group4<- as.data.frame(kruskalmc(sod ~ PAHgroup4, data = data, method = "bonferroni")) 
-mc_group8<- as.data.frame(kruskalmc(sod ~ PAHgroup8, data = data, method = "bonferroni")) 
-
-head(mc_site)
-head(mc_group4)
-head(mc_group8)
+# Site
+dunn_site <- dunn.test(data$sod, data$site_name, method = "bonferroni", list = TRUE)
+mc_site <- data.frame(
+    Comparison = dunn_site$comparisons,
+    Z = dunn_site$Z,
+    P.adjusted = dunn_site$P.adjusted
+)
 
 ```
 
+```{r}
+
+library(dunn.test)
+
+# PAH Group 4
+dunn_group4 <- dunn.test(data$sod, data$PAHgroup4, method = "bonferroni", list = TRUE)
+mc_group4 <- data.frame(
+    Comparison = dunn_group4$comparisons,
+    Z = dunn_group4$Z,
+    P.adjusted = dunn_group4$P.adjusted
+)
+
+# Write results to a table
+write.csv(mc_group4, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODgroup4.csv", row.names = FALSE)
+
+```
+
+```{r}
+
+library(dunn.test)
+
+# PAH Group 8
+dunn_group8 <- dunn.test(data$sod, data$PAHgroup8, method = "bonferroni", list = TRUE)
+mc_group8 <- data.frame(
+    Comparison = dunn_group8$comparisons,
+    Z = dunn_group8$Z,
+    P.adjusted = dunn_group8$P.adjusted
+)
+
+# Write results to a table
+write.csv(mc_group8, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODgroup8.csv", row.names = FALSE)
+```
+
 # Correlation
+
 ## sumPAH, lmwPAH, hmwPAH and PAH16
 ### No correlations
-
 ```{r}
 
 # no correlation

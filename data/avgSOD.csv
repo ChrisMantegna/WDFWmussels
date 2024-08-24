@@ -1,75 +1,75 @@
-"site_name","avg_value"
-"Aiston Preserve",3.381684647
-"Arroyo Beach",8.197321878
-"Blair Waterway",6.51756230875
-"Blair Waterway #2",10.79622214575
-"Brackenwood Ln",7.19403885275
-"Broad Spit (Fisherman's Point)",7.1160034875
-"Browns Point Lighthouse",2.31176725375
-"Cap Sante",18.50459183525
-"Chambers Bay Park",11.61690436775
-"Cherry Point Aquatic Reserve, Conoco Phillips",3.8639082875
-"Chimacum Creek delta",1.80051685
-"Chuckanut, Clark's Point",11.21104190475
-"Comm Bay Skookum",9.0743053095
-"Comm Bay, Dick Gilmur Launch",14.00873682775
-"Comm Bay, Milwaukee Waterway",8.040569912
-"Des Moines Marina",8.79265639525
-"Discovery Bay",9.3325387035
-"Donkey Creek Delta",2.40783727875
-"Eagle Harbor Dr",12.609851604
-"Eastsound, Fishing Bay",7.53495220725
-"Edmonds Ferry",-2.54812648525
-"Edmonds Marina",13.85400356075
-"Eld Inlet",9.8612630465
-"Elliot Bay Myrtle Edwards",11.7258041818
-"Elliott Bay, Harbor Island, Pier 17",5.5002540075
-"Everett Harbor",1.2899974195
-"Fidalgo Bay Aq Reserve, Weaverling Spit",11.8774922145
-"Filucy Bay",5.0091274165
-"Friday Harbor",5.1473883704
-"Gig Harbor Boat Launch",14.97195681275
-"Hood Canal Holly",-0.2760236205
-"Jamestown",7.75278230933333
-"Kingston Marina",4.3708956085
-"Kitsap St Boat Launch",10.7481243995
-"Kopachuck State Park",4.7258882485
-"Lions Park",10.424139559
-"Locust Beach",6.15027648075
-"Madrona Pont",4.52004366675
-"Manchester, Stormwater Outfall",2.79278370125
-"Maple Hollow Park",2.57694200825
-"Maristone Island",5.72206526166667
-"Meyer's Point - Henderson Inlet",15.21190078125
-"Miller Creek",3.63134358075
-"Minter Bay",5.0097462725
-"Mukilteo",7.60643570175
-"N Avenue Park",0.69214912725
-"North Camano",-0.76100335975
-"Oak Bay County Park",11.83915658125
-"Penn Cove Reference",12.59276788625
-"Pennrose Point State Park",4.42306058475
-"Point Defiance Ferry",6.45402892925
-"Port Angeles Yacht Club",7.98782169983333
-"Purdy - Dexters",0.734050309
-"Purdy, Burley Lagoon",10.05044240675
-"Raft Island Park",3.042678154
-"Reach Island",4.58367037975
-"Rich Passage",2.31974302375
-"Rocky Point",9.89547475325
-"S of Skunk Island",10.11133775025
-"Salmon Bay, Commodore Park",3.79429985875
-"Salmon Beach",7.2990856175
-"Seattle Aquarium, Pier 59",15.61763610075
-"Shilshole Bay",9.90652833225
-"Silverdale, Dyes Inlet",28.2537912375
-"Skiff Point",4.778817931
+site_name,avg_value
+Edmonds Ferry,0.206329647
+North Camano,0.552249419
+Hood Canal Holly,1.640458193
+N Avenue Park,0.692149127
+Purdy - Dexters,0.734050309
+Everett Harbor,1.28999742
+Chimacum Creek delta,1.80051685
+Browns Point Lighthouse,2.311767254
+Rich Passage,2.319743024
+Donkey Creek Delta,2.407837279
+Maple Hollow Park,2.576942008
+"Manchester, Stormwater Outfall",2.792783701
+Raft Island Park,3.042678154
+Aiston Preserve,3.381684647
+Miller Creek,3.631343581
+Tulalip Reservation,3.733327306
+"Salmon Bay, Commodore Park",3.794299859
+"Cherry Point Aquatic Reserve, Conoco Phillips",3.863908288
+Kingston Marina,4.370895609
+Pennrose Point State Park,4.423060585
+Madrona Pont,4.520043667
+Reach Island,4.58367038
+West Bay Park,4.627812352
+Kopachuck State Park,4.725888249
+Skiff Point,4.778817931
+Filucy Bay,5.009127417
+Minter Bay,5.009746273
+Friday Harbor,5.14738837
+"Elliott Bay, Harbor Island, Pier 17",5.500254008
+Maristone Island,5.722065262
+Suquamish Stormwater Outfall,5.819212897
+Squaxin Island,5.883833595
+Locust Beach,6.150276481
+Tulalip Bay,6.253865979
+Williams Olson Park,6.391730801
+Point Defiance Ferry,6.454028929
+Blair Waterway,6.517562309
+Broad Spit (Fisherman's Point),7.116003488
+Brackenwood Ln,7.194038853
+Salmon Beach,7.299085618
+"Eastsound, Fishing Bay",7.534952207
 "Smith Cove, Terminal 91",7.5954936
-"Squaxin Island",5.8838335945
-"Suquamish Stormwater Outfall",5.81921289675
-"Thea Foss Waterway",11.787276174
-"Three Tree Point",7.915689936
-"Tulalip Bay",6.25386597883333
-"Tulalip Reservation",3.7333273055
-"West Bay Park",4.62781235225
-"Williams Olson Park",6.391730801
+Mukilteo,7.606435702
+Jamestown,7.752782309
+Three Tree Point,7.915689936
+Port Angeles Yacht Club,7.9878217
+"Comm Bay, Milwaukee Waterway",8.040569912
+Arroyo Beach,8.197321878
+Des Moines Marina,8.792656395
+Comm Bay Skookum,9.07430531
+Discovery Bay,9.332538704
+Eld Inlet,9.861263047
+Rocky Point,9.895474753
+Shilshole Bay,9.906528332
+"Purdy, Burley Lagoon",10.05044241
+S of Skunk Island,10.11133775
+Lions Park,10.42413956
+Kitsap St Boat Launch,10.7481244
+Blair Waterway #2,10.79622215
+"Chuckanut, Clark's Point",11.2110419
+Chambers Bay Park,11.61690437
+Elliot Bay Myrtle Edwards,11.72580418
+Thea Foss Waterway,11.78727617
+Oak Bay County Park,11.83915658
+"Fidalgo Bay Aq Reserve, Weaverling Spit",11.87749221
+Penn Cove Reference,12.59276789
+Eagle Harbor Dr,12.6098516
+Edmonds Marina,13.85400356
+"Comm Bay, Dick Gilmur Launch",14.00873683
+Gig Harbor Boat Launch,14.97195681
+Meyer's Point - Henderson Inlet,15.21190078
+"Seattle Aquarium, Pier 59",15.6176361
+Cap Sante,18.50459184
+"Silverdale, Dyes Inlet",28.25379124
