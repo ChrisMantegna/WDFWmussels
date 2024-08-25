@@ -54,7 +54,7 @@ metal<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgMORPH_metals.cs
 # Check data
 
 ```{r}
-summary(mdata)
+summary(data)
 ```
 
 # Shapiro-Wilkes 
@@ -86,9 +86,8 @@ Reporting Areas Are:\
 
 #test for significant differences - cf
 
-#apdata$PAHgroup3 <- as.character(apdata$PAHgroup3)
-#apdata$PAHgroup4 <- as.character(apdata$PAHgroup4)
-
+data$PAHgroup3 <- as.character(data$PAHgroup3)
+data$PAHgroup4 <- as.character(data$PAHgroup4)
 
 kruskal.test(cf ~ site_name, data = data)
 kruskal.test(cf ~ reporting_area, data = data)
@@ -97,36 +96,50 @@ kruskal.test(cf ~ PAHgroup4, data = data)
 
 ```
 
-## cf- PAH groups 5-8 - Kruskal-Wallis (non-parametric data)
+## cf- PAH groups 6 & 8 - Kruskal-Wallis (non-parametric data)
 ```{r}
 
-#apdata$PAHgroup6 <- as.character(apdata$PAHgroup6)
-#apdata$PAHgroup8 <- as.character(apdata$PAHgroup8)
+data$PAHgroup6 <- as.character(data$PAHgroup6)
+data$PAHgroup8 <- as.character(data$PAHgroup8)
 
 kruskal.test(cf ~ PAHgroup6, data = data)
 kruskal.test(cf ~ PAHgroup8, data = data)
 
 ```
 
-##cf- Kruskal-Wallac Multiple Comparisons (post hoc)
-### no significant differences across site oe reporting area
+##cf- Dunn Test (post hoc)
+### no significant differences across site or reporting area
 
 ```{r}
-library(pgirmess)
+library(dunn.test)
 
-data$reporting_area <- as.character(data$reporting_area)
+# Site
+dunn_site <- dunn.test(data$cf, data$site_name, method = "bonferroni", list = TRUE)
+mc_site <- data.frame(
+    Comparison = dunn_site$comparisons,
+    Z = dunn_site$Z,
+    P.adjusted = dunn_site$P.adjusted
+)
 
-# no significant differences across site.
-# no significant differences across reporting area
-# no signifciant differences across PAHgroup8
-
-mc_site<- as.data.frame(kruskalmc(cf ~ site_name, data = data, method = "bonferroni"))
-mc_reporting<- as.data.frame(kruskalmc(cf ~ reporting_area, data = data, method = "bonferroni")) 
-
-head(mc_site)
-head(mc_reporting)
+# Write results to a table
+write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantCFsite.csv", row.names = FALSE)
 
 
+```
+
+```{r}
+
+library(dunn.test)
+
+# Reporting Area
+dunn_result <- dunn.test(data$cf, data$reporting_area, method = "bonferroni", list = TRUE)
+mc_reporting <- data.frame(
+    Comparison = dunn_result$comparisons,
+    Z = dunn_result$Z,
+    P.adjusted = dunn_result$P.adjusted
+)
+# Write results to a table
+write.csv(mc_reporting, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantCFra.csv", row.names = FALSE)
 ```
 
 ## at- ANOVA (parametric data)

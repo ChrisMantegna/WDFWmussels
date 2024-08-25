@@ -109,7 +109,7 @@ write.csv(spearman_results_df2, "/Users/cmantegna/Documents/WDFWmussels/output/t
 # Loop to perform Spearman correlation
 spearman_results <- list()
 for (i in 4:130) {
-  correlation_result <- cor.test(mdata[[2]], mdata[[i]], method = "spearman")
+  correlation_result <- cor.test(mdata[[3]], mdata[[i]], method = "spearman")
   spearman_results[[colnames(mdata)[i]]] <- correlation_result
 }
 
@@ -126,7 +126,7 @@ spearman_results_df3 <- data.frame(
 
 # Displaying the results
 print(spearman_results_df3)
-write.csv(spearman_results_df3, "/Users/cmantegna/Documents/WDFWmussels/output/tables/cfindividualCORR.csv", row.names = FALSE)
+write.csv(spearman_results_df3, "/Users/cmantegna/Documents/WDFWmussels/output/tables/CORRECTEDindividualCORRcf.csv", row.names = FALSE)
 
 ```
 
@@ -136,7 +136,7 @@ write.csv(spearman_results_df3, "/Users/cmantegna/Documents/WDFWmussels/output/t
 # Loop to perform Spearman correlation
 spearman_results <- list()
 for (i in 4:130) {
-  correlation_result <- cor.test(mdata[[3]], mdata[[i]], method = "spearman")
+  correlation_result <- cor.test(mdata[[2]], mdata[[i]], method = "spearman")
   spearman_results[[colnames(mdata)[i]]] <- correlation_result
 }
 
@@ -153,6 +153,6 @@ spearman_results_df4 <- data.frame(
 
 # Displaying the results
 print(spearman_results_df4)
-write.csv(spearman_results_df4, "/Users/cmantegna/Documents/WDFWmussels/output/tables/atindividualCORR.csv", row.names = FALSE)
+write.csv(spearman_results_df4, "/Users/cmantegna/Documents/WDFWmussels/output/tables/CORRECTEDindividualCORRat.csv", row.names = FALSE)
 
 ```
