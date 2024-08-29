@@ -1,0 +1,67 @@
+---
+title: "099-Manuscript Visualization Options"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  #fig.width = 20,       # Set plot width in inches
+  #fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+```{r}
+
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+
+# Sample data - replace this with your actual data
+data <- data.frame(
+  reporting_area = c(11, 11, 11, 11, 10),
+  site_name = c("Des Moines Marina", "Des Moines Marina", "Des Moines Marina", "Des Moines Marina", "Suquamish Stormwater Outfall"),
+  p450 = c(5.083144e+06, 1.048650e+07, 3.510592e+06, 1.666199e+07, 5.049235e+06)
+)
+
+# Calculate min and max P450 values per site
+site_p450_range <- data %>%
+  group_by(site_name, reporting_area) %>%
+  summarise(min_p450 = min(p450), max_p450 = max(p450))
+
+# Create the dumbbell plot with log scale
+ggplot(site_p450_range, aes(y = reorder(site_name, min_p450))) +
+  geom_segment(aes(x = min_p450, xend = max_p450, y = site_name, yend = site_name, color = as.factor(reporting_area)), size = 1.5) +
+  geom_point(aes(x = min_p450, color = as.factor(reporting_area)), size = 3) +
+  geom_point(aes(x = max_p450, color = as.factor(reporting_area)), size = 3) +
+  scale_x_log10() +
+  labs(x = "P450 Value (Log Scale)", y = "Site Name", title = "P450 Value Ranges by Site with Reporting Area Color Coding") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_color_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12)
+  )
+
+
+```
+

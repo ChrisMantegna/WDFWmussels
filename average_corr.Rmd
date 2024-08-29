@@ -1,0 +1,48 @@
+---
+title: "average correlations"
+output: html_document
+date: "2024-08-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tinytex)
+library(tidyr)
+library(tidyverse)
+library(vegan)
+
+```
+
+# Load data
+
+```{r}
+
+#getwd()
+data<- read.csv("/Users/cmantegna/Desktop/averages_correlation.csv")
+
+```
+
+```{r}
+# p450
+correlation_result <- cor.test(data$ata, data$avg_value, method = "pearson")
+print(correlation_result)
+
+# sod
+correlation_result <- cor.test(data$ata, data$asod, method = "pearson")
+print(correlation_result)
+
+# biomarker
+correlation_result <- cor.test(data$avg_value, data$asod, method = "pearson")
+print(correlation_result)
+
+```
+
+
+
+```{r}
+
+```
+
