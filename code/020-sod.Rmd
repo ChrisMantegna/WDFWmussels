@@ -65,7 +65,7 @@ data$sod[data$sod <= 0] <- 0.0025
 # Check data
 
 ```{r}
-summary(sdata)
+summary(data)
 ```
 
 # Shapiro-Wilkes 
@@ -77,8 +77,50 @@ shapiro.test(data$sod)
 
 ```
 
+# Outliers
+## z-score
+```{r}
+
+#Values that are more than 3 standard deviations away from the mean
+
+library(dplyr)
+
+#
+data <- data %>% mutate(z_score = scale(sod))
+
+# Filter out rows where Z-scores are greater than 3 or less than -3 (outliers)
+dataZ <- data %>% filter(z_score >= -3 & z_score <= 3)
+
+# View the data without Z-score outliers
+head(dataZ)
+
+```
+
+## IQR 
+```{r}
+
+# Values that lie outside the range of 1.5 times the interquartile range (IQR) from the first and third quartiles.
+
+# Compute the IQR for SOD
+Q1 <- quantile(data$sod, 0.25)
+Q3 <- quantile(data$sod, 0.75)
+IQR <- Q3 - Q1
+
+# Define outlier thresholds (1.5 * IQR)
+lower_bound <- Q1 - 1.5 * IQR
+upper_bound <- Q3 + 1.5 * IQR
+
+# Filter the data to remove outliers based on IQR
+dataIQR <- data %>% filter(sod >= lower_bound & sod <= upper_bound)
+
+# View the data without IQR outliers
+head(dataIQR)
+
+```
+
+
 # Kruskal-Wallis
-## site and reporting area
+## full data
 Reporting Areas Are:\
 6 - East Juan de Fuca Strait\
 7 - San Juan Islands\
@@ -94,34 +136,17 @@ Reporting Areas Are:\
 
 #test for significant interaction
 
-data$PAHgroup3 <- as.character(data$PAHgroup3)
-data$PAHgroup4 <- as.character(data$PAHgroup4)
+data$PAHgroup8 <- as.character(data$PAHgroup8)
 
 kruskal.test(sod ~ site_name, data = data)
 kruskal.test(sod ~ reporting_area, data = data)
-kruskal.test(sod ~ PAHgroup3, data = data)
-kruskal.test(sod ~ PAHgroup4, data = data)
-
-```
-
-## PAH groups
-```{r}
-
-#test for significant interaction
-
-data$PAHgroup6 <- as.character(data$PAHgroup6)
-data$PAHgroup8 <- as.character(data$PAHgroup8)
-
-kruskal.test(sod ~ PAHgroup6, data = data)
 kruskal.test(sod ~ PAHgroup8, data = data)
 
 ```
 
-# Dunn Test (post hoc)
 
-### no significance confirmed between sites
-### Group 4 - significance confirmed between 
-### Group 8 - significance confirmed between 
+# Dunn Test (post hoc)
+## full data
 
 ```{r}
 library(dunn.test)
@@ -137,39 +162,101 @@ mc_site <- data.frame(
 # Write results to a table
 write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODsite.csv", row.names = FALSE)
 
+# PAHgroup8
+dunn_pah8 <- dunn.test(data$sod, data$PAHgroup8, method = "bonferroni", list = TRUE)
+mc_site <- data.frame(
+    Comparison = dunn_pah8$comparisons,
+    Z = dunn_pah8$Z,
+    P.adjusted = dunn_pah8$P.adjusted
+)
+
+write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODpah8.csv", row.names = FALSE)
 ```
 
+# Kruskal-Wallis
+## z-score outliers
 ```{r}
 
+#test for significant interaction, removal of z-score
+
+data$PAHgroup8 <- as.character(data$PAHgroup8)
+
+kruskal.test(sod ~ site_name, data = dataZ)
+kruskal.test(sod ~ reporting_area, data = dataZ)
+kruskal.test(sod ~ PAHgroup8, data = dataZ)
+
+
+```
+
+# Dunn Test (post hoc)
+## Z-score data
+
+```{r}
 library(dunn.test)
 
-# PAH Group 4
-dunn_group4 <- dunn.test(data$sod, data$PAHgroup4, method = "bonferroni", list = TRUE)
-mc_group4 <- data.frame(
-    Comparison = dunn_group4$comparisons,
-    Z = dunn_group4$Z,
-    P.adjusted = dunn_group4$P.adjusted
+# Site
+dunn_site <- dunn.test(dataZ$sod, dataZ$site_name, method = "bonferroni", list = TRUE)
+mc_site <- data.frame(
+    Comparison = dunn_site$comparisons,
+    Z = dunn_site$Z,
+    P.adjusted = dunn_site$P.adjusted
 )
 
 # Write results to a table
-write.csv(mc_group4, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODgroup4.csv", row.names = FALSE)
+write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODsiteZ.csv", row.names = FALSE)
+
+# PAHgroup8
+dunn_pah8 <- dunn.test(dataZ$sod, dataZ$PAHgroup8, method = "bonferroni", list = TRUE)
+mc_site <- data.frame(
+    Comparison = dunn_pah8$comparisons,
+    Z = dunn_pah8$Z,
+    P.adjusted = dunn_pah8$P.adjusted
+)
+
+write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODpah8Z.csv", row.names = FALSE)
+```
+
+# Kruskal-Wallis
+## IQR outliers
+```{r}
+
+#test for significant interaction, removal of z-score
+
+data$PAHgroup8 <- as.character(data$PAHgroup8)
+
+kruskal.test(sod ~ site_name, data = dataIQR)
+kruskal.test(sod ~ reporting_area, data = dataIQR)
+kruskal.test(sod ~ PAHgroup8, data = dataIQR)
+
 
 ```
 
-```{r}
+# Dunn Test (post hoc)
+## IQR data
 
+```{r}
 library(dunn.test)
 
-# PAH Group 8
-dunn_group8 <- dunn.test(data$sod, data$PAHgroup8, method = "bonferroni", list = TRUE)
-mc_group8 <- data.frame(
-    Comparison = dunn_group8$comparisons,
-    Z = dunn_group8$Z,
-    P.adjusted = dunn_group8$P.adjusted
+# Site
+dunn_site <- dunn.test(dataIQR$sod, dataIQR$site_name, method = "bonferroni", list = TRUE)
+mc_site <- data.frame(
+    Comparison = dunn_site$comparisons,
+    Z = dunn_site$Z,
+    P.adjusted = dunn_site$P.adjusted
 )
 
 # Write results to a table
-write.csv(mc_group8, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODgroup8.csv", row.names = FALSE)
+write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODsiteIQR.csv", row.names = FALSE)
+
+# PAHgroup8
+dunn_pah8 <- dunn.test(dataIQR$sod, dataIQR$PAHgroup8, method = "bonferroni", list = TRUE)
+mc_site <- data.frame(
+    Comparison = dunn_pah8$comparisons,
+    Z = dunn_pah8$Z,
+    P.adjusted = dunn_pah8$P.adjusted
+)
+
+write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODpah8IQR.csv", row.names = FALSE)
 ```
 
 # Correlation
