@@ -31,7 +31,7 @@ knitr::opts_chunk$set(
 # Load data
 ```{r}
 data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450data.csv")
-Pindv<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_analytes.csv")
+indv<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_analytes.csv")
 
 sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/soddata.csv")
 Sindv<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_analytes.csv")
@@ -52,30 +52,35 @@ sdata$sod[sdata$sod <= 0] <- 0.0025
 ```
 
 # p450
-## dumbbell - this one doesn't work correctly.
+## dumbbell - NOT log transformed
 ```{r}
 
 library(ggplot2)
-library(dplyr)
-#install.packages("ggalt")
-library("ggalt")
+library(dplyr) 
 
-# Sorting the data by reporting area and site_name
-data <- data %>% arrange(reporting_area, site_name)
+# Get value range by sit
+site_p450_range <- data %>%
+  group_by(site_name, reporting_area) %>%
+  summarise(min_p450 = min(p450), max_p450 = max(p450))
 
-ggplot(data, aes(x = p450, y = reorder(site_name, p450))) +
-  geom_point(aes(color = factor(reporting_area)), size = 3) +
-  geom_dumbbell(aes(xend = p450), 
-                size = 1.5, color = "gray", 
-                point.colour.l = "blue", 
-                point.colour.r = "red") +
-  labs(
-    x = "p450 Values", 
-    y = "Site Name", 
-    title = "p450 Values by Site Grouped by Reporting Area"
-  ) +
+# Fix site name order for plotting
+site_p450_range <- site_p450_range %>%
+  mutate(site_name = factor(site_name, levels = rev(sort(unique(site_name)))))
+
+# Create plot
+ggplot(site_p450_range, aes(y = reorder(site_name, site_name))) + 
+  geom_segment(aes(x = min_p450, xend = max_p450, y = site_name, yend = site_name, color = as.factor(reporting_area)), size = 1.5) +
+  geom_point(aes(x = min_p450, color = as.factor(reporting_area)), size = 3) +
+  geom_point(aes(x = max_p450, color = as.factor(reporting_area)), size = 3) +
+  labs(x = bquote("P450 Activity (Unit / mg"^"-1"~"protein)"), y = "Site Name", title = "P450 Activity by Site with Reporting Areas") +
   theme_minimal() +
-  theme(axis.text.y = element_text(hjust = 1))
+  theme(legend.position = "right") +
+  scale_color_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12)
+  )
 
 ```
 
@@ -94,7 +99,7 @@ site_p450_range <- site_p450_range %>%
   mutate(site_name = factor(site_name, levels = rev(sort(unique(site_name)))))
 
 # Create the dumbbell plot with log scale and alphabetical ordering
-ggplot(site_p450_range, aes(y = reorder(site_name, site_name))) +  # Ordering alphabetically by site_name
+ggplot(site_p450_range, aes(y = reorder(site_name, site_name))) + 
   geom_segment(aes(x = min_p450, xend = max_p450, y = site_name, yend = site_name, color = as.factor(reporting_area)), size = 1.5) +
   geom_point(aes(x = min_p450, color = as.factor(reporting_area)), size = 3) +
   geom_point(aes(x = max_p450, color = as.factor(reporting_area)), size = 3) +
