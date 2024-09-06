@@ -21,38 +21,85 @@ knitr::opts_chunk$set(
   eval = TRUE,         # Evaluate code chunks
   warning = FALSE,     # Hide warnings
   message = FALSE,     # Hide messages
-  #fig.width = 20,       # Set plot width in inches
-  #fig.height = 9,      # Set plot height in inches
+  #fig.width = 15,       # Set plot width in inches
+  #fig.height = 10,      # Set plot height in inches
   fig.align = "center" # Align plots to the center
 )
 
 ```
 
+# Load data
+```{r}
+data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450data.csv")
+Pindv<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_analytes.csv")
+
+sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/soddata.csv")
+Sindv<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_analytes.csv")
+
+mdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/morphdata.csv")
+Mindv<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgMORPH_analytes.csv")
+```
+
+# Adjust SOD individual values to reflect LOQ limitations
 ```{r}
 
-# Load necessary libraries
+# Data contains numbers below 0 that must be adjusted.These numbers represent samples whose values were below the limit of quantification using the SOD kit. There was some activity in the raw sample, but it is too far below the limit of the standard curve to be accurately quantified.
+
+
+#replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
+sdata$sod[sdata$sod <= 0] <- 0.0025
+
+```
+
+# p450
+## dumbbell - this one doesn't work correctly.
+```{r}
+
 library(ggplot2)
 library(dplyr)
+#install.packages("ggalt")
+library("ggalt")
 
-# Sample data - replace this with your actual data
-data <- data.frame(
-  reporting_area = c(11, 11, 11, 11, 10),
-  site_name = c("Des Moines Marina", "Des Moines Marina", "Des Moines Marina", "Des Moines Marina", "Suquamish Stormwater Outfall"),
-  p450 = c(5.083144e+06, 1.048650e+07, 3.510592e+06, 1.666199e+07, 5.049235e+06)
-)
+# Sorting the data by reporting area and site_name
+data <- data %>% arrange(reporting_area, site_name)
+
+ggplot(data, aes(x = p450, y = reorder(site_name, p450))) +
+  geom_point(aes(color = factor(reporting_area)), size = 3) +
+  geom_dumbbell(aes(xend = p450), 
+                size = 1.5, color = "gray", 
+                point.colour.l = "blue", 
+                point.colour.r = "red") +
+  labs(
+    x = "p450 Values", 
+    y = "Site Name", 
+    title = "p450 Values by Site Grouped by Reporting Area"
+  ) +
+  theme_minimal() +
+  theme(axis.text.y = element_text(hjust = 1))
+
+```
+
+## dumbbell plot code with the log transformation
+```{r}
+library(ggplot2)
+library(dplyr) 
 
 # Calculate min and max P450 values per site
 site_p450_range <- data %>%
   group_by(site_name, reporting_area) %>%
   summarise(min_p450 = min(p450), max_p450 = max(p450))
 
-# Create the dumbbell plot with log scale
-ggplot(site_p450_range, aes(y = reorder(site_name, min_p450))) +
+# Create a factor for site_name with levels sorted alphabetically
+site_p450_range <- site_p450_range %>%
+  mutate(site_name = factor(site_name, levels = rev(sort(unique(site_name)))))
+
+# Create the dumbbell plot with log scale and alphabetical ordering
+ggplot(site_p450_range, aes(y = reorder(site_name, site_name))) +  # Ordering alphabetically by site_name
   geom_segment(aes(x = min_p450, xend = max_p450, y = site_name, yend = site_name, color = as.factor(reporting_area)), size = 1.5) +
   geom_point(aes(x = min_p450, color = as.factor(reporting_area)), size = 3) +
   geom_point(aes(x = max_p450, color = as.factor(reporting_area)), size = 3) +
   scale_x_log10() +
-  labs(x = "P450 Value (Log Scale)", y = "Site Name", title = "P450 Value Ranges by Site with Reporting Area Color Coding") +
+  labs(x = "P450 Activity (Log Scale)", y = "Site Name", title = "P450 Activity by Site with Reporting Area") +
   theme_minimal() +
   theme(legend.position = "right") +
   scale_color_brewer(palette = "Set1", name = "Reporting Area") +
@@ -62,6 +109,218 @@ ggplot(site_p450_range, aes(y = reorder(site_name, min_p450))) +
     axis.title.y = element_text(size = 12)
   )
 
+```
+
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Calculate min, max, and mean P450 values per site
+site_p450_range <- data %>%
+  group_by(site_name, reporting_area) %>%
+  summarise(min_p450 = min(p450), max_p450 = max(p450), mean_p450 = mean(p450))
+
+# Create a new factor for the y-axis that orders by reporting_area (descending) and site_name alphabetically, but only displays the site_name
+site_p450_range <- site_p450_range %>%
+  mutate(site_name_ordered = factor(site_name,
+                                    levels = site_p450_range %>%
+                                      arrange(desc(reporting_area), site_name) %>%
+                                      pull(site_name)))
+
+# Create the dumbbell plot with log scale and mean indicator
+ggplot(site_p450_range, aes(y = site_name_ordered)) +
+  geom_segment(aes(x = min_p450, xend = max_p450, y = site_name_ordered, yend = site_name_ordered, color = as.factor(reporting_area)), size = 1.5) +
+  geom_point(aes(x = min_p450, color = as.factor(reporting_area)), size = 3) +
+  geom_point(aes(x = max_p450, color = as.factor(reporting_area)), size = 3) +
+  
+  # Add mean value as a separate point with a different shape (triangle)
+  geom_point(aes(x = mean_p450), shape = 17, size = 3, color = "black") +
+  
+  scale_x_log10() +
+  labs(x = "P450 Activity (Log Scale)", y = "Site Name", title = "P450 Activity by Site with Reporting Area") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_color_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12)
+  )
+
+```
+## box plot - vertical
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Site names are ordered in reverse alphabetical order
+data <- data %>%
+  mutate(site_name = factor(site_name, levels = rev(sort(unique(site_name)))))
+
+# Create the box plot with color coding by reporting area
+ggplot(data, aes(x = p450, y = site_name, fill = as.factor(reporting_area))) +
+  geom_boxplot() +
+  scale_x_log10() +
+  labs(x = "P450 Activity (Log Scale)", y = "Site Name", title = "P450 Activity by Site with Reporting Area") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_fill_brewer(palette = "Set1", name = "Reporting Area") +  # Use the same color palette for reporting areas
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12)
+  )
+
+```
+
+## box plot - horizontal
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Ensure that the site names are ordered in reverse alphabetical order
+data <- data %>%
+  mutate(site_name = factor(site_name, levels = rev(sort(unique(site_name)))))
+
+# Create the box plot with sites on the x-axis and P450 activity on the y-axis
+ggplot(data, aes(x = site_name, y = p450, fill = as.factor(reporting_area))) +
+  geom_boxplot() +
+  scale_y_log10() +  # Applying log scale to the y-axis for P450 values
+  labs(x = "Site Name", y = "P450 Activity (Log Scale)", title = "P450 Activity by Site with Reporting Area") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_fill_brewer(palette = "Set1", name = "Reporting Area") +  # Use the same color palette for reporting areas
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text.x = element_text(angle = 90, hjust = 1)  # Rotate x-axis labels for better readability
+  )
+
+```
+
+## correlation matrix with significant analytes only
+```{r}
+
+library(corrplot)
+
+# Spearman correlations and matrix for plot
+spearman_cor_matrix <- cor(Pindv[ , 2:ncol(Pindv)], use = "complete.obs", method = "spearman")
+spearman_cor_avg_value <- spearman_cor_matrix["avg_value", ]
+
+# Filter for significance
+significant_analytes <- names(p_values[p_values < 0.05])
+
+# Create matrix with significant analytes
+significant_cor_matrix <- spearman_cor_matrix[significant_analytes, significant_analytes]
+
+# Create plot
+corrplot(significant_cor_matrix, method = "circle")
+
+# Optionally, print the significant correlations
+significant_correlations <- spearman_cor_avg_value[significant_analytes]
+print(significant_correlations)
+
+```
+
+## correlation table from the above visualization
+```{r}
+# 
+library(dplyr)
+library(tibble)
+
+# Spearman correlation 
+cor_results <- sapply(Pindv[ , 2:ncol(Pindv)], function(x) {
+  test <- cor.test(Pindv$avg_value, x, method = "spearman")
+  c(correlation = test$estimate, p_value = test$p.value)
+})
+
+# Only run this step again if there has been an adjustment to the inputted data and a new df needs to be made
+# Convert to data frame and fix column names
+#cor_results_df <- cor_results_df %>%
+#  rownames_to_column(var = "analyte")
+
+# Filter for significant correlations
+significant_results_df <- cor_results_df %>%
+  filter(p_value < 0.05)
+
+# Round the results 
+significant_results_df <- significant_results_df %>%
+  mutate(correlation = round(correlation, 3),
+         p_value = round(p_value, 3))
+
+# Remove the first row since it has the old 'column names' and not data
+significant_results_df <- significant_results_df %>%
+  slice(-1) 
+
+# View table
+print(significant_results_df)
+
+# Write to table
+write.csv(significant_results_df,"/Users/cmantegna/Documents/WDFWmussels/output/tables/VIZp450correlation.csv", row.names = FALSE)
+
+```
+
+## linear regression with signficant analyte correlation
+```{r}
+
+library(ggplot2)
+library(gridExtra)
+
+Pindv$reporting_area <- as.character(Pindv$reporting_area)
+# Continue site colors from earlier plots based on reporting area
+reporting_area_colors <- c(
+  "6" = "red",
+  "7" = "blue",
+  "8.1" = "green",
+  "8.2" = "purple",
+  "9" = "orange",
+  "10" = "yellow",
+  "11" = "brown",
+  "12" = "pink",
+  "13" = "grey",
+  
+)
+
+# Ensure that avg_value is still in the data frame Pindv
+if (!"avg_value" %in% colnames(Pindv)) {
+  stop("The column 'avg_value' is missing from your data frame.")
+}
+
+# Extract the names of the significant analytes from the significant_results_df
+significant_analytes <- significant_results_df$analyte
+
+# Create an empty list to store plots
+plot_list <- list()
+
+# Loop through each significant analyte and create a linear regression plot
+for (analyte in significant_analytes) {
+  
+  # Ensure the analyte exists in Pindv before proceeding
+  if (!analyte %in% colnames(Pindv)) {
+    warning(paste("Analyte", analyte, "is not present in the data frame. Skipping..."))
+    next
+  }
+  
+  # Create a linear model for each analyte against avg_value
+  model <- lm(Pindv[[analyte]] ~ Pindv$avg_value)
+  
+  # Create plot with reporting area colors
+  p <- ggplot(Pindv, aes_string(x = "avg_value", y = analyte, color = "reporting_area")) + 
+    geom_point() +
+    geom_smooth(method = "lm", color = "black", se = FALSE) +  
+    scale_color_manual(values = reporting_area_colors) +  
+    labs(title = paste("Linear Regression: Average P450 Activity by Site vs", analyte),
+         x = "Average P450 Activity",
+         y = analyte) +
+    theme_minimal()
+  
+  # Store the plot in the list
+  plot_list[[analyte]] <- p
+}
+
+# Display the plots in a grid
+do.call(grid.arrange, c(plot_list, ncol = 2))  # Adjust 'ncol' to set the number of columns in the grid
 
 ```
 
