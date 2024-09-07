@@ -697,3 +697,80 @@ Msignificant_cor_matrix <- Mspearman_cor_matrix[Msignificant_analytes, Msignific
 corrplot(Msignificant_cor_matrix, method = "circle", type= "lower", diag= FALSE)
 
 ```
+
+## correlation table - summed analytes
+```{r}
+
+library(dplyr)
+library(tibble)
+
+# Spearman correlation tests to extract correlation coefficients and p-values
+cor_results <- sapply(summed[, 5:ncol(summed)], function(x) {
+  test <- cor.test(summed[, 4], x, method = "spearman")
+  c(correlation = test$estimate, p_value = test$p.value)  
+})
+
+# Convert the results to a data frame
+cor_results_df <- as.data.frame(t(cor_results))
+
+colnames(cor_results_df) <- c("correlation", "p_value")
+
+# Add analyte names as a column from rownames
+cor_results_df <- cor_results_df %>%
+  rownames_to_column(var = "analyte")
+
+# Filter for significance and round the results
+significant_results_df <- cor_results_df %>%
+  filter(p_value < 0.05) %>%
+  mutate(correlation = round(correlation, 3),
+         p_value = round(p_value, 3))
+
+# View table
+print(significant_results_df)
+
+# Write to CSV file
+#write.csv(significant_results_df, "/Users/cmantegna/Documents/WDFWmussels/output/tables/VIZmorphSUMMEDcorrelation.csv", row.names = FALSE)
+
+```
+
+## linear regression - summed analytes
+```{r}
+
+library(ggplot2)
+library(gridExtra)
+
+summed$reporting_area <- as.character(summed$reporting_area)
+
+# Custom colors to match other plot colors
+reporting_area_colors <- c(
+  "6" = "red",
+  "7" = "blue",
+  "8.1" = "green",
+  "8.2" = "purple",
+  "9" = "orange",
+  "10" = "yellow",
+  "11" = "brown",
+  "12" = "pink",
+  "13" = "grey"
+  
+)
+
+model <- lm(summed$arsenic ~ summed$avg_cf)
+
+# Plot
+p <- ggplot(summed, aes(x = avg_cf, y = arsenic, color = reporting_area)) + 
+  geom_point() +
+  geom_smooth(method = "lm", color = "black", se = FALSE) +  
+  scale_color_manual(values = reporting_area_colors) +  
+  labs(title = paste("Linear Regression: Condition Factor vs", analyte),
+       x = "Condition Factor",
+       y = analyte) +
+  theme_minimal() +
+  theme(legend.position = "none")  # Remove the legend
+
+# Display the plot
+print(p)
+
+
+```
+
