@@ -1,0 +1,386 @@
+---
+  title: "011 - P450 Plots"
+output:
+  html_document: 
+  toc: true
+toc_float:
+  collapsed: false
+smooth_scroll: true
+fig_width: 20
+pdf_document: 
+  fig_width: 20
+fig_height: 9
+---
+  
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 20,       # Set plot width in inches
+  fig.height = 9,      # Set plot height in inches
+  fig.align = "center" )# Align plots to the center
+
+```
+
+# Load data
+```{r}
+
+data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450data.csv")
+indv<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_analytes.csv")
+
+```
+
+# p450
+## dumbbell - original data in alphabetical order
+```{r}
+
+library(ggplot2)
+library(dplyr) 
+
+# Calculate range + mean
+site_p450_range <- data %>%
+  group_by(site_name, reporting_area) %>%
+  summarise(min_p450 = min(p450), max_p450 = max(p450), mean_p450 = mean(p450))
+
+# Order by site name
+site_p450_range <- site_p450_range %>%
+  mutate(site_name = factor(site_name, levels = rev(sort(unique(site_name)))))
+
+# Plot
+ggplot(site_p450_range, aes(y = reorder(site_name, site_name))) + 
+  geom_segment(aes(x = min_p450, xend = max_p450, y = site_name, yend = site_name, color = as.factor(reporting_area)), size = 1.5) +
+  geom_point(aes(x = min_p450, color = as.factor(reporting_area)), size = 3) +
+  geom_point(aes(x = max_p450, color = as.factor(reporting_area)), size = 3) +
+  labs(x = bquote("P450 Activity (Unit / mg"^"-1"~"protein)"), y = "Site Name", title = "P450 Activity by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_color_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12)
+  )
+
+```
+
+## dumbbell - log transformed data in alphabetical order
+```{r}
+library(ggplot2)
+library(dplyr) 
+
+# Plot
+ggplot(site_p450_range, aes(y = reorder(site_name, site_name))) + 
+  geom_segment(aes(x = min_p450, xend = max_p450, y = site_name, yend = site_name, color = as.factor(reporting_area)), size = 1.5) +
+  geom_point(aes(x = min_p450, color = as.factor(reporting_area)), size = 3) +
+  geom_point(aes(x = max_p450, color = as.factor(reporting_area)), size = 3) +
+  scale_x_log10() +
+  labs(x = bquote("P450 Activity (Unit / mg"^"-1"~"protein) (Log Scale)") , y = "Site Name", title = "P450 Activity by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_color_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12)
+  )
+
+```
+
+## dumbbell - log transformed data grouped by reporting area with indicators of mean value (triangles)
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+# Order by reporting area
+site_p450_range <- site_p450_range %>%
+  mutate(site_name_ordered = factor(site_name,
+                                    levels = site_p450_range %>%
+                                      arrange(desc(reporting_area), site_name) %>%
+                                      pull(site_name)))
+
+# Plot w/ mean added
+ggplot(site_p450_range, aes(y = site_name_ordered)) +
+  geom_segment(aes(x = min_p450, xend = max_p450, y = site_name_ordered, yend = site_name_ordered, color = as.factor(reporting_area)), size = 1.5) +
+  geom_point(aes(x = min_p450, color = as.factor(reporting_area)), size = 3) +
+  geom_point(aes(x = max_p450, color = as.factor(reporting_area)), size = 3) +
+  geom_point(aes(x = mean_p450), shape = 17, size = 3, color = "black") +
+  scale_x_log10() +
+  labs(x = bquote("P450 Activity (Unit / mg"^"-1"~"protein) (Log Scale)"), y = "Site Name", title = "P450 Activity by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_color_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12)
+  )
+
+```
+
+## dumbbell - PAH group 8
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+# Calculate range + mean, order by PAH group
+Psite_p450_range <- data %>%
+  group_by(site_name, PAHgroup8) %>%
+  summarise(min_p450 = min(p450), max_p450 = max(p450), mean_p450 = mean(p450))
+
+# Create a unique identifier for each combination of site_name and PAHgroup8
+Psite_p450_range <- Psite_p450_range %>%
+  mutate(site_PAHgroup_combined = paste(site_name, PAHgroup8, sep = "_"))
+
+# Order site_name by both PAHgroup8 and site_name to ensure no duplication
+Psite_p450_range <- Psite_p450_range %>%
+  mutate(site_name_ordered = factor(site_PAHgroup_combined,
+                                    levels = Psite_p450_range %>%
+                                      arrange(desc(PAHgroup8), site_name) %>%
+                                      pull(site_PAHgroup_combined)))
+
+# Plot w/ mean added
+ggplot(Psite_p450_range, aes(y = site_name_ordered)) +
+  geom_segment(aes(x = min_p450, xend = max_p450, y = site_name_ordered, yend = site_name_ordered, color = as.factor(PAHgroup8)), size = 1.5) +
+  geom_point(aes(x = min_p450, color = as.factor(PAHgroup8)), size = 3) +
+  geom_point(aes(x = max_p450, color = as.factor(PAHgroup8)), size = 3) +
+  geom_point(aes(x = mean_p450), shape = 17, size = 3, color = "black") +
+  scale_x_log10() +
+  labs(x = bquote("P450 Activity (Unit / mg"^"-1"~"protein) (Log Scale)"), y = "Site Name", title = "P450 Activity by Site with PAH Grouping") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_color_brewer(palette = "Set1", name = "PAH Grouping") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12)
+  )
+
+```
+
+## box plot - site
+```{r}
+library(ggplot2)
+library(dplyr)
+
+# Order by site name
+#data <- data %>%
+#  mutate(site_name = factor(site_name, levels = sort(unique(site_name))))
+
+# Plot
+ggplot(data, aes(x = site_name, y = p450, fill = as.factor(reporting_area))) +
+  geom_boxplot() +
+  labs(x = bquote("P450 Activity (Unit / mg"^"-1"~"protein)"), title = "P450 Activity by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_fill_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text.x = element_text(angle = 90, hjust = 1)
+  )
+
+```
+
+## boxplot - reporting area
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+# Order by reporting area
+data <- data %>%
+  mutate(site_name_ordered = factor(site_name, 
+                                    levels = data %>%
+                                      arrange(reporting_area, site_name) %>%
+                                      distinct(site_name, reporting_area) %>%  
+                                      pull(site_name)))
+
+# Plot using the newly ordered site names
+ggplot(data, aes(x = site_name_ordered, y = p450, fill = as.factor(reporting_area))) +
+  geom_boxplot() +
+  labs(x = bquote("P450 Activity (Unit / mg"^"-1"~"protein)"), title = "P450 Activity by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_fill_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text.x = element_text(angle = 90, hjust = 1)
+  )
+
+```
+
+## boxplot - PAH group 8
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+# Create a unique identifier for each combination of site_name and PAHgroup8
+pahbox <- data %>%
+  mutate(site_PAHgroup_combined = paste(site_name, PAHgroup8, sep = "_"))
+
+pahbox <- pahbox %>%
+  arrange(desc(PAHgroup8), site_name)
+
+# Order site_name by both PAHgroup8 and site_name to ensure no duplication
+pahbox <- pahbox %>%
+  mutate(site_name_ordered = factor(site_PAHgroup_combined,
+                                    levels = unique(site_PAHgroup_combined)))
+
+# Plot using the newly ordered site names
+ggplot(pahbox, aes(x = site_name_ordered, y = p450, fill = as.factor(PAHgroup8))) +
+  geom_boxplot() +
+  labs(x = bquote("P450 Activity (Unit / mg"^"-1"~"protein)"), title = "P450 Activity by Site with PAH Grouping") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_fill_brewer(palette = "Set1", name = "PAH Grouping") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text.x = element_text(angle = 90, hjust = 1)
+  )
+
+```
+
+
+## correlation plot
+```{r}
+
+library(corrplot)
+
+# Spearman correlation tests to extract p-values
+corr_results <- sapply(indv[ , 3:ncol(indv)], function(x) {
+  test <- cor.test(indv$avg_value, x, method = "spearman")
+  test$p.value  # Extract p-values
+})
+
+# Spearman correlation matrix for plotting
+spearman_cor_matrix <- cor(indv[ , 3:ncol(indv)], use = "complete.obs", method = "spearman")
+spearman_cor_avg_value <- spearman_cor_matrix["avg_value", ]
+
+# Filter for significance using corr_results for p-values
+significant_analytes <- names(corr_results[corr_results < 0.05])
+
+# New correlation matrix with only significant analytes
+significant_cor_matrix <- spearman_cor_matrix[significant_analytes, significant_analytes]
+
+# Plot the correlation matrix for significant analytes
+corrplot(significant_cor_matrix, method = "circle")
+
+```
+
+## correlation table
+```{r}
+
+library(dplyr)
+library(tibble)
+
+# Spearman correlation 
+cor_results <- sapply(indv[ , 3:ncol(indv)], function(x) {
+  test <- cor.test(indv$avg_value, x, method = "spearman")
+  c(correlation = test$estimate, p_value = test$p.value)
+})
+
+# Convert to data frame, fix column names and remove first row of old column names
+cor_results_df <- as.data.frame(t(cor_results))
+
+colnames(cor_results_df) <- c("correlation", "p_value")
+
+cor_results_df <- cor_results_df %>%
+  rownames_to_column(var = "analyte")
+
+cor_results_df <- cor_results_df %>%
+  slice(-1) 
+
+# Filter for significance and round the results
+significant_results_df <- cor_results_df %>%
+  filter(p_value < 0.05)
+
+significant_results_df <- significant_results_df %>%
+  mutate(correlation = round(correlation, 3),
+         p_value = round(p_value, 3))
+
+# View table
+print(significant_results_df)
+
+# Write to table
+#write.csv(significant_results_df,"/Users/cmantegna/Documents/WDFWmussels/output/tables/VIZp450correlation.csv", row.names = FALSE)
+```
+
+## linear regression - signficant analytes
+```{r}
+
+library(ggplot2)
+library(gridExtra)
+
+indv$reporting_area <- as.character(indv$reporting_area)
+
+# Custom colors to match other plot colors
+reporting_area_colors <- c(
+  "6" = "red",
+  "7" = "blue",
+  "8.1" = "green",
+  "8.2" = "purple",
+  "9" = "orange",
+  "10" = "yellow",
+  "11" = "brown",
+  "12" = "pink",
+  "13" = "grey"
+  
+)
+
+# Only significant analytes
+significant_analytes <- significant_results_df$analyte
+
+# Create an empty list to store plots
+plot_list <- list()
+
+# Loop through each significant analyte and create a linear regression plot
+for (analyte in significant_analytes) {
+  
+  # Ensure the analyte exists in df before proceeding
+  if (!analyte %in% colnames(indv)) {
+    warning(paste("Analyte", analyte, "is not present in the data frame. Skipping..."))
+    next
+  }
+  
+  # Linear Model
+  model <- lm(indv[[analyte]] ~ indv$avg_value)
+  
+  # Plot
+p <- ggplot(indv, aes_string(x = "avg_value", y = analyte, color = "reporting_area")) + 
+  geom_point() +
+  geom_smooth(method = "lm", color = "black", se = FALSE) +  
+  scale_color_manual(values = reporting_area_colors) +  
+  labs(title = paste("Linear Regression: Average P450 Activity vs", analyte),
+       x = bquote("P450 Activity (Unit / mg"^"-1"~"protein)"),
+       y = analyte) +
+  theme_minimal() +
+  theme(legend.position = "none")  # Remove the legend
+
+# Store the plot in the list
+plot_list[[analyte]] <- p
+
+}
+
+# Display the plots in a grid
+do.call(grid.arrange, c(plot_list, ncol = 2))  # Adjust 'ncol' to set the number of columns in the grid
+
+```
+
+
+
+
+
+
