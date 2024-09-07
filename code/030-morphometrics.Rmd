@@ -229,19 +229,19 @@ write.csv(sigttable_group8, "/Users/cmantegna/Documents/WDFWmussels/output/table
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(summed$avg_cf, summed$sumPAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$sumPAH, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(summed$avg_cf, summed$lmwPAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$lmwPAH, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(summed$avg_cf, summed$hmwPAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$hmwPAH, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(summed$avg_cf, summed$sum16PAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$sum16PAH, method = "spearman")
 print(correlation_result)
 
 ```
@@ -251,11 +251,11 @@ print(correlation_result)
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(summed$avg_cf, summed$sumPCB, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$sumPCB, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(summed$avg_cf, summed$sum42PAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$sum42PAH, method = "spearman")
 print(correlation_result)
 
 ```
@@ -265,23 +265,23 @@ print(correlation_result)
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(summed$avg_cf, summed$um40CB, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$um40CB, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(summed$avg_cf, summed$sumBDE, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$sumBDE, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(summed$avg_cf, summed$sumCHLD, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$sumCHLD, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(summed$avg_cf, summed$sumDDT, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$sumDDT, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(summed$avg_cf, summed$sumHCH, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$sumHCH, method = "spearman")
 print(correlation_result)
 
 ```
@@ -291,27 +291,27 @@ print(correlation_result)
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(metal$avg_cf, metal$mercuryTotal, method = "pearson")
+correlation_result <- cor.test(metal$avg_cf, metal$mercuryTotal, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(metal$avg_cf, metal$arsenic, method = "pearson")
+correlation_result <- cor.test(metal$avg_cf, metal$arsenic, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(metal$avg_cf, metal$cadmium, method = "pearson")
+correlation_result <- cor.test(metal$avg_cf, metal$cadmium, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(metal$avg_cf, metal$copper, method = "pearson")
+correlation_result <- cor.test(metal$avg_cf, metal$copper, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(metal$avg_cf, metal$lead, method = "pearson")
+correlation_result <- cor.test(metal$avg_cf, metal$lead, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(metal$avg_cf, metal$Zinc, method = "pearson")
+correlation_result <- cor.test(metal$avg_cf, metal$Zinc, method = "spearman")
 print(correlation_result)
 
 ```
