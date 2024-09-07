@@ -44,6 +44,8 @@ library(vegan)
 
 #getwd()
 data <- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/soddata.csv")
+both<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/both_biomarkers_only.csv")
+avg_both<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avg_both_biomarkers.csv")
 sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD.csv")
 indv<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_analytes.csv")
 summed<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_analytes2.csv")
@@ -59,13 +61,13 @@ smetal<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_metals.csv
 
 #replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
 data$sod[data$sod <= 0] <- 0.0025
-
+both$sod[both$sod <= 0] <- 0.0025
 
 ```
 # Check data
 
 ```{r}
-summary(data)
+summary(both)
 ```
 
 # Shapiro-Wilkes 
@@ -76,48 +78,6 @@ summary(data)
 shapiro.test(data$sod)
 
 ```
-
-# Outliers
-## z-score
-```{r}
-
-#Values that are more than 3 standard deviations away from the mean
-
-library(dplyr)
-
-#
-data <- data %>% mutate(z_score = scale(sod))
-
-# Filter out rows where Z-scores are greater than 3 or less than -3 (outliers)
-dataZ <- data %>% filter(z_score >= -3 & z_score <= 3)
-
-# View the data without Z-score outliers
-head(dataZ)
-
-```
-
-## IQR 
-```{r}
-
-# Values that lie outside the range of 1.5 times the interquartile range (IQR) from the first and third quartiles.
-
-# Compute the IQR for SOD
-Q1 <- quantile(data$sod, 0.25)
-Q3 <- quantile(data$sod, 0.75)
-IQR <- Q3 - Q1
-
-# Define outlier thresholds (1.5 * IQR)
-lower_bound <- Q1 - 1.5 * IQR
-upper_bound <- Q3 + 1.5 * IQR
-
-# Filter the data to remove outliers based on IQR
-dataIQR <- data %>% filter(sod >= lower_bound & sod <= upper_bound)
-
-# View the data without IQR outliers
-head(dataIQR)
-
-```
-
 
 # Kruskal-Wallis
 ## full data
@@ -138,6 +98,8 @@ Reporting Areas Are:\
 
 data$PAHgroup8 <- as.character(data$PAHgroup8)
 
+kruskal.test(sod ~ p450, data = both)
+kruskal.test(p450 ~ sod, data = both)
 kruskal.test(sod ~ site_name, data = data)
 kruskal.test(sod ~ reporting_area, data = data)
 kruskal.test(sod ~ PAHgroup8, data = data)
@@ -160,7 +122,7 @@ mc_site <- data.frame(
 )
 
 # Write results to a table
-write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODsite.csv", row.names = FALSE)
+#write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODsite.csv", row.names = FALSE)
 
 # PAHgroup8
 dunn_pah8 <- dunn.test(data$sod, data$PAHgroup8, method = "bonferroni", list = TRUE)
@@ -170,93 +132,19 @@ mc_site <- data.frame(
     P.adjusted = dunn_pah8$P.adjusted
 )
 
-write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODpah8.csv", row.names = FALSE)
+#write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODpah8.csv", row.names = FALSE)
 ```
 
-# Kruskal-Wallis
-## z-score outliers
+# Correlation
+
+## biomarkers
+### No correlations
 ```{r}
 
-#test for significant interaction, removal of z-score
+# negative correlation (corr= -0.3256127, p-value = 0.004821)
+correlation_result <- cor.test(avg_both$avg_p450, avg_both$avg_sod, method = "spearman")
+print(correlation_result)
 
-data$PAHgroup8 <- as.character(data$PAHgroup8)
-
-kruskal.test(sod ~ site_name, data = dataZ)
-kruskal.test(sod ~ reporting_area, data = dataZ)
-kruskal.test(sod ~ PAHgroup8, data = dataZ)
-
-
-```
-
-# Dunn Test (post hoc)
-## Z-score data
-
-```{r}
-library(dunn.test)
-
-# Site
-dunn_site <- dunn.test(dataZ$sod, dataZ$site_name, method = "bonferroni", list = TRUE)
-mc_site <- data.frame(
-    Comparison = dunn_site$comparisons,
-    Z = dunn_site$Z,
-    P.adjusted = dunn_site$P.adjusted
-)
-
-# Write results to a table
-write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODsiteZ.csv", row.names = FALSE)
-
-# PAHgroup8
-dunn_pah8 <- dunn.test(dataZ$sod, dataZ$PAHgroup8, method = "bonferroni", list = TRUE)
-mc_site <- data.frame(
-    Comparison = dunn_pah8$comparisons,
-    Z = dunn_pah8$Z,
-    P.adjusted = dunn_pah8$P.adjusted
-)
-
-write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODpah8Z.csv", row.names = FALSE)
-```
-
-# Kruskal-Wallis
-## IQR outliers
-```{r}
-
-#test for significant interaction, removal of z-score
-
-data$PAHgroup8 <- as.character(data$PAHgroup8)
-
-kruskal.test(sod ~ site_name, data = dataIQR)
-kruskal.test(sod ~ reporting_area, data = dataIQR)
-kruskal.test(sod ~ PAHgroup8, data = dataIQR)
-
-
-```
-
-# Dunn Test (post hoc)
-## IQR data
-
-```{r}
-library(dunn.test)
-
-# Site
-dunn_site <- dunn.test(dataIQR$sod, dataIQR$site_name, method = "bonferroni", list = TRUE)
-mc_site <- data.frame(
-    Comparison = dunn_site$comparisons,
-    Z = dunn_site$Z,
-    P.adjusted = dunn_site$P.adjusted
-)
-
-# Write results to a table
-write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODsiteIQR.csv", row.names = FALSE)
-
-# PAHgroup8
-dunn_pah8 <- dunn.test(dataIQR$sod, dataIQR$PAHgroup8, method = "bonferroni", list = TRUE)
-mc_site <- data.frame(
-    Comparison = dunn_pah8$comparisons,
-    Z = dunn_pah8$Z,
-    P.adjusted = dunn_pah8$P.adjusted
-)
-
-write.csv(mc_site, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODpah8IQR.csv", row.names = FALSE)
 ```
 
 # Correlation
