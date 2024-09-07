@@ -52,22 +52,22 @@ sdata$sod[sdata$sod <= 0] <- 0.0025
 ```
 
 # p450
-## dumbbell - NOT log transformed
+## dumbbell - original data in alphabetical order
 ```{r}
 
 library(ggplot2)
 library(dplyr) 
 
-# Get value range by sit
+# Calculate range + mean
 site_p450_range <- data %>%
   group_by(site_name, reporting_area) %>%
-  summarise(min_p450 = min(p450), max_p450 = max(p450))
+  summarise(min_p450 = min(p450), max_p450 = max(p450), mean_p450 = mean(p450))
 
-# Fix site name order for plotting
+# Order by site name
 site_p450_range <- site_p450_range %>%
   mutate(site_name = factor(site_name, levels = rev(sort(unique(site_name)))))
 
-# Create plot
+# Plot
 ggplot(site_p450_range, aes(y = reorder(site_name, site_name))) + 
   geom_segment(aes(x = min_p450, xend = max_p450, y = site_name, yend = site_name, color = as.factor(reporting_area)), size = 1.5) +
   geom_point(aes(x = min_p450, color = as.factor(reporting_area)), size = 3) +
@@ -84,27 +84,18 @@ ggplot(site_p450_range, aes(y = reorder(site_name, site_name))) +
 
 ```
 
-## dumbbell plot code with the log transformation
+## dumbbell - log transformed data in alphabetical order
 ```{r}
 library(ggplot2)
 library(dplyr) 
 
-# Calculate min and max P450 values per site
-site_p450_range <- data %>%
-  group_by(site_name, reporting_area) %>%
-  summarise(min_p450 = min(p450), max_p450 = max(p450))
-
-# Create a factor for site_name with levels sorted alphabetically
-site_p450_range <- site_p450_range %>%
-  mutate(site_name = factor(site_name, levels = rev(sort(unique(site_name)))))
-
-# Create the dumbbell plot with log scale and alphabetical ordering
+# Plot
 ggplot(site_p450_range, aes(y = reorder(site_name, site_name))) + 
   geom_segment(aes(x = min_p450, xend = max_p450, y = site_name, yend = site_name, color = as.factor(reporting_area)), size = 1.5) +
   geom_point(aes(x = min_p450, color = as.factor(reporting_area)), size = 3) +
   geom_point(aes(x = max_p450, color = as.factor(reporting_area)), size = 3) +
   scale_x_log10() +
-  labs(x = "P450 Activity (Log Scale)", y = "Site Name", title = "P450 Activity by Site with Reporting Area") +
+  labs(x = bquote("P450 Activity (Unit / mg"^"-1"~"protein) (Log Scale)") , y = "Site Name", title = "P450 Activity by Site with Reporting Areas") +
   theme_minimal() +
   theme(legend.position = "right") +
   scale_color_brewer(palette = "Set1", name = "Reporting Area") +
@@ -116,33 +107,27 @@ ggplot(site_p450_range, aes(y = reorder(site_name, site_name))) +
 
 ```
 
+## dumbbell - log transformed data grouped by reporting area with indicators of mean value (triangles)
 ```{r}
+
 library(ggplot2)
 library(dplyr)
 
-# Calculate min, max, and mean P450 values per site
-site_p450_range <- data %>%
-  group_by(site_name, reporting_area) %>%
-  summarise(min_p450 = min(p450), max_p450 = max(p450), mean_p450 = mean(p450))
-
-# Create a new factor for the y-axis that orders by reporting_area (descending) and site_name alphabetically, but only displays the site_name
+# Order by reporting area
 site_p450_range <- site_p450_range %>%
   mutate(site_name_ordered = factor(site_name,
                                     levels = site_p450_range %>%
                                       arrange(desc(reporting_area), site_name) %>%
                                       pull(site_name)))
 
-# Create the dumbbell plot with log scale and mean indicator
+# Plot w/ mean added
 ggplot(site_p450_range, aes(y = site_name_ordered)) +
   geom_segment(aes(x = min_p450, xend = max_p450, y = site_name_ordered, yend = site_name_ordered, color = as.factor(reporting_area)), size = 1.5) +
   geom_point(aes(x = min_p450, color = as.factor(reporting_area)), size = 3) +
   geom_point(aes(x = max_p450, color = as.factor(reporting_area)), size = 3) +
-  
-  # Add mean value as a separate point with a different shape (triangle)
   geom_point(aes(x = mean_p450), shape = 17, size = 3, color = "black") +
-  
   scale_x_log10() +
-  labs(x = "P450 Activity (Log Scale)", y = "Site Name", title = "P450 Activity by Site with Reporting Area") +
+  labs(x = bquote("P450 Activity (Unit / mg"^"-1"~"protein) (Log Scale)"), y = "Site Name", title = "P450 Activity by Site with Reporting Areas") +
   theme_minimal() +
   theme(legend.position = "right") +
   scale_color_brewer(palette = "Set1", name = "Reporting Area") +
@@ -153,127 +138,134 @@ ggplot(site_p450_range, aes(y = site_name_ordered)) +
   )
 
 ```
-## box plot - vertical
+
+## box plot - site
 ```{r}
 library(ggplot2)
 library(dplyr)
 
-# Site names are ordered in reverse alphabetical order
-data <- data %>%
-  mutate(site_name = factor(site_name, levels = rev(sort(unique(site_name)))))
+# Order by site name
+#data <- data %>%
+#  mutate(site_name = factor(site_name, levels = sort(unique(site_name))))
 
-# Create the box plot with color coding by reporting area
-ggplot(data, aes(x = p450, y = site_name, fill = as.factor(reporting_area))) +
-  geom_boxplot() +
-  scale_x_log10() +
-  labs(x = "P450 Activity (Log Scale)", y = "Site Name", title = "P450 Activity by Site with Reporting Area") +
-  theme_minimal() +
-  theme(legend.position = "right") +
-  scale_fill_brewer(palette = "Set1", name = "Reporting Area") +  # Use the same color palette for reporting areas
-  theme(
-    plot.title = element_text(hjust = 0.5),
-    axis.title.x = element_text(size = 12),
-    axis.title.y = element_text(size = 12)
-  )
-
-```
-
-## box plot - horizontal
-```{r}
-library(ggplot2)
-library(dplyr)
-
-# Ensure that the site names are ordered in reverse alphabetical order
-data <- data %>%
-  mutate(site_name = factor(site_name, levels = rev(sort(unique(site_name)))))
-
-# Create the box plot with sites on the x-axis and P450 activity on the y-axis
+# Plot
 ggplot(data, aes(x = site_name, y = p450, fill = as.factor(reporting_area))) +
   geom_boxplot() +
-  scale_y_log10() +  # Applying log scale to the y-axis for P450 values
-  labs(x = "Site Name", y = "P450 Activity (Log Scale)", title = "P450 Activity by Site with Reporting Area") +
+  labs(x = bquote("P450 Activity (Unit / mg"^"-1"~"protein)"), title = "P450 Activity by Site with Reporting Areas") +
   theme_minimal() +
   theme(legend.position = "right") +
-  scale_fill_brewer(palette = "Set1", name = "Reporting Area") +  # Use the same color palette for reporting areas
+  scale_fill_brewer(palette = "Set1", name = "Reporting Area") +
   theme(
     plot.title = element_text(hjust = 0.5),
     axis.title.x = element_text(size = 12),
     axis.title.y = element_text(size = 12),
-    axis.text.x = element_text(angle = 90, hjust = 1)  # Rotate x-axis labels for better readability
+    axis.text.x = element_text(angle = 90, hjust = 1)
+  )
+
+```
+## boxplot - reporting area
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+# Order by reporting area
+data <- data %>%
+  mutate(site_name_ordered = factor(site_name, 
+                                    levels = data %>%
+                                      arrange(reporting_area, site_name) %>%
+                                      distinct(site_name, reporting_area) %>%  
+                                      pull(site_name)))
+
+# Plot using the newly ordered site names
+ggplot(data, aes(x = site_name_ordered, y = p450, fill = as.factor(reporting_area))) +
+  geom_boxplot() +
+  labs(x = bquote("P450 Activity (Unit / mg"^"-1"~"protein)"), title = "P450 Activity by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_fill_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text.x = element_text(angle = 90, hjust = 1)
   )
 
 ```
 
-## correlation matrix with significant analytes only
+## correlation plot
 ```{r}
 
 library(corrplot)
 
-# Spearman correlations and matrix for plot
-spearman_cor_matrix <- cor(Pindv[ , 2:ncol(Pindv)], use = "complete.obs", method = "spearman")
+# Spearman correlation tests to extract p-values
+corr_results <- sapply(indv[ , 3:ncol(indv)], function(x) {
+  test <- cor.test(indv$avg_value, x, method = "spearman")
+  test$p.value  # Extract p-values
+})
+
+# Spearman correlation matrix for plotting
+spearman_cor_matrix <- cor(indv[ , 3:ncol(indv)], use = "complete.obs", method = "spearman")
 spearman_cor_avg_value <- spearman_cor_matrix["avg_value", ]
 
-# Filter for significance
-significant_analytes <- names(p_values[p_values < 0.05])
+# Filter for significance using corr_results for p-values
+significant_analytes <- names(corr_results[corr_results < 0.05])
 
-# Create matrix with significant analytes
+# New correlation matrix with only significant analytes
 significant_cor_matrix <- spearman_cor_matrix[significant_analytes, significant_analytes]
 
-# Create plot
+# Plot the correlation matrix for significant analytes
 corrplot(significant_cor_matrix, method = "circle")
-
-# Optionally, print the significant correlations
-significant_correlations <- spearman_cor_avg_value[significant_analytes]
-print(significant_correlations)
 
 ```
 
-## correlation table from the above visualization
+## correlation table
 ```{r}
-# 
+
 library(dplyr)
 library(tibble)
 
 # Spearman correlation 
-cor_results <- sapply(Pindv[ , 2:ncol(Pindv)], function(x) {
-  test <- cor.test(Pindv$avg_value, x, method = "spearman")
+cor_results <- sapply(indv[ , 3:ncol(indv)], function(x) {
+  test <- cor.test(indv$avg_value, x, method = "spearman")
   c(correlation = test$estimate, p_value = test$p.value)
 })
 
-# Only run this step again if there has been an adjustment to the inputted data and a new df needs to be made
-# Convert to data frame and fix column names
-#cor_results_df <- cor_results_df %>%
-#  rownames_to_column(var = "analyte")
+# Convert to data frame, fix column names and remove first row of old column names
+cor_results_df <- as.data.frame(t(cor_results))
 
-# Filter for significant correlations
+colnames(cor_results_df) <- c("correlation", "p_value")
+
+cor_results_df <- cor_results_df %>%
+  rownames_to_column(var = "analyte")
+
+cor_results_df <- cor_results_df %>%
+  slice(-1) 
+
+# Filter for significance and round the results
 significant_results_df <- cor_results_df %>%
   filter(p_value < 0.05)
 
-# Round the results 
 significant_results_df <- significant_results_df %>%
   mutate(correlation = round(correlation, 3),
          p_value = round(p_value, 3))
-
-# Remove the first row since it has the old 'column names' and not data
-significant_results_df <- significant_results_df %>%
-  slice(-1) 
 
 # View table
 print(significant_results_df)
 
 # Write to table
-write.csv(significant_results_df,"/Users/cmantegna/Documents/WDFWmussels/output/tables/VIZp450correlation.csv", row.names = FALSE)
-
+#write.csv(significant_results_df,"/Users/cmantegna/Documents/WDFWmussels/output/tables/VIZp450correlation.csv", row.names = FALSE)
 ```
 
-## linear regression with signficant analyte correlation
+## linear regression - signficant analytes
 ```{r}
 
 library(ggplot2)
 library(gridExtra)
 
-Pindv$reporting_area <- as.character(Pindv$reporting_area)
-# Continue site colors from earlier plots based on reporting area
+indv$reporting_area <- as.character(indv$reporting_area)
+
+# Custom colors to match other plot colors
 reporting_area_colors <- c(
   "6" = "red",
   "7" = "blue",
@@ -283,16 +275,11 @@ reporting_area_colors <- c(
   "10" = "yellow",
   "11" = "brown",
   "12" = "pink",
-  "13" = "grey",
+  "13" = "grey"
   
 )
 
-# Ensure that avg_value is still in the data frame Pindv
-if (!"avg_value" %in% colnames(Pindv)) {
-  stop("The column 'avg_value' is missing from your data frame.")
-}
-
-# Extract the names of the significant analytes from the significant_results_df
+# Only significant analytes
 significant_analytes <- significant_results_df$analyte
 
 # Create an empty list to store plots
@@ -301,27 +288,29 @@ plot_list <- list()
 # Loop through each significant analyte and create a linear regression plot
 for (analyte in significant_analytes) {
   
-  # Ensure the analyte exists in Pindv before proceeding
-  if (!analyte %in% colnames(Pindv)) {
+  # Ensure the analyte exists in df before proceeding
+  if (!analyte %in% colnames(indv)) {
     warning(paste("Analyte", analyte, "is not present in the data frame. Skipping..."))
     next
   }
   
-  # Create a linear model for each analyte against avg_value
-  model <- lm(Pindv[[analyte]] ~ Pindv$avg_value)
+  # Linear Model
+  model <- lm(indv[[analyte]] ~ indv$avg_value)
   
-  # Create plot with reporting area colors
-  p <- ggplot(Pindv, aes_string(x = "avg_value", y = analyte, color = "reporting_area")) + 
-    geom_point() +
-    geom_smooth(method = "lm", color = "black", se = FALSE) +  
-    scale_color_manual(values = reporting_area_colors) +  
-    labs(title = paste("Linear Regression: Average P450 Activity by Site vs", analyte),
-         x = "Average P450 Activity",
-         y = analyte) +
-    theme_minimal()
-  
-  # Store the plot in the list
-  plot_list[[analyte]] <- p
+  # Plot
+p <- ggplot(indv, aes_string(x = "avg_value", y = analyte, color = "reporting_area")) + 
+  geom_point() +
+  geom_smooth(method = "lm", color = "black", se = FALSE) +  
+  scale_color_manual(values = reporting_area_colors) +  
+  labs(title = paste("Linear Regression: Average P450 Activity vs", analyte),
+       x = bquote("P450 Activity (Unit / mg"^"-1"~"protein)"),
+       y = analyte) +
+  theme_minimal() +
+  theme(legend.position = "none")  # Remove the legend
+
+# Store the plot in the list
+plot_list[[analyte]] <- p
+
 }
 
 # Display the plots in a grid
@@ -329,3 +318,750 @@ do.call(grid.arrange, c(plot_list, ncol = 2))  # Adjust 'ncol' to set the number
 
 ```
 
+
+# sod
+## dumbbell - sites in alphabetical order
+```{r}
+
+library(ggplot2)
+library(dplyr) 
+
+# Calculate range + mean
+site_sod_range <- sdata %>%
+  group_by(site_name, reporting_area) %>%
+  summarise(min_sod = min(sod), max_sod = max(sod), mean_sod = mean(sod))
+
+# Order site names
+site_sod_range <- site_sod_range %>%
+  mutate(site_name = factor(site_name, levels = rev(sort(unique(site_name)))))
+
+# Plot
+ggplot(site_sod_range, aes(y = reorder(site_name, site_name))) + 
+  geom_segment(aes(x = min_sod, xend = max_sod, y = site_name, yend = site_name, color = as.factor(reporting_area)), size = 1.5) +
+  geom_point(aes(x = min_sod, color = as.factor(reporting_area)), size = 3) +
+  geom_point(aes(x = max_sod, color = as.factor(reporting_area)), size = 3) +
+  labs(x = bquote("SOD Activity (Unit / mg"^"-1"~"protein)"), y = "Site Name", title = "SOD Activity by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_color_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12)
+  )
+
+```
+
+## dumbbell - grouped by reporting area with indicators of mean value (triangles)
+```{r}
+library(ggplot2)
+library(dplyr)
+
+
+# Order by reporting area
+site_sod_range <- site_sod_range %>%
+  mutate(site_name_ordered = factor(site_name,
+                                    levels = site_sod_range %>%
+                                      arrange(desc(reporting_area), site_name) %>%
+                                      pull(site_name)))
+
+# Plot w/ mean
+ggplot(site_sod_range, aes(y = site_name_ordered)) +
+  geom_segment(aes(x = min_sod, xend = max_sod, y = site_name_ordered, yend = site_name_ordered, color = as.factor(reporting_area)), size = 1.5) +
+  geom_point(aes(x = min_sod, color = as.factor(reporting_area)), size = 3) +
+  geom_point(aes(x = max_sod, color = as.factor(reporting_area)), size = 3) +
+  geom_point(aes(x = mean_sod), shape = 17, size = 3, color = "black") +
+  labs(x = bquote("SOD Activity (Unit / mg"^"-1"~"protein)"), y = "Site Name", title = "SOD Activity by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_color_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12)
+  )
+
+```
+## box plot - site
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+# Order by site names
+data <- sdata %>%
+  mutate(site_name = factor(site_name, levels = rev(sort(unique(site_name)))))
+
+# Plot
+ggplot(data, aes(x = site_name, y = sod, fill = as.factor(reporting_area))) +
+  geom_boxplot() +
+  labs(x = bquote("SOD Activity (Unit / mg"^"-1"~"protein)"), y = "Site Name", title = "SOD Activity by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_fill_brewer(palette = "Set1", name = "Reporting Area") +  
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text.x = element_text(angle = 90, hjust = 1) 
+  )
+
+```
+
+## box plot - reporting area
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+# Order by reporting area
+data <- sdata %>%
+  mutate(site_name_ordered = factor(site_name, 
+                                    levels = data %>%
+                                      arrange(reporting_area, site_name) %>%
+                                      distinct(site_name, reporting_area) %>%  
+                                      pull(site_name)))
+
+# Plot using the newly ordered site names
+ggplot(data, aes(x = site_name_ordered, y = sod, fill = as.factor(reporting_area))) +
+  geom_boxplot() +
+  labs(x = bquote("SOD Activity (Unit / mg"^"-1"~"protein)"), y = "Site Name", title = "SOD Activity by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_fill_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text.x = element_text(angle = 90, hjust = 1)
+  )
+
+```
+
+## correlation matrix with significant analytes only
+```{r}
+
+library(corrplot)
+
+# Spearman correlation tests to extract p-values
+Scor_results <- sapply(Sindv[ , 3:ncol(Sindv)], function(x) {
+  test <- cor.test(Sindv$avg_value, x, method = "spearman")
+  test$p.value  # Extract p-values
+})
+
+# Spearman correlation matrix for plotting
+Sspearman_cor_matrix <- cor(Sindv[ , 3:ncol(Sindv)], use = "complete.obs", method = "spearman")
+Sspearman_cor_avg_value <- Sspearman_cor_matrix["avg_value", ]
+
+# Filter for significance using corr_results for p-values
+Ssignificant_analytes <- names(Scor_results[Scor_results < 0.05])
+
+# New correlation matrix with only significant analytes
+Ssignificant_cor_matrix <- Sspearman_cor_matrix[Ssignificant_analytes, Ssignificant_analytes]
+
+# Plot the correlation matrix for significant analytes
+corrplot(Ssignificant_cor_matrix, method = "circle")
+
+```
+
+## correlation table
+```{r}
+
+library(dplyr)
+library(tibble)
+
+# Spearman correlation 
+Scor_results <- sapply(Sindv[ , 3:ncol(Sindv)], function(x) {
+  test <- cor.test(Sindv$avg_value, x, method = "spearman")
+  c(correlation = test$estimate, p_value = test$p.value)
+})
+
+# Convert to data frame, fix column names and remove first row of old column names
+Scor_results_df <- as.data.frame(t(Scor_results))
+
+colnames(Scor_results_df) <- c("correlation", "p_value")
+
+Scor_results_df <- Scor_results_df %>%
+  rownames_to_column(var = "analyte")
+
+Scor_results_df <- Scor_results_df %>%
+  slice(-1) 
+
+# Filter for significance and round the results
+Ssignificant_results_df <- Scor_results_df %>%
+  filter(p_value < 0.05)
+
+Ssignificant_results_df <- Ssignificant_results_df %>%
+  mutate(correlation = round(correlation, 3),
+         p_value = round(p_value, 3))
+
+# View table
+print(Ssignificant_results_df)
+
+# Write to table
+#write.csv(Ssignificant_results_df,"/Users/cmantegna/Documents/WDFWmussels/output/tables/VIZsodcorrelation.csv", row.names = FALSE)
+
+```
+
+## linear regression with signficant analyte correlation
+```{r}
+
+library(ggplot2)
+library(gridExtra)
+
+Sindv$reporting_area <- as.character(Sindv$reporting_area)
+
+# Custom colors to match other plot colors
+reporting_area_colors <- c(
+  "6" = "red",
+  "7" = "blue",
+  "8.1" = "green",
+  "8.2" = "purple",
+  "9" = "orange",
+  "10" = "yellow",
+  "11" = "brown",
+  "12" = "pink",
+  "13" = "grey"
+  
+)
+
+
+# Only significant analytes
+Ssignificant_analytes <- Ssignificant_results_df$analyte
+
+# Create an empty list to store plots
+plot_list <- list()
+
+# Loop through each significant analyte and create a linear regression plot
+for (analyte in Ssignificant_analytes) {
+  
+  # Ensure the analyte exists in df before proceeding
+  if (!analyte %in% colnames(Sindv)) {
+    warning(paste("Analyte", analyte, "is not present in the data frame. Skipping..."))
+    next
+  }
+  
+  # Linear Model
+  model <- lm(Sindv[[analyte]] ~ Sindv$avg_value)
+  
+  # Plot
+p <- ggplot(Sindv, aes_string(x = "avg_value", y = analyte, color = "reporting_area")) + 
+  geom_point() +
+  geom_smooth(method = "lm", color = "black", se = FALSE) +  
+  scale_color_manual(values = reporting_area_colors) +  
+  labs(title = paste("Linear Regression: Average SOD Activity vs", analyte),
+       x = bquote("SOD Activity (Unit / mg"^"-1"~"protein)"),
+       y = analyte) +
+  theme_minimal() +
+  theme(legend.position = "none")  # Remove the legend
+
+# Store the plot in the list
+plot_list[[analyte]] <- p
+
+}
+
+# Display the plots in a grid
+do.call(grid.arrange, c(plot_list, ncol = 3)) 
+
+```
+
+
+# shell thickness (at)
+## dumbbell - original data in alphabetical order
+```{r}
+
+library(ggplot2)
+library(dplyr) 
+
+# Calculate range + mean
+site_at_range <- mdata %>%
+  group_by(site_name, reporting_area) %>%
+  summarise(min_at = min(at), max_at = max(at), mean_at = mean(at))
+
+# Order by site name
+site_at_range <- site_at_range %>%
+  mutate(site_name = factor(site_name, levels = rev(sort(unique(site_name)))))
+
+# Plot
+ggplot(site_at_range, aes(y = reorder(site_name, site_name))) + 
+  geom_segment(aes(x = min_at, xend = max_at, y = site_name, yend = site_name, color = as.factor(reporting_area)), size = 1.5) +
+  geom_point(aes(x = min_at, color = as.factor(reporting_area)), size = 3) +
+  geom_point(aes(x = max_at, color = as.factor(reporting_area)), size = 3) +
+  labs(x = "Shell Thickness (mm)", y = "Site Name", title = "Shell Thickness by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_color_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12)
+  )
+
+```
+
+## dumbbell - reporting area with indicators of mean value (triangles)
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+# Order by reporting area
+site_at_range <- site_at_range %>%
+  mutate(site_name_ordered = factor(site_name,
+                                    levels = site_at_range %>%
+                                      arrange(desc(reporting_area), site_name) %>%
+                                      pull(site_name)))
+
+# Plot w/ mean added
+ggplot(site_at_range, aes(y = site_name_ordered)) +
+  geom_segment(aes(x = min_at, xend = max_at, y = site_name_ordered, yend = site_name_ordered, color = as.factor(reporting_area)), size = 1.5) +
+  geom_point(aes(x = min_at, color = as.factor(reporting_area)), size = 3) +
+  geom_point(aes(x = max_at, color = as.factor(reporting_area)), size = 3) +
+  geom_point(aes(x = mean_at), shape = 17, size = 3, color = "black") +
+  labs(x = "Shell Thickness (mm)", y = "Site Name", title = "Shell Thickness by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_color_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12)
+  )
+
+```
+## box plot - site
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+# Order by site names
+data <- mdata %>%
+  mutate(site_name = factor(site_name, levels = rev(sort(unique(site_name)))))
+
+# Plot
+ggplot(data, aes(x = site_name, y = at, fill = as.factor(reporting_area))) +
+  geom_boxplot() +
+  labs(x = "Shell Thickness (mm)", y = "Site Name", title = "Shell Thickness by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_fill_brewer(palette = "Set1", name = "Reporting Area") +  
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text.x = element_text(angle = 90, hjust = 1) 
+  )
+
+```
+
+## box plot - reporting area
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+# Order by reporting area
+data <- mdata %>%
+  mutate(site_name_ordered = factor(site_name, 
+                                    levels = data %>%
+                                      arrange(reporting_area, site_name) %>%
+                                      distinct(site_name, reporting_area) %>%  
+                                      pull(site_name)))
+
+# Plot using the newly ordered site names
+ggplot(data, aes(x = site_name_ordered, y = at, fill = as.factor(reporting_area))) +
+  geom_boxplot() +
+  labs(x = "Shell Thickness (mm)", y = "Site Name", title = "Shell Thickness by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_fill_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text.x = element_text(angle = 90, hjust = 1)
+  )
+```
+
+## correlation matrix with significant analytes only
+```{r}
+
+library(corrplot)
+
+# Spearman correlation tests to extract p-values
+Mcor_results <- sapply(Mindv[ , 3:ncol(Mindv)], function(x) {
+  test <- cor.test(Mindv$avg_at, x, method = "spearman")
+  test$p.value  # Extract p-values
+})
+
+# Spearman correlation matrix for plotting
+Mspearman_cor_matrix <- cor(Mindv[ , 3:ncol(Mindv)], use = "complete.obs", method = "spearman")
+Mspearman_cor_avg_value <- Mspearman_cor_matrix["avg_at", ]
+
+# Filter for significance using corr_results for p-values
+Msignificant_analytes <- names(Mcor_results[Mcor_results < 0.05])
+
+# New correlation matrix with only significant analytes
+Msignificant_cor_matrix <- Mspearman_cor_matrix[Msignificant_analytes, Msignificant_analytes]
+
+# Plot the correlation matrix for significant analytes
+corrplot(Msignificant_cor_matrix, method = "circle")
+
+```
+
+## correlation table
+```{r}
+
+library(dplyr)
+library(tibble)
+
+# Spearman correlation 
+Mcor_results <- sapply(Mindv[ , 3:ncol(Mindv)], function(x) {
+  test <- cor.test(Mindv$avg_at, x, method = "spearman")
+  c(correlation = test$estimate, p_value = test$p.value)
+})
+
+# Convert to data frame, fix column names and remove first row of old column names
+Mcor_results_df <- as.data.frame(t(Mcor_results))
+
+colnames(Mcor_results_df) <- c("correlation", "p_value")
+
+Mcor_results_df <- Mcor_results_df %>%
+  rownames_to_column(var = "analyte")
+
+Mcor_results_df <- Mcor_results_df %>%
+  slice(-1) 
+
+# Filter for significance and round the results
+Msignificant_results_df <- Mcor_results_df %>%
+  filter(p_value < 0.05)
+
+Msignificant_results_df <- Msignificant_results_df %>%
+  mutate(correlation = round(correlation, 3),
+         p_value = round(p_value, 3))
+
+# View table
+print(Msignificant_results_df)
+
+# Write to table
+#write.csv(Msignificant_results_df,"/Users/cmantegna/Documents/WDFWmussels/output/tables/VIZatcorrelation.csv", row.names = FALSE)
+
+```
+
+## linear regression with signficant analyte correlation
+```{r}
+
+library(ggplot2)
+library(gridExtra)
+
+Mindv$reporting_area <- as.character(Mindv$reporting_area)
+
+# Custom colors to match other plot colors
+reporting_area_colors <- c(
+  "6" = "red",
+  "7" = "blue",
+  "8.1" = "green",
+  "8.2" = "purple",
+  "9" = "orange",
+  "10" = "yellow",
+  "11" = "brown",
+  "12" = "pink",
+  "13" = "grey"
+  
+)
+
+
+# Only significant analytes
+Msignificant_analytes <- Msignificant_results_df$analyte
+
+# Create an empty list to store plots
+plot_list <- list()
+
+# Loop through each significant analyte and create a linear regression plot
+for (analyte in Msignificant_analytes) {
+  
+  # Ensure the analyte exists in df before proceeding
+  if (!analyte %in% colnames(Mindv)) {
+    warning(paste("Analyte", analyte, "is not present in the data frame. Skipping..."))
+    next
+  }
+  
+  # Linear Model
+  model <- lm(Mindv[[analyte]] ~ Mindv$avg_at)
+  
+  # Plot
+p <- ggplot(Mindv, aes_string(x = "avg_at", y = analyte, color = "reporting_area")) + 
+  geom_point() +
+  geom_smooth(method = "lm", color = "black", se = FALSE) +  
+  scale_color_manual(values = reporting_area_colors) +  
+  labs(title = paste("Linear Regression: Shell Thickness vs", analyte),
+       x = "Shell Thickness (mm)",
+       y = analyte) +
+  theme_minimal() +
+  theme(legend.position = "none")  # Remove the legend
+
+# Store the plot in the list
+plot_list[[analyte]] <- p
+
+}
+
+# Display the plots in a grid
+do.call(grid.arrange, c(plot_list, ncol = 4)) 
+
+```
+
+# condition factor (cf)
+## dumbbell - original data in alphabetical order
+```{r}
+
+library(ggplot2)
+library(dplyr) 
+
+# Calculate range + mean
+site_cf_range <- mdata %>%
+  group_by(site_name, reporting_area) %>%
+  summarise(min_cf = min(cf), max_cf = max(cf), mean_cf = mean(cf))
+
+# Order by site name
+site_cf_range <- site_at_range %>%
+  mutate(site_name = factor(site_name, levels = rev(sort(unique(site_name)))))
+
+# Plot
+ggplot(site_cf_range, aes(y = reorder(site_name, site_name))) + 
+  geom_segment(aes(x = min_cf, xend = max_cf, y = site_name, yend = site_name, color = as.factor(reporting_area)), size = 1.5) +
+  geom_point(aes(x = min_cf, color = as.factor(reporting_area)), size = 3) +
+  geom_point(aes(x = max_cf, color = as.factor(reporting_area)), size = 3) +
+  labs(x = "Condition Factor", y = "Site Name", title = "Condition Factor by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_color_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12)
+  )
+
+```
+
+## dumbbell - reporting area with indicators of mean value (triangles)
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+# Order by reporting area
+site_cf_range <- site_cf_range %>%
+  mutate(site_name_ordered = factor(site_name,
+                                    levels = site_cf_range %>%
+                                      arrange(desc(reporting_area), site_name) %>%
+                                      pull(site_name)))
+
+# Plot w/ mean added
+ggplot(site_cf_range, aes(y = site_name_ordered)) +
+  geom_segment(aes(x = min_cf, xend = max_cf, y = site_name_ordered, yend = site_name_ordered, color = as.factor(reporting_area)), size = 1.5) +
+  geom_point(aes(x = min_cf, color = as.factor(reporting_area)), size = 3) +
+  geom_point(aes(x = max_cf, color = as.factor(reporting_area)), size = 3) +
+  geom_point(aes(x = mean_cf), shape = 17, size = 3, color = "black") +
+  labs(x = "Condition Factor", y = "Site Name", title = "Condition Factor by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_color_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12)
+  )
+
+```
+
+## box plot - site
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+# Order by site names
+data <- mdata %>%
+  mutate(site_name = factor(site_name, levels = rev(sort(unique(site_name)))))
+
+# Plot
+ggplot(data, aes(x = site_name, y = cf, fill = as.factor(reporting_area))) +
+  geom_boxplot() +
+  labs(x = "Condition Factor", y = "Site Name", title = "Condition Factor by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_fill_brewer(palette = "Set1", name = "Reporting Area") +  
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text.x = element_text(angle = 90, hjust = 1) 
+  )
+
+```
+
+## box plot - reporting area
+```{r}
+
+library(ggplot2)
+library(dplyr)
+
+# Order by reporting area
+data <- mdata %>%
+  mutate(site_name_ordered = factor(site_name, 
+                                    levels = data %>%
+                                      arrange(reporting_area, site_name) %>%
+                                      distinct(site_name, reporting_area) %>%  
+                                      pull(site_name)))
+
+# Plot using the newly ordered site names
+ggplot(data, aes(x = site_name_ordered, y = cf, fill = as.factor(reporting_area))) +
+  geom_boxplot() +
+  labs(x = "Condition Factor", y = "Site Name", title = "Condition Factor by Site with Reporting Areas") +
+  theme_minimal() +
+  theme(legend.position = "right") +
+  scale_fill_brewer(palette = "Set1", name = "Reporting Area") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_text(size = 12),
+    axis.title.y = element_text(size = 12),
+    axis.text.x = element_text(angle = 90, hjust = 1)
+  )
+```
+
+## correlation matrix with significant analytes only
+```{r}
+
+library(corrplot)
+
+# Spearman correlation tests to extract p-values
+Mcor_results <- sapply(Mindv[ , 3:ncol(Mindv)], function(x) {
+  test <- cor.test(Mindv$avg_value, x, method = "spearman")
+  test$p.value  # Extract p-values
+})
+
+# Spearman correlation matrix for plotting
+Mspearman_cor_matrix <- cor(Sindv[ , 3:ncol(Mindv)], use = "complete.obs", method = "spearman")
+Mspearman_cor_avg_value <- Mspearman_cor_matrix["avg_value", ]
+
+# Filter for significance using corr_results for p-values
+Msignificant_analytes <- names(Mcorr_results[Mcor_results < 0.05])
+
+# New correlation matrix with only significant analytes
+Msignificant_cor_matrix <- Mspearman_cor_matrix[Msignificant_analytes, Msignificant_analytes]
+
+# Plot the correlation matrix for significant analytes
+corrplot(Msignificant_cor_matrix, method = "circle")
+
+```
+
+## correlation table
+```{r}
+
+library(dplyr)
+library(tibble)
+
+# Spearman correlation 
+Scor_results <- sapply(Sindv[ , 3:ncol(Sindv)], function(x) {
+  test <- cor.test(Sindv$avg_value, x, method = "spearman")
+  c(correlation = test$estimate, p_value = test$p.value)
+})
+
+# Convert to data frame, fix column names and remove first row of old column names
+Scor_results_df <- as.data.frame(t(Scor_results))
+
+colnames(Scor_results_df) <- c("correlation", "p_value")
+
+Scor_results_df <- Scor_results_df %>%
+  rownames_to_column(var = "analyte")
+
+Scor_results_df <- Scor_results_df %>%
+  slice(-1) 
+
+# Filter for significance and round the results
+Ssignificant_results_df <- Scor_results_df %>%
+  filter(p_value < 0.05)
+
+Ssignificant_results_df <- Ssignificant_results_df %>%
+  mutate(correlation = round(correlation, 3),
+         p_value = round(p_value, 3))
+
+# View table
+print(Ssignificant_results_df)
+
+# Write to table
+#write.csv(Ssignificant_results_df,"/Users/cmantegna/Documents/WDFWmussels/output/tables/VIZsodcorrelation.csv", row.names = FALSE)
+
+```
+```{r}
+
+# View table
+print(significant_results_df)
+
+# Write to table
+#write.csv(significant_results_df,"/Users/cmantegna/Documents/WDFWmussels/output/tables/VIZp450correlation.csv", row.names = FALSE)
+
+```
+
+## linear regression with signficant analyte correlation
+```{r}
+
+library(ggplot2)
+library(gridExtra)
+
+Sindv$reporting_area <- as.character(Sindv$reporting_area)
+
+# Custom colors to match other plot colors
+reporting_area_colors <- c(
+  "6" = "red",
+  "7" = "blue",
+  "8.1" = "green",
+  "8.2" = "purple",
+  "9" = "orange",
+  "10" = "yellow",
+  "11" = "brown",
+  "12" = "pink",
+  "13" = "grey"
+  
+)
+
+
+# Only significant analytes
+Ssignificant_analytes <- Ssignificant_results_df$analyte
+
+# Create an empty list to store plots
+plot_list <- list()
+
+# Loop through each significant analyte and create a linear regression plot
+for (analyte in Ssignificant_analytes) {
+  
+  # Ensure the analyte exists in df before proceeding
+  if (!analyte %in% colnames(Sindv)) {
+    warning(paste("Analyte", analyte, "is not present in the data frame. Skipping..."))
+    next
+  }
+  
+  # Linear Model
+  model <- lm(Sindv[[analyte]] ~ Sindv$avg_value)
+  
+  # Plot
+p <- ggplot(Sindv, aes_string(x = "avg_value", y = analyte, color = "reporting_area")) + 
+  geom_point() +
+  geom_smooth(method = "lm", color = "black", se = FALSE) +  
+  scale_color_manual(values = reporting_area_colors) +  
+  labs(title = paste("Linear Regression: Average SOD Activity vs", analyte),
+       x = bquote("SOD Activity (Unit / mg"^"-1"~"protein)"),
+       y = analyte) +
+  theme_minimal() +
+  theme(legend.position = "none")  # Remove the legend
+
+# Store the plot in the list
+plot_list[[analyte]] <- p
+
+}
+
+# Display the plots in a grid
+do.call(grid.arrange, c(plot_list, ncol = 3)) 
+
+```
