@@ -1,74 +1,74 @@
-"site_name","avg_at","avg_cf"
-"Aiston Preserve",0.81125,0.161325
-"Arroyo Beach",0.87,0.175716666666667
-"Blair Waterway",0.83875,0.1905
-"Blair Waterway #2",0.8575,0.146175
-"Brackenwood Ln",0.67125,0.195275
-"Broad Spit (Fisherman's Point)",0.66375,0.173625
-"Browns Point Lighthouse",0.84875,0.1903
-"Cap Sante",0.79,0.141325
-"Chambers Bay Park",1.05625,0.150475
+site_name,avg_at,avg_cf
+Aiston Preserve,0.81125,0.161325
+Arroyo Beach,0.87,0.175716667
+Blair Waterway,0.83875,0.1905
+Blair Waterway #2,0.8575,0.146175
+Brackenwood Ln,0.67125,0.195275
+Broad Spit (Fisherman's Point),0.66375,0.173625
+Browns Point Lighthouse,0.84875,0.1903
+Cap Sante,0.79,0.141325
+Chambers Bay Park,1.05625,0.150475
 "Cherry Point Aquatic Reserve, Conoco Phillips",0.86875,0.1539
-"Chimacum Creek delta",0.90375,0.166225
+Chimacum Creek delta,0.90375,0.166225
 "Chuckanut, Clark's Point",0.7275,0.176225
-"Comm Bay Skookum",0.755,0.1536
+Comm Bay Skookum,0.755,0.1536
 "Comm Bay, Dick Gilmur Launch",0.8325,0.18665
 "Comm Bay, Milwaukee Waterway",0.821,0.1606
-"Des Moines Marina",0.995,0.160925
-"Discovery Bay",0.79375,0.193375
-"Donkey Creek Delta",0.73375,0.180325
-"Eagle Harbor Dr",0.8925,0.18125
+Des Moines Marina,0.995,0.160925
+Discovery Bay,0.79375,0.193375
+Donkey Creek Delta,0.73375,0.180325
+Eagle Harbor Dr,0.8925,0.18125
 "Eastsound, Fishing Bay",0.465,0.147625
-"Edmonds Ferry",0.69,0.1806
-"Edmonds Marina",0.765,0.162375
-"Eld Inlet",0.7075,0.21035
-"Elliot Bay Myrtle Edwards",0.824,0.18824
+Edmonds Ferry,0.69,0.1806
+Edmonds Marina,0.765,0.162375
+Eld Inlet,0.7075,0.21035
+Elliot Bay Myrtle Edwards,0.824,0.18824
 "Elliott Bay, Harbor Island, Pier 17",0.85625,0.16225
-"Everett Harbor",0.77625,0.14555
+Everett Harbor,0.77625,0.14555
 "Fidalgo Bay Aq Reserve, Weaverling Spit",0.7625,0.184
-"Filucy Bay",0.85625,0.159275
-"Friday Harbor",0.75,0.14544
-"Gig Harbor Boat Launch",0.965,0.15425
-"Hood Canal Holly",0.676666666666667,0.1902
-"Jamestown",0.573333333333333,0.173883333333333
-"Kingston Marina",0.81125,0.165525
-"Kitsap St Boat Launch",0.8325,0.17555
-"Kopachuck State Park",0.7775,0.52565
-"Lions Park",0.75,0.14805
-"Locust Beach",0.6875,0.169575
-"Madrona Pont",0.805,0.155625
+Filucy Bay,0.85625,0.159275
+Friday Harbor,0.75,0.14544
+Gig Harbor Boat Launch,0.965,0.15425
+Hood Canal Holly,0.676666667,0.1902
+Jamestown,0.573333333,0.173883333
+Kingston Marina,0.81125,0.165525
+Kitsap St Boat Launch,0.8325,0.17555
+Kopachuck State Park,0.7775,0.15353
+Lions Park,0.75,0.14805
+Locust Beach,0.6875,0.169575
+Madrona Pont,0.805,0.155625
 "Manchester, Stormwater Outfall",0.60625,0.198825
-"Maple Hollow Park",0.775,0.184125
-"Maristone Island",0.699166666666667,0.1881
-"Meyer's Point - Henderson Inlet",0.78875,0.178525
-"Miller Creek",0.82125,0.1893
-"Minter Bay",0.9175,0.17415
-"Mukilteo",0.79125,0.1532
-"N Avenue Park",0.8225,0.18215
-"North Camano",0.7675,0.179575
-"Oak Bay County Park",0.77375,0.17445
-"Penn Cove Reference",0.60625,0.195125
-"Pennrose Point State Park",0.8575,0.180575
-"Point Defiance Ferry",0.83875,0.1761
-"Purdy - Dexters",0.84375,0.168025
+Maple Hollow Park,0.775,0.184125
+Maristone Island,0.699166667,0.1881
+Meyer's Point - Henderson Inlet,0.78875,0.178525
+Miller Creek,0.82125,0.1893
+Minter Bay,0.9175,0.17415
+Mukilteo,0.79125,0.1532
+N Avenue Park,0.8225,0.18215
+North Camano,0.7675,0.179575
+Oak Bay County Park,0.77375,0.17445
+Penn Cove Reference,0.60625,0.195125
+Pennrose Point State Park,0.8575,0.180575
+Point Defiance Ferry,0.83875,0.1761
+Purdy - Dexters,0.84375,0.168025
 "Purdy, Burley Lagoon",0.915,0.189675
-"Raft Island Park",0.65375,0.170975
-"Reach Island",0.77,0.16865
-"Rich Passage",0.81,0.16595
-"Rocky Point",0.68875,0.178175
-"S of Skunk Island",0.78625,0.172025
+Raft Island Park,0.65375,0.170975
+Reach Island,0.77,0.16865
+Rich Passage,0.81,0.16595
+Rocky Point,0.68875,0.178175
+S of Skunk Island,0.78625,0.172025
 "Salmon Bay, Commodore Park",0.7075,0.19215
-"Salmon Beach",0.86375,0.16055
+Salmon Beach,0.86375,0.16055
 "Seattle Aquarium, Pier 59",0.8425,0.176275
-"Shilshole Bay",0.55625,0.15135
+Shilshole Bay,0.55625,0.15135
 "Silverdale, Dyes Inlet",0.6875,0.18485
-"Skiff Point",0.55875,0.175775
+Skiff Point,0.55875,0.175775
 "Smith Cove, Terminal 91",0.74,0.1822
-"Squaxin Island",0.85625,0.17425
-"Suquamish Stormwater Outfall",1.02125,0.180425
-"Thea Foss Waterway",0.897,0.14776
-"Three Tree Point",0.8125,0.208425
-"Tulalip Bay",0.874166666666667,0.176166666666667
-"Tulalip Reservation",0.78375,0.16805
-"West Bay Park",0.7725,0.182525
-"Williams Olson Park",0.67125,0.161975
+Squaxin Island,0.85625,0.17425
+Suquamish Stormwater Outfall,1.02125,0.180425
+Thea Foss Waterway,0.897,0.14776
+Three Tree Point,0.8125,0.208425
+Tulalip Bay,0.874166667,0.176166667
+Tulalip Reservation,0.78375,0.16805
+West Bay Park,0.7725,0.182525
+Williams Olson Park,0.67125,0.161975
