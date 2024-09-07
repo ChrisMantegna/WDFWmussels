@@ -59,8 +59,6 @@ metal <- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_metals.cs
 ## test for normality. Data is not normally distributed.
 ```{r}
 
-
-
 shapiro.test(pdata$p450)
 
 ```
@@ -81,26 +79,12 @@ Reporting Areas Are:\
 ```{r}
 
 #test for significant interaction
-
-# Change to character for the kw test 
-pdata$PAHgroup <- as.character(pdata$PAHgroup3)
-pdata$PAHgroup2 <- as.character(pdata$PAHgroup4)
+pdata$PAHgroup8 <- as.character(pdata$PAHgroup8)
 
 kruskal.test(p450 ~ site_name, data = pdata)
 kruskal.test(p450 ~ reporting_area, data = pdata)
-kruskal.test(p450 ~ PAHgroup3, data = pdata)
-kruskal.test(p450 ~ PAHgroup4, data = pdata)
-
-```
-
-## PAH groups
-```{r}
-
-pdata$PAHgroup3 <- as.character(pdata$PAHgroup6)
-pdata$PAHgroup3 <- as.character(pdata$PAHgroup8)
-
-kruskal.test(p450 ~ PAHgroup6, data = pdata)
 kruskal.test(p450 ~ PAHgroup8, data = pdata)
+
 ```
 
 # Dunn Test (post hoc)
@@ -155,6 +139,15 @@ mc_group8 <- data.frame(
 ```
 
 # Correlation
+## sod
+```{r}
+
+# no correlation
+correlation_result <- cor.test(indv$avg_value, indv$avg_sod, method = "spearman")
+print(correlation_result)
+
+```
+
 ## sumPAH, lmwPAH, hmwPAH and PAH16
 ### No correlations are significant
 ```{r}
@@ -219,7 +212,6 @@ print(correlation_result)
 
 ## Metals
 ## mercury, arsenic, cadmium, copper, lead and zinc
-### Positive correlation to mercury (p-value = 0.01882)
 ```{r}
 
 # Correlation of 0.2725316, p-value = 0.01882

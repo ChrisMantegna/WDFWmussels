@@ -220,6 +220,7 @@ ggplot(data, aes(x = site_name_ordered, y = p450, fill = as.factor(reporting_are
 ```
 
 ## boxplot - PAH group 8
+### fix plotting order - it's backwards
 ```{r}
 
 library(ggplot2)

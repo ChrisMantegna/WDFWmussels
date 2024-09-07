@@ -44,8 +44,6 @@ library(vegan)
 
 #getwd()
 data <- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/soddata.csv")
-both<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/both_biomarkers_only.csv")
-avg_both<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avg_both_biomarkers.csv")
 sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD.csv")
 indv<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_analytes.csv")
 summed<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_analytes2.csv")
@@ -98,8 +96,6 @@ Reporting Areas Are:\
 
 data$PAHgroup8 <- as.character(data$PAHgroup8)
 
-kruskal.test(sod ~ p450, data = both)
-kruskal.test(p450 ~ sod, data = both)
 kruskal.test(sod ~ site_name, data = data)
 kruskal.test(sod ~ reporting_area, data = data)
 kruskal.test(sod ~ PAHgroup8, data = data)
@@ -108,7 +104,6 @@ kruskal.test(sod ~ PAHgroup8, data = data)
 
 
 # Dunn Test (post hoc)
-## full data
 
 ```{r}
 library(dunn.test)
@@ -138,30 +133,27 @@ mc_site <- data.frame(
 # Correlation
 
 ## biomarkers
-### No correlations
 ```{r}
 
 # negative correlation (corr= -0.3256127, p-value = 0.004821)
-correlation_result <- cor.test(avg_both$avg_p450, avg_both$avg_sod, method = "spearman")
+correlation_result <- cor.test(summed$avg_p450, summed$avg_value, method = "spearman")
 print(correlation_result)
 
 ```
-
-# Correlation
 
 ## sumPAH, lmwPAH, hmwPAH and PAH16
 ### No correlations
 ```{r}
 
-# no correlation
+# correlated
 correlation_result <- cor.test(summed$avg_value, summed$sumPAH, method = "spearman")
 print(correlation_result)
 
-# no correlation
+# correlated
 correlation_result <- cor.test(summed$avg_value, summed$lmwPAH, method = "spearman")
 print(correlation_result)
 
-# no correlation
+# correlated
 correlation_result <- cor.test(summed$avg_value, summed$hmwPAH, method = "spearman")
 print(correlation_result)
 
@@ -172,24 +164,22 @@ print(correlation_result)
 ```
 
 ## sum42PAH and sumPCB
-### No correlations
 ```{r}
 
-# no correlation
+# correlated
 correlation_result <- cor.test(summed$avg_value, summed$sum42PAH, method = "spearman")
 print(correlation_result)
 
-# no correlation
+# correlated
 correlation_result <- cor.test(summed$avg_value, summed$sumPCB, method = "spearman")
 print(correlation_result)
 
 ```
 
 ## other summed analytes
-### No correlation
 ```{r}
 
-# correlation
+# correlated
 correlation_result <- cor.test(summed$avg_value, summed$sum40CB, method = "spearman")
 print(correlation_result)
 
@@ -201,7 +191,7 @@ print(correlation_result)
 correlation_result <- cor.test(summed$avg_value, summed$sumCHLD, method = "spearman")
 print(correlation_result)
 
-# no correlation
+# correlated
 correlation_result <- cor.test(summed$avg_value, summed$sumDDT, method = "spearman")
 print(correlation_result)
 
@@ -211,7 +201,6 @@ print(correlation_result)
 ```
 
 ## mercury, arsenic, cadmium, copper, lead and zinc
-### No correlation
 ```{r}
 
 # no correlation

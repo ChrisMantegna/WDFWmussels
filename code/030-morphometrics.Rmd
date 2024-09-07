@@ -86,23 +86,11 @@ Reporting Areas Are:\
 
 #test for significant differences - cf
 
-data$PAHgroup3 <- as.character(data$PAHgroup3)
-data$PAHgroup4 <- as.character(data$PAHgroup4)
+data$PAHgroup8 <- as.character(data$PAHgroup8)
+
 
 kruskal.test(cf ~ site_name, data = data)
 kruskal.test(cf ~ reporting_area, data = data)
-kruskal.test(cf ~ PAHgroup3, data = data)
-kruskal.test(cf ~ PAHgroup4, data = data)
-
-```
-
-## cf- PAH groups 6 & 8 - Kruskal-Wallis (non-parametric data)
-```{r}
-
-data$PAHgroup6 <- as.character(data$PAHgroup6)
-data$PAHgroup8 <- as.character(data$PAHgroup8)
-
-kruskal.test(cf ~ PAHgroup6, data = data)
 kruskal.test(cf ~ PAHgroup8, data = data)
 
 ```
@@ -147,9 +135,7 @@ write.csv(mc_reporting, "/Users/cmantegna/Documents/WDFWmussels/output/tables/Si
 
 #test for significant differences - at
 data$reporting_area <- as.character(data$reporting_area)
-data$PAHgroup3 <- as.character(data$PAHgroup3)
-data$PAHgroup4 <- as.character(data$PAHgroup4)
-
+data$PAHgroup8 <- as.character(data$PAHgroup8)
 
 anova_site <- aov(at ~ site_name, data = data)
 summary(anova_site)
@@ -157,33 +143,14 @@ summary(anova_site)
 anova_ra <- aov(at ~ reporting_area, data = data)
 summary(anova_ra)
 
-anova_group3 <- aov(at ~ PAHgroup3, data = data)
-summary(anova_group3)
-
-anova_group4 <- aov(at ~ PAHgroup4, data = data)
-summary(anova_group4)
-
-```
-
-## PAH group 6-8
-```{r}
-
-data$PAHgroup6 <- as.character(data$PAHgroup6)
-data$PAHgroup8 <- as.character(data$PAHgroup8)
-
-anova_group6 <- aov(at ~ PAHgroup6, data = data)
-summary(anova_group6)
-
 anova_group8 <- aov(at ~ PAHgroup8, data = data)
 summary(anova_group8)
-```
 
+```
 
 ## at- TukeyHSD (post hoc)
 ### Site: significant differences between 112 pairwise comparisons.
 ### Reporting Areas: significant differences between 7 pairwise comparisons.
-### PAH Group 4: significant differences between 2 pairwise comparisons.
-### PAH Group 6: significant differences between 4 pairwise comparisons.
 ### PAH Group 8: significant differences between 3 pairwise comparisons.
 ```{r}
 
@@ -202,18 +169,6 @@ ttable_ra<- tidy(tukey_ra)
 sigttable_ra <- ttable_ra %>% filter(adj.p.value < 0.05)
 write.csv(sigttable_ra, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessRA.csv", row.names = FALSE)
 
-#PAH Group 4
-tukey_group4<- TukeyHSD(anova_group4)
-ttable_group4<- tidy(tukey_group4)
-sigttable_group4 <- ttable_group4 %>% filter(adj.p.value < 0.05)
-write.csv(sigttable_group4, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessGROUP4.csv", row.names = FALSE)
-
-#PAH Group 6
-tukey_group6<- TukeyHSD(anova_group6)
-ttable_group6<- tidy(tukey_group6)
-sigttable_group6 <- ttable_group6 %>% filter(adj.p.value < 0.05)
-write.csv(sigttable_group6, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessGROUP6.csv", row.names = FALSE)
-
 #PAH Group 8
 tukey_group8<- TukeyHSD(anova_group8)
 ttable_group8<- tidy(tukey_group8)
@@ -221,11 +176,21 @@ sigttable_group8 <- ttable_group8 %>% filter(adj.p.value < 0.05)
 write.csv(sigttable_group8, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantThicknessGROUP8.csv", row.names = FALSE)
 ```
 
-
 # Correlations
+## cf - biomarkers
+```{r}
+
+# no correlation
+correlation_result <- cor.test(summed$avg_cf, summed$avg_p450, method = "spearman")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(summed$avg_cf, summed$avg_sod, method = "spearman")
+print(correlation_result)
+
+```
 
 ## cf- sumPAH, lmwPAH, hmwPAH and PAH16
-### No correlations
 ```{r}
 
 # no correlation
@@ -247,7 +212,6 @@ print(correlation_result)
 ```
 
 ## cf- sumPCBs and sum42PAH
-### No correlation
 ```{r}
 
 # no correlation
@@ -261,7 +225,6 @@ print(correlation_result)
 ```
 
 ## cf- other summed analytes
-### No correlation
 ```{r}
 
 # no correlation
@@ -287,14 +250,13 @@ print(correlation_result)
 ```
 
 ## cf- mercury, arsenic, cadmium, copper, lead, zinc
-### No correlation
 ```{r}
 
 # no correlation
 correlation_result <- cor.test(metal$avg_cf, metal$mercuryTotal, method = "spearman")
 print(correlation_result)
 
-# no correlation
+# correlated
 correlation_result <- cor.test(metal$avg_cf, metal$arsenic, method = "spearman")
 print(correlation_result)
 
@@ -316,105 +278,105 @@ print(correlation_result)
 
 ```
 
-
-
-#Correlations
-## at- sumPAH, lmwPAH, hmwPAH and PAH16
-### No correlations
+## at - biomarkers
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(summed$avg_at, summed$sumPAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_at, summed$avg_p450, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(summed$avg_at, summed$lmwPAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_at, summed$avg_sod, method = "spearman")
+print(correlation_result)
+
+```
+
+#Correlations
+## at- sumPAH, lmwPAH, hmwPAH and PAH16
+```{r}
+
+# no correlation
+correlation_result <- cor.test(summed$avg_at, summed$sumPAH, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(summed$avg_at, summed$hmwPAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_at, summed$lmwPAH, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(summed$avg_at, summed$sum16PAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_at, summed$hmwPAH, method = "spearman")
+print(correlation_result)
+
+# no correlation
+correlation_result <- cor.test(summed$avg_at, summed$sum16PAH, method = "spearman")
 print(correlation_result)
 
 ```
 
 ## at- sumPCBs and sum42PAH
-### No correlation
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(summed$avg_at, summed$sumPCB, method = "pearson")
+correlation_result <- cor.test(summed$avg_at, summed$sumPCB, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(summed$avg_cf, summed$sum42PAH, method = "pearson")
+correlation_result <- cor.test(summed$avg_cf, summed$sum42PAH, method = "spearman")
 print(correlation_result)
 
 ```
 
 ## at- other summed analytes
-### No correlation
 ```{r}
 
-# no correlation
-correlation_result <- cor.test(summed$avg_at, summed$um40CB, method = "pearson")
+# correlated
+correlation_result <- cor.test(summed$avg_at, summed$um40CB, method = "spearman")
+print(correlation_result)
+
+# correlated
+correlation_result <- cor.test(summed$avg_at, summed$sumBDE, method = "spearman")
+print(correlation_result)
+
+# correlated
+correlation_result <- cor.test(summed$avg_at, summed$sumCHLD, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(summed$avg_at, summed$sumBDE, method = "pearson")
+correlation_result <- cor.test(summed$avg_at, summed$sumDDT, method = "spearman")
 print(correlation_result)
 
-# no correlation
-correlation_result <- cor.test(summed$avg_at, summed$sumCHLD, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(summed$avg_at, summed$sumDDT, method = "pearson")
-print(correlation_result)
-
-# no correlation
-correlation_result <- cor.test(summed$avg_at, summed$sumHCH, method = "pearson")
+# correlated
+correlation_result <- cor.test(summed$avg_at, summed$sumHCH, method = "spearman")
 print(correlation_result)
 
 ```
 
 ## at- mercury, arsenic, cadmium, copper, lead, zinc
-### No correlation
 ```{r}
 
 # no correlation
-correlation_result <- cor.test(metal$avg_at, metal$mercuryTotal, method = "pearson")
+correlation_result <- cor.test(metal$avg_at, metal$mercuryTotal, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(metal$avg_at, metal$arsenic, method = "pearson")
+correlation_result <- cor.test(metal$avg_at, metal$arsenic, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(metal$avg_at, metal$cadmium, method = "pearson")
+correlation_result <- cor.test(metal$avg_at, metal$cadmium, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(metal$avg_at, metal$copper, method = "pearson")
+correlation_result <- cor.test(metal$avg_at, metal$copper, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(metal$avg_at, metal$lead, method = "pearson")
+correlation_result <- cor.test(metal$avg_at, metal$lead, method = "spearman")
 print(correlation_result)
 
 # no correlation
-correlation_result <- cor.test(metal$avg_at, metal$Zinc, method = "pearson")
+correlation_result <- cor.test(metal$avg_at, metal$Zinc, method = "spearman")
 print(correlation_result)
 
 ```
-
-
-
-
-
-
-
 
