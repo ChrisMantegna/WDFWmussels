@@ -277,7 +277,7 @@ significant_analytes <- names(corr_results[corr_results < 0.05])
 significant_cor_matrix <- spearman_cor_matrix[significant_analytes, significant_analytes]
 
 # Plot the correlation matrix for significant analytes
-corrplot(significant_cor_matrix, method = "circle")
+corrplot(significant_cor_matrix, method = "circle", type= "lower", diag= FALSE)
 
 ```
 

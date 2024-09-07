@@ -263,7 +263,7 @@ Ssignificant_analytes <- names(Scor_results[Scor_results < 0.05])
 Ssignificant_cor_matrix <- Sspearman_cor_matrix[Ssignificant_analytes, Ssignificant_analytes]
 
 # Plot the correlation matrix for significant analytes
-corrplot(Ssignificant_cor_matrix, method = "circle")
+corrplot(Ssignificant_cor_matrix, method = "circle", type= "lower", diag= FALSE)
 
 ```
 
@@ -289,7 +289,7 @@ significant_sum <- names(cor_results[cor_results < 0.05])
 significant_sum <- cor_matrix[significant_sum, significant_sum]
 
 # Plot the correlation matrix for significant analytes
-corrplot(significant_sum, method = "circle")
+corrplot(significant_sum, method = "circle", type= "lower", diag= FALSE)
 
 ```
 
