@@ -67,6 +67,7 @@ ggplot(site_p450_range, aes(y = reorder(site_name, site_name))) +
     axis.title.y = element_text(size = 12)
   )
 
+ggsave(plot=plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450dumbbellNOTlogscale.svg", width=15, height=12)
 ```
 
 ## dumbbell - log transformed data in alphabetical order
@@ -122,7 +123,8 @@ ggplot(site_p450_range, aes(y = site_name_ordered)) +
     axis.title.y = element_text(size = 12)
   )
 
-ggsave(plot, plot= plot, device= svg, "/Users/cmantegna/Documents/WDFWmussels/output/figures/p450dumbbell.svg")
+ggsave(plot=plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450dumbbell.svg", width=15, height=12)
+
 ```
 
 ## dumbbell - PAH group 8
@@ -163,6 +165,8 @@ ggplot(Psite_p450_range, aes(y = site_name_ordered)) +
     axis.title.x = element_text(size = 12),
     axis.title.y = element_text(size = 12)
   )
+
+ggsave(plot=plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450dumbbellPAHgroup.svg", width=15, height=12)
 
 ```
 
@@ -220,7 +224,7 @@ for (i in 1:nrow(ra_pairs)) {
 # Combine plots into a multi-panel figure using gridExtra
 grid.arrange(grobs = plot_list, ncol = 2)  # Arrange plots into a multi-panel layout
 
-
+ggsave(plot=p, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450dumbbellPAHgroup.svg", width=15, height=12)
 
 ```
 
@@ -278,6 +282,7 @@ ggplot(data, aes(x = site_name_ordered, y = p450, fill = as.factor(reporting_are
     axis.text.x = element_text(angle = 90, hjust = 1)
   )
 
+ggsave(plot=plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplot.svg", width=15, height=12)
 ```
 
 ## boxplot - PAH group 8
@@ -347,6 +352,7 @@ for (i in 1:nrow(ra_pairs)) {
 # Combine plots into a multi-panel figure using gridExtra
 grid.arrange(grobs = plot_list, ncol = 2)  # Arrange plots into a multi-panel layout
 
+ggsave(plot=plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxCompareRA.svg", width=15, height=12)
 ```
 
 
