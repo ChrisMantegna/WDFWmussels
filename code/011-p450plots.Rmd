@@ -224,7 +224,7 @@ for (i in 1:nrow(ra_pairs)) {
 # Combine plots into a multi-panel figure using gridExtra
 grid.arrange(grobs = plot_list, ncol = 2)  # Arrange plots into a multi-panel layout
 
-ggsave(plot=p, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450sigScatter.svg", width=15, height=12)
+#ggsave(plot=p, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450sigScatter.svg", width=15, height=12)
 
 ```
 
@@ -282,7 +282,7 @@ rabox<- ggplot(data, aes(x = site_name_ordered, y = p450, fill = as.factor(repor
     axis.text.x = element_text(angle = 90, hjust = 1)
   )
 
-ggsave(plot= rabox, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplot.svg", width=15, height=12)
+#ggsave(plot= rabox, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplot.svg", width=15, height=12)
 ```
 
 ## boxplot - PAH group 8
@@ -352,7 +352,7 @@ for (i in 1:nrow(ra_pairs)) {
 # Combine plots into a multi-panel figure using gridExtra
 grid.arrange(grobs = plot_list, ncol = 2)  # Arrange plots into a multi-panel layout
 
-ggsave(plot=plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxCompareRA.svg", width=15, height=12)
+#ggsave(plot=p, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxCompareRA.svg", width=15, height=12)
 ```
 
 
@@ -380,7 +380,7 @@ significant_cor_matrix <- spearman_cor_matrix[significant_analytes, significant_
 # Plot the correlation matrix for significant analytes
 corrplot(significant_cor_matrix, method = "circle", type= "lower", diag= FALSE)
 
-ggsave(plot=plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450correlation.svg", width=15, height=12)
+ggsave(plot=cp, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450correlation.svg", width=15, height=12)
 ```
 
 ## correlation table

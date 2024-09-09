@@ -3,34 +3,24 @@
 data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450data.csv")
 indv<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgP450_analytes.csv")
 
-library(ggplot2)
-library(dplyr)
+library(corrplot)
 
-# Create a unique identifier for each combination of site_name and PAHgroup8
-pahbox <- data %>%
-  mutate(site_PAHgroup_combined = paste(site_name, PAHgroup8, sep = "_"))
+# Spearman correlation tests to extract p-values
+corr_results <- sapply(indv[ , 3:ncol(indv)], function(x) {
+  test <- cor.test(indv$avg_value, x, method = "spearman")
+  test$p.value  # Extract p-values
+})
 
-pahbox <- pahbox %>%
-  arrange(desc(PAHgroup8), site_name)
+# Spearman correlation matrix for plotting
+spearman_cor_matrix <- cor(indv[ , 3:ncol(indv)], use = "complete.obs", method = "spearman")
+spearman_cor_avg_value <- spearman_cor_matrix["avg_value", ]
 
-# Order site_name by both PAHgroup8 and site_name to ensure no duplication
-pahbox <- pahbox %>%
-  mutate(site_name_ordered = factor(site_PAHgroup_combined,
-                                    levels = unique(site_PAHgroup_combined)))
+# Filter for significance using corr_results for p-values
+significant_analytes <- names(corr_results[corr_results < 0.05])
 
+# New correlation matrix with only significant analytes
+significant_cor_matrix <- spearman_cor_matrix[significant_analytes, significant_analytes]
 
-# Plot using the newly ordered site names
-plot<- ggplot(pahbox, aes(x = site_name_ordered, y = p450, fill = as.factor(PAHgroup8))) +
-  geom_boxplot() +
-  labs(x = bquote("P450 Activity (Unit / mg"^"-1"~"protein)"), title = "P450 Activity by Site with PAH Grouping") +
-  theme_minimal() +
-  theme(legend.position = "right") +
-  scale_fill_brewer(palette = "Set1", name = "PAH Grouping") +
-  theme(
-    plot.title = element_text(hjust = 0.5),
-    axis.title.x = element_text(size = 12),
-    axis.title.y = element_text(size = 12),
-    axis.text.x = element_text(angle = 90, hjust = 1)
-  )
+# Plot the correlation matrix for significant analytes
+corrplot(significant_cor_matrix, method = "circle", type= "lower", diag= FALSE)
 
-print(plot)
