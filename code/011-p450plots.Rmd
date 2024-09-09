@@ -123,7 +123,7 @@ ggplot(site_p450_range, aes(y = site_name_ordered)) +
     axis.title.y = element_text(size = 12)
   )
 
-ggsave(plot=plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450dumbbell.svg", width=15, height=12)
+#ggsave(plot=plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450dumbbell.svg", width=15, height=12)
 
 ```
 
@@ -150,7 +150,7 @@ Psite_p450_range <- Psite_p450_range %>%
                                       pull(site_PAHgroup_combined)))
 
 # Plot w/ mean added
-ggplot(Psite_p450_range, aes(y = site_name_ordered)) +
+pah<- ggplot(Psite_p450_range, aes(y = site_name_ordered)) +
   geom_segment(aes(x = min_p450, xend = max_p450, y = site_name_ordered, yend = site_name_ordered, color = as.factor(PAHgroup8)), size = 1.5) +
   geom_point(aes(x = min_p450, color = as.factor(PAHgroup8)), size = 3) +
   geom_point(aes(x = max_p450, color = as.factor(PAHgroup8)), size = 3) +
@@ -166,7 +166,7 @@ ggplot(Psite_p450_range, aes(y = site_name_ordered)) +
     axis.title.y = element_text(size = 12)
   )
 
-ggsave(plot=plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450dumbbellPAHgroup.svg", width=15, height=12)
+#ggsave(plot=pah, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450dumbbellPAHgroup.svg", width=15, height=12)
 
 ```
 
@@ -224,7 +224,7 @@ for (i in 1:nrow(ra_pairs)) {
 # Combine plots into a multi-panel figure using gridExtra
 grid.arrange(grobs = plot_list, ncol = 2)  # Arrange plots into a multi-panel layout
 
-ggsave(plot=p, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450dumbbellPAHgroup.svg", width=15, height=12)
+ggsave(plot=p, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450sigScatter.svg", width=15, height=12)
 
 ```
 
@@ -269,7 +269,7 @@ data <- data %>%
                                       pull(site_name)))
 
 # Plot using the newly ordered site names
-ggplot(data, aes(x = site_name_ordered, y = p450, fill = as.factor(reporting_area))) +
+rabox<- ggplot(data, aes(x = site_name_ordered, y = p450, fill = as.factor(reporting_area))) +
   geom_boxplot() +
   labs(x = bquote("P450 Activity (Unit / mg"^"-1"~"protein)"), title = "P450 Activity by Site with Reporting Areas") +
   theme_minimal() +
@@ -282,7 +282,7 @@ ggplot(data, aes(x = site_name_ordered, y = p450, fill = as.factor(reporting_are
     axis.text.x = element_text(angle = 90, hjust = 1)
   )
 
-ggsave(plot=plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplot.svg", width=15, height=12)
+ggsave(plot= rabox, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450boxplot.svg", width=15, height=12)
 ```
 
 ## boxplot - PAH group 8
@@ -380,6 +380,7 @@ significant_cor_matrix <- spearman_cor_matrix[significant_analytes, significant_
 # Plot the correlation matrix for significant analytes
 corrplot(significant_cor_matrix, method = "circle", type= "lower", diag= FALSE)
 
+ggsave(plot=plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450correlation.svg", width=15, height=12)
 ```
 
 ## correlation table
@@ -479,6 +480,7 @@ plot_list[[analyte]] <- p
 # Display the plots in a grid
 do.call(grid.arrange, c(plot_list, ncol = 2))  # Adjust 'ncol' to set the number of columns in the grid
 
+ggsave(plot=p, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450lrsignificant.svg", width=15, height=12)
 ```
 
 
