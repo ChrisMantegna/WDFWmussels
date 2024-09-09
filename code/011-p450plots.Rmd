@@ -1,14 +1,15 @@
 ---
-  title: "011 - P450 Plots"
-output:
-  html_document: 
-  toc: true
-toc_float:
-  collapsed: false
-smooth_scroll: true
-fig_width: 20
-pdf_document: 
+pdf_document:
   fig_width: 20
+output:
+  html_document: null
+  toc: yes
+  pdf_document: default
+toc_float:
+  collapsed: no
+smooth_scroll: yes
+fig_width: 20
+title: "011 - P450 Plots"
 fig_height: 9
 ---
   
@@ -17,12 +18,12 @@ fig_height: 9
 ```{r, setup, eval=TRUE, include=TRUE}
 
 knitr::opts_chunk$set(
-  echo = TRUE,         # Display code chunks
+  echo = FALSE,         # Display code chunks
   eval = TRUE,         # Evaluate code chunks
   warning = FALSE,     # Hide warnings
   message = FALSE,     # Hide messages
   fig.width = 20,       # Set plot width in inches
-  fig.height = 9,      # Set plot height in inches
+  fig.height = 15,      # Set plot height in inches
   fig.align = "center" )# Align plots to the center
 
 ```
@@ -109,7 +110,7 @@ ggplot(site_p450_range, aes(y = site_name_ordered)) +
   geom_segment(aes(x = min_p450, xend = max_p450, y = site_name_ordered, yend = site_name_ordered, color = as.factor(reporting_area)), size = 1.5) +
   geom_point(aes(x = min_p450, color = as.factor(reporting_area)), size = 3) +
   geom_point(aes(x = max_p450, color = as.factor(reporting_area)), size = 3) +
-  geom_point(aes(x = mean_p450), shape = 17, size = 3, color = "black") +
+  #geom_point(aes(x = mean_p450), shape = 17, size = 3, color = "black") +
   scale_x_log10() +
   labs(x = bquote("P450 Activity (Unit / mg"^"-1"~"protein) (Log Scale)"), y = "Site Name", title = "P450 Activity by Site with Reporting Areas") +
   theme_minimal() +
@@ -121,6 +122,7 @@ ggplot(site_p450_range, aes(y = site_name_ordered)) +
     axis.title.y = element_text(size = 12)
   )
 
+ggsave(plot, plot= plot, device= svg, "/Users/cmantegna/Documents/WDFWmussels/output/figures/p450dumbbell.svg")
 ```
 
 ## dumbbell - PAH group 8
@@ -170,6 +172,8 @@ library(ggplot2)
 library(dplyr)
 library(dunn.test)
 library(gridExtra)
+
+data$reporting_area <- as.character(data$reporting_area)
 
 
 # Dunn's test based on Reporting Area
@@ -283,6 +287,8 @@ ggplot(data, aes(x = site_name_ordered, y = p450, fill = as.factor(reporting_are
 library(ggplot2)
 library(dplyr)
 
+data$PAHgroup8 <- as.character(data$PAHgroup8)
+
 # Create a unique identifier for each combination of site_name and PAHgroup8
 pahbox <- data %>%
   mutate(site_PAHgroup_combined = paste(site_name, PAHgroup8, sep = "_"))
@@ -294,9 +300,6 @@ pahbox <- pahbox %>%
 pahbox <- pahbox %>%
   mutate(site_name_ordered = factor(site_PAHgroup_combined,
                                     levels = unique(site_PAHgroup_combined)))
-
-# Open a device for saving the plot as an SVG file
-svg("/Users/cmantegna/Documents/WDFWmussels/output/figures/p450PAHbox.svg", width = 8, height = 6) 
 
 
 # Plot using the newly ordered site names
@@ -313,7 +316,36 @@ plot<- ggplot(pahbox, aes(x = site_name_ordered, y = p450, fill = as.factor(PAHg
     axis.text.x = element_text(angle = 90, hjust = 1)
   )
 
-dev.off()
+```
+
+# boxplot significant comparison code - haven't checked it
+```{r}
+
+data$reporting_area <- as.character(data$reporting_area)
+
+plot_list <- list()
+
+for (i in 1:nrow(ra_pairs)) {
+  ra1 <- ra_pairs[i, "ReportingArea1"]
+  ra2 <- ra_pairs[i, "ReportingArea2"]
+
+  # Filter data for the selected reporting areas using correct column name
+  plot_data <- data %>% filter(reporting_area == ra1 | reporting_area == ra2)
+
+  # Create boxplot for the significant pair of reporting areas
+  p <- ggplot(plot_data, aes(x = reporting_area, y = p450, fill = reporting_area)) +
+    geom_boxplot(alpha = 0.7) +  # Create boxplots
+    stat_summary(fun = mean, geom = "point", size = 3, shape = 18, color = "black") +  # Show mean
+    labs(title = paste(ra1, "vs", ra2), x = "Reporting Area", y = "p450 Value") +
+    theme_minimal() +
+    theme(legend.position = "none") +  # Turn off legend if it's redundant
+    scale_fill_manual(values = c(ra1 = "blue", ra2 = "red"))  # Customize colors for the boxplots
+  
+  plot_list[[i]] <- p  # Store plot in list
+}
+
+# Combine plots into a multi-panel figure using gridExtra
+grid.arrange(grobs = plot_list, ncol = 2)  # Arrange plots into a multi-panel layout
 
 ```
 
