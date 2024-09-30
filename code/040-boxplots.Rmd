@@ -1,0 +1,126 @@
+---
+title: "040- boxplots for p450, sod, at and cf in reporting area and pah ranking"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  #fig.width = 15,       # Set plot width in inches
+  #fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load data
+```{r}
+
+data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450data.csv")
+sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/soddata.csv")
+mdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/morphdata.csv")
+
+```
+
+# remove significant outlier from p450
+```{r}
+
+# outlier (Sample 23) is more than 3 sd's from the mean for the set - going to remove it.
+data <- data[data$sample_id != 23, ]
+
+# confirm it's gone
+data[data$sample_id == 23, ]
+
+```
+
+# RA - p450 
+## full data box plot
+```{r}
+
+library(ggplot2)
+
+# Convert reporting_area to factor (for proper ordering)
+data$reporting_area <- as.factor(data$reporting_area)
+
+# Custom order for the reporting areas
+custom_order <- c('6', '7', '8.1', '8.2', '9', '10', '11', '12', '13')
+data$reporting_area <- factor(data$reporting_area, levels = custom_order)
+
+# Create the boxplot with ggplot2
+p <- ggplot(data, aes(x = reporting_area, y = p450)) +
+  geom_boxplot(fill = "gray", color = "black") +
+  labs(title = "P450 Activity by Reporting Area", 
+       x = "Reporting Area", y = "P450 Activity (Unit / mg"^"-1"~"protein)") +
+  theme(
+    axis.text.x = element_text(angle = 90, hjust = 1),  # Rotate x-axis labels
+    panel.grid = element_blank(),  # Remove grey grid
+    plot.title = element_text(hjust = 0.5),  # Center the title
+    panel.background = element_rect(fill = "white", color = NA),  # Set background to white
+    axis.line = element_line(color = "black")  # Add black axis lines
+  )
+
+print(p)
+
+ggsave(plot=plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450dumbbellNOTlogscale.svg", width=15, height=12)
+```
+
+## significant pairs box plot grid
+## based on stats the following pairs are significantly different: 11-12, 12-13, 12-8.2, 10-13
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(ggplot2)
+library(gridExtra)
+
+# Manually specify the significant pairs (based on your description)
+significant_pairs <- list(
+  c("11", "12"),
+  c("12", "8.2"),
+  c("12", "13"),
+  c("10", "13")
+)
+
+# Create an empty list to hold the plots
+plot_list <- list()
+
+# Loop through each significant pair and create a boxplot
+for (i in 1:length(significant_pairs)) {
+  group1 <- significant_pairs[[i]][1]
+  group2 <- significant_pairs[[i]][2]
+  
+  # Filter the data for the two groups
+  subset_data <- data %>%
+    filter(reporting_area %in% c(group1, group2))
+  
+  # Create the boxplot for the pair
+  p <- ggplot(subset_data, aes(x = reporting_area, y = p450)) +
+    geom_boxplot(fill = "lightblue", color = "black") +
+    labs(title = paste("Comparison:", group1, "vs", group2),
+         x = "Reporting Area", y = "P450 Biomarker Value") +
+    theme_minimal()
+  
+  # Add the plot to the list
+  plot_list[[i]] <- p
+}
+
+# Arrange all the plots in a grid (2 columns for now, can adjust as needed)
+do.call(grid.arrange, c(plot_list, ncol = 2))
+
+
+```
+
