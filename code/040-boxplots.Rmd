@@ -96,8 +96,56 @@ print(p)
 
 ```
 
+# RA - box plot with annotation bars
+```{r}
+
+# Load necessary libraries
+library(ggplot2)
+library(ggsignif)  # For adding significance annotations
+library(svglite)
+
+# Convert reporting_area to factor (for proper ordering)
+data$reporting_area <- as.factor(data$reporting_area)
+
+# Custom order for the reporting areas
+custom_order <- c('6', '7', '8.1', '8.2', '9', '10', '11', '12', '13')
+data$reporting_area <- factor(data$reporting_area, levels = custom_order)
+
+# Create the boxplot with ggplot2 and add significance annotations
+p <- ggplot(data, aes(x = reporting_area, y = p450)) +
+  geom_boxplot(fill = "gray", color = "black") +
+  labs(title = "P450 Activity by Reporting Area", 
+       x = "Reporting Area", y = "P450 Activity (Unit / mg"^"-1"~"protein)") +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5, size = 12),  # X-axis labels at 0 angle, centered, and larger size
+    axis.text.y = element_text(size = 12),  # Y-axis label size
+    axis.title.x = element_text(size = 14),  # X-axis title font size
+    axis.title.y = element_text(size = 14),  # Y-axis title font size
+    plot.title = element_text(hjust = 0.5, size = 16),  # Center the title and adjust its size
+    panel.grid = element_blank(),  # Remove grey grid
+    panel.background = element_rect(fill = "white", color = NA),  # Set background to white
+    axis.line = element_line(color = "black")  # Add black axis lines
+  ) +
+  
+  # Add significance annotations using geom_signif
+  geom_signif(comparisons = list(c("11", "12"), c("12", "13"), c("12", "8.2"), c("10", "13")),
+              map_signif_level = TRUE,  # Automatically map significance levels to asterisks
+              y_position = c(2.5e+07, 2.8e+07, 3.0e+07, 3.2e+07),  # Adjust these values for proper annotation heights
+              tip_length = 0.02,  # Length of the lines for annotations
+              textsize = 3)  # Size of the significance text
+
+# Display the plot
+print(p)
+
+# Optionally save the plot (adjust the file path as needed)
+#ggsave(plot=p, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures_manuscript/p450RA_all_with_significance.png", width=15, height=12)
+
+```
+
+
 ## RA - box plot - significant pairs grid based on stats the following pairs are significantly different: 11-12, 12-13, 12-8.2, 10-13
 ```{r}
+
 # Load necessary libraries
 library(dplyr)
 library(ggplot2)
@@ -179,6 +227,52 @@ r <- ggplot(data, aes(x = PAHgroup8, y = p450)) +
 print(r)
 
 #ggsave(plot=r, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures_manuscript/p450pahBoxAll.png", width=15, height=12)
+```
+
+# Rank box plot with annotation bars
+```{r}
+
+# Load necessary libraries
+library(ggplot2)
+library(ggsignif)  # For adding significance annotations
+library(svglite)
+
+# Convert reporting_area to factor (for proper ordering)
+data$PAHgroup8 <- as.factor(data$PAHgroup8)
+
+# Custom order for the reporting areas
+custom_order <- c('1', '2', '3', '4', '5', '6', '7', '8')
+data$PAHgroup8 <- factor(data$PAHgroup8, levels = custom_order)
+
+# Create the boxplot with ggplot2 and add significance annotations
+b <- ggplot(data, aes(x = PAHgroup8, y = p450)) +
+  geom_boxplot(fill = "gray", color = "black") +
+  labs(title = "P450 Activity by PAH Ranking", 
+       x = "PAH Ranking", y = "P450 Activity (Unit / mg"^"-1"~"protein)") +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5, size = 12),  # X-axis labels at 0 angle, centered, and larger size
+    axis.text.y = element_text(size = 12),  # Y-axis label size
+    axis.title.x = element_text(size = 14),  # X-axis title font size
+    axis.title.y = element_text(size = 14),  # Y-axis title font size
+    plot.title = element_text(hjust = 0.5, size = 16),  # Center the title and adjust its size
+    panel.grid = element_blank(),  # Remove grey grid
+    panel.background = element_rect(fill = "white", color = NA),  # Set background to white
+    axis.line = element_line(color = "black")  # Add black axis lines
+  ) +
+  
+  # Add significance annotations using geom_signif
+  geom_signif(comparisons = list(c("1", "2")),
+              map_signif_level = TRUE,  # Automatically map significance levels to asterisks
+              y_position = c(2.5e+07, 2.8e+07, 3.0e+07, 3.2e+07),  # Adjust these values for proper annotation heights
+              tip_length = 0.02,  # Length of the lines for annotations
+              textsize = 3)  # Size of the significance text
+
+# Display the plot
+print(b)
+
+# Optionally save the plot (adjust the file path as needed)
+#ggsave(plot=b, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures_manuscript/p450pah_all_with_significance.png", width=15, height=12)
+
 ```
 
 ## Rank - box plot - significant pairs based on stats the following pairs are significantly different: 1 - 2
@@ -298,6 +392,52 @@ print(r)
 
 ```
 
+# Rank box plot with annotation bars
+```{r}
+
+# Load necessary libraries
+library(ggplot2)
+library(ggsignif)  # For adding significance annotations
+library(svglite)
+
+# Convert reporting_area to factor (for proper ordering)
+sdata$PAHgroup8 <- as.factor(sdata$PAHgroup8)
+
+# Custom order for the reporting areas
+custom_order <- c('1', '2', '3', '4', '5', '6', '7', '8')
+sdata$PAHgroup8 <- factor(sdata$PAHgroup8, levels = custom_order)
+
+# Create the boxplot with ggplot2 and add significance annotations
+c <- ggplot(sdata, aes(x = PAHgroup8, y = sod)) +
+  geom_boxplot(fill = "gray", color = "black") +
+  labs(title = "SOD Activity by PAH Ranking", 
+       x = "PAH Ranking", y = "SOD Activity (Unit / mg"^"-1"~"protein)") +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5, size = 12),  # X-axis labels at 0 angle, centered, and larger size
+    axis.text.y = element_text(size = 12),  # Y-axis label size
+    axis.title.x = element_text(size = 14),  # X-axis title font size
+    axis.title.y = element_text(size = 14),  # Y-axis title font size
+    plot.title = element_text(hjust = 0.5, size = 16),  # Center the title and adjust its size
+    panel.grid = element_blank(),  # Remove grey grid
+    panel.background = element_rect(fill = "white", color = NA),  # Set background to white
+    axis.line = element_line(color = "black")  # Add black axis lines
+  ) +
+  
+  # Add significance annotations using geom_signif
+  geom_signif(comparisons = list(c("7", "1"), c("7", "2")),
+              map_signif_level = TRUE,  # Automatically map significance levels to asterisks
+              y_position = c(50, 55, 60, 65),  # Adjust these values for proper annotation heights
+              tip_length = 0.02,  # Length of the lines for annotations
+              textsize = 3)  # Size of the significance text
+
+# Display the plot
+print(c)
+
+# Optionally save the plot (adjust the file path as needed)
+#ggsave(plot=c, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures_manuscript/SODpah_all_with_significance.png", width=15, height=12)
+```
+
+
 ## Rank - box plot - significant pairs based on stats the following pairs are significantly different: 7 - 1, 7 - 2
 ```{r}
 # Load necessary libraries
@@ -381,6 +521,54 @@ print(u)
 #ggsave(plot=u, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures_manuscript/ATraBoxAll.png", width=15, height=12)
 
 ```
+
+# RA - box plot with annotation bars
+```{r}
+
+# Load necessary libraries
+library(ggplot2)
+library(ggsignif)  # For adding significance annotations
+library(svglite)
+
+# Convert reporting_area to factor (for proper ordering)
+mdata$reporting_area <- as.factor(mdata$reporting_area)
+
+# Custom order for the reporting areas
+custom_order <- c('6', '7', '8.1', '8.2', '9', '10', '11', '12', '13')
+mdata$reporting_area <- factor(mdata$reporting_area, levels = custom_order)
+
+# Create the boxplot with ggplot2 and add significance annotations
+d <- ggplot(mdata, aes(x = reporting_area, y = at)) +
+  geom_boxplot(fill = "gray", color = "black") +
+  labs(title = "Shell Thickness by Reporting Area", 
+       x = "Reporting Area", y = "Shell Thickness (mm)") +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5, size = 12),  # X-axis labels at 0 angle, centered, and larger size
+    axis.text.y = element_text(size = 12),  # Y-axis label size
+    axis.title.x = element_text(size = 14),  # X-axis title font size
+    axis.title.y = element_text(size = 14),  # Y-axis title font size
+    plot.title = element_text(hjust = 0.5, size = 16),  # Center the title and adjust its size
+    panel.grid = element_blank(),  # Remove grey grid
+    panel.background = element_rect(fill = "white", color = NA),  # Set background to white
+    axis.line = element_line(color = "black")  # Add black axis lines
+  ) +
+  
+
+  # Add significance annotations using geom_signif
+  geom_signif(comparisons = list(c("11", "6"), c("11", "7"), c("11", "8.1"), c("11", "10"), c("11", "12"), c("13", "6"), c("13", "6")),
+              map_signif_level = TRUE,  # Automatically map significance levels to asterisks
+              y_position = c(1.15, 1.20, 1.25, 1.29),  # Adjust these values for proper annotation heights
+              tip_length = 0.02,  # Length of the lines for annotations
+              textsize = 3)  # Size of the significance text
+
+# Display the plot
+print(d)
+
+# Optionally save the plot (adjust the file path as needed)
+ggsave(plot=d, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures_manuscript/atRA_all_with_significance.png", width=15, height=12)
+
+```
+
 
 ## RA - box plot - significant pairs grid based on stats the following pairs are significantly different: 11-10, 11-12, 11-6, 11-7, 11-8.1, 13-12, 13-6
 ```{r}
