@@ -76,7 +76,7 @@ p <- ggplot(data, aes(x = reporting_area, y = p450)) +
 
 print(p)
 
-ggsave(plot=plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures/p450dumbbellNOTlogscale.svg", width=15, height=12)
+ggsave(plot=p, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures_manuscript/p450raBoxAll.svg", width=15, height=12)
 ```
 
 ## significant pairs box plot grid
@@ -111,7 +111,7 @@ for (i in 1:length(significant_pairs)) {
   p <- ggplot(subset_data, aes(x = reporting_area, y = p450)) +
     geom_boxplot(fill = "lightblue", color = "black") +
     labs(title = paste("Comparison:", group1, "vs", group2),
-         x = "Reporting Area", y = "P450 Biomarker Value") +
+         x = "Reporting Area", y = "P450 Actvity (Unit / mg"^"-1"~"protein)") +
     theme_minimal()
   
   # Add the plot to the list
