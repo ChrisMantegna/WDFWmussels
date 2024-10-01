@@ -658,6 +658,53 @@ print(w)
 
 ```
 
+# Rank box plot with annotation bars
+```{r}
+
+# Load necessary libraries
+library(ggplot2)
+library(ggsignif)  # For adding significance annotations
+library(svglite)
+
+# Convert reporting_area to factor (for proper ordering)
+mdata$PAHgroup8 <- as.factor(mdata$PAHgroup8)
+
+# Custom order for the reporting areas
+custom_order <- c('1', '2', '3', '4', '5', '6', '7', '8')
+mdata$PAHgroup8 <- factor(mdata$PAHgroup8, levels = custom_order)
+
+# Create the boxplot with ggplot2 and add significance annotations
+e <- ggplot(mdata, aes(x = PAHgroup8, y = at)) +
+  geom_boxplot(fill = "gray", color = "black") +
+  labs(title = "Shell Thickness by PAH Ranking", 
+       x = "PAH Ranking", y = "Shell Thickness (mm)") +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5, size = 12),  # X-axis labels at 0 angle, centered, and larger size
+    axis.text.y = element_text(size = 12),  # Y-axis label size
+    axis.title.x = element_text(size = 14),  # X-axis title font size
+    axis.title.y = element_text(size = 14),  # Y-axis title font size
+    plot.title = element_text(hjust = 0.5, size = 16),  # Center the title and adjust its size
+    panel.grid = element_blank(),  # Remove grey grid
+    panel.background = element_rect(fill = "white", color = NA),  # Set background to white
+    axis.line = element_line(color = "black")  # Add black axis lines
+  ) +
+  
+
+  # Add significance annotations using geom_signif
+  geom_signif(comparisons = list(c("3", "1"), c("3", "6"), c("7", "1")),
+              map_signif_level = TRUE,  # Automatically map significance levels to asterisks
+              y_position = c(1.10, 1.19, 1.24, 1.29),  # Adjust these values for proper annotation heights
+              tip_length = 0.02,  # Length of the lines for annotations
+              textsize = 3)  # Size of the significance text
+
+# Display the plot
+print(e)
+
+# Optionally save the plot (adjust the file path as needed)
+#ggsave(plot=e, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures_manuscript/ATpah_all_with_significance.png", width=15, height=12)
+
+```
+
 ## Rank - box plot - significant pairs based on stats the following pairs are significantly different: 3-1, 3-6, 7-1
 ```{r}
 # Load necessary libraries
