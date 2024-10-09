@@ -1,0 +1,84 @@
+---
+title: "050- boxplots for p450, sod, at and cf"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  #fig.width = 15,       # Set plot width in inches
+  #fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load data
+```{r}
+
+data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450correlationMAN.csv")
+#sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/soddata.csv")
+#mdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/morphdata.csv")
+
+```
+
+# Cairo for svg file saving
+```{r}
+
+#install.packages("Cairo")
+
+```
+
+
+# P450 correlation plot, ordered by analyte category
+```{r}
+
+library(corrplot)
+
+# Spearman correlation tests to extract p-values
+corr_results <- sapply(data[ , 3:ncol(data)], function(x) {
+  test <- cor.test(data$avg_p450, x, method = "spearman")
+  test$p.value  # Extract p-values
+})
+
+# Spearman correlation matrix for plotting
+spearman_cor_matrix <- cor(data[ , 3:ncol(data)], use = "complete.obs", method = "spearman")
+spearman_cor_avg_value <- spearman_cor_matrix["avg_p450", ]
+
+# Filter for significance using corr_results for p-values
+significant_analytes <- names(corr_results[corr_results < 0.05])
+
+# New correlation matrix with only significant analytes
+significant_cor_matrix <- spearman_cor_matrix[significant_analytes, significant_analytes]
+
+png("/Users/cmantegna/Documents/WDFWmussels/output/corrplot_output.png", width=15, height=15)
+
+# Plot the correlation matrix for significant analytes
+corrplot(significant_cor_matrix, method = "circle", type= "lower", addCoef.col ='black', number.cex = 0.8, diag= FALSE)
+
+dev.off()
+
+```
+
+```{r}
+
+colnames(spearman_cor_matrix)
+rownames(spearman_cor_matrix)
+
+```
+
