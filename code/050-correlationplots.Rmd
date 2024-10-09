@@ -32,18 +32,12 @@ knitr::opts_chunk$set(
 ```{r}
 
 data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450correlationMAN.csv")
-#sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/soddata.csv")
+sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/sodcorrelationMAN1.csv")
+sdata1<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/sodcorrelationMAN2.csv")
+sdata2<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_analytes2.csv")
 #mdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/morphdata.csv")
 
 ```
-
-# Cairo for svg file saving
-```{r}
-
-#install.packages("Cairo")
-
-```
-
 
 # P450 correlation plot, ordered by analyte category
 ```{r}
@@ -75,10 +69,91 @@ dev.off()
 
 ```
 
+# SOD correlation plot 1 of 3, lmw and hmw PAHs
 ```{r}
 
-colnames(spearman_cor_matrix)
-rownames(spearman_cor_matrix)
+library(corrplot)
+
+# Spearman correlation tests to extract p-values
+corr_results <- sapply(sdata[ , 3:ncol(sdata)], function(x) {
+  test <- cor.test(sdata$avg_sod, x, method = "spearman")
+  test$p.value  # Extract p-values
+})
+
+# Spearman correlation matrix for plotting
+spearman_cor_matrix <- cor(sdata[ , 3:ncol(sdata)], use = "complete.obs", method = "spearman")
+spearman_cor_avg_value <- spearman_cor_matrix["avg_sod", ]
+
+# Filter for significance using corr_results for p-values
+significant_analytes <- names(corr_results[corr_results < 0.05])
+
+# New correlation matrix with only significant analytes
+significant_cor_matrix <- spearman_cor_matrix[significant_analytes, significant_analytes]
+
+#png("/Users/cmantegna/Documents/WDFWmussels/output/corrplot_output.png", width=15, height=15)
+
+# Plot the correlation matrix for significant analytes
+corrplot(significant_cor_matrix, method = "circle", type= "lower", diag= FALSE)
+
+#dev.off()
 
 ```
 
+# SOD correlation plot 2 of 3, PCBs and DDTs
+```{r}
+
+library(corrplot)
+
+# Spearman correlation tests to extract p-values
+corr_results <- sapply(sdata1[ , 3:ncol(sdata1)], function(x) {
+  test <- cor.test(sdata1$avg_sod, x, method = "spearman")
+  test$p.value  # Extract p-values
+})
+
+# Spearman correlation matrix for plotting
+spearman_cor_matrix <- cor(sdata1[ , 3:ncol(sdata1)], use = "complete.obs", method = "spearman")
+spearman_cor_avg_value <- spearman_cor_matrix["avg_sod", ]
+
+# Filter for significance using corr_results for p-values
+significant_analytes <- names(corr_results[corr_results < 0.05])
+
+# New correlation matrix with only significant analytes
+significant_cor_matrix <- spearman_cor_matrix[significant_analytes, significant_analytes]
+
+#png("/Users/cmantegna/Documents/WDFWmussels/output/corrplot_output.png", width=15, height=15)
+
+# Plot the correlation matrix for significant analytes
+corrplot(significant_cor_matrix, method = "circle", type= "lower", diag= FALSE)
+
+#dev.off()
+
+```
+
+
+# SOD correlation plot 3 of 3, summed analytes
+```{r}
+
+
+library(corrplot)
+
+# Spearman correlation tests to extract p-values
+corr_results <- sapply(sdata2[ , 3:ncol(sdata2)], function(x) {
+  test <- cor.test(sdata2$avg_value, x, method = "spearman")
+  test$p.value  # Extract p-values
+})
+
+# Spearman correlation matrix for plotting
+spearman_cor_matrix <- cor(sdata2[ , 3:ncol(sdata2)], use = "complete.obs", method = "spearman")
+spearman_cor_avg_value <- spearman_cor_matrix["avg_value", ]
+
+# Filter for significance using corr_results for p-values
+significant_analytes <- names(corr_results[corr_results < 0.05])
+
+# New correlation matrix with only significant analytes
+significant_cor_matrix <- spearman_cor_matrix[significant_analytes, significant_analytes]
+
+# Plot the correlation matrix for significant analytes
+corrplot(significant_cor_matrix, method = "circle", type= "lower", diag= FALSE)
+
+
+```
