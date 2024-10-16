@@ -79,15 +79,29 @@ data_sf <- st_as_sf(data, coords = c("longitude", "latitude"), crs = 4326)
 # reporting areas - color coded - plain background
 ```{r}
 
-xlim <- c(-124, -122)  # longitude bounds
-ylim <- c(47, 49)  # latitude bounds
+# Set the bounding box (longitude and latitude range for Puget Sound area)
+xlim <- c(-124, -120)  # longitude bounds
+ylim <- c(47, 49)      # latitude bounds
+
+# Create a data frame for the bounding box corner points
+bbox_df <- data.frame(
+  x = c(xlim[1], xlim[2], xlim[1], xlim[2]),
+  y = c(ylim[1], ylim[1], ylim[2], ylim[2])
+)
+
+# Convert the bounding box data frame to an sf object (spatial points)
+bbox_sf <- st_as_sf(bbox_df, coords = c("x", "y"), crs = 4326)
+
+#xlim <- c(-124, -122)  # longitude bounds
+#ylim <- c(47, 49)  # latitude bounds
 
 ggplot() +
-  geom_sf(data = washington_map, fill = "lightblue", color = "black") +  # Base map of Puget Sound
-  geom_sf(data = data_sf, aes(color = as.factor(reporting_area)), size = 3) +  # Site points
+  geom_sf(data = washington_map, fill = "lightgrey", color = "black") +  # Base map of Puget Sound
+  geom_sf(data = data_sf, aes(color = as.factor(reporting_area)), size = 3.5) +  # Site points
   scale_color_manual(values = scales::hue_pal()(length(unique(data_sf$reporting_area)))) +  # Distinct colors
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE) +  # Properly set xlim and ylim
   theme_minimal() +
-  labs(color = "Reporting Area", title = "Sites in Reporting Area") +
+  labs(color = "Reporting Area", fill = "Elevation", title = "Reporting Areas") +
   theme(legend.position = "right")
 
 ```
@@ -123,7 +137,7 @@ bbox_sf <- st_as_sf(bbox_df, coords = c("x", "y"), crs = 4326)
 elevation_data <- get_elev_raster(locations = bbox_sf, z = 10, prj = "+proj=longlat +datum=WGS84")
 
 # Convert the raster elevation data to a data frame for plotting with ggplot2
-elevation_df <- as.data.frame(as(elevation_data, "SpatialPixelsDataFrame"))
+elevation_df <- as.data.frame(elevation_data, "SpatialPixelsDataFrame")
 
 # Rename the columns for ggplot2 compatibility
 names(elevation_df) <- c("x", "y", "elevation")
@@ -137,10 +151,10 @@ ggplot() +
   scale_color_manual(values = scales::hue_pal()(length(unique(data_sf$reporting_area)))) +  # Distinct colors
   coord_sf(xlim = xlim, ylim = ylim, expand = FALSE) +  # Properly set xlim and ylim
   theme_minimal() +
-  labs(color = "Reporting Area", fill = "Elevation", title = "Sites with Topographic Background") +
+  labs(color = "Reporting Area", fill = "Elevation", title = "Reporting Areas") +
   theme(legend.position = "right")
 
-dem_data <- raster("/Users/cmantegna/Downloads/Puget_Sound_CoNED_Topobathy_DEM_1m/Puget_Sound_CoNED_Topobathy_DEM_1m.tif")
+#dem_data <- raster("/Users/cmantegna/Downloads/Puget_Sound_CoNED_Topobathy_DEM_1m/Puget_Sound_CoNED_Topobathy_DEM_1m.tif")
 ```
 
 # new way to get a topographic overlay
