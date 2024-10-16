@@ -155,7 +155,13 @@ library(terra)
 dem_data <- rast("/Users/cmantegna/Desktop/Puget_Sound_CoNED_Topobathy_DEM_1m.tif")
 
 # Plot a quick view of the DEM to check if it's loaded correctly
-plot(dem_data)
+p <- plot(dem_data)
+
+saveRDS(dem_data, "/Users/cmantegna/Documents/WDFWmussels/data/dem_data.rds")
+
+# Save the raster object using save (if saving multiple objects)
+save(dem_data, file = "/Users/cmantegna/Documents/WDFWmussels/data/dem_data2.RData")
+
 
 # Convert the raster data to a data frame (this could take time due to size)
 dem_df <- as.data.frame(dem_data, xy = TRUE)
