@@ -473,6 +473,18 @@ p <- ggplot(indv, aes_string(x = "avg_value", y = analyte, color = "reporting_ar
   theme(legend.position = "none")  # Remove the legend
 
 # Store the plot in the list
+#plot_list[[analyte]] <- p
+
+}
+
+print(p)
+
+```
+
+
+
+
+# Store the plot in the list
 plot_list[[analyte]] <- p
 
 }

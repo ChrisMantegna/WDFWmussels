@@ -356,6 +356,53 @@ print(s)
 
 ```
 
+# RA boxplot with annotation
+```{r}
+
+# Load necessary libraries
+library(ggplot2)
+library(ggsignif)  # For adding significance annotations
+library(svglite)
+
+# Convert reporting_area to factor (for proper ordering)
+sdata$reporting_area <- as.factor(sdata$reporting_area)
+
+# Custom order for the reporting areas
+custom_order <- c('6', '7', '8.1', '8.2', '9', '10', '11', '12', '13')
+sdata$reporting_area <- factor(sdata$reporting_area, levels = custom_order)
+
+# Create the boxplot with ggplot2 and add significance annotations
+a <- ggplot(sdata, aes(x = reporting_area, y = sod)) +
+  geom_boxplot(fill = "gray", color = "black") +
+  labs(title = "SOD Activity by Reporting Area", 
+       x = "Reporting Area", y = "SOD Activity (Unit / mg"^"-1"~"protein)") +
+  theme(
+    axis.text.x = element_text(angle = 0, hjust = 0.5, size = 12),  # X-axis labels at 0 angle, centered, and larger size
+    axis.text.y = element_text(size = 12),  # Y-axis label size
+    axis.title.x = element_text(size = 14),  # X-axis title font size
+    axis.title.y = element_text(size = 14),  # Y-axis title font size
+    plot.title = element_text(hjust = 0.5, size = 16),  # Center the title and adjust its size
+    panel.grid = element_blank(),  # Remove grey grid
+    panel.background = element_rect(fill = "white", color = NA),  # Set background to white
+    axis.line = element_line(color = "black")  # Add black axis lines
+  ) +
+  
+  # Add significance annotations using geom_signif
+  geom_signif(comparisons = list(c("11", "12"), c("12", "13"), c("12", "8.2"), c("10", "13")),
+              map_signif_level = TRUE,  # Automatically map significance levels to asterisks
+              y_position = c(2.5e+07, 2.8e+07, 3.0e+07, 3.2e+07),  # Adjust these values for proper annotation heights
+              tip_length = 0.02,  # Length of the lines for annotations
+              textsize = 3)  # Size of the significance text
+
+# Display the plot
+print(p)
+
+# Optionally save the plot (adjust the file path as needed)
+#ggsave(plot=p, filename="/Users/cmantegna/Documents/WDFWmussels/output/figures_manuscript/p450RA_all_with_significance.png", width=15, height=12)
+
+```
+
+
 ## Rank - box plot - full data
 ```{r}
 

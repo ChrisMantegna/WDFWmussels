@@ -126,7 +126,7 @@ mc_ra <- data.frame(
     Z = dunn_ra$Z,
     P.adjusted = dunn_ra$P.adjusted
 )
-
+write.csv(mc_ra, "/Users/cmantegna/Documents/WDFWmussels/output/tables/SignificantSODreporting.csv", row.names = FALSE)
 
 # PAHgroup8
 dunn_pah8 <- dunn.test(data$sod, data$PAHgroup8, method = "bonferroni", list = TRUE)

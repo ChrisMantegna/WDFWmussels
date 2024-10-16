@@ -32,6 +32,7 @@ knitr::opts_chunk$set(
 # Load packages
 
 ```{r}
+
 #install.packages(c("ggplot2", "sf", "viridis", "rnaturalearth", "rnaturalearthdata"))
 library(tidyr)
 #library(tidyverse)
@@ -41,44 +42,22 @@ library(sf)
 library(viridis)
 library(rnaturalearth)
 library(rnaturalearthdata)
-
+library(dplyr)
+library(ggmap)
+#install.packages("elevatr")
 
 ```
 
 # Load data
-
-Weight = mg\
-Length, width, height = mm\
-p450, SOD = activity/ (mg/protein)\
-Condition factor, economic factor = unitless
-
 ```{r}
 
 getwd()
 #data has all sites, coordinates, p450, sod, condition factor, economic factor data
-data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/biomarkerfull.csv")
+data<- read.csv("/Users/cmantegna/Documents/Biomarker Data Analysis/reportingareas_pahgroups_for_maps.csv")
 
 #alldata has the site names, biomarkers, condition factor, average thickness and analyte data - each row is an individual sample
-alldata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
+#alldata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
 
-```
-
-## fix zero's in the data frame and alldata frame
-
-```{r}
-
-# Data contains 0's and must be adjusted in this order to preserve all usable data.
-
-#sod
-#replace any SOD values at or below 0 with half of the lower detection limit of .005 (.005*.5). Lower detection limit determined by assay protocol by the manufacturer, Cayman.
-data$SOD[data$SOD <= 0] <- 0.0025
-alldata$SOD[alldata$SOD <= 0] <- 0.0025
-#p450
-#remove any p450 values that are 0 - those are true 0's not non-detectable. I am replacing with na so I don't lose the entire row of data, including the SOD values.
-data$p450[data$p450 <= 0] <- NA
-alldata$p450[alldata$p450 <= 0] <- NA
-
-#write.csv(alldata, "/Users/cmantegna/Documents/WDFWmussels/data/alldata.csv")
 ```
 
 # Map of Washington State
@@ -90,6 +69,112 @@ washington_map <- world[world$name == "Washington", ]
 
 ```
 
+# adjust data to a spacial data frame
+```{r}
+
+data_sf <- st_as_sf(data, coords = c("longitude", "latitude"), crs = 4326)
+
+```
+
+# reporting areas - color coded - plain background
+```{r}
+
+xlim <- c(-124, -122)  # longitude bounds
+ylim <- c(47, 49)  # latitude bounds
+
+ggplot() +
+  geom_sf(data = washington_map, fill = "lightblue", color = "black") +  # Base map of Puget Sound
+  geom_sf(data = data_sf, aes(color = as.factor(reporting_area)), size = 3) +  # Site points
+  scale_color_manual(values = scales::hue_pal()(length(unique(data_sf$reporting_area)))) +  # Distinct colors
+  theme_minimal() +
+  labs(color = "Reporting Area", title = "Sites in Reporting Area") +
+  theme(legend.position = "right")
+
+```
+
+# reporting areas, puget sound with topographic overlay
+```{r}
+
+library(ggplot2)
+library(sf)
+library(rnaturalearth)
+library(elevatr)
+library(raster)
+library(viridis)
+
+# Get the Washington state boundary (as a substitute for Puget Sound region)
+washington_map <- ne_states(country = "united states of america", returnclass = "sf") %>%
+  filter(name == "Washington")
+
+# Set the bounding box (longitude and latitude range for Puget Sound area)
+xlim <- c(-124, -122)  # longitude bounds
+ylim <- c(47, 49)      # latitude bounds
+
+# Create a data frame for the bounding box corner points
+bbox_df <- data.frame(
+  x = c(xlim[1], xlim[2], xlim[1], xlim[2]),
+  y = c(ylim[1], ylim[1], ylim[2], ylim[2])
+)
+
+# Convert the bounding box data frame to an sf object (spatial points)
+bbox_sf <- st_as_sf(bbox_df, coords = c("x", "y"), crs = 4326)
+
+# Fetch elevation data for the bounding box using get_elev_raster
+elevation_data <- get_elev_raster(locations = bbox_sf, z = 10, prj = "+proj=longlat +datum=WGS84")
+
+# Convert the raster elevation data to a data frame for plotting with ggplot2
+elevation_df <- as.data.frame(as(elevation_data, "SpatialPixelsDataFrame"))
+
+# Rename the columns for ggplot2 compatibility
+names(elevation_df) <- c("x", "y", "elevation")
+
+# Plot the topographic map with site data
+ggplot() +
+  geom_raster(data = elevation_df, aes(x = x, y = y, fill = elevation)) +  # Elevation background
+  geom_sf(data = washington_map, fill = NA, color = "black") +  # Washington state boundary
+  geom_sf(data = data_sf, aes(color = as.factor(reporting_area)), size = 3) +  # Site points
+  scale_fill_viridis_c(option = "C") +  # Color scale for elevation
+  scale_color_manual(values = scales::hue_pal()(length(unique(data_sf$reporting_area)))) +  # Distinct colors
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE) +  # Properly set xlim and ylim
+  theme_minimal() +
+  labs(color = "Reporting Area", fill = "Elevation", title = "Sites with Topographic Background") +
+  theme(legend.position = "right")
+
+dem_data <- raster("/Users/cmantegna/Downloads/Puget_Sound_CoNED_Topobathy_DEM_1m/Puget_Sound_CoNED_Topobathy_DEM_1m.tif")
+```
+
+# new way to get a topographic overlay
+```{r}
+
+
+# Load the terra package
+library(terra)
+
+# Load the large DEM file using terra
+#dem_data <- rast("path_to_your_download/Puget_Sound_CoNED_Topobathy_DEM_1m.tif")
+dem_data <- rast("/Users/cmantegna/Desktop/Puget_Sound_CoNED_Topobathy_DEM_1m.tif")
+
+# Plot a quick view of the DEM to check if it's loaded correctly
+plot(dem_data)
+
+# Convert the raster data to a data frame (this could take time due to size)
+dem_df <- as.data.frame(dem_data, xy = TRUE)
+
+# Use ggplot2 to plot the DEM with your site data
+library(ggplot2)
+ggplot() +
+  geom_raster(data = dem_df, aes(x = x, y = y, fill = layer)) +  # Plot DEM as raster
+  scale_fill_viridis_c(option = "C") +  # Color scale for elevation
+  theme_minimal() +
+  labs(fill = "Elevation", title = "Topobathymetric DEM of Puget Sound")
+
+
+```
+
+
+
+
+EVERYTHING BELOW THIS LINE IS OLD CODE. DO NOT NEED TO RERUN IT.
 # p450 map- WA state
 
 ```{r}
