@@ -80,7 +80,7 @@ data_sf <- st_as_sf(data, coords = c("longitude", "latitude"), crs = 4326)
 ```{r}
 
 # Set the bounding box (longitude and latitude range for Puget Sound area)
-xlim <- c(-124, -120)  # longitude bounds
+xlim <- c(-124, -122)  # longitude bounds
 ylim <- c(47, 49)      # latitude bounds
 
 # Create a data frame for the bounding box corner points
