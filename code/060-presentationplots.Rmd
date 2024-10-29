@@ -45,21 +45,8 @@ mdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgMORPH_analytes.
 library(ggplot2)
 library(Hmisc)  # for Spearman correlation with p-values
 
-# Get analyte columns and avg_p450
-# Using grep to select columns that start with 'a' for analytes
-analyte_columns <- grep("^a", names(data), value = TRUE)
-
-# Ensure that 'avg_p450' is present in the dataset
-if (!('avg_p450' %in% names(data))) {
-  stop("Column 'avg_p450' is missing from the dataset.")
-}
-
-# Create a subset with relevant columns (avg_p450 and analytes only)
-columns_of_interest <- c('avg_p450', analyte_columns)
-data_subset <- data[, columns_of_interest]
-
 # Function to calculate Spearman correlations and p-values
-get_spearman_corr <- function(data, target_col) {
+get_spearman_corr <- function(data, target_col, analyte_columns) {
   corr_results <- sapply(analyte_columns, function(col) {
     result <- rcorr(data[[target_col]], data[[col]], type = "spearman")
     list(correlation = result$r[1, 2], p_value = result$P[1, 2])
@@ -74,21 +61,23 @@ get_spearman_corr <- function(data, target_col) {
   return(significant_corrs)
 }
 
-# Calculate significant correlations for avg_p450
-significant_corrs_p450 <- get_spearman_corr(data_subset, 'avg_p450')
+# Calculate significant correlations for avg_p450 or another metric
+target_metric <- 'avg_p450'  # Change to your desired target
+analyte_columns <- grep("^a", names(data), value = TRUE)  # Adjust as needed
+significant_corrs <- get_spearman_corr(data, target_metric, analyte_columns)
 
-# Add the rownames as a column for plotting
-significant_corrs_p450$Analyte <- rownames(significant_corrs_p450)
+# Add rownames as a column for plotting and set factor levels to maintain CSV column order
+significant_corrs$Analyte <- factor(rownames(significant_corrs), levels = analyte_columns)
 
-# Create the plot for avg_p450 with correlation values inside the bars
-ggplot(significant_corrs_p450, aes(x = correlation, y = Analyte)) +
+# Create the plot for avg_p450 with ordered analytes
+ggplot(significant_corrs, aes(x = correlation, y = Analyte)) +
   geom_bar(stat = "identity", fill = "steelblue") +
   geom_text(aes(label = round(correlation, 2)), 
-            hjust = ifelse(significant_corrs_p450$correlation > 0, -0.1, 1.1),
+            hjust = ifelse(significant_corrs$correlation > 0, -0.1, 1.1),
             color = "black", size = 3) + 
-  labs(title = "Significant Spearman Correlations with avg_p450",
+  labs(title = paste("Significant Spearman Correlations with", target_metric),
        x = "Spearman Correlation", y = "Analyte") +
-  xlim(-0.35, 0.35) +
+  xlim(-0.35, 0.35) +  # Set x-axis range
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
 
