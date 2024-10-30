@@ -30,13 +30,20 @@ knitr::opts_chunk$set(
 
 # Load data
 ```{r}
-data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450correlationMAN.csv")
-sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/sodcorrelationMAN1.csv")
-ssdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/sodcorrelationMAN2.csv")
-mdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgMORPH_analytes.csv")
+
+summed<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avg_all_summed.csv")
+pcb<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avg_all_pcb.csv")
+pbde<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avg_all_pbde.csv")
+metal<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avg_all_metal.csv")
+lmw<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avg_all_lmw.csv")
+hmw<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avg_all_hmw.csv")
+ddt<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avg_all_ddtPesticide.csv")
+hch<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avg_all_chlordanesHch.csv")
 
 ```
 
+# P450
+## summed analytes
 ```{r}
 
 # Load necessary libraries
@@ -44,6 +51,101 @@ library(tidyverse)
 library(broom)  # For tidy model summaries
 library(ggplot2)
 
+print(colnames(summed))
+
+# Model 1: Main effects only
+main_effects_model <- lm(avg_p450 ~ avg_sod + avg_at + avg_cf + sum40CB + sumBDE + 
+                         sumCHLD + sumDDT + sumHCH + sumPCB + hmwPAH + 
+                         lmwPAH + sumPAH + sum16PAH + sum42PAH, data = summed)
+
+# Summary of the main effects model
+summary(main_effects_model)
+
+# PAH group as factor
+summed$PAH_group <- as.factor(summed$reporting_area)  
+
+# Model 2: Interaction effects
+interaction_model <- lm(avg_p450 ~ (avg_sod + avg_at + avg_cf + sum40CB + sumBDE + 
+                                    sumCHLD + sumDDT + sumHCH + sumPCB + hmwPAH + 
+                                    lmwPAH + sumPAH + sum16PAH + sum42PAH) * 
+                                    (latitude + longitude),
+                        data = summed)
+
+# Summary of the interaction model
+summary(interaction_model)
+
+
+
+```
+
+## metal
+```{r}
+
+# Load necessary libraries
+library(tidyverse)
+library(broom)  # For tidy model summaries
+library(ggplot2)
+
+print(colnames(pcb))
+
+# Model 1: Main effects only
+main_effects_model <- lm(avg_p450 ~ avg_sod + avg_at + avg_cf + arsenic + cadmium + 
+                         copper + lead, data = metal)
+
+# Summary of the main effects model
+summary(main_effects_model)
+
+# Model 2: Interaction effects
+interaction_model <- lm(avg_p450 ~ (avg_sod + avg_at + avg_cf + arsenic + cadmium + 
+                         copper + lead) * (latitude + longitude + reporting_area),
+                        data = metal)
+
+# Summary of the interaction model
+summary(interaction_model)
+
+
+
+```
+
+
+
+# SOD
+## summed analytes
+```{r}
+
+# Load necessary libraries
+library(tidyverse)
+library(broom)  # For tidy model summaries
+library(ggplot2)
+
+print(colnames(summed))
+
+# Model 1: Main effects only
+main_effects_model <- lm(avg_sod ~ avg_p450 + avg_at + avg_cf + sum40CB + sumBDE + 
+                         sumCHLD + sumDDT + sumHCH + sumPCB + hmwPAH + 
+                         lmwPAH + sumPAH + sum16PAH + sum42PAH, data = summed)
+
+# Summary of the main effects model
+summary(main_effects_model)
+
+# PAH group as factor
+summed$PAH_group <- as.factor(summed$reporting_area)  
+
+# Model 2: Interaction effects
+interaction_model <- lm(avg_sod ~ (avg_p450 + avg_at + avg_cf + sum40CB + sumBDE + 
+                                    sumCHLD + sumDDT + sumHCH + sumPCB + hmwPAH + 
+                                    lmwPAH + sumPAH + sum16PAH + sum42PAH) * 
+                                    (reporting_area),
+                        data = summed)
+
+# Summary of the interaction model
+summary(interaction_model)
+
+
+
+```
+
+```{r}
 # Define the regression model with interactions for latitude and analytes
 model <- lm(avg_p450 ~ latitude * sum40CB + latitude * sumBDE + latitude * sumCHLD +
                        longitude * sum40CB + longitude * sumBDE + longitude * sumCHLD,
