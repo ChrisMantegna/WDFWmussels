@@ -31,7 +31,7 @@ knitr::opts_chunk$set(
 # Load data
 ```{r}
 
-data<- read.csv("/Users/cmantegna/Documents/Github/WDFWmussels/data/p450data.csv")
+data<- read.csv("/Users/cmantegna/Documents/Github/WDFWmussels/data/soddata.csv")
 #indv<- read.csv("/Users/cmantegna/Documents/Github/WDFWmussels/data/avgP450_analytes.csv")
 
 ```
@@ -237,14 +237,14 @@ library(forcats)
 
 # Reorder site_name based on the median of p450
 data <- data %>%
-  mutate(site_name = fct_reorder(site_name, p450, .fun = median))
+  mutate(site_name = fct_reorder(site_name, sod, .fun = median))
 
 # Plot
-sicb_p450<- ggplot(data, aes(x = site_name, y = p450, fill = as.factor(reporting_area))) +
+sicb_sod<- ggplot(data, aes(x = site_name, y = sod, fill = as.factor(reporting_area))) +
   geom_boxplot() +
   labs(
     x = "Sites", 
-    y = bquote("P450 Activity (Unit / mg"^"-1"~"protein)")
+    y = bquote("SOD Activity (Unit / mg"^"-1"~"protein)")
   ) +
   theme_minimal() +
   theme(
@@ -259,10 +259,10 @@ sicb_p450<- ggplot(data, aes(x = site_name, y = p450, fill = as.factor(reporting
   scale_fill_brewer(palette = "Set1", name = "Reporting Area")
 
 # Save 
-ggsave(filename = "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/sicb_p450.png", plot = sicb_p450, width = 12, height = 10, dpi = 300)
+ggsave(filename = "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/sicb_sod.png", plot = sicb_sod, width = 16, height = 14, dpi = 300)
 
 
-print(sicb_p450)
+print(sicb_sod)
 
 ```
 
