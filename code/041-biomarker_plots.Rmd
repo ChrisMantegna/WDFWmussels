@@ -71,8 +71,7 @@ iqr_threshold <- function(x) {
 data <- data %>%
   mutate(is_outlier = iqr_threshold(p450))
 
-# consider making a list of what was removed from this step (looks like we went from 299 to 288)
-
+# after filtering out the outliers, we go from 299 data points to 285
 
 # make geographic clusters based on lat/ long coordinates in 5 groups since it looks like there are 5 distinct areas of sites
 
@@ -91,28 +90,30 @@ latlong_ranges <- data %>%
   ) %>%
   mutate(label = paste0("Group ", latlong_group, "\nLat: ", lat_range, "\nLong: ", long_range))
 
-# add lat/ long ranges back to the df
+# add lat/long ranges back to the df
 data <- data %>%
   left_join(latlong_ranges, by = "latlong_group")
 
-# boxplots
-# remove outliers 
+# remove outliers
 filtered_data <- data %>% filter(!is_outlier)
 
-# plot
-ggplot(filtered_data, aes(x = reorder(latlong_group, as.numeric(latlong_group)), y = p450, fill = latlong_group)) +
-  geom_boxplot(outlier.shape = NA) +
+# plot with shapes
+ggplot(filtered_data, aes(x = reorder(latlong_group, as.numeric(latlong_group)), y = p450)) +
+  geom_boxplot(outlier.shape = NA, color = "gray50") + # Keep boxplot simple
+  geom_jitter(aes(shape = latlong_group), width = 0.2, size = 2) + # Add points with shapes
   theme_minimal() +
   labs(
     title = "Boxplot of p450 by Latitude/Longitude Group",
     x = "Latitude/Longitude Group",
     y = "p450 Biomarker Value",
-    fill = "Lat/Long Group"
+    shape = "Lat/Long Group"
   ) +
-  scale_fill_discrete(labels = latlong_ranges$label)
+  scale_shape_manual(
+    values = seq(0, length(unique(filtered_data$latlong_group)) - 1), # Use unique shapes
+    labels = latlong_ranges$label # Add group labels
+  )
 
 # PERMANOVA to determine/ confirm any statistically significant comparisons
-# Prepare data for PERMANOVA
 # PERMANOVA prep: create a distance matrix (Bray-Curtis is the standard)
 distance_matrix <- vegdist(data$p450, method = "euclidean")
 
@@ -156,11 +157,15 @@ map_bounds <- data %>%
     max_long = max(longitude) + 1.0
   )
 
-# plot map + lat/long group
+# plot map + lat/long group with shapes
 ggplot() +
-  geom_polygon(data = world_map, aes(x = long, y = lat, group = group), fill = "gray90", color = "gray70") +
-  geom_point(data = data, aes(x = longitude, y = latitude, color = latlong_group), size = 3) +
-  scale_color_discrete(labels = latlong_ranges$label) +
+  geom_polygon(data = world_map, aes(x = long, y = lat, group = group), 
+               fill = "gray90", color = "gray70") +
+  geom_point(data = data, aes(x = longitude, y = latitude, shape = latlong_group), size = 3) +
+  scale_shape_manual(
+    values = seq(0, length(unique(data$latlong_group)) - 1), # Assign unique shapes to each group
+    labels = latlong_ranges$label # Add group labels
+  ) +
   coord_cartesian(
     xlim = c(map_bounds$min_long, map_bounds$max_long),
     ylim = c(map_bounds$min_lat, map_bounds$max_lat)
@@ -170,15 +175,24 @@ ggplot() +
     title = "Map of Latitude/Longitude Groups",
     x = "Longitude",
     y = "Latitude",
-    color = "Lat/Long Group"
+    shape = "Lat/Long Group"
   )
 
-# table of sites included in each group
+
+# Create a readable table of sites included in each group
 site_table <- data %>%
   select(site_name, latlong_group) %>%
+  distinct() %>% # Ensure unique combinations of site_name and latlong_group
   arrange(latlong_group, site_name) %>%
   group_by(latlong_group) %>%
-  summarise(sites = paste(unique(site_name), collapse = ", "))
+  summarise(
+    sites = paste(site_name, collapse = ", "),
+    .groups = "drop"
+  )
+
+getwd()
+# save the table
+#write.csv(site_table, "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/latlong_group_sites_table.csv", row.names = FALSE)
 
 # view
 print(site_table)
@@ -205,7 +219,7 @@ library(ggplot2)
 library(cluster)
 library(vegan) 
 
-# identify and remove outliers 
+# identify and remove outliers using this ChatGPT function
 iqr_threshold <- function(x) {
   Q1 <- quantile(x, 0.25, na.rm = TRUE)
   Q3 <- quantile(x, 0.75, na.rm = TRUE)
@@ -215,19 +229,19 @@ iqr_threshold <- function(x) {
   x < lower_bound | x > upper_bound
 }
 
-sdata <- sdata %>%
+#sdata <- sdata %>%
   mutate(is_outlier = iqr_threshold(sod))
 
 # create latitude and longitude groups from p450 data to ensure groupings for both biomarkers are the same.
 # this next step is a repeat of the steps from p450 in case I don't run the p450 first. Note that I need to load the p450 data with the sod data so this doesn't throw an error.
 
 set.seed(123)
-clusters <- kmeans(data[, c("latitude", "longitude")], centers = 5)
-data <- data %>%
+clusters <- kmeans(sdata[, c("latitude", "longitude")], centers = 5)
+sdata <- sdata %>%
   mutate(latlong_group = as.factor(clusters$cluster))
 
 # save p450 clustering 
-p450_clusters <- clusters
+#p450_clusters <- clusters
 
 # lat/long ranges for each group (this will be overriden by the p450 clusters, but I don't know how I got this screwed up and have to go back and fix this step to make sure i'm not creating a different problem.)
 latlong_ranges <- sdata %>%
@@ -239,9 +253,10 @@ latlong_ranges <- sdata %>%
   mutate(label = paste0("Group ", latlong_group, "\nLat: ", lat_range, "\nLong: ", long_range))
 
 # add lat/long ranges back to the data
-sdata <- sdata %>%
+sdata <- data %>%
   left_join(latlong_ranges, by = "latlong_group")
 
+# DO NOT RUN THIS SECTION AGAIN UNTIL I FIX THE CLUSTERS
 # assign the p450 clusters to the SOD data
 sdata <- sdata %>%
   mutate(
@@ -255,6 +270,7 @@ sdata <- sdata %>%
 # add the lat/long ranges and labels from p450 analysis
 sdata <- sdata %>%
   left_join(latlong_ranges, by = "latlong_group")
+
 
 # boxplots for SOD
 # Identify outliers
