@@ -56,9 +56,9 @@ data[data$sample_id == 23, ]
 library(tidyverse)
 library(ggplot2)
 library(cluster)
-library(vegan) # For PERMANOVA
+library(vegan) 
 
-# Step 1: Identify outliers in `p450`
+# identify and remove outliers
 iqr_threshold <- function(x) {
   Q1 <- quantile(x, 0.25, na.rm = TRUE)
   Q3 <- quantile(x, 0.75, na.rm = TRUE)
@@ -68,18 +68,21 @@ iqr_threshold <- function(x) {
   x < lower_bound | x > upper_bound
 }
 
-# Flag outliers
 data <- data %>%
   mutate(is_outlier = iqr_threshold(p450))
 
-# Step 2: Grouping by latitude and longitude
-# Use k-means clustering to create 4-5 groups
+# consider making a list of what was removed from this step (looks like we went from 299 to 288)
+
+
+# make geographic clusters based on lat/ long coordinates in 5 groups since it looks like there are 5 distinct areas of sites
+
+# use k-means clustering 
 set.seed(123)
 clusters <- kmeans(data[, c("latitude", "longitude")], centers = 5)
 data <- data %>%
   mutate(latlong_group = as.factor(clusters$cluster))
 
-# Determine lat/long ranges for each group
+# lat/long ranges for each group
 latlong_ranges <- data %>%
   group_by(latlong_group) %>%
   summarize(
@@ -88,15 +91,15 @@ latlong_ranges <- data %>%
   ) %>%
   mutate(label = paste0("Group ", latlong_group, "\nLat: ", lat_range, "\nLong: ", long_range))
 
-# Merge lat/long ranges back to the data
+# add lat/ long ranges back to the df
 data <- data %>%
   left_join(latlong_ranges, by = "latlong_group")
 
-# Step 3: Create boxplots
-# Filter out outliers if necessary
+# boxplots
+# remove outliers 
 filtered_data <- data %>% filter(!is_outlier)
 
-# Plot boxplots of p450 by lat/long group
+# plot
 ggplot(filtered_data, aes(x = reorder(latlong_group, as.numeric(latlong_group)), y = p450, fill = latlong_group)) +
   geom_boxplot(outlier.shape = NA) +
   theme_minimal() +
@@ -108,18 +111,17 @@ ggplot(filtered_data, aes(x = reorder(latlong_group, as.numeric(latlong_group)),
   ) +
   scale_fill_discrete(labels = latlong_ranges$label)
 
-# Step 4: PERMANOVA analysis
+# PERMANOVA to determine/ confirm any statistically significant comparisons
 # Prepare data for PERMANOVA
-# Create a distance matrix (Bray-Curtis distance is commonly used for ecological data)
+# PERMANOVA prep: create a distance matrix (Bray-Curtis is the standard)
 distance_matrix <- vegdist(data$p450, method = "euclidean")
 
-# Perform PERMANOVA
 permanova_results <- adonis2(distance_matrix ~ latlong_group, data = data)
 
-# Display PERMANOVA results
+# view
 print(permanova_results)
 
-# Function for pairwise comparisons
+# Function for pairwise comparisons - built by ChatGPT
 pairwise.adonis2 <- function(dist, group) {
   combs <- combn(unique(group), 2, simplify = FALSE)
   results <- map_df(combs, function(pair) {
@@ -136,26 +138,25 @@ pairwise.adonis2 <- function(dist, group) {
   return(results)
 }
 
-# Step 5: Post-hoc pairwise comparisons for PERMANOVA
+# post-hoc
 pairwise_permanova <- pairwise.adonis2(distance_matrix, data$latlong_group)
 
-# Display post-hoc results
+# view
 print(pairwise_permanova)
 
-# Step 6: Map visualization of lat/long groups
-# Plot points on a map using ggplot
+# Step 6: map lat/long groups
 world_map <- map_data("world")
 
-# Define map bounds based on data
+# bound the map
 map_bounds <- data %>%
   summarize(
-    min_lat = min(latitude) - 0.5,
-    max_lat = max(latitude) + 0.5,
-    min_long = min(longitude) - 0.5,
-    max_long = max(longitude) + 0.5
+    min_lat = min(latitude) - 1.0,
+    max_lat = max(latitude) + 1.0,
+    min_long = min(longitude) - 1.0,
+    max_long = max(longitude) + 1.0
   )
 
-# Create the map
+# plot map + lat/long group
 ggplot() +
   geom_polygon(data = world_map, aes(x = long, y = lat, group = group), fill = "gray90", color = "gray70") +
   geom_point(data = data, aes(x = longitude, y = latitude, color = latlong_group), size = 3) +
@@ -172,18 +173,17 @@ ggplot() +
     color = "Lat/Long Group"
   )
 
-# Step 7: Create table of sites included in each group
+# table of sites included in each group
 site_table <- data %>%
   select(site_name, latlong_group) %>%
   arrange(latlong_group, site_name) %>%
   group_by(latlong_group) %>%
   summarise(sites = paste(unique(site_name), collapse = ", "))
 
-# Display the table
+# view
 print(site_table)
 
 ```
-
 
 # SOD
 ## Adjust SOD individual values to reflect LOQ limitations
@@ -197,16 +197,15 @@ sdata$sod[sdata$sod <= 0] <- 0.0025
 
 ```
 
-# SOD
 ## Outliers - Plotting
 ```{r}
 
 library(tidyverse)
 library(ggplot2)
 library(cluster)
-library(vegan) # For PERMANOVA
+library(vegan) 
 
-# Step 1: Identify outliers in `sod`
+# identify and remove outliers 
 iqr_threshold <- function(x) {
   Q1 <- quantile(x, 0.25, na.rm = TRUE)
   Q3 <- quantile(x, 0.75, na.rm = TRUE)
@@ -216,21 +215,21 @@ iqr_threshold <- function(x) {
   x < lower_bound | x > upper_bound
 }
 
-# Flag outliers
 sdata <- sdata %>%
   mutate(is_outlier = iqr_threshold(sod))
 
-# Step 2: Grouping by latitude and longitude
-# Use k-means clustering to create 4-5 groups
+# create latitude and longitude groups from p450 data to ensure groupings for both biomarkers are the same.
+# this next step is a repeat of the steps from p450 in case I don't run the p450 first. Note that I need to load the p450 data with the sod data so this doesn't throw an error.
+
 set.seed(123)
 clusters <- kmeans(data[, c("latitude", "longitude")], centers = 5)
 data <- data %>%
   mutate(latlong_group = as.factor(clusters$cluster))
 
-# Save clustering model for reuse
+# save p450 clustering 
 p450_clusters <- clusters
 
-# Determine lat/long ranges for each group
+# lat/long ranges for each group (this will be overriden by the p450 clusters, but I don't know how I got this screwed up and have to go back and fix this step to make sure i'm not creating a different problem.)
 latlong_ranges <- sdata %>%
   group_by(latlong_group) %>%
   summarize(
@@ -239,11 +238,11 @@ latlong_ranges <- sdata %>%
   ) %>%
   mutate(label = paste0("Group ", latlong_group, "\nLat: ", lat_range, "\nLong: ", long_range))
 
-# Merge lat/long ranges back to the data
+# add lat/long ranges back to the data
 sdata <- sdata %>%
   left_join(latlong_ranges, by = "latlong_group")
 
-# Assign the same clusters to the SOD data
+# assign the p450 clusters to the SOD data
 sdata <- sdata %>%
   mutate(
     latlong_group = as.factor(
@@ -253,19 +252,20 @@ sdata <- sdata %>%
     )
   )
 
-# Add the lat/long ranges and labels from p450 analysis
+# add the lat/long ranges and labels from p450 analysis
 sdata <- sdata %>%
   left_join(latlong_ranges, by = "latlong_group")
 
-# Step 4: Create boxplots for SOD data
+# boxplots for SOD
 # Identify outliers
 sdata <- sdata %>%
   mutate(is_outlier = iqr_threshold(sod))
 
-# Filter out outliers if necessary
+# REDUNDANT FROM THE OUTLIER CULLING ABOVE
+# remove outliers 
 filtered_sdata <- sdata %>% filter(!is_outlier)
 
-# Plot boxplots of SOD by lat/long group
+# Plot
 ggplot(filtered_sdata, aes(x = reorder(latlong_group, as.numeric(latlong_group)), y = sod, fill = latlong_group)) +
   geom_boxplot(outlier.shape = NA) +
   theme_minimal() +
@@ -277,33 +277,33 @@ ggplot(filtered_sdata, aes(x = reorder(latlong_group, as.numeric(latlong_group))
   ) +
   scale_fill_discrete(labels = latlong_ranges$label)
 
-# Step 5: PERMANOVA analysis for SOD data
+# PERMANOVA
 # Create a distance matrix for SOD data
 distance_matrix_sod <- vegdist(sdata$sod, method = "euclidean")
 
-# Perform PERMANOVA
 permanova_results_sod <- adonis2(distance_matrix_sod ~ latlong_group, data = sdata)
 
-# Display PERMANOVA results
+# view
 print(permanova_results_sod)
 
-# Step 6: Post-hoc pairwise comparisons for SOD data
+# post-hoc
+# NO significant pairwise comparisons
 pairwise_permanova_sod <- pairwise.adonis2(distance_matrix_sod, sdata$latlong_group)
 
-# Display post-hoc results
+# view
 print(pairwise_permanova_sod)
 
-# Step 7: Map visualization of SOD lat/long groups
-# Define map bounds based on SOD data
+# Map of SOD lat/long groups
+# bound the map
 map_bounds_sod <- sdata %>%
   summarize(
-    min_lat = min(latitude) - 0.5,
-    max_lat = max(latitude) + 0.5,
-    min_long = min(longitude) - 0.5,
-    max_long = max(longitude) + 0.5
+    min_lat = min(latitude) - 1.0,
+    max_lat = max(latitude) + 1.0,
+    min_long = min(longitude) - 1.0,
+    max_long = max(longitude) + 1.0
   )
 
-# Create the map for SOD data
+# map
 ggplot() +
   geom_polygon(data = world_map, aes(x = long, y = lat, group = group), fill = "gray90", color = "gray70") +
   geom_point(data = sdata, aes(x = longitude, y = latitude, color = latlong_group), size = 3) +
@@ -320,14 +320,14 @@ ggplot() +
     color = "Lat/Long Group"
   )
 
-# Step 8: Create table of sites included in each SOD group
+# table of sites included in each SOD group
 site_table_sod <- sdata %>%
   select(site_name, latlong_group) %>%
   arrange(latlong_group, site_name) %>%
   group_by(latlong_group) %>%
   summarise(sites = paste(unique(site_name), collapse = ", "))
 
-# Display the table
+# view
 print(site_table_sod)
 
 ```
