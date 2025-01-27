@@ -97,21 +97,49 @@ data <- data %>%
 # remove outliers
 filtered_data <- data %>% filter(!is_outlier)
 
-# plot with shapes
-ggplot(filtered_data, aes(x = reorder(latlong_group, as.numeric(latlong_group)), y = p450)) +
-  geom_boxplot(outlier.shape = NA, color = "gray50") + # Keep boxplot simple
-  geom_jitter(aes(shape = latlong_group), width = 0.2, size = 2) + # Add points with shapes
+geopgraphic_boxplot<- ggplot(filtered_data, aes(x = reorder(latlong_group, as.numeric(latlong_group)), y = p450)) +
+  geom_boxplot(outlier.shape = NA, color = "gray50", show.legend = FALSE) + # Boxplot only
   theme_minimal() +
+  theme(
+    panel.grid = element_blank(), # Remove all grid lines
+    panel.border = element_blank(), # Remove border
+    axis.line = element_line(color = "black"), # Show only axis lines
+    axis.text.x = element_blank(), # Remove x-axis text
+    axis.text.y = element_text(face = "bold"), # Bold y-axis text
+    axis.title = element_text(face = "bold"), # Bold axis titles
+    axis.ticks.x = element_blank() # Remove x-axis ticks
+  ) +
   labs(
-    title = "Boxplot of p450 by Latitude/Longitude Group",
-    x = "Latitude/Longitude Group",
-    y = "p450 Biomarker Value",
+    title = "P450 by Geographic Location",
+    x = "Geographic Group",
+    y = expression("P450 Activity (Unit / mg"^-1~"protein)"),
     shape = "Lat/Long Group"
   ) +
   scale_shape_manual(
-    values = seq(0, length(unique(filtered_data$latlong_group)) - 1), # Use unique shapes
-    labels = latlong_ranges$label # Add group labels
-  )
+    values = seq(0, length(unique(filtered_data$latlong_group)) - 1), # Unique shapes for legend
+    labels = latlong_ranges$label # Group labels
+  ) +
+  guides(
+    shape = guide_legend(override.aes = list(size = 3)) # Restore shapes in the legend
+  ) +
+  geom_point(
+    data = data.frame(
+      latlong_group = unique(filtered_data$latlong_group),
+      p450 = NA
+    ),
+    aes(
+      x = latlong_group,
+      y = min(filtered_data$p450) - 0.1 * diff(range(filtered_data$p450)), # Adjust y position below plot
+      shape = latlong_group
+    ),
+    inherit.aes = FALSE,
+    size = 3
+  ) +
+  coord_cartesian(clip = "off") # Ensure shapes outside the plot area are visible
+
+# save plot
+ggsave()
+
 
 # PERMANOVA to determine/ confirm any statistically significant comparisons
 # PERMANOVA prep: create a distance matrix (Bray-Curtis is the standard)
@@ -190,7 +218,7 @@ site_table <- data %>%
     .groups = "drop"
   )
 
-getwd()
+#getwd()
 # save the table
 #write.csv(site_table, "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/latlong_group_sites_table.csv", row.names = FALSE)
 

@@ -31,10 +31,10 @@ knitr::opts_chunk$set(
 # Load data
 ```{r}
 
-data<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/p450correlationMAN.csv")
-sdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/sodcorrelationMAN1.csv")
-sdata1<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/sodcorrelationMAN2.csv")
-sdata2<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/avgSOD_analytes2.csv")
+data<- read.csv("/Users/cmantegna/Documents/Github/WDFWmussels/data/p450correlationMAN.csv")
+sdata<- read.csv("/Users/cmantegna/Documents/Github/WDFWmussels/data/sodcorrelationMAN1.csv")
+sdata1<- read.csv("/Users/cmantegna/Documents/Github/WDFWmussels/data/sodcorrelationMAN2.csv")
+sdata2<- read.csv("/Users/cmantegna/Documents/Github/WDFWmussels/data/avgSOD_analytes2.csv")
 #mdata<- read.csv("/Users/cmantegna/Documents/WDFWmussels/data/morphdata.csv")
 
 ```
