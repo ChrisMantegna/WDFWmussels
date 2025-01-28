@@ -470,7 +470,7 @@ print(a23_sod)
 ## Analyte plots - all individuals loop
 ```{r}
 # Save all analyte names
-analyte_names <- colnames(avg_data)[9:15] 
+#analyte_names <- colnames(avg_data)[9:15] 
 
 # Create a folder to save plots
 getwd()
