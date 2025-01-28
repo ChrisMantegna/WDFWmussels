@@ -473,7 +473,7 @@ print(a23_sod)
 avg_sdata<- read.csv("/Users/cmantegna/Documents/Github/WDFWmussels/data/sodcorrelationMAN2.csv")
 
 # Save all analyte names
-#analyte_names2 <- colnames(avg_data)[4:15] 
+analyte_names2 <- colnames(avg_sdata)[4:15] 
 
 # Create a folder to save plots
 getwd()
