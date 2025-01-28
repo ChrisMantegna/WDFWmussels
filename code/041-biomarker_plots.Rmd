@@ -1,5 +1,5 @@
 ---
-title: "041- updated plots for 1.24.25 meeting"
+title: "041- updated biomarker plots"
 output:
   pdf_document: 
     fig_width: 20
@@ -50,7 +50,7 @@ data[data$sample_id == 23, ]
 
 
 # P450
-## Outliers - Plotting
+## Outlier adjustment, geographic grouping, box plot
 ```{r}
 
 library(tidyverse)
@@ -97,7 +97,8 @@ data <- data %>%
 # remove outliers
 filtered_data <- data %>% filter(!is_outlier)
 
-geopgraphic_boxplot<- ggplot(filtered_data, aes(x = reorder(latlong_group, as.numeric(latlong_group)), y = p450)) +
+# box plot
+geographic_boxplot<- ggplot(filtered_data, aes(x = reorder(latlong_group, as.numeric(latlong_group)), y = p450)) +
   geom_boxplot(outlier.shape = NA, color = "gray50", show.legend = FALSE) + # Boxplot only
   theme_minimal() +
   theme(
@@ -137,9 +138,20 @@ geopgraphic_boxplot<- ggplot(filtered_data, aes(x = reorder(latlong_group, as.nu
   ) +
   coord_cartesian(clip = "off") # Ensure shapes outside the plot area are visible
 
-# save plot
-ggsave()
+print(geographic_boxplot)
 
+# save plot
+#ggsave(plot=geopgraphic_boxplot, filename="/Users/cmantegna/Documents/Github/WDFWmussels/output/figures_manuscript/geographic_boxplot_p450.png", width=15, height=12)
+
+```
+
+## PERMANOVA
+```{r}
+
+library(tidyverse)
+library(ggplot2)
+library(cluster)
+library(vegan) 
 
 # PERMANOVA to determine/ confirm any statistically significant comparisons
 # PERMANOVA prep: create a distance matrix (Bray-Curtis is the standard)
@@ -173,7 +185,17 @@ pairwise_permanova <- pairwise.adonis2(distance_matrix, data$latlong_group)
 # view
 print(pairwise_permanova)
 
-# Step 6: map lat/long groups
+```
+
+## Mapping by geographic group
+```{r}
+
+library(tidyverse)
+library(ggplot2)
+library(cluster)
+library(vegan) 
+
+# map lat/long groups
 world_map <- map_data("world")
 
 # bound the map
@@ -206,7 +228,10 @@ ggplot() +
     shape = "Lat/Long Group"
   )
 
+```
 
+## Geographic grouping table
+```{r}
 # Create a readable table of sites included in each group
 site_table <- data %>%
   select(site_name, latlong_group) %>%
@@ -239,15 +264,28 @@ sdata$sod[sdata$sod <= 0] <- 0.0025
 
 ```
 
-## Outliers - Plotting
+## Outlier adjustment, geographic grouping, box plot
 ```{r}
 
 library(tidyverse)
-library(ggplot2)
-library(cluster)
-library(vegan) 
 
-# identify and remove outliers using this ChatGPT function
+# Use the clustering from the first dataset (data)
+# clusters$centers and clusters$cluster are already calculated from your first dataset.
+
+# Function to assign clusters from k-means centroids to new data
+assign_clusters <- function(new_data, centroids) {
+  # Calculate the distance of each point in `new_data` to each centroid
+  distances <- as.matrix(dist(rbind(centroids, new_data[, c("latitude", "longitude")])))
+  distances <- distances[-seq_len(nrow(centroids)), 1:nrow(centroids)]
+  # Assign each point to the nearest centroid
+  apply(distances, 1, which.min)
+}
+
+# Assign clusters from the previously calculated k-means to `sdata`
+sdata <- sdata %>%
+  mutate(latlong_group = as.factor(assign_clusters(sdata, clusters$centers)))
+
+# Detect outliers in the second dataset (sdata)
 iqr_threshold <- function(x) {
   Q1 <- quantile(x, 0.25, na.rm = TRUE)
   Q3 <- quantile(x, 0.75, na.rm = TRUE)
@@ -257,21 +295,13 @@ iqr_threshold <- function(x) {
   x < lower_bound | x > upper_bound
 }
 
-#sdata <- sdata %>%
+sdata <- sdata %>%
   mutate(is_outlier = iqr_threshold(sod))
 
-# create latitude and longitude groups from p450 data to ensure groupings for both biomarkers are the same.
-# this next step is a repeat of the steps from p450 in case I don't run the p450 first. Note that I need to load the p450 data with the sod data so this doesn't throw an error.
+# remove outliers
+filtered_sdata <- sdata %>% filter(!is_outlier)
 
-set.seed(123)
-clusters <- kmeans(sdata[, c("latitude", "longitude")], centers = 5)
-sdata <- sdata %>%
-  mutate(latlong_group = as.factor(clusters$cluster))
-
-# save p450 clustering 
-#p450_clusters <- clusters
-
-# lat/long ranges for each group (this will be overriden by the p450 clusters, but I don't know how I got this screwed up and have to go back and fix this step to make sure i'm not creating a different problem.)
+# create lat/long ranges
 latlong_ranges <- sdata %>%
   group_by(latlong_group) %>%
   summarize(
@@ -281,47 +311,60 @@ latlong_ranges <- sdata %>%
   mutate(label = paste0("Group ", latlong_group, "\nLat: ", lat_range, "\nLong: ", long_range))
 
 # add lat/long ranges back to the data
-sdata <- data %>%
-  left_join(latlong_ranges, by = "latlong_group")
-
-# DO NOT RUN THIS SECTION AGAIN UNTIL I FIX THE CLUSTERS
-# assign the p450 clusters to the SOD data
-sdata <- sdata %>%
-  mutate(
-    latlong_group = as.factor(
-      apply(sdata[, c("latitude", "longitude")], 1, function(coord) {
-        which.min(colSums((t(p450_clusters$centers) - coord)^2))
-      })
-    )
-  )
-
-# add the lat/long ranges and labels from p450 analysis
 sdata <- sdata %>%
   left_join(latlong_ranges, by = "latlong_group")
 
-
-# boxplots for SOD
-# Identify outliers
-sdata <- sdata %>%
-  mutate(is_outlier = iqr_threshold(sod))
-
-# REDUNDANT FROM THE OUTLIER CULLING ABOVE
-# remove outliers 
-filtered_sdata <- sdata %>% filter(!is_outlier)
-
-# Plot
-ggplot(filtered_sdata, aes(x = reorder(latlong_group, as.numeric(latlong_group)), y = sod, fill = latlong_group)) +
-  geom_boxplot(outlier.shape = NA) +
+# plot
+geographic_boxplot_sod<- ggplot(filtered_sdata, aes(x = reorder(latlong_group, as.numeric(latlong_group)), y = sod)) +
+  geom_boxplot(outlier.shape = NA, color = "gray50", show.legend = FALSE) + 
   theme_minimal() +
-  labs(
-    title = "Boxplot of SOD by Latitude/Longitude Group",
-    x = "Latitude/Longitude Group",
-    y = "SOD Biomarker Value",
-    fill = "Lat/Long Group"
+  theme(
+    panel.grid = element_blank(), # Remove all grid lines
+    panel.border = element_blank(), # Remove border
+    axis.line = element_line(color = "black"), # Show only axis lines
+    axis.text.x = element_blank(), # Remove x-axis text
+    axis.text.y = element_text(face = "bold"), # Bold y-axis text
+    axis.title = element_text(face = "bold"), # Bold axis titles
+    axis.ticks.x = element_blank() # Remove x-axis ticks
   ) +
-  scale_fill_discrete(labels = latlong_ranges$label)
+  labs(
+    title = "SOD by Geographic Location",
+    x = "Geographic Group",
+    y = expression("SOD Activity (Unit / mg"^-1~"protein)"),
+    shape = "Lat/Long Group"
+  ) +
+  scale_shape_manual(
+    values = seq(0, length(unique(filtered_sdata$latlong_group)) - 1), # Unique shapes for legend
+    labels = latlong_ranges$label # Group labels
+  ) +
+  guides(
+    shape = guide_legend(override.aes = list(size = 3)) # Restore shapes in the legend
+  ) +
+  geom_point(
+    data = data.frame(
+      latlong_group = unique(filtered_sdata$latlong_group),
+      sod = NA
+    ),
+    aes(
+      x = latlong_group,
+      y = min(filtered_sdata$sod) - 0.1 * diff(range(filtered_sdata$sod)), # Adjust y position below plot
+      shape = latlong_group
+    ),
+    inherit.aes = FALSE,
+    size = 3
+  ) +
+  coord_cartesian(clip = "off") # Ensure shapes outside the plot area are visible
 
-# PERMANOVA
+print(geographic_boxplot_sod)
+
+# save plot
+#ggsave(plot=geopgraphic_boxplot_sod, filename="/Users/cmantegna/Documents/Github/WDFWmussels/output/figures_manuscript/geographic_boxplot_sod.png", width=15, height=12)
+
+```
+
+## PERMANOVA
+```{r}
+
 # Create a distance matrix for SOD data
 distance_matrix_sod <- vegdist(sdata$sod, method = "euclidean")
 
@@ -375,3 +418,81 @@ site_table_sod <- sdata %>%
 print(site_table_sod)
 
 ```
+# P450
+## Analyte Plots
+## PCBs
+```{r}
+
+library(ggplot2)
+
+avg_data<- read.csv("/Users/cmantegna/Documents/Github/WDFWmussels/data/avg_all_pcb.csv")
+
+# Example: Your data frame is called 'data', and you want to plot 'Analyte_X' vs 'Biomarker'
+a23_p450<- ggplot(avg_data, aes(x = a23, y = avg_p450)) +
+  geom_point() + # Scatterplot
+  geom_smooth(method = "lm", se = TRUE, color = "blue") + # Linear regression line with confidence interval
+  labs(
+    title = "Analyte_PCB_a23 vs Biomarker Activity",
+    x = "Analyte Concentration (ng/g tissue, dry weight)",
+    y = "Biomarker Activity"
+  ) +
+  theme_minimal()
+
+ggsave(plot=a23_p450, filename="/Users/cmantegna/Documents/Github/WDFWmussels/output/figures_manuscript/a23_p450.png", width=15, height=12)
+
+```
+
+# SOD
+## Analyte Plots
+## PCBs
+```{r}
+
+library(ggplot2)
+
+#avg_data<- read.csv("/Users/cmantegna/Documents/Github/WDFWmussels/data/avg_all_pcb.csv")
+
+# Example: Your data frame is called 'data', and you want to plot 'Analyte_X' vs 'Biomarker'
+a23_sod<- ggplot(avg_data, aes(x = a23, y = avg_sod)) +
+  geom_point() + # Scatterplot
+  geom_smooth(method = "lm", se = TRUE, color = "blue") + # Linear regression line with confidence interval
+  labs(
+    title = "Analyte_PCB_a23 vs Biomarker Activity",
+    x = "Analyte Concentration (ng/g tissue, dry weight)",
+    y = "Biomarker Activity"
+  ) +
+  theme_minimal()
+
+print(a23_sod)
+#ggsave(plot=a23_sod, filename="/Users/cmantegna/Documents/Github/WDFWmussels/output/figures_manuscript/a23_sod.png", width=15, height=12)
+
+```
+
+## Analyte plots - all individuals loop
+```{r}
+# Save all analyte names
+analyte_names <- colnames(avg_data)[9:50] 
+
+# Create a folder to save plots
+getwd()
+dir.create("/Users/cmantegna/Documents/GitHub/WDFWmussels/output/analyte_plots")
+
+# Loop through analytes
+for (analyte in analyte_names) {
+  p <- ggplot(avg_data, aes_string(x = analyte, y = avg_sod)) +
+    geom_point() +
+    geom_smooth(method = "lm", se = TRUE, color = "blue") +
+    labs(
+      title = paste(analyte, "vs Biomarker Activity"),
+      x = paste(analyte, "Concentration"),
+      y = "Biomarker Activity"
+    ) +
+    theme_minimal()
+  
+  # Save the plot
+  ggsave(filename = paste0("analyte_plots/", analyte, "_vs_Biomarker.png"), plot = p, width = 6, height = 4)
+}
+
+
+
+```
+
