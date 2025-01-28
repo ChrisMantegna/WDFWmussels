@@ -469,27 +469,30 @@ print(a23_sod)
 
 ## Analyte plots - all individuals loop
 ```{r}
+
+avg_sdata<- read.csv("/Users/cmantegna/Documents/Github/WDFWmussels/data/sodcorrelationMAN2.csv")
+
 # Save all analyte names
-#analyte_names <- colnames(avg_data)[9:15] 
+#analyte_names2 <- colnames(avg_data)[4:15] 
 
 # Create a folder to save plots
 getwd()
 #dir.create("/Users/cmantegna/Documents/GitHub/WDFWmussels/output/analyte_plots")
 
 # Loop through analytes
-for (analyte in analyte_names) {
-  p <- ggplot(avg_data, aes_string(x = analyte, y = "avg_sod")) +
+for (analyte in analyte_names2) {
+  p <- ggplot(avg_sdata, aes_string(x = analyte, y = "avg_sod")) +
     geom_point() +
     geom_smooth(method = "lm", se = TRUE, color = "blue") +
     labs(
-      title = paste(analyte, "vs SOD Activity"),
+      title = paste(analyte, "vs SOD Activity 2"),
       x = paste(analyte, "Concentration"),
       y = "SOD Activity"
     ) +
     theme_minimal()
   
   # Save the plot
-  ggsave(filename = paste0("analyte_plots/", analyte, "_v_SOD.png"), plot = p, width = 6, height = 4)
+  ggsave(filename = paste0("analyte_plots/", analyte, "_v_SOD2.png"), plot = p, width = 6, height = 4)
 }
 
 ```
