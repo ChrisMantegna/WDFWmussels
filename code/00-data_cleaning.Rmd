@@ -1,0 +1,176 @@
+---
+title: "00- Data Cleaning"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  #fig.width = 15,       # Set plot width in inches
+  #fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load & Check Data
+```{r}
+
+# double check where you are
+# *NOTE* set to root (WDFWmussels) and not a directory within - check into why that is happening in the knitr block
+getwd()
+
+# load data
+data<- read.csv("../data/all_lab_data_raw.csv")
+
+
+```
+
+# Data Review
+```{r}
+
+# take a look at your df
+str(data) # df setup review
+
+# str() tells us that our df has 312 rows and 9 columns and that our sample_id and site number are being treated as integers; this might be a problem in analyses and plotting.
+
+summary(data) # df stats for each column
+
+# summary() tells us a few useful things: (1) our lat/ long bounds which we'll need for mapping, (2) we have NA values in p450 and condition_factor that need to be investigated before moving forward.
+
+```
+
+# Dealing with NA's
+```{r}
+
+# NAs kill analyses, so we will impute the missing values. Imputation method is subjective. For this data set I chose to impute with the median for the following reasons; (1) most conservative method for non-parametric data, (2) number of NA values is small (<10%), (3) the median won't skew data distribution.
+
+# replace p450 NAs (n=8) with the median
+data$p450[is.na(data$p450)] <- 3873418
+
+# replace condition_factor NAs (n=16) with the median
+data$condition_factor[is.na(data$condition_factor)] <- 0.1738
+
+# check
+summary(data)
+
+```
+
+# Column Names
+```{r}
+
+# i hate any column names that aren't lowercase, it creates unnecessary errors, so let's fix this.
+colnames(data) <- tolower(colnames(data))
+
+```
+
+
+# Normality
+```{r}
+
+# normality determines all future test paths, check
+shapiro.test(data$p450) # biomarker is NOT normal
+shapiro.test(data$sod) # biomarker is NOT normal
+shapiro.test(data$condition_factor) # morphometric is NOT normal
+shapiro.test(data$avg_thickness) # morphometric is normal
+
+```
+
+# Plot - P450
+```{r}
+
+# taking a look before anything else is best practice - so let's
+plot(data$sample_id, data$p450, 
+     xlab = "Sample", ylab = "P450 Value", 
+     main = "P450 Activity by Sample ID",
+     pch = 16, col = "blue")
+
+# looks like we have a team of outliers to address
+
+```
+
+
+# Plot - SOD
+```{r}
+
+# taking a look before anything else is best practice - so let's
+plot(data$sample_id, data$sod, 
+     xlab = "Sample", ylab = "SOD Value", 
+     main = "SOD Activity by Sample ID",
+     pch = 16, col = "blue")
+
+# looks like we have a few outliers to deal with
+
+```
+
+# Plot - Condition_Factor
+```{r}
+
+# taking a look before anything else is best practice - so let's
+plot(data$sample_id, data$condition_factor, 
+     xlab = "Sample", ylab = "Condition Facotr", 
+     main = "CF by Sample ID",
+     pch = 16, col = "blue")
+
+# there's an outlier cluster...
+
+```
+
+# Plot - Shell_Thickness
+```{r}
+
+# taking a look before anything else is best practice - so let's
+plot(data$sample_id, data$avg_thickness, 
+     xlab = "Sample", ylab = "Shell Thickness", 
+     main = "Shell Thickness by Sample ID",
+     pch = 16, col = "blue")
+
+# outliers are not clear here
+
+```
+
+# Check for Outliers
+```{r}
+
+# let's find the outliers for each metric we are reviewing (p450, sod, condition_factor and avg_thickness). ChatGPT helped create the loop.
+metrics <- c("p450", "sod", "condition_factor", "avg_thickness")  # identify columns of interest
+
+# Loop through each metric and compute outliers
+for (marker in metrics) {
+  Q1 <- quantile(data[[marker]], 0.25, na.rm = TRUE)
+  Q3 <- quantile(data[[marker]], 0.75, na.rm = TRUE)
+  IQR_value <- Q3 - Q1
+  
+  lower_bound <- Q1 - 1.5 * IQR_value
+  upper_bound <- Q3 + 1.5 * IQR_value
+  
+  # Create a new column to flag outliers for each metric
+  data[[paste0(marker, "_outlier")]] <- ifelse(data[[marker]] < lower_bound | data[[marker]] > upper_bound, TRUE, FALSE)
+}
+
+# View a summary of outliers
+summary(data[, paste0(metrics, "_outlier")])
+
+
+# write out this df for further use
+# *NOTE* check why it only saves with the full path and not the relative
+
+write.csv(data, file = "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/all_cleaned.csv", row.names = FALSE)
+
+```
