@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 ```
 
-# Load Data
+# Load & Check Data
 ```{r}
 
 # double check where you are
@@ -39,6 +39,24 @@ getwd()
 # load data
 data<- read.csv("../data/cleaned/all_cleaned.csv")
 
+# check it out
+str(data) # checking df structure
+# note that sample_id and site_number are integers and may need to be adjusted to characters for analysis
+
+summary(data) #checking df contents
+
 ```
 
-# Check
+# Significance
+## PERMANOVA & ANOVA
+```{r}
+
+
+```
+
+# Post Hoc
+```{r}
+
+
+```
+

@@ -29,7 +29,7 @@ knitr::opts_chunk$set(
 
 ```
 
-# Load & Check Data
+# Load Data
 ```{r}
 
 # double check where you are
@@ -59,7 +59,7 @@ summary(data) # df stats for each column
 # Dealing with NA's
 ```{r}
 
-# NAs kill analyses, so we will impute the missing values. Imputation method is subjective. For this data set I chose to impute with the median for the following reasons; (1) most conservative method for non-parametric data, (2) number of NA values is small (<10%), (3) the median won't skew data distribution.
+# NAs kill analyses, so we will impute the missing values. Imputation method is subjective. For this data set I chose to impute with the median for the following reasons; (1) most conservative method for non-parametric data (which we thin we have, but will check), (2) number of NA values is small (<10%), (3) the median won't skew data distribution.
 
 # replace p450 NAs (n=8) with the median
 data$p450[is.na(data$p450)] <- 3873418
