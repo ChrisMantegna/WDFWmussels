@@ -496,4 +496,14 @@ for (analyte in analyte_names2) {
 }
 
 ```
+### What am I doing here?
+```{r}
+
+#this calls all of my current working information - very useful for the version, packages, etc. This doesn't tell me memory/ or usage.
+
+sessionInfo()
+
+#also get into the reprex package to complete the hw since it gives us all of the info to get support with our problems.
+
+```
 
