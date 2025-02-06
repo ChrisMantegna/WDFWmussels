@@ -167,7 +167,6 @@ for (marker in metrics) {
 # View a summary of outliers
 summary(data[, paste0(metrics, "_outlier")])
 
-
 # write out this df for further use
 # *NOTE* check why it only saves with the full path and not the relative
 
