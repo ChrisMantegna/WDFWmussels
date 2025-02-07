@@ -1,0 +1,91 @@
+---
+title: "02- Analysis Groups"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  #fig.width = 15,       # Set plot width in inches
+  #fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load & Check Data
+```{r}
+
+# double check where you are
+# *NOTE* see 00-data_cleaned for directory issue
+getwd()
+
+# load data
+# complete df
+data<- read.csv("../data/cleaned/all_cleaned_all_groups.csv")
+# outliers removed
+pdata<- read.csv("../data/cleaned/p450_clean_groups.csv")
+sdata<- read.csv("../data/cleaned/sod_clean_groups.csv")
+cdata<- read.csv("../data/cleaned/cf_clean_groups.csv")
+adata<- read.csv("../data/cleaned/at_clean_groups.csv")
+
+# check it out
+#str(data) # checking df structure
+# note that sample_id and site_number are integers and may need to be adjusted to characters for analysis
+
+#summary(data) #checking df contents
+
+#colnames(data) <- tolower(colnames(data)) # if needed
+
+```
+
+# Averaging Metrics for Analyte Analysis
+### factors
+```{r}
+# make analysis groups a factor (reporting area, geographic group, pcb group, site)
+# change to a factor - all data
+data$pcb_group <- as.factor(data$pcb_group)
+data$geo_group <- as.factor(data$geo_group)
+data$reporting_area <- as.factor(data$reporting_area)
+data$site_name <- as.factor(data$site_name)
+
+# change to a factor - outliers removed
+pdata$pcb_group <- as.factor(pdata$pcb_group)
+pdata$geo_group <- as.factor(pdata$geo_group)
+pdata$reporting_area <- as.factor(pdata$reporting_area)
+pdata$site_name <- as.factor(pdata$site_name)
+
+sdata$pcb_group <- as.factor(sdata$pcb_group)
+sdata$geo_group <- as.factor(sdata$geo_group)
+sdata$reporting_area <- as.factor(sdata$reporting_area)
+sdata$site_name <- as.factor(sdata$site_name)
+
+cdata$pcb_group <- as.factor(cdata$pcb_group)
+cdata$geo_group <- as.factor(cdata$geo_group)
+cdata$reporting_area <- as.factor(cdata$reporting_area)
+cdata$site_name <- as.factor(cdata$site_name)
+
+adata$pcb_group <- as.factor(adata$pcb_group)
+adata$geo_group <- as.factor(adata$geo_group)
+adata$reporting_area <- as.factor(adata$reporting_area)
+adata$site_name <- as.factor(adata$site_name)
+
+```
+
+### averaging
