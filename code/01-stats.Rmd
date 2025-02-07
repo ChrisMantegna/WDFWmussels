@@ -74,7 +74,7 @@ boxplot(dispersion_test) # visualize results (boxplot of dispersions)
 ```
 
 # PERMANOVA & Post Hoc
-## All Samples
+## All Samples by Site
 ### Standard PERMANOVA + Post Hoc Process
 ```{r}
 
@@ -144,7 +144,7 @@ summary(simper_results)
 
 ```
 
-## Samplies minus Outliers 
+## Samples minus Outliers by Site
 ### Running PERMANOVA
 ```{r}
 

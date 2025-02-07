@@ -50,7 +50,7 @@ summary(data) #checking df contents
 ```
 
 # Adding Identifiers for Grouping
-## PCB
+## PCB (n=6)
 ### Note: Reporting Area is already in the df
 ```{r}
 
@@ -98,13 +98,236 @@ head(data)
 
 # write out new table
 
-write.csv(data, "all_cleaned_with_groups.csv", row.names = FALSE)
+#write.csv(data, "all_cleaned_with_groups.csv", row.names = FALSE)
 
 ```
 
+## Geographic (lat/ long) (n=5)
+```{r}
 
-# Grouping Options: Individual Samples
-#### Note: we will proceed with the groupings using the cleaned data with outliers removed
+# make geographic clusters based on lat/ long coordinates in 5 groups since it looks like there are 5 distinct areas of sites
+
+# reload data
+data<- read.csv("../data/cleaned/all_cleaned_with_groups.csv")
+
+# use k-means clustering 
+set.seed(123)
+clusters <- kmeans(data[, c("latitude", "longitude")], centers = 5)
+data <- data %>%
+  mutate(geo_group = as.factor(clusters$cluster))
+
+# lat/long ranges for each group
+latlong_ranges <- data %>%
+  group_by(geo_group) %>%
+  summarize(
+    lat_range = paste0(round(min(latitude), 2), " - ", round(max(latitude), 2)),
+    long_range = paste0(round(min(longitude), 2), " - ", round(max(longitude), 2))
+  ) %>%
+  mutate(label = paste0("Group ", geo_group, "\nLat: ", lat_range, "\nLong: ", long_range))
+
+# add lat/long ranges back to the df
+data <- data %>%
+  left_join(latlong_ranges, by = "geo_group")
+
+#write.csv(data, "all_cleaned_all_groups.csv", row.names = FALSE)
+
+```
+
+# Grouping: Stats
+### Note: we will proceed with the groupings using the cleaned data with outliers removed
+
+## Set up Data for PERMANOVA/ ANOVA
+```{r}
+
+# change to a factor
+data$pcb_group <- as.factor(data$pcb_group)
+data$geo_group <- as.factor(data$geo_group)
+data$reporting_area <- as.factor(data$reporting_area)
+
+# remove outliers
+data_clean_p450 <- data %>% filter(!p450_outlier)
+data_clean_sod <- data %>% filter(!sod_outlier)
+data_clean_condition_factor <- data %>% filter(!condition_factor_outlier)
+data_clean_avg_thickness <- data %>% filter(!avg_thickness_outlier)
+
+# verify data normality
+shapiro.test(data_clean_p450$p450) # not normal
+shapiro.test(data_clean_sod$sod) # not normal
+shapiro.test(data_clean_condition_factor$condition_factor) # normal
+shapiro.test(data_clean_avg_thickness$avg_thickness) # normal
+
+```
+
+## P450
+### Reporting Area
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+# p450
+# PERMANOVA + Dispersion + Post Hoc
+dist_matrix_p450 <- vegdist(data_clean_p450$p450, method = "euclidean") # create matrix
+
+permanova_p450_ra <- adonis(dist_matrix_p450 ~ reporting_area, data = data_clean_p450, permutations = 999) # run permanova
+print(permanova_p450_ra) # results
+
+dispersion_p450_ra <- betadisper(dist_matrix_p450, data_clean_p450$reporting_area)
+permutest_p450_ra <- permutest(dispersion_p450_ra) # dispersion, p> .05; results are valid
+print(permutest_p450_ra) # p= 0.001 
+
+pairwise_p450_ra <- pairwise.perm.manova(dist_matrix_p450, data_clean_p450$reporting_area, nperm = 999, p.method = "bonferroni")
+pairwise_results <- as.data.frame(pairwise_p450_ra$p.value) # convert df
+
+significant_p450_ra <- pairwise_results[pairwise_results$p.value < 0.05, ] #sig only
+print(significant_p450_ra) # results - no significant result
+
+```
+
+## P450
+### Geographic Area
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+# p450
+# PERMANOVA + Dispersion + Post Hoc
+dist_matrix_p450 <- vegdist(data_clean_p450$p450, method = "euclidean") # create matrix
+permanova_p450_ra <- adonis(dist_matrix_p450 ~ reporting_area, data = data_clean_p450, permutations = 999) # run permanova
+print(permanova_p450_ra) # results
+dispersion_p450_ra <- betadisper(dist_matrix_p450, data_clean_p450$reporting_area)
+permutest_p450_ra <- permutest(dispersion_p450_ra) # dispersion, p> .05; results are valid
+print(permutest_p450_ra) # p= 0.001 
+pairwise_p450_ra <- pairwise.perm.manova(dist_matrix_p450, data_clean_p450$reporting_area, nperm = 999, p.method = "bonferroni")
+pairwise_results <- as.data.frame(pairwise_p450_ra$p.value) # convert df
+significant_p450_ra <- pairwise_results[pairwise_results$p.value < 0.05, ] #sig only
+print(significant_p450_ra) # results - no significant result
+
+```
+
+## P450
+### PCB Group
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+# p450
+# PERMANOVA + Dispersion + Post Hoc
+dist_matrix_p450 <- vegdist(data_clean_p450$p450, method = "euclidean") # create matrix
+permanova_p450_ra <- adonis(dist_matrix_p450 ~ reporting_area, data = data_clean_p450, permutations = 999) # run permanova
+print(permanova_p450_ra) # results
+dispersion_p450_ra <- betadisper(dist_matrix_p450, data_clean_p450$reporting_area)
+permutest_p450_ra <- permutest(dispersion_p450_ra) # dispersion, p> .05; results are valid
+print(permutest_p450_ra) # p= 0.001 
+pairwise_p450_ra <- pairwise.perm.manova(dist_matrix_p450, data_clean_p450$reporting_area, nperm = 999, p.method = "bonferroni")
+pairwise_results <- as.data.frame(pairwise_p450_ra$p.value) # convert df
+significant_p450_ra <- pairwise_results[pairwise_results$p.value < 0.05, ] #sig only
+print(significant_p450_ra) # results - no significant result
+
+```
+
+## SOD
+### Reporting Area
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+# sod
+# PERMANOVA + Dispersion + Post Hoc
+dist_matrix_sod <- vegdist(data_clean_sod$sod, method = "euclidean") # create matrix
+permanova_sod_ra <- adonis(dist_matrix_sod ~ reporting_area, data = data_clean_sod, permutations = 999) # run permanova
+print(permanova_sod_ra) # results
+dispersion_sod_ra <- betadisper(dist_matrix_sod, data_clean_sod$reporting_area)
+permutest_sod_ra <- permutest(dispersion_sod_ra) # dispersion, p> .05; results are valid
+print(permutest_sod_ra)
+pairwise_sod_ra <- pairwise.perm.manova(dist_matrix_sod, data_clean_sod$reporting_area, nperm = 999, p.method = "bonferroni")
+pairwise_results <- as.data.frame(pairwise_sod_ra$p.value) # convert df
+significant_sod_ra <- pairwise_results[pairwise_results$p.value < 0.05, ] #sig only
+print(significant_sod_ra) # results - no significant result
+
+# cf
+# ANOVA - morphometrics
+anova_result <- aov(condition_factor ~ reporting_area, data = data_clean_condition_factor)
+summary(anova_result)
+# Post-hoc test if significant
+TukeyHSD(anova_result)
+
+# at
+# ANOVA - morphometrics
+anova_result <- aov(avg_thickness ~ reporting_area, data = data_clean_avg_thickness)
+summary(anova_result)
+# Post-hoc test if significant
+TukeyHSD(anova_result)
+
+```
+
+## SOD
+### Geographic Group
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+# sod
+# PERMANOVA + Dispersion + Post Hoc
+dist_matrix_sod <- vegdist(data_clean_sod$sod, method = "euclidean") # create matrix
+permanova_sod_ra <- adonis(dist_matrix_sod ~ reporting_area, data = data_clean_sod, permutations = 999) # run permanova
+print(permanova_sod_ra) # results
+dispersion_sod_ra <- betadisper(dist_matrix_sod, data_clean_sod$reporting_area)
+permutest_sod_ra <- permutest(dispersion_sod_ra) # dispersion, p> .05; results are valid
+print(permutest_sod_ra)
+pairwise_sod_ra <- pairwise.perm.manova(dist_matrix_sod, data_clean_sod$reporting_area, nperm = 999, p.method = "bonferroni")
+pairwise_results <- as.data.frame(pairwise_sod_ra$p.value) # convert df
+significant_sod_ra <- pairwise_results[pairwise_results$p.value < 0.05, ] #sig only
+print(significant_sod_ra) # results - no significant result
+
+```
+
+## SOD
+## PCB Group
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+# sod
+# PERMANOVA + Dispersion + Post Hoc
+dist_matrix_sod <- vegdist(data_clean_sod$sod, method = "euclidean") # create matrix
+permanova_sod_ra <- adonis(dist_matrix_sod ~ reporting_area, data = data_clean_sod, permutations = 999) # run permanova
+print(permanova_sod_ra) # results
+dispersion_sod_ra <- betadisper(dist_matrix_sod, data_clean_sod$reporting_area)
+permutest_sod_ra <- permutest(dispersion_sod_ra) # dispersion, p> .05; results are valid
+print(permutest_sod_ra)
+pairwise_sod_ra <- pairwise.perm.manova(dist_matrix_sod, data_clean_sod$reporting_area, nperm = 999, p.method = "bonferroni")
+pairwise_results <- as.data.frame(pairwise_sod_ra$p.value) # convert df
+significant_sod_ra <- pairwise_results[pairwise_results$p.value < 0.05, ] #sig only
+print(significant_sod_ra) # results - no significant result
+
+```
+
+## CF
+### Reporting Area
+
+
+## CF 
+### Geographic Group
+
+## CF
+### PCB Group
+
+## AT
+### Reporting Area
+
+## AT
+### Geographic Area
+
+## AT
+### PCB Group
+
+
 
 ## Site (n=74)
 ### Note: Statistics (/01-stats.Rmd) confirm this grouping is an ineffective tool of analysis. Box plot added to illustrate difficulties
@@ -113,86 +336,3 @@ write.csv(data, "all_cleaned_with_groups.csv", row.names = FALSE)
 # save plot
 #ggsave(plot=geopgraphic_boxplot, filename="/Users/cmantegna/Documents/Github/WDFWmussels/output/figures_manuscript/geographic_boxplot_p450.png", width=15, height=12)
 ```
-
-## Geographic (lat/ long) (n=5)
-
-```{r}
-
-# make geographic clusters based on lat/ long coordinates in 5 groups since it looks like there are 5 distinct areas of sites
-
-# use k-means clustering 
-set.seed(123)
-clusters <- kmeans(data[, c("latitude", "longitude")], centers = 5)
-data <- data %>%
-  mutate(latlong_group = as.factor(clusters$cluster))
-
-# lat/long ranges for each group
-latlong_ranges <- data %>%
-  group_by(latlong_group) %>%
-  summarize(
-    lat_range = paste0(round(min(latitude), 2), " - ", round(max(latitude), 2)),
-    long_range = paste0(round(min(longitude), 2), " - ", round(max(longitude), 2))
-  ) %>%
-  mutate(label = paste0("Group ", latlong_group, "\nLat: ", lat_range, "\nLong: ", long_range))
-
-# add lat/long ranges back to the df
-data <- data %>%
-  left_join(latlong_ranges, by = "latlong_group")
-
-# remove outliers
-filtered_data <- data %>% filter(!is_outlier)
-
-# box plot
-geographic_boxplot<- ggplot(filtered_data, aes(x = reorder(latlong_group, as.numeric(latlong_group)), y = p450)) +
-  geom_boxplot(outlier.shape = NA, color = "gray50", show.legend = FALSE) + # Boxplot only
-  theme_minimal() +
-  theme(
-    panel.grid = element_blank(), # Remove all grid lines
-    panel.border = element_blank(), # Remove border
-    axis.line = element_line(color = "black"), # Show only axis lines
-    axis.text.x = element_blank(), # Remove x-axis text
-    axis.text.y = element_text(face = "bold"), # Bold y-axis text
-    axis.title = element_text(face = "bold"), # Bold axis titles
-    axis.ticks.x = element_blank() # Remove x-axis ticks
-  ) +
-  labs(
-    title = "P450 by Geographic Location",
-    x = "Geographic Group",
-    y = expression("P450 Activity (Unit / mg"^-1~"protein)"),
-    shape = "Lat/Long Group"
-  ) +
-  scale_shape_manual(
-    values = seq(0, length(unique(filtered_data$latlong_group)) - 1), # Unique shapes for legend
-    labels = latlong_ranges$label # Group labels
-  ) +
-  guides(
-    shape = guide_legend(override.aes = list(size = 3)) # Restore shapes in the legend
-  ) +
-  geom_point(
-    data = data.frame(
-      latlong_group = unique(filtered_data$latlong_group),
-      p450 = NA
-    ),
-    aes(
-      x = latlong_group,
-      y = min(filtered_data$p450) - 0.1 * diff(range(filtered_data$p450)), # Adjust y position below plot
-      shape = latlong_group
-    ),
-    inherit.aes = FALSE,
-    size = 3
-  ) +
-  coord_cartesian(clip = "off") # Ensure shapes outside the plot area are visible
-
-print(geographic_boxplot)
-
-# save plot
-#ggsave(plot=geopgraphic_boxplot, filename="/Users/cmantegna/Documents/Github/WDFWmussels/output/figures_manuscript/geographic_boxplot_p450.png", width=15, height=12)
-
-
-```
-
-## Reporting Area
-```{r}
-
-```
-
