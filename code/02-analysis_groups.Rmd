@@ -139,11 +139,17 @@ data <- data %>%
 ## Set up Data for PERMANOVA/ ANOVA
 ```{r}
 
-# change to a factor
+# change to a factor - all data
 data$pcb_group <- as.factor(data$pcb_group)
 data$geo_group <- as.factor(data$geo_group)
 data$reporting_area <- as.factor(data$reporting_area)
+data$site_name <- as.factor(data$site_name)
 
+# change to a factor - outliers removed
+data_clean_p450$site_name <- as.factor(data_clean_p450$site_name)
+data_clean_sod$site_name <- as.factor(data_clean_sod$site_name)
+data_clean_condition_factor$site_name <- as.factor(data_clean_condition_factor$site_name)
+data_clean_avg_thickness$site_name <- as.factor(data_clean_avg_thickness$site_name)
 # remove outliers
 data_clean_p450 <- data %>% filter(!p450_outlier)
 data_clean_sod <- data %>% filter(!sod_outlier)
@@ -158,181 +164,494 @@ shapiro.test(data_clean_avg_thickness$avg_thickness) # normal
 
 ```
 
-## P450
+# P450
 ### Reporting Area
 ```{r}
 
 library(vegan)
-library(RVAideMemoire)
 
-# p450
-# PERMANOVA + Dispersion + Post Hoc
-dist_matrix_p450 <- vegdist(data_clean_p450$p450, method = "euclidean") # create matrix
+# outliers removed
+# KW + Post Hoc
+kruskal.test(p450 ~ reporting_area, data = data_clean_p450) # result: p< 6.616e-5
 
-permanova_p450_ra <- adonis(dist_matrix_p450 ~ reporting_area, data = data_clean_p450, permutations = 999) # run permanova
-print(permanova_p450_ra) # results
+dunn <- dunnTest(data_clean_p450$p450, data_clean_p450$reporting_area, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc)
+# Outcome: No significant result
 
-dispersion_p450_ra <- betadisper(dist_matrix_p450, data_clean_p450$reporting_area)
-permutest_p450_ra <- permutest(dispersion_p450_ra) # dispersion, p> .05; results are valid
-print(permutest_p450_ra) # p= 0.001 
+# all data
+# KW + Post Hoc
+kruskal.test(p450 ~ reporting_area, data = data) # result: p= 0.0006252
 
-pairwise_p450_ra <- pairwise.perm.manova(dist_matrix_p450, data_clean_p450$reporting_area, nperm = 999, p.method = "bonferroni")
-pairwise_results <- as.data.frame(pairwise_p450_ra$p.value) # convert df
-
-significant_p450_ra <- pairwise_results[pairwise_results$p.value < 0.05, ] #sig only
-print(significant_p450_ra) # results - no significant result
+dunn <- dunnTest(data$p450, data$reporting_area, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc)
+# Outcome: No significant result
 
 ```
 
-## P450
 ### Geographic Area
 ```{r}
 
 library(vegan)
-library(RVAideMemoire)
+library(FSA)
 
-# p450
-# PERMANOVA + Dispersion + Post Hoc
-dist_matrix_p450 <- vegdist(data_clean_p450$p450, method = "euclidean") # create matrix
-permanova_p450_ra <- adonis(dist_matrix_p450 ~ reporting_area, data = data_clean_p450, permutations = 999) # run permanova
-print(permanova_p450_ra) # results
-dispersion_p450_ra <- betadisper(dist_matrix_p450, data_clean_p450$reporting_area)
-permutest_p450_ra <- permutest(dispersion_p450_ra) # dispersion, p> .05; results are valid
-print(permutest_p450_ra) # p= 0.001 
-pairwise_p450_ra <- pairwise.perm.manova(dist_matrix_p450, data_clean_p450$reporting_area, nperm = 999, p.method = "bonferroni")
-pairwise_results <- as.data.frame(pairwise_p450_ra$p.value) # convert df
-significant_p450_ra <- pairwise_results[pairwise_results$p.value < 0.05, ] #sig only
-print(significant_p450_ra) # results - no significant result
+# outliers removed
+# KW + Post Hoc
+kruskal.test(p450 ~ geo_group, data = data_clean_p450) # result: p= 0.01197
+
+dunn_gg <- dunnTest(data_clean_p450$p450, data_clean_p450$geo_group, method = "bonferroni", list = TRUE)
+mc_gg <- data.frame(
+    Comparison = dunn_gg$comparisons,
+    Z = dunn_gg$Z,
+    P.adjusted = dunn_gg$P.adjusted
+)
+print(mc_gg)
+# OUTCOME: No significant result
+
+# all data
+# KW + Post Hoc
+kruskal.test(p450 ~ geo_group, data = data) # result: p= 0.05459, NO post hoc needed
 
 ```
 
-## P450
 ### PCB Group
 ```{r}
 
 library(vegan)
-library(RVAideMemoire)
 
-# p450
-# PERMANOVA + Dispersion + Post Hoc
-dist_matrix_p450 <- vegdist(data_clean_p450$p450, method = "euclidean") # create matrix
-permanova_p450_ra <- adonis(dist_matrix_p450 ~ reporting_area, data = data_clean_p450, permutations = 999) # run permanova
-print(permanova_p450_ra) # results
-dispersion_p450_ra <- betadisper(dist_matrix_p450, data_clean_p450$reporting_area)
-permutest_p450_ra <- permutest(dispersion_p450_ra) # dispersion, p> .05; results are valid
-print(permutest_p450_ra) # p= 0.001 
-pairwise_p450_ra <- pairwise.perm.manova(dist_matrix_p450, data_clean_p450$reporting_area, nperm = 999, p.method = "bonferroni")
-pairwise_results <- as.data.frame(pairwise_p450_ra$p.value) # convert df
-significant_p450_ra <- pairwise_results[pairwise_results$p.value < 0.05, ] #sig only
-print(significant_p450_ra) # results - no significant result
+# KW + Post Hoc
 
+# outliers removed
+kruskal.test(p450 ~ pcb_group, data = data_clean_p450) # result: p= 0.004236
+
+dunn <- dunnTest(data_clean_p450$p450, data_clean_p450$pcb_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc)
+# Outcome: No significant result
+
+# all data
+kruskal.test(p450 ~ pcb_group, data = data) # result: p= 0.006079
+
+dunn <- dunnTest(data$p450, data$pcb_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc)
+# Outcome: No significant result
 ```
 
-## SOD
+# SOD
 ### Reporting Area
 ```{r}
 
-library(vegan)
-library(RVAideMemoire)
+# outliers removed
+# KW + Post Hoc
+kruskal.test(sod ~ reporting_area, data = data_clean_sod) # result: p= 0.1601, NO post hoc needed
 
-# sod
-# PERMANOVA + Dispersion + Post Hoc
-dist_matrix_sod <- vegdist(data_clean_sod$sod, method = "euclidean") # create matrix
-permanova_sod_ra <- adonis(dist_matrix_sod ~ reporting_area, data = data_clean_sod, permutations = 999) # run permanova
-print(permanova_sod_ra) # results
-dispersion_sod_ra <- betadisper(dist_matrix_sod, data_clean_sod$reporting_area)
-permutest_sod_ra <- permutest(dispersion_sod_ra) # dispersion, p> .05; results are valid
-print(permutest_sod_ra)
-pairwise_sod_ra <- pairwise.perm.manova(dist_matrix_sod, data_clean_sod$reporting_area, nperm = 999, p.method = "bonferroni")
-pairwise_results <- as.data.frame(pairwise_sod_ra$p.value) # convert df
-significant_sod_ra <- pairwise_results[pairwise_results$p.value < 0.05, ] #sig only
-print(significant_sod_ra) # results - no significant result
+# all data
+# KW + Post Hoc
+kruskal.test(sod ~ reporting_area, data = data) # result: p= 0.07171, NO post hoc needed
 
-# cf
-# ANOVA - morphometrics
+```
+
+### Geographic Group
+```{r}
+
+# KW + Post Hoc
+kruskal.test(sod ~ geo_group, data = data_clean_sod) # result: p= 0.12, NO post hoc needed
+
+# all data
+kruskal.test(sod ~ geo_group, data = data) # result: p= 0.1535, NO post hoc needed
+```
+
+### PCB Group
+```{r}
+
+# KW + Post Hoc
+
+# outliers removed
+kruskal.test(sod ~ pcb_group, data = data_clean_sod) # result: p= 0.0895, NO post hoc needed
+
+# all data
+kruskal.test(sod ~ pcb_group, data = data) # result: p= 0.011
+dunn <- dunnTest(data$sod, data$pcb_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc)
+# OUTCOME: No significant results
+
+```
+
+# CF
+### Reporting Area
+```{r}
+
+# ANOVA
+# outliers removed
 anova_result <- aov(condition_factor ~ reporting_area, data = data_clean_condition_factor)
-summary(anova_result)
-# Post-hoc test if significant
-TukeyHSD(anova_result)
+summary(anova_result) #result: p= 0.063, no post hoc needed
 
-# at
-# ANOVA - morphometrics
+# all data
+anova_result <- aov(condition_factor ~ reporting_area, data = data)
+summary(anova_result) #result: p< 2e-16
+# Post-hoc 
+tukey_results <- TukeyHSD(anova_result)
+# Convert Tukey results to a data frame
+tukey_df <- as.data.frame(tukey_results$reporting_area)
+# Add row names (comparison groups) as a new column
+tukey_df$Comparison <- rownames(tukey_df)
+# Filter for significant results (p < 0.05)
+significant_tukey <- tukey_df[tukey_df$`p adj` < 0.05, ]
+
+# Print only significant results
+if (nrow(significant_tukey) > 0) {
+  print(significant_tukey)
+} else {
+  print("No significant differences found in Tukey's HSD (p < 0.05).")
+}
+
+# OUTCOME: 8 significant pairings - all driven by RA 6 (6 is the difference)
+
+```
+
+### Geographic Group
+```{r}
+
+# ANOVA
+# outliers removed
+anova_result <- aov(condition_factor ~ geo_group, data = data_clean_condition_factor)
+summary(anova_result) #result: p= 0.073, NO post hoc needed
+
+# all data
+anova_result <- aov(condition_factor ~ geo_group, data = data)
+summary(anova_result) #result: p= 1.1e-12
+# Post-hoc 
+tukey_results <- TukeyHSD(anova_result)
+# Convert Tukey results to a data frame
+tukey_df <- as.data.frame(tukey_results$geo_group)
+# Add row names (comparison groups) as a new column
+tukey_df$Comparison <- rownames(tukey_df)
+# Filter for significant results (p < 0.05)
+significant_tukey <- tukey_df[tukey_df$`p adj` < 0.05, ]
+
+# Print only significant results
+if (nrow(significant_tukey) > 0) {
+  print(significant_tukey)
+} else {
+  print("No significant differences found in Tukey's HSD (p < 0.05).")
+}
+
+# OUTCOME: 4 significant pairings - all driven by GG 5 (5 is the difference)
+
+```
+
+### PCB Group
+```{r}
+
+# ANOVA
+# outliers removed
+anova_result <- aov(condition_factor ~ pcb_group, data = data_clean_condition_factor)
+summary(anova_result) #result: p= 0.469, NO post hoc needed
+
+# all data
+anova_result <- aov(condition_factor ~ pcb_group, data = data)
+summary(anova_result) #result: p= 0.000143
+# Post-hoc 
+tukey_results <- TukeyHSD(anova_result)
+# Convert Tukey results to a data frame
+tukey_df <- as.data.frame(tukey_results$pcb_group)
+# Add row names (comparison groups) as a new column
+tukey_df$Comparison <- rownames(tukey_df)
+# Filter for significant results (p < 0.05)
+significant_tukey <- tukey_df[tukey_df$`p adj` < 0.05, ]
+
+# Print only significant results
+if (nrow(significant_tukey) > 0) {
+  print(significant_tukey)
+} else {
+  print("No significant differences found in Tukey's HSD (p < 0.05).")
+}
+
+# OUTCOME: 4 significant pairings - all driven by PG 3, on the high end and the low end (3 is the difference)
+
+```
+
+# AT
+### Reporting Area
+```{r}
+
+# ANOVA
+# outliers removed
 anova_result <- aov(avg_thickness ~ reporting_area, data = data_clean_avg_thickness)
-summary(anova_result)
+summary(anova_result) #result: p< 1.8e-6
 # Post-hoc test if significant
-TukeyHSD(anova_result)
+tukey_results <- TukeyHSD(anova_result)
+# Convert Tukey results to a data frame
+tukey_df <- as.data.frame(tukey_results$reporting_area)
+# Add row names (comparison groups) as a new column
+tukey_df$Comparison <- rownames(tukey_df)
+# Filter for significant results (p < 0.05)
+significant_tukey <- tukey_df[tukey_df$`p adj` < 0.05, ]
+# Print only significant results
+if (nrow(significant_tukey) > 0) {
+  print(significant_tukey)
+} else {
+  print("No significant differences found in Tukey's HSD (p < 0.05).")
+}
+# Outcome: 6 significant pairings, see table below
+
+# all data
+anova_result <- aov(avg_thickness ~ reporting_area, data = data)
+summary(anova_result) #result: p< 1.09e-6
+# Post-hoc 
+tukey_results <- TukeyHSD(anova_result)
+# Convert Tukey results to a data frame
+tukey_df <- as.data.frame(tukey_results$reporting_area)
+# Add row names (comparison groups) as a new column
+tukey_df$Comparison <- rownames(tukey_df)
+# Filter for significant results (p < 0.05)
+significant_tukey <- tukey_df[tukey_df$`p adj` < 0.05, ]
+# Print only significant results
+if (nrow(significant_tukey) > 0) {
+  print(significant_tukey)
+} else {
+  print("No significant differences found in Tukey's HSD (p < 0.05).")
+}
+# Outcome: 6 significant pairings, see table below
 
 ```
 
-## SOD
-### Geographic Group
-```{r}
-
-library(vegan)
-library(RVAideMemoire)
-
-# sod
-# PERMANOVA + Dispersion + Post Hoc
-dist_matrix_sod <- vegdist(data_clean_sod$sod, method = "euclidean") # create matrix
-permanova_sod_ra <- adonis(dist_matrix_sod ~ reporting_area, data = data_clean_sod, permutations = 999) # run permanova
-print(permanova_sod_ra) # results
-dispersion_sod_ra <- betadisper(dist_matrix_sod, data_clean_sod$reporting_area)
-permutest_sod_ra <- permutest(dispersion_sod_ra) # dispersion, p> .05; results are valid
-print(permutest_sod_ra)
-pairwise_sod_ra <- pairwise.perm.manova(dist_matrix_sod, data_clean_sod$reporting_area, nperm = 999, p.method = "bonferroni")
-pairwise_results <- as.data.frame(pairwise_sod_ra$p.value) # convert df
-significant_sod_ra <- pairwise_results[pairwise_results$p.value < 0.05, ] #sig only
-print(significant_sod_ra) # results - no significant result
-
-```
-
-## SOD
-## PCB Group
-```{r}
-
-library(vegan)
-library(RVAideMemoire)
-
-# sod
-# PERMANOVA + Dispersion + Post Hoc
-dist_matrix_sod <- vegdist(data_clean_sod$sod, method = "euclidean") # create matrix
-permanova_sod_ra <- adonis(dist_matrix_sod ~ reporting_area, data = data_clean_sod, permutations = 999) # run permanova
-print(permanova_sod_ra) # results
-dispersion_sod_ra <- betadisper(dist_matrix_sod, data_clean_sod$reporting_area)
-permutest_sod_ra <- permutest(dispersion_sod_ra) # dispersion, p> .05; results are valid
-print(permutest_sod_ra)
-pairwise_sod_ra <- pairwise.perm.manova(dist_matrix_sod, data_clean_sod$reporting_area, nperm = 999, p.method = "bonferroni")
-pairwise_results <- as.data.frame(pairwise_sod_ra$p.value) # convert df
-significant_sod_ra <- pairwise_results[pairwise_results$p.value < 0.05, ] #sig only
-print(significant_sod_ra) # results - no significant result
-
-```
-
-## CF
-### Reporting Area
-
-
-## CF 
-### Geographic Group
-
-## CF
-### PCB Group
-
-## AT
-### Reporting Area
-
-## AT
 ### Geographic Area
+```{r}
 
-## AT
+# ANOVA
+anova_result <- aov(avg_thickness ~ geo_group, data = data_clean_avg_thickness)
+summary(anova_result) #result: p< 1.01e-6
+# Post-hoc 
+tukey_results <- TukeyHSD(anova_result)
+# Convert Tukey results to a data frame
+tukey_df <- as.data.frame(tukey_results$geo_group)
+# Add row names (comparison groups) as a new column
+tukey_df$Comparison <- rownames(tukey_df)
+# Filter for significant results (p < 0.05)
+significant_tukey <- tukey_df[tukey_df$`p adj` < 0.05, ]
+# Print only significant results
+if (nrow(significant_tukey) > 0) {
+  print(significant_tukey)
+} else {
+  print("No significant differences found in Tukey's HSD (p < 0.05).")
+}
+# Outcome: 4 significant pairings, see table below
+
+# all
+anova_result <- aov(avg_thickness ~ geo_group, data = data)
+summary(anova_result) #result: p= 2.4e-8
+# Post-hoc 
+tukey_results <- TukeyHSD(anova_result)
+# Convert Tukey results to a data frame
+tukey_df <- as.data.frame(tukey_results$geo_group)
+# Add row names (comparison groups) as a new column
+tukey_df$Comparison <- rownames(tukey_df)
+# Filter for significant results (p < 0.05)
+significant_tukey <- tukey_df[tukey_df$`p adj` < 0.05, ]
+# Print only significant results
+if (nrow(significant_tukey) > 0) {
+  print(significant_tukey)
+} else {
+  print("No significant differences found in Tukey's HSD (p < 0.05).")
+}
+
+# Outcome: 6 significant pairings, see table below
+
+```
+
 ### PCB Group
+```{r}
 
+# ANOVA
+anova_result <- aov(avg_thickness ~ pcb_group, data = data_clean_avg_thickness)
+summary(anova_result) #result: p= 0.00194
+# Post-hoc
+tukey_results <- TukeyHSD(anova_result)
+# Convert Tukey results to a data frame
+tukey_df <- as.data.frame(tukey_results$pcb_group)
+# Add row names (comparison groups) as a new column
+tukey_df$Comparison <- rownames(tukey_df)
+# Filter for significant results (p < 0.05)
+significant_tukey <- tukey_df[tukey_df$`p adj` < 0.05, ]
+# Print only significant results
+if (nrow(significant_tukey) > 0) {
+  print(significant_tukey)
+} else {
+  print("No significant differences found in Tukey's HSD (p < 0.05).")
+}
+# Outcome: 1 significant pairing, see table below
 
+# All
+anova_result <- aov(avg_thickness ~ pcb_group, data = data)
+summary(anova_result) #result: p= 0.000955
+# Post-hoc
+tukey_results <- TukeyHSD(anova_result)
+# Convert Tukey results to a data frame
+tukey_df <- as.data.frame(tukey_results$pcb_group)
+# Add row names (comparison groups) as a new column
+tukey_df$Comparison <- rownames(tukey_df)
+# Filter for significant results (p < 0.05)
+significant_tukey <- tukey_df[tukey_df$`p adj` < 0.05, ]
+# Print only significant results
+if (nrow(significant_tukey) > 0) {
+  print(significant_tukey)
+} else {
+  print("No significant differences found in Tukey's HSD (p < 0.05).")
+}
+# Outcome: 2 significant pairings, see table below
+```
 
-## Site (n=74)
+# Site (n=74)
 ### Note: Statistics (/01-stats.Rmd) confirm this grouping is an ineffective tool of analysis. Box plot added to illustrate difficulties
 ```{r}
 
-# save plot
-#ggsave(plot=geopgraphic_boxplot, filename="/Users/cmantegna/Documents/Github/WDFWmussels/output/figures_manuscript/geographic_boxplot_p450.png", width=15, height=12)
+library(vegan)
+
+#p450 - outlier removed
+kruskal.test(p450 ~ site_name, data = data_clean_p450) # result: p= 2.026e-5
+dunn <- dunnTest(data_clean_p450$p450, data_clean_p450$site_name, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc)
+# Outcome: No significant result
+
+#p450 - all
+kruskal.test(p450 ~ site_name, data = data) # result: p= 1.248e-5
+dunn <- dunnTest(data$p450, data$site_name, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc)
+# Outcome: No significant result
+
+#sod - outlier removed
+kruskal.test(sod ~ site_name, data = data_clean_sod) # result: p= 0.001075
+dunn <- dunnTest(data_clean_sod$sod, data_clean_sod$site_name, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc)
+# Outcome: No significant result
+
+# sod - all
+kruskal.test(sod ~ site_name, data = data) # result: p= 5.669e-6
+dunn <- dunnTest(data$sod, data$site_name, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc)
+# Outcome: No significant result
+
+# CF
+# ANOVA - outliers removed
+anova_result <- aov(condition_factor ~ site_name, data = data_clean_condition_factor)
+summary(anova_result) #result: p= 0.0044
+# Post-hoc
+tukey_results <- TukeyHSD(anova_result)
+# Convert Tukey results to a data frame
+tukey_df <- as.data.frame(tukey_results$site_name)
+# Add row names (comparison groups) as a new column
+tukey_df$Comparison <- rownames(tukey_df)
+# Filter for significant results (p < 0.05)
+significant_tukey <- tukey_df[tukey_df$`p adj` < 0.05, ]
+# Print only significant results
+if (nrow(significant_tukey) > 0) {
+  print(significant_tukey)
+} else {
+  print("No significant differences found in Tukey's HSD (p < 0.05).")
+}
+# Outcome: No significant pairings
+
+# ANOVA - all
+anova_result <- aov(condition_factor ~ site_name, data = data)
+summary(anova_result) #result: p<2e-16
+# Post-hoc
+tukey_results <- TukeyHSD(anova_result)
+# Convert Tukey results to a data frame
+tukey_df <- as.data.frame(tukey_results$site_name)
+# Add row names (comparison groups) as a new column
+tukey_df$Comparison <- rownames(tukey_df)
+# Filter for significant results (p < 0.05)
+significant_tukey <- tukey_df[tukey_df$`p adj` < 0.05, ]
+# Print only significant results
+if (nrow(significant_tukey) > 0) {
+  print(significant_tukey)
+} else {
+  print("No significant differences found in Tukey's HSD (p < 0.05).")
+}
+# Outcome: 145 significant pairs
+
+# AT
+# ANOVA
+anova_result <- aov(avg_thickness ~ site_name, data = data_clean_avg_thickness)
+summary(anova_result) #result: p= 2.32e-14
+# Post-hoc 
+tukey_results <- TukeyHSD(anova_result)
+# Convert Tukey results to a data frame
+tukey_df <- as.data.frame(tukey_results$site_name)
+# Add row names (comparison groups) as a new column
+tukey_df$Comparison <- rownames(tukey_df)
+# Filter for significant results (p < 0.05)
+significant_tukey <- tukey_df[tukey_df$`p adj` < 0.05, ]
+# Print only significant results
+if (nrow(significant_tukey) > 0) {
+  print(significant_tukey)
+} else {
+  print("No significant differences found in Tukey's HSD (p < 0.05).")
+}
+# Outcome: 74 significant pairings, see table below
+
+# AT
+# ANOVA
+anova_result <- aov(avg_thickness ~ site_name, data = data)
+summary(anova_result) #result: p= 5.71e-16
+# Post-hoc 
+tukey_results <- TukeyHSD(anova_result)
+# Convert Tukey results to a data frame
+tukey_df <- as.data.frame(tukey_results$site_name)
+# Add row names (comparison groups) as a new column
+tukey_df$Comparison <- rownames(tukey_df)
+# Filter for significant results (p < 0.05)
+significant_tukey <- tukey_df[tukey_df$`p adj` < 0.05, ]
+# Print only significant results
+if (nrow(significant_tukey) > 0) {
+  print(significant_tukey)
+} else {
+  print("No significant differences found in Tukey's HSD (p < 0.05).")
+}
+# Outcome: 104 significant pairings, see table below
+
 ```

@@ -870,3 +870,25 @@ print(plot(K_result))
 #shapiro.test(apdata$zinc)
 ```
 
+# permanova + 2 post hoc methods
+```{r}
+
+library(RVAideMemoire)
+
+# PERMANOVA + Dispersion + Post Hoc
+dist_matrix_p450 <- vegdist(data_clean_p450$p450, method = "euclidean") # create matrix
+
+permanova_p450_ra <- adonis(dist_matrix_p450 ~ reporting_area, data = data_clean_p450, permutations = 999) # run permanova
+print(permanova_p450_ra) # results; p= 0.001
+
+dispersion_p450_ra <- betadisper(dist_matrix_p450, data_clean_p450$reporting_area)
+permutest_p450_ra <- permutest(dispersion_p450_ra) # dispersion, p> .05; results are valid
+print(permutest_p450_ra)
+
+pairwise_p450_ra <- pairwise.perm.manova(dist_matrix_p450, data_clean_p450$reporting_area, nperm = 999, p.method = "bonferroni")
+
+pairwise_results <- as.data.frame(pairwise_p450_ra$p.value) # convert df
+significant_p450_ra <- pairwise_results[pairwise_results$p.value < 0.05, ] #sig only
+print(significant_p450_ra) # results - no significant result
+```
+
