@@ -1,0 +1,198 @@
+---
+title: "02- Analysis Groups"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  #fig.width = 15,       # Set plot width in inches
+  #fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load & Check Data
+```{r}
+
+# double check where you are
+# *NOTE* see 00-data_cleaned for directory issue
+getwd()
+
+# load data
+data<- read.csv("../data/cleaned/all_cleaned.csv")
+
+# check it out
+str(data) # checking df structure
+# note that sample_id and site_number are integers and may need to be adjusted to characters for analysis
+
+summary(data) #checking df contents
+
+#colnames(data) <- tolower(colnames(data))
+
+```
+
+# Adding Identifiers for Grouping
+## PCB
+### Note: Reporting Area is already in the df
+```{r}
+
+library(classInt)
+library(dplyr)
+
+df<- read.csv("../data/not_for_analysis/pcb_group_workbook.csv")
+
+# Extract the DryValue column
+dry_values <- df$DryValue
+
+# Compute Fisher-Jenks breaks for 6 groups
+num_classes <- 6
+breaks <- classIntervals(dry_values, num_classes, style = "fisher")$brks
+
+# Print the breakpoints
+print(breaks)
+
+# Create group assignments based on the breaks
+df$DryValue_Group <- cut(dry_values, breaks = breaks, labels = 1:num_classes, include.lowest = TRUE)
+
+# Check the first few rows with the new grouping
+head(df)
+
+# Assign the lowest group number for each site
+df <- df %>%
+  group_by(SiteName) %>%
+  summarise(pcb_group = min(as.numeric(DryValue_Group))) %>%
+  ungroup()
+
+df <- df %>%
+  rename(site_name = SiteName)
+
+# Check results
+print(df)
+
+# Merge while keeping only matching site names
+data <- left_join(data, df, by = "site_name")
+
+# Check if each site in data now has a single assigned group
+table(data$pcb_group)  # Ensure no duplicates within a site
+
+# Check the first few rows
+head(data)
+
+# write out new table
+
+write.csv(data, "all_cleaned_with_groups.csv", row.names = FALSE)
+
+```
+
+
+# Grouping Options: Individual Samples
+#### Note: we will proceed with the groupings using the cleaned data with outliers removed
+
+## Site (n=74)
+### Note: Statistics (/01-stats.Rmd) confirm this grouping is an ineffective tool of analysis. Box plot added to illustrate difficulties
+```{r}
+
+# save plot
+#ggsave(plot=geopgraphic_boxplot, filename="/Users/cmantegna/Documents/Github/WDFWmussels/output/figures_manuscript/geographic_boxplot_p450.png", width=15, height=12)
+```
+
+## Geographic (lat/ long) (n=5)
+
+```{r}
+
+# make geographic clusters based on lat/ long coordinates in 5 groups since it looks like there are 5 distinct areas of sites
+
+# use k-means clustering 
+set.seed(123)
+clusters <- kmeans(data[, c("latitude", "longitude")], centers = 5)
+data <- data %>%
+  mutate(latlong_group = as.factor(clusters$cluster))
+
+# lat/long ranges for each group
+latlong_ranges <- data %>%
+  group_by(latlong_group) %>%
+  summarize(
+    lat_range = paste0(round(min(latitude), 2), " - ", round(max(latitude), 2)),
+    long_range = paste0(round(min(longitude), 2), " - ", round(max(longitude), 2))
+  ) %>%
+  mutate(label = paste0("Group ", latlong_group, "\nLat: ", lat_range, "\nLong: ", long_range))
+
+# add lat/long ranges back to the df
+data <- data %>%
+  left_join(latlong_ranges, by = "latlong_group")
+
+# remove outliers
+filtered_data <- data %>% filter(!is_outlier)
+
+# box plot
+geographic_boxplot<- ggplot(filtered_data, aes(x = reorder(latlong_group, as.numeric(latlong_group)), y = p450)) +
+  geom_boxplot(outlier.shape = NA, color = "gray50", show.legend = FALSE) + # Boxplot only
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(), # Remove all grid lines
+    panel.border = element_blank(), # Remove border
+    axis.line = element_line(color = "black"), # Show only axis lines
+    axis.text.x = element_blank(), # Remove x-axis text
+    axis.text.y = element_text(face = "bold"), # Bold y-axis text
+    axis.title = element_text(face = "bold"), # Bold axis titles
+    axis.ticks.x = element_blank() # Remove x-axis ticks
+  ) +
+  labs(
+    title = "P450 by Geographic Location",
+    x = "Geographic Group",
+    y = expression("P450 Activity (Unit / mg"^-1~"protein)"),
+    shape = "Lat/Long Group"
+  ) +
+  scale_shape_manual(
+    values = seq(0, length(unique(filtered_data$latlong_group)) - 1), # Unique shapes for legend
+    labels = latlong_ranges$label # Group labels
+  ) +
+  guides(
+    shape = guide_legend(override.aes = list(size = 3)) # Restore shapes in the legend
+  ) +
+  geom_point(
+    data = data.frame(
+      latlong_group = unique(filtered_data$latlong_group),
+      p450 = NA
+    ),
+    aes(
+      x = latlong_group,
+      y = min(filtered_data$p450) - 0.1 * diff(range(filtered_data$p450)), # Adjust y position below plot
+      shape = latlong_group
+    ),
+    inherit.aes = FALSE,
+    size = 3
+  ) +
+  coord_cartesian(clip = "off") # Ensure shapes outside the plot area are visible
+
+print(geographic_boxplot)
+
+# save plot
+#ggsave(plot=geopgraphic_boxplot, filename="/Users/cmantegna/Documents/Github/WDFWmussels/output/figures_manuscript/geographic_boxplot_p450.png", width=15, height=12)
+
+
+```
+
+## Reporting Area
+```{r}
+
+```
+

@@ -33,7 +33,7 @@ knitr::opts_chunk$set(
 ```{r}
 
 # double check where you are
-# *NOTE* set to root (WDFWmussels) and not a directory within - check into why that is happening in the knitr block
+# *NOTE* see 00-data_cleaned for directory issue
 getwd()
 
 # load data
@@ -48,15 +48,148 @@ summary(data) #checking df contents
 ```
 
 # Significance
-## PERMANOVA & ANOVA
+## Variance
 ```{r}
 
+# when we looked at our plots, the data is highly variable and because of that it may incorrectly inflate our PERMANOVA results. Reminder, we are running PERMANOVAs on p450, sod and condition_factor because they aren't normally distributed). We check the variance of each group to determine if the PERMANOVA is the correct test. I used the 'bray' method for the matrix because it is ecological data and that's the standard. Note: variance can be evaluated with either bray or euclidian methods, bray is the most common until we get to permanova where euclidian method is used for continuous data. After testing both methods, the result is the same. 
+
+# packages for these tests
+library(vegan)
+library(cluster)
+
+data$site_name <- as.factor(data$site_name) # change site names to a factor instead of a character
+
+metric_matrix <- as.matrix(data[, 6:9]) # pull out my metrics - confirm column numbers are still correct
+
+dist_matrix_variance <- vegdist(metric_matrix, method = "bray") # create a distance matrix
+
+dispersion_test <- betadisper(dist_matrix_variance, group = data$site_name) # check homogeneity of group variances
+
+
+anova(dispersion_test) # Perform permutation test for homogeneity. A p-value > .05 means we need to use PERMANOVA. p= 0.9257
+
+## *NOTE*: I don't actually know what it was supposed to look like, so I can followup in the future. Visualize results (boxplot of dispersions)
+boxplot(dispersion_test) # visualize results (boxplot of dispersions)
 
 ```
 
-# Post Hoc
+# PERMANOVA & Post Hoc
+## All Samples
+### Standard PERMANOVA + Post Hoc Process
 ```{r}
 
+# we can proceed with the PERMANOVA based on the analysis of variance above. Let's check if Site has a statistically significant relationship with our metrics. Instead of creating a distance matrix for each individual metric, I am going to create one that housing all metrics of interest (biomarkers & morphometrics). This is not an ideal process with many metrics, but 4 metrics makes an easy test case for the process.
+
+#install.packages("RVAideMemoire") # only need to install once
+
+library(vegan)
+library(RVAideMemoire)
+
+dist_matrix_full <- vegdist(as.matrix(data[, c("p450", "sod", "condition_factor", "avg_thickness")]), method = "euclidean") # create distance matrix
+
+permanova_full <- adonis2(dist_matrix_full ~ site_name, data = data, permutations = 999) # run PERMANOVA
+
+pairwise_results <- list() # list to store post hoc result
+significant_results <- list() # list to store only significant post hoc results
+
+pairwise_model <- pairwise.perm.manova(dist_matrix_full, data$site_name, nperm = 999, p.method = "bonferroni") # run post hoc 
+
+pairwise_df <- as.data.frame(pairwise_model$p.value) # Extract the results table correctly from `pairwise.htest` object
+colnames(pairwise_df) <- c("p.value")  # Ensure column name is consistent
+
+pairwise_results[["Full Data"]] <- pairwise_df # Store full results
+
+significant_results[["Full Data"]] <- pairwise_df[pairwise_df$p.value < 0.05, , drop = FALSE] # filter significant results
+
+cat("\n### PERMANOVA results for Full Dataset ###\n")
+print(permanova_full) # view permanova results
+
+if (nrow(significant_results[["Full Data"]]) > 0) {
+  cat("\n### Significant pairwise post hoc results (p < 0.05) ###\n")
+  print(significant_results[["Full Data"]])
+} else {
+  cat("\n### No significant pairwise differences found in Full Dataset ###\n") # view significant post hoc results
+}
+
+# write out significant results
+#write.csv(significant_results[["Full Data"]], "significant_pairwise_results_full_data.csv", row.names = FALSE)
+
+# OUTCOME: Permanova yields a statistically significant (p= .001) outcome, but the post hoc test confirms there are in fact no statistically significant comparisons across sites. Both the previous method and confirmation results align with the traditional test and post hoc results.
 
 ```
 
+### Alternative Post Hoc Testing
+```{r}
+
+# since we don't know which metric(s) are driving the significance (acting as if we didn't run the post hoc already), we have two choices: 1- run individual PERMANOVAs & post hoc tests, or 2- check which metric is the influence. We're going with option 2 since the code is simple and there are 2 ways to do it to support confirmation. This is extra and 
+
+library(vegan)
+
+# run nmds (extra step to convert the distance matrix - from above- and prep to run a NMDS later with just plot code)
+ordination <- metaMDS(dist_matrix, k = 2, trymax = 100)
+
+# fit to ordination to find out influence and significance
+envfit_results <- envfit(ordination ~ site_name, data = data, permutations = 999) # r^2 value tells us which metric is influential, p-value gives us significance
+
+# view
+print(envfit_results) # r^2= 0.4091, p-value= 0.001 
+
+# contribution to significance (confirmation of the above step since the fit is statistically significant but poor)
+simper_results <- simper(metric_matrix, data$site_name, permutations = 999) # each metric will have a percentage contribution to the significance
+
+# view
+summary(simper_results)
+
+# OUTCOME: significant results are as follows: avg_thickness and to a lesser significance, sod are driving the result. Both are inconsistent and a posthoc clarifies that none of the significant returns are valid.
+
+```
+
+## Samplies minus Outliers 
+### Running PERMANOVA
+```{r}
+
+# we're going to run the same steps without the outliers and see if there is a difference in result. Since each metric has a different number of outliers, we will create a new matrix for each and run a loop for the PERMANOVA
+
+library(vegan)
+
+metric <- c("p450", "sod", "condition_factor", "avg_thickness") # make a metric of our dependent variables
+
+permanova_results <- list() # list for permanova results
+pairwise_results <- list() # list for post hoc results
+significant_results <- list() # list for any significant results
+
+# loop to remove outliers for each metric, run permanova and post hoc, and reporting of any significant results
+for (marker in metric) {
+  
+  outlier_col <- paste0(marker, "_outlier")  # identify the outlier columns 
+  data_filtered <- data[data[[outlier_col]] == FALSE, ] # remove outliers for each biomarker
+  biomarker_values <- as.matrix(data_filtered[[marker]]) # make the metric data numeric - just in case anything changed in the manipulations
+  dist_matrix <- vegdist(biomarker_values, method = "euclidean") # create distance matrix 
+  
+  permanova_model <- adonis2(dist_matrix ~ site_name, data = data_filtered, permutations = 999) # run PERMANOVA
+  permanova_results[[marker]] <- permanova_model  # store results in list
+
+  pairwise_model <- pairwise.perm.manova(dist_matrix, data_filtered$site_name, nperm = 999, p.method = "bonferroni") # run post hoc 
+  pairwise_results[[marker]] <- pairwise_df # store results in list
+  
+  pairwise_df <- as.data.frame(pairwise_model$p.value) # Extract the results table correctly from `pairwise.htest` object
+  colnames(pairwise_df) <- c("p.value")  # Ensure column name is consistent
+  
+  significant_results[[marker]] <- pairwise_df[pairwise_df$p.value < 0.05, , drop = FALSE]  # filter for significant results only
+ 
+  cat("\n### PERMANOVA results for", marker, "###\n")
+  print(permanova_results[[marker]]) # view permanova results
+
+  if (nrow(significant_results[[marker]]) > 0) {
+    cat("\n### Significant pairwise post hoc results for", marker, " (p < 0.05) ###\n")
+    print(significant_results[[marker]])
+  } else {
+    cat("\n### No significant pairwise differences for", marker, "###\n")  # view significant post hoc results
+  }
+}
+
+# PERMANOVA Results using "bray" distance matrix: P450 p= 0.001, SOD p= 0.002, Condition_Factor p= 0.014, Shell Thickness p= 0.001
+
+# OUTCOME: No significant pairwise differences through post hoc confirmation
+
+```

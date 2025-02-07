@@ -13,7 +13,6 @@ output:
 ---
 
 # Directory and doc rules
-
 ```{r, setup, eval=TRUE, include=TRUE}
 
 knitr::opts_chunk$set(
@@ -75,7 +74,7 @@ summary(data)
 # Column Names
 ```{r}
 
-# i hate any column names that aren't lowercase, it creates unnecessary errors, so let's fix this.
+# i also noticed that all of my column names aren't lowercase, so let's fix that to prevent unnecessary mistakes
 colnames(data) <- tolower(colnames(data))
 
 ```
@@ -84,11 +83,13 @@ colnames(data) <- tolower(colnames(data))
 # Normality
 ```{r}
 
-# normality determines all future test paths, check
-shapiro.test(data$p450) # biomarker is NOT normal
-shapiro.test(data$sod) # biomarker is NOT normal
-shapiro.test(data$condition_factor) # morphometric is NOT normal
-shapiro.test(data$avg_thickness) # morphometric is normal
+# distribution normality or non-normality our analysis path, let's check
+# test assumes normality, so any p-value > .05 indicates a rejection of that assumption
+
+shapiro.test(data$p450) # P450 is NOT normal
+shapiro.test(data$sod) # SOD is NOT normal
+shapiro.test(data$condition_factor) # Condition_Factor is NOT normal
+shapiro.test(data$avg_thickness) # Shell_Thickness is normal
 
 ```
 
@@ -96,10 +97,17 @@ shapiro.test(data$avg_thickness) # morphometric is normal
 ```{r}
 
 # taking a look before anything else is best practice - so let's
+# by sample ID
 plot(data$sample_id, data$p450, 
      xlab = "Sample", ylab = "P450 Value", 
      main = "P450 Activity by Sample ID",
      pch = 16, col = "blue")
+
+# by site
+boxplot(data$p450 ~ factor(data$site_name), 
+        xlab = "Site", ylab = "P450 Value", 
+        main = "P450 Activity by Site",
+        col = "blue")
 
 # looks like we have a team of outliers to address
 
@@ -110,10 +118,17 @@ plot(data$sample_id, data$p450,
 ```{r}
 
 # taking a look before anything else is best practice - so let's
+# by sample ID
 plot(data$sample_id, data$sod, 
      xlab = "Sample", ylab = "SOD Value", 
      main = "SOD Activity by Sample ID",
      pch = 16, col = "blue")
+
+# by site
+boxplot(data$sod ~ factor(data$site_name), 
+        xlab = "Site", ylab = "SOD Value", 
+        main = "SOD Activity by Site",
+        col = "blue")
 
 # looks like we have a few outliers to deal with
 
@@ -123,10 +138,17 @@ plot(data$sample_id, data$sod,
 ```{r}
 
 # taking a look before anything else is best practice - so let's
+# by sample ID
 plot(data$sample_id, data$condition_factor, 
      xlab = "Sample", ylab = "Condition Facotr", 
-     main = "CF by Sample ID",
+     main = "Condition Factor by Sample ID",
      pch = 16, col = "blue")
+
+# by site
+boxplot(data$condition_factor ~ factor(data$site_name), 
+        xlab = "Site", ylab = "Condition Factor", 
+        main = "Condition Factor by Site",
+        col = "blue")
 
 # there's an outlier cluster...
 
@@ -136,10 +158,17 @@ plot(data$sample_id, data$condition_factor,
 ```{r}
 
 # taking a look before anything else is best practice - so let's
+# by sample ID
 plot(data$sample_id, data$avg_thickness, 
      xlab = "Sample", ylab = "Shell Thickness", 
      main = "Shell Thickness by Sample ID",
      pch = 16, col = "blue")
+
+# by site
+boxplot(data$avg_thickness ~ factor(data$site_name), 
+        xlab = "Site", ylab = "Shell Thickness", 
+        main = "Shell Thickness by Site",
+        col = "blue")
 
 # outliers are not clear here
 
@@ -165,11 +194,12 @@ for (marker in metrics) {
 }
 
 # View a summary of outliers
-summary(data[, paste0(metrics, "_outlier")])
+summary(data[, paste0(metrics, "_outlier")]) # outliers: p450= 8, sod= 19, cf= 10, at= 3 
 
 # write out this df for further use
 # *NOTE* check why it only saves with the full path and not the relative
 
-write.csv(data, file = "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/all_cleaned.csv", row.names = FALSE)
+# last saved on 2.6.25
+#write.csv(data, file = "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/all_cleaned.csv", row.names = FALSE)
 
 ```
