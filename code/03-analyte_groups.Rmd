@@ -93,7 +93,7 @@ df_summary <- data %>%
     condition_factor = mean(condition_factor, na.rm = TRUE),
     avg_thickness = mean(avg_thickness, na.rm = TRUE)
   )
-write.csv(df_summary, "all_averages_with_all_groups.csv", row.names = FALSE)
+#write.csv(df_summary, "all_averages_with_all_groups.csv", row.names = FALSE)
 
 # outliers removed
 # p450
@@ -116,7 +116,7 @@ avg_sod_with_all_groups <- sdata %>%
     condition_factor = mean(condition_factor, na.rm = TRUE),
     avg_thickness = mean(avg_thickness, na.rm = TRUE)
   )
-write.csv(avg_sod_with_all_groups, "avg_sod_with_all_groups.csv", row.names = FALSE)
+#write.csv(avg_sod_with_all_groups, "avg_sod_all_groups_outliers_removed.csv", row.names = FALSE)
 
 
 # cf
@@ -128,7 +128,7 @@ avg_cf_with_all_groups <- cdata %>%
     condition_factor = mean(condition_factor, na.rm = TRUE),
     avg_thickness = mean(avg_thickness, na.rm = TRUE)
   )
-#write.csv(avg_cf_with_all_groups, "avg_cf_with_all_groups.csv", row.names = FALSE)
+#write.csv(avg_cf_with_all_groups, "avg_cf_all_groups_outliers_removed.csv", row.names = FALSE)
 
 # at
 avg_at_with_all_groups <- adata %>%
@@ -139,7 +139,7 @@ avg_at_with_all_groups <- adata %>%
     condition_factor = mean(condition_factor, na.rm = TRUE),
     avg_thickness = mean(avg_thickness, na.rm = TRUE)
   )
-#write.csv(avg_at_with_all_groups, "avg_at_with_all_groups.csv", row.names = FALSE)
+#write.csv(avg_at_with_all_groups, "avg_at_all_groups_outliers_removed.csv", row.names = FALSE)
 
 ```
 
