@@ -89,3 +89,19 @@ adata$site_name <- as.factor(adata$site_name)
 ```
 
 ### averaging
+```{r}
+
+library(dplyr)
+
+df_summary <- data %>%
+  group_by(site_name, reporting_area, geo_group, pcb_group, latitude, longitude, lat_range, long_range) %>%  
+  summarise(
+    p450 = mean(p450, na.rm = TRUE),
+    sod = mean(sod, na.rm = TRUE),
+    condition_factor = mean(condition_factor, na.rm = TRUE),
+    avg_thickness = mean(avg_thickness, na.rm = TRUE)
+  )
+
+#write.csv(df_summary, "averages_all_with_groups.csv", row.names = FALSE)
+```
+
