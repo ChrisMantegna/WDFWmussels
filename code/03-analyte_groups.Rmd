@@ -40,10 +40,10 @@ getwd()
 # complete df
 data<- read.csv("../data/cleaned/all_cleaned_all_groups.csv")
 # outliers removed
-#pdata<- read.csv("../data/cleaned/p450_clean_groups.csv")
-#sdata<- read.csv("../data/cleaned/sod_clean_groups.csv")
-#cdata<- read.csv("../data/cleaned/cf_clean_groups.csv")
-#adata<- read.csv("../data/cleaned/at_clean_groups.csv")
+pdata<- read.csv("../data/cleaned/p450_clean_groups.csv")
+sdata<- read.csv("../data/cleaned/sod_clean_groups.csv")
+cdata<- read.csv("../data/cleaned/cf_clean_groups.csv")
+adata<- read.csv("../data/cleaned/at_clean_groups.csv")
 
 # check it out
 #str(data) # checking df structure
@@ -64,6 +64,7 @@ data$pcb_group <- as.factor(data$pcb_group)
 data$geo_group <- as.factor(data$geo_group)
 data$reporting_area <- as.factor(data$reporting_area)
 data$site_name <- as.factor(data$site_name)
+data$PAHgroup8 <- as.factor(data$PAHgroup8)
 
 # remove outliers
 data_clean_p450 <- data %>% filter(!p450_outlier)
@@ -72,10 +73,10 @@ data_clean_condition_factor <- data %>% filter(!condition_factor_outlier)
 data_clean_avg_thickness <- data %>% filter(!avg_thickness_outlier)
 
 # save df's with outliers removed
-write.csv(data_clean_p450, "p450_clean_groups.csv", row.names = FALSE)
-write.csv(data_clean_sod, "sod_clean_groups.csv", row.names = FALSE)
-write.csv(data_clean_condition_factor, "cf_clean_groups.csv", row.names = FALSE)
-write.csv(data_clean_avg_thickness, "at_clean_groups.csv", row.names = FALSE)
+#write.csv(data_clean_p450, "p450_clean_groups.csv", row.names = FALSE)
+#write.csv(data_clean_sod, "sod_clean_groups.csv", row.names = FALSE)
+#write.csv(data_clean_condition_factor, "cf_clean_groups.csv", row.names = FALSE)
+#write.csv(data_clean_avg_thickness, "at_clean_groups.csv", row.names = FALSE)
 ```
 
 ### averaging
@@ -92,17 +93,53 @@ df_summary <- data %>%
     condition_factor = mean(condition_factor, na.rm = TRUE),
     avg_thickness = mean(avg_thickness, na.rm = TRUE)
   )
-
-#write.csv(df_summary, "averages_all_with_groups.csv", row.names = FALSE)
+write.csv(df_summary, "all_averages_with_all_groups.csv", row.names = FALSE)
 
 # outliers removed
 # p450
+avg_p450_all_groups_outliers_removed <- pdata %>%
+  group_by(site_name, reporting_area, geo_group, pcb_group, latitude, longitude, lat_range, long_range, PAHgroup8) %>%  
+  summarise(
+    p450 = mean(p450, na.rm = TRUE),
+    sod = mean(sod, na.rm = TRUE),
+    condition_factor = mean(condition_factor, na.rm = TRUE),
+    avg_thickness = mean(avg_thickness, na.rm = TRUE)
+  )
+#write.csv(avg_p450_all_groups_outliers_removed, "avg_p450_all_groups_outliers_removed.csv", row.names = FALSE)
 
 # sod
+avg_sod_with_all_groups <- sdata %>%
+  group_by(site_name, reporting_area, geo_group, pcb_group, latitude, longitude, lat_range, long_range, PAHgroup8) %>%  
+  summarise(
+    p450 = mean(p450, na.rm = TRUE),
+    sod = mean(sod, na.rm = TRUE),
+    condition_factor = mean(condition_factor, na.rm = TRUE),
+    avg_thickness = mean(avg_thickness, na.rm = TRUE)
+  )
+write.csv(avg_sod_with_all_groups, "avg_sod_with_all_groups.csv", row.names = FALSE)
+
 
 # cf
+avg_cf_with_all_groups <- cdata %>%
+  group_by(site_name, reporting_area, geo_group, pcb_group, latitude, longitude, lat_range, long_range, PAHgroup8) %>%  
+  summarise(
+    p450 = mean(p450, na.rm = TRUE),
+    sod = mean(sod, na.rm = TRUE),
+    condition_factor = mean(condition_factor, na.rm = TRUE),
+    avg_thickness = mean(avg_thickness, na.rm = TRUE)
+  )
+#write.csv(avg_cf_with_all_groups, "avg_cf_with_all_groups.csv", row.names = FALSE)
 
 # at
+avg_at_with_all_groups <- adata %>%
+  group_by(site_name, reporting_area, geo_group, pcb_group, latitude, longitude, lat_range, long_range, PAHgroup8) %>%  
+  summarise(
+    p450 = mean(p450, na.rm = TRUE),
+    sod = mean(sod, na.rm = TRUE),
+    condition_factor = mean(condition_factor, na.rm = TRUE),
+    avg_thickness = mean(avg_thickness, na.rm = TRUE)
+  )
+#write.csv(avg_at_with_all_groups, "avg_at_with_all_groups.csv", row.names = FALSE)
 
 ```
 
