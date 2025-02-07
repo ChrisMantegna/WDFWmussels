@@ -1,5 +1,5 @@
 ---
-title: "01- Exploratory Statistics"
+title: "01- Exploratory Statistics: Distribution, Variance and Outlier Detection"
 output:
   pdf_document: 
     fig_width: 20
@@ -44,6 +44,51 @@ str(data) # checking df structure
 # note that sample_id and site_number are integers and may need to be adjusted to characters for analysis
 
 summary(data) #checking df contents
+
+```
+
+# Histograms - all data
+```{r}
+# p450 basic histogram + basic density plot
+hist(data$p450)
+plot(density(data$p450, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+
+# SOD basic histogram + basic density plot
+hist(data$sod)
+plot(density(data$sod, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+
+# Condition_factor basic histogram + basic density plot
+hist(data$condition_factor)
+plot(density(data$condition_factor, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+
+# Avg_thickness basic histogram + basic density plot
+hist(data$avg_thickness)
+plot(density(data$avg_thickness, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+
+```
+
+# Histograms - outliers removed
+```{r}
+# p450
+filtered_data <- data[!data$p450_outlier, ]
+hist(filtered_data$p450, main="Histogram of p450 (Outliers Removed)", xlab="p450 Value")
+plot(density(filtered_data$p450, na.rm=TRUE), main="Density Plot (Outliers Removed)", xlab="p450 Value")
+
+
+# SOD 
+filtered_datas <- data[!data$sod_outlier, ]
+hist(filtered_datas$sod)
+plot(density(filtered_datas$sod, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+
+# Condition_factor
+filtered_datac <- data[!data$condition_factor_outlier, ]
+hist(filtered_datac$condition_factor)
+plot(density(filtered_datac$condition_factor, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+
+# Avg_thickness
+filtered_dataa <- data[!data$avg_thickness_outlier, ]
+hist(filtered_datac$avg_thickness)
+plot(density(filtered_datac$avg_thickness, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
 
 ```
 

@@ -1,5 +1,5 @@
 ---
-title: "02- Analysis Groups"
+title: "02- Analysis Groups: Adding the Groupings for Analysis by Site, Reporting Area, Geographic Area, PCB Group and PAH Group"
 output:
   pdf_document: 
     fig_width: 20
@@ -145,11 +145,14 @@ data <- data %>%
 ## Set up Data for PERMANOVA/ ANOVA
 ```{r}
 
+library(dplyr)
+
 # change to a factor - all data
 data$pcb_group <- as.factor(data$pcb_group)
 data$geo_group <- as.factor(data$geo_group)
 data$reporting_area <- as.factor(data$reporting_area)
 data$site_name <- as.factor(data$site_name)
+data$PAHgroup8 <- as.factor(data$PAHgroup8)
 
 # change to a factor - outliers removed
 pdata$pcb_group <- as.factor(pdata$pcb_group)
@@ -681,5 +684,113 @@ if (nrow(significant_tukey) > 0) {
   print("No significant differences found in Tukey's HSD (p < 0.05).")
 }
 # Outcome: 104 significant pairings, see table below
+
+```
+
+# PAH Group
+```{r}
+
+library(vegan)
+library(FSA)
+
+#p450 - outlier removed
+kruskal.test(p450 ~ PAHgroup8, data = data_clean_p450) # result: p= 0.0351
+dunn <- dunnTest(data_clean_p450$p450, data_clean_p450$PAHgroup8, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc)
+# Outcome: No significant result
+
+#p450 - all
+kruskal.test(p450 ~ PAHgroup8, data = data) # result: p= 0.07763; NO post hoc needed
+
+#sod - outlier removed
+kruskal.test(sod ~ PAHgroup8, data = data_clean_sod) # result: p= 0.05526
+dunn <- dunnTest(data_clean_sod$sod, data_clean_sod$PAHgroup8, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc)
+# Outcome: No significant result
+
+# sod - all
+kruskal.test(sod ~ PAHgroup8, data = data) # result: p= 0.01387
+dunn <- dunnTest(data$sod, data$PAHgroup8, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc)
+# Outcome: No significant result
+
+# CF
+# ANOVA - outliers removed
+anova_result <- aov(condition_factor ~ PAHgroup8, data = data_clean_condition_factor)
+summary(anova_result) #result: p= 0.731, NO post hoc needed
+
+# ANOVA - all
+anova_result <- aov(condition_factor ~ PAHgroup8, data = data)
+summary(anova_result) #result: p= 3.42e-7
+# Post-hoc
+tukey_results <- TukeyHSD(anova_result)
+# Convert Tukey results to a data frame
+tukey_df <- as.data.frame(tukey_results$PAHgroup8)
+# Add row names (comparison groups) as a new column
+tukey_df$Comparison <- rownames(tukey_df)
+# Filter for significant results (p < 0.05)
+significant_tukey <- tukey_df[tukey_df$`p adj` < 0.05, ]
+# Print only significant results
+if (nrow(significant_tukey) > 0) {
+  print(significant_tukey)
+} else {
+  print("No significant differences found in Tukey's HSD (p < 0.05).")
+}
+# Outcome: 7 significant pairs driven by group 8
+
+# AT
+# ANOVA - outliers removed
+anova_result <- aov(avg_thickness ~ PAHgroup8, data = data_clean_avg_thickness)
+summary(anova_result) #result: p= 0.00425
+# Post-hoc 
+tukey_results <- TukeyHSD(anova_result)
+# Convert Tukey results to a data frame
+tukey_df <- as.data.frame(tukey_results$PAHgroup8)
+# Add row names (comparison groups) as a new column
+tukey_df$Comparison <- rownames(tukey_df)
+# Filter for significant results (p < 0.05)
+significant_tukey <- tukey_df[tukey_df$`p adj` < 0.05, ]
+# Print only significant results
+if (nrow(significant_tukey) > 0) {
+  print(significant_tukey)
+} else {
+  print("No significant differences found in Tukey's HSD (p < 0.05).")
+}
+# Outcome: 4 significant pairings driven by group 1
+
+# AT
+# ANOVA - all
+anova_result <- aov(avg_thickness ~ PAHgroup8, data = data)
+summary(anova_result) #result: p= 0.000785
+# Post-hoc 
+tukey_results <- TukeyHSD(anova_result)
+# Convert Tukey results to a data frame
+tukey_df <- as.data.frame(tukey_results$PAHgroup8)
+# Add row names (comparison groups) as a new column
+tukey_df$Comparison <- rownames(tukey_df)
+# Filter for significant results (p < 0.05)
+significant_tukey <- tukey_df[tukey_df$`p adj` < 0.05, ]
+# Print only significant results
+if (nrow(significant_tukey) > 0) {
+  print(significant_tukey)
+} else {
+  print("No significant differences found in Tukey's HSD (p < 0.05).")
+}
+# Outcome: 4 significant pairings driven by group 1
 
 ```
