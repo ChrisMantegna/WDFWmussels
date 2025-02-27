@@ -13,6 +13,7 @@ output:
 ---
 
 # Directory and doc rules
+
 ```{r, setup, eval=TRUE, include=TRUE}
 
 knitr::opts_chunk$set(
@@ -29,7 +30,8 @@ knitr::opts_chunk$set(
 ```
 
 # Load Data
-```{r}
+
+```{r, load data}
 
 # double check where you are
 # *NOTE* set to root (WDFWmussels) and not a directory within - check into why that is happening in the knitr block
@@ -41,8 +43,17 @@ data<- read.csv("../data/all_lab_data_raw.csv")
 
 ```
 
+---
+## Data Format
+P450 & SOD Activity (Unit / mg"^"-1"~"protein)
+Length, Height, Width, Shell Thickness - mm
+Weight - g
+CI - unitless
+---
+
 # Data Review
-```{r}
+
+```{r review data}
 
 # take a look at your df
 str(data) # df setup review
@@ -56,9 +67,10 @@ summary(data) # df stats for each column
 ```
 
 # Dealing with NA's
-```{r}
 
-# NAs kill analyses, so we will impute the missing values. Imputation method is subjective. For this data set I chose to impute with the median for the following reasons; (1) most conservative method for non-parametric data (which we thin we have, but will check), (2) number of NA values is small (<10%), (3) the median won't skew data distribution.
+```{r }
+
+# Fixing NAs or learning to live with them
 
 # replace p450 NAs (n=8) with the median
 data$p450[is.na(data$p450)] <- 3873418
@@ -72,6 +84,7 @@ summary(data)
 ```
 
 # Column Names
+
 ```{r}
 
 # i also noticed that all of my column names aren't lowercase, so let's fix that to prevent unnecessary mistakes
@@ -79,8 +92,8 @@ colnames(data) <- tolower(colnames(data))
 
 ```
 
-
 # Normality
+
 ```{r}
 
 # distribution normality or non-normality our analysis path, let's check
@@ -94,6 +107,7 @@ shapiro.test(data$avg_thickness) # Shell_Thickness is normal
 ```
 
 # Plot - P450
+
 ```{r}
 
 # taking a look before anything else is best practice - so let's
@@ -113,8 +127,8 @@ boxplot(data$p450 ~ factor(data$site_name),
 
 ```
 
-
 # Plot - SOD
+
 ```{r}
 
 # taking a look before anything else is best practice - so let's
@@ -135,6 +149,7 @@ boxplot(data$sod ~ factor(data$site_name),
 ```
 
 # Plot - Condition_Factor
+
 ```{r}
 
 # taking a look before anything else is best practice - so let's
@@ -155,6 +170,7 @@ boxplot(data$condition_factor ~ factor(data$site_name),
 ```
 
 # Plot - Shell_Thickness
+
 ```{r}
 
 # taking a look before anything else is best practice - so let's
@@ -175,6 +191,7 @@ boxplot(data$avg_thickness ~ factor(data$site_name),
 ```
 
 # Check for Outliers
+
 ```{r}
 
 # let's find the outliers for each metric we are reviewing (p450, sod, condition_factor and avg_thickness). ChatGPT helped create the loop.
