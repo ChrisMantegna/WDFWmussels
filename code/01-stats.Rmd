@@ -37,7 +37,7 @@ knitr::opts_chunk$set(
 getwd()
 
 # load data
-data<- read.csv("../data/cleaned/all_cleaned.csv")
+data<- read.csv("../data/all_lab_data_raw.csv")
 
 # check it out
 str(data) # checking df structure
@@ -58,16 +58,18 @@ hist(data$sod)
 plot(density(data$sod, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
 
 # Condition_factor basic histogram + basic density plot
-hist(data$condition_factor)
-plot(density(data$condition_factor, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+hist(data$ci_wet_volume)
+hist(data$ci_wet_shell_weight)
+hist(data$ci_pollution)
+#plot(density(data$condition_factor, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
 
 # Avg_thickness basic histogram + basic density plot
-hist(data$avg_thickness)
-plot(density(data$avg_thickness, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+hist(data$shell_thickness)
+#plot(density(data$avg_thickness, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
 
 ```
 
-# Histograms - outliers removed
+# Histograms - outliers removed - Don't Run
 ```{r}
 # p450
 filtered_data <- data[!data$p450_outlier, ]
@@ -104,14 +106,14 @@ library(cluster)
 
 data$site_name <- as.factor(data$site_name) # change site names to a factor instead of a character
 
-metric_matrix <- as.matrix(data[, 6:9]) # pull out my metrics - confirm column numbers are still correct
+metric_matrix <- as.matrix(data[, 7:10]) # pull out my metrics - confirm column numbers are still correct
 
-dist_matrix_variance <- vegdist(metric_matrix, method = "bray") # create a distance matrix
+dist_matrix_variance <- vegdist(metric_matrix, na.rm= TRUE, method = "bray") # create a distance matrix
 
 dispersion_test <- betadisper(dist_matrix_variance, group = data$site_name) # check homogeneity of group variances
 
 
-anova(dispersion_test) # Perform permutation test for homogeneity. A p-value > .05 means we need to use PERMANOVA. p= 0.9257
+anova(dispersion_test) # Perform permutation test for homogeneity. A p-value > .05 means we need to use PERMANOVA. p= 0.7359
 
 ## *NOTE*: I don't actually know what it was supposed to look like, so I can followup in the future. Visualize results (boxplot of dispersions)
 boxplot(dispersion_test) # visualize results (boxplot of dispersions)
@@ -130,7 +132,7 @@ boxplot(dispersion_test) # visualize results (boxplot of dispersions)
 library(vegan)
 library(RVAideMemoire)
 
-dist_matrix_full <- vegdist(as.matrix(data[, c("p450", "sod", "condition_factor", "avg_thickness")]), method = "euclidean") # create distance matrix
+dist_matrix_full <- vegdist(as.matrix(data[, c("p450", "sod", "ci_wet_volume", "shell_thickness", "ci_wet_shell_weight", "ci_pollution")]), na.rm= TRUE, method = "euclidean") # create distance matrix
 
 permanova_full <- adonis2(dist_matrix_full ~ site_name, data = data, permutations = 999) # run PERMANOVA
 
@@ -163,7 +165,7 @@ if (nrow(significant_results[["Full Data"]]) > 0) {
 
 ```
 
-### Alternative Post Hoc Testing
+### Alternative Post Hoc Testing - Don't Run
 ```{r}
 
 # since we don't know which metric(s) are driving the significance (acting as if we didn't run the post hoc already), we have two choices: 1- run individual PERMANOVAs & post hoc tests, or 2- check which metric is the influence. We're going with option 2 since the code is simple and there are 2 ways to do it to support confirmation. This is extra and 
