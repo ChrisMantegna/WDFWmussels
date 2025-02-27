@@ -66,7 +66,7 @@ summary(data) # df stats for each column
 
 ```
 
-# Dealing with NA's
+# Dealing with NA's - Don't Run
 
 ```{r }
 
@@ -83,7 +83,7 @@ summary(data)
 
 ```
 
-# Column Names
+# Column Names - Don't Run
 
 ```{r}
 
@@ -101,8 +101,9 @@ colnames(data) <- tolower(colnames(data))
 
 shapiro.test(data$p450) # P450 is NOT normal
 shapiro.test(data$sod) # SOD is NOT normal
-shapiro.test(data$condition_factor) # Condition_Factor is NOT normal
-shapiro.test(data$avg_thickness) # Shell_Thickness is normal
+shapiro.test(data$ci_wet_volume) # CI_wet_volume is NOT normal
+shapiro.test(data$ci_pollution) # CI_pollution is NOT normal
+shapiro.test(data$shell_thickness) # Shell_Thickness is normal
 
 ```
 
@@ -148,19 +149,19 @@ boxplot(data$sod ~ factor(data$site_name),
 
 ```
 
-# Plot - Condition_Factor
+# Plot - CI_wet_volume
 
 ```{r}
 
 # taking a look before anything else is best practice - so let's
 # by sample ID
-plot(data$sample_id, data$condition_factor, 
+plot(data$sample_id, data$ci_wet_volume, 
      xlab = "Sample", ylab = "Condition Facotr", 
      main = "Condition Factor by Sample ID",
      pch = 16, col = "blue")
 
 # by site
-boxplot(data$condition_factor ~ factor(data$site_name), 
+boxplot(data$ci_wet_volume ~ factor(data$site_name), 
         xlab = "Site", ylab = "Condition Factor", 
         main = "Condition Factor by Site",
         col = "blue")
@@ -169,19 +170,39 @@ boxplot(data$condition_factor ~ factor(data$site_name),
 
 ```
 
+# Plot - CI_wet_volume
+
+```{r}
+
+# taking a look before anything else is best practice - so let's
+# by sample ID
+plot(data$sample_id, data$ci_pollution, 
+     xlab = "Sample", ylab = "Condition Facotr", 
+     main = "Condition Factor by Sample ID",
+     pch = 16, col = "blue")
+
+# by site
+boxplot(data$ci_pollution ~ factor(data$site_name), 
+        xlab = "Site", ylab = "Condition Factor", 
+        main = "Condition Factor by Site",
+        col = "blue")
+
+# there's an outlier cluster...
+
+```
 # Plot - Shell_Thickness
 
 ```{r}
 
 # taking a look before anything else is best practice - so let's
 # by sample ID
-plot(data$sample_id, data$avg_thickness, 
+plot(data$sample_id, data$shell_thickness, 
      xlab = "Sample", ylab = "Shell Thickness", 
      main = "Shell Thickness by Sample ID",
      pch = 16, col = "blue")
 
 # by site
-boxplot(data$avg_thickness ~ factor(data$site_name), 
+boxplot(data$shell_thickness ~ factor(data$site_name), 
         xlab = "Site", ylab = "Shell Thickness", 
         main = "Shell Thickness by Site",
         col = "blue")
@@ -190,7 +211,7 @@ boxplot(data$avg_thickness ~ factor(data$site_name),
 
 ```
 
-# Check for Outliers
+# Check for Outliers - No Need
 
 ```{r}
 
