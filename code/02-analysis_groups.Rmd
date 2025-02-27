@@ -39,11 +39,6 @@ getwd()
 # load data
 # complete df
 data<- read.csv("../data/cleaned/all_cleaned_all_groups.csv")
-# outliers removed
-pdata<- read.csv("../data/cleaned/p450_clean_groups.csv")
-sdata<- read.csv("../data/cleaned/sod_clean_groups.csv")
-cdata<- read.csv("../data/cleaned/cf_clean_groups.csv")
-adata<- read.csv("../data/cleaned/at_clean_groups.csv")
 
 # check it out
 str(data) # checking df structure
