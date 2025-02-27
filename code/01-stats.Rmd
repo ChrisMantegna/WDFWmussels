@@ -51,11 +51,11 @@ summary(data) #checking df contents
 ```{r}
 # p450 basic histogram + basic density plot
 hist(data$p450)
-plot(density(data$p450, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+#plot(density(data$p450, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
 
 # SOD basic histogram + basic density plot
 hist(data$sod)
-plot(density(data$sod, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+#plot(density(data$sod, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
 
 # Condition_factor basic histogram + basic density plot
 hist(data$ci_wet_volume)
@@ -95,7 +95,7 @@ plot(density(filtered_datac$avg_thickness, na.rm= TRUE), main="Density Plot", xl
 ```
 
 # Significance
-## Variance, p= 0.7359, we can use PERMANOVA for the stats
+## Variance, p= 0.7175, we can use PERMANOVA for the stats
 ```{r}
 
 # when we looked at our plots, the data is highly variable and because of that it may incorrectly inflate our PERMANOVA results. Reminder, we are running PERMANOVAs on p450, sod and condition_factor because they aren't normally distributed). We check the variance of each group to determine if the PERMANOVA is the correct test. I used the 'bray' method for the matrix because it is ecological data and that's the standard. Note: variance can be evaluated with either bray or euclidian methods, bray is the most common until we get to permanova where euclidian method is used for continuous data. After testing both methods, the result is the same. 
@@ -106,7 +106,7 @@ library(cluster)
 
 data$site_name <- as.factor(data$site_name) # change site names to a factor instead of a character
 
-metric_matrix <- as.matrix(data[, 7:10]) # pull out my metrics - confirm column numbers are still correct
+metric_matrix <- as.matrix(data[, 10:15]) # pull out my metrics - confirm column numbers are still correct
 
 dist_matrix_variance <- vegdist(metric_matrix, na.rm= TRUE, method = "bray") # create a distance matrix
 
@@ -121,8 +121,8 @@ boxplot(dispersion_test) # visualize results (boxplot of dispersions)
 ```
 
 # PERMANOVA & Post Hoc
-## Site
-### No significant results
+## Site (n=74)
+### No significant results, p= 0.083
 ```{r}
 
 # we can proceed with the PERMANOVA based on the analysis of variance above. Let's check if Site has a statistically significant relationship with our metrics. Instead of creating a distance matrix for each individual metric, I am going to create one that housing all metrics of interest (biomarkers & morphometrics). This is not an ideal process with many metrics, but 4 metrics makes an easy test case for the process.
@@ -132,7 +132,7 @@ boxplot(dispersion_test) # visualize results (boxplot of dispersions)
 library(vegan)
 library(RVAideMemoire)
 
-dist_matrix_full <- vegdist(as.matrix(data[, c("p450", "sod", "ci_wet_volume", "shell_thickness", "ci_wet_shell_weight", "ci_pollution")]), na.rm= TRUE, method = "euclidean") # create distance matrix
+dist_matrix_full <- vegdist(as.matrix(data[, c("p450", "sod", "ci_wet_volume", "ci_wet_shell_weight", "ci_pollution", "shell_thickness")]), na.rm= TRUE, method = "euclidean") # create distance matrix
 
 permanova_full <- adonis2(dist_matrix_full ~ site_name, data = data, permutations = 999) # run PERMANOVA
 
@@ -144,24 +144,194 @@ pairwise_model <- pairwise.perm.manova(dist_matrix_full, data$site_name, nperm =
 pairwise_df <- as.data.frame(pairwise_model$p.value) # Extract the results table correctly from `pairwise.htest` object
 colnames(pairwise_df) <- c("p.value")  # Ensure column name is consistent
 
-pairwise_results[["Full Data"]] <- pairwise_df # Store full results
+pairwise_results[["Site"]] <- pairwise_df # Store full results
 
-significant_results[["Full Data"]] <- pairwise_df[pairwise_df$p.value < 0.05, , drop = FALSE] # filter significant results
+significant_results[["Site"]] <- pairwise_df[pairwise_df$p.value < 0.05, , drop = FALSE] # filter significant results
 
-cat("\n### PERMANOVA results for Full Dataset ###\n")
+cat("\n### PERMANOVA results for All Sites ###\n")
 print(permanova_full) # view permanova results
 
-if (nrow(significant_results[["Full Data"]]) > 0) {
+if (nrow(significant_results[["Site"]]) > 0) {
   cat("\n### Significant pairwise post hoc results (p < 0.05) ###\n")
-  print(significant_results[["Full Data"]])
+  print(significant_results[["Site"]])
 } else {
-  cat("\n### No significant pairwise differences found in Full Dataset ###\n") # view significant post hoc results
+  cat("\n### No significant pairwise differences found in All Sites ###\n") # view significant post hoc results
 }
 
 # write out significant results
 #write.csv(significant_results[["Full Data"]], "significant_pairwise_results_full_data.csv", row.names = FALSE)
 
-# OUTCOME: Permanova yields a statistically significant (p= .001) outcome, but the post hoc test confirms there are in fact no statistically significant comparisons across sites. Both the previous method and confirmation results align with the traditional test and post hoc results.
+```
+
+## Reporting Area (n=9)
+### No significant results, p= 0.32
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+# don't need to recreate the matrix, we will use the same matrix created in the first step
+#dist_matrix_full <- vegdist(as.matrix(data[, c("p450", "sod", "ci_wet_volume", "ci_wet_shell_weight", "ci_pollution", "shell_thickness")]), na.rm= TRUE, method = "euclidean") # create distance matrix
+
+data$reporting_area <- as.factor(data$reporting_area) # make a factor for analysis
+
+permanova_full <- adonis2(dist_matrix_full ~ reporting_area, data = data, permutations = 999) # run PERMANOVA
+
+pairwise_results <- list() # list to store post hoc result
+significant_results <- list() # list to store only significant post hoc results
+
+pairwise_model <- pairwise.perm.manova(dist_matrix_full, data$reporting_area, nperm = 999, p.method = "bonferroni") # run post hoc 
+
+pairwise_df <- as.data.frame(pairwise_model$p.value) # Extract the results table correctly from `pairwise.htest` object
+colnames(pairwise_df) <- c("p.value")  # Ensure column name is consistent
+
+pairwise_results[["Reporting Area"]] <- pairwise_df # Store full results
+
+significant_results[["Reporting Area"]] <- pairwise_df[pairwise_df$p.value < 0.05, , drop = FALSE] # filter significant results
+
+cat("\n### PERMANOVA results for All Reporting Areas ###\n")
+print(permanova_full) # view permanova results
+
+if (nrow(significant_results[["Reporting Area"]]) > 0) {
+  cat("\n### Significant pairwise post hoc results (p < 0.05) ###\n")
+  print(significant_results[["Reporting Area"]])
+} else {
+  cat("\n### No significant pairwise differences found in All Reporting Areas ###\n") # view significant post hoc results
+}
+
+# write out significant results
+#write.csv(significant_results[["Full Data"]], "significant_pairwise_results_full_data.csv", row.names = FALSE)
+
+```
+
+## PCB Groups (n=8)
+### No significant results, p= 0.26
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+# don't need to recreate the matrix, we will use the same matrix created in the first step
+#dist_matrix_full <- vegdist(as.matrix(data[, c("p450", "sod", "ci_wet_volume", "ci_wet_shell_weight", "ci_pollution", "shell_thickness")]), na.rm= TRUE, method = "euclidean") # create distance matrix
+
+data<- read.csv("../data/cleaned/cleaned_with_pcb_groups.csv")
+data$pcb_group <- as.factor(data$pcb_group) # make a factor for analysis
+
+permanova_full <- adonis2(dist_matrix_full ~ pcb_group, data = data, permutations = 999) # run PERMANOVA
+
+pairwise_results <- list() # list to store post hoc result
+significant_results <- list() # list to store only significant post hoc results
+
+pairwise_model <- pairwise.perm.manova(dist_matrix_full, data$pcb_group, nperm = 999, p.method = "bonferroni") # run post hoc 
+
+pairwise_df <- as.data.frame(pairwise_model$p.value) # Extract the results table correctly from `pairwise.htest` object
+colnames(pairwise_df) <- c("p.value")  # Ensure column name is consistent
+
+pairwise_results[["pcb_group"]] <- pairwise_df # Store full results
+
+significant_results[["pcb_group"]] <- pairwise_df[pairwise_df$p.value < 0.05, , drop = FALSE] # filter significant results
+
+cat("\n### PERMANOVA results for All pcb_groups ###\n")
+print(permanova_full) # view permanova results
+
+if (nrow(significant_results[["pcb_group"]]) > 0) {
+  cat("\n### Significant pairwise post hoc results (p < 0.05) ###\n")
+  print(significant_results[["pcb_group"]])
+} else {
+  cat("\n### No significant pairwise differences found in All pcb_groups ###\n") # view significant post hoc results
+}
+
+# write out significant results
+#write.csv(significant_results[["Full Data"]], "significant_pairwise_results_full_data.csv", row.names = FALSE)
+
+```
+
+## PAH Group
+### No significant results, p= 0.836
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+# don't need to recreate the matrix, we will use the same matrix created in the first step
+#dist_matrix_full <- vegdist(as.matrix(data[, c("p450", "sod", "ci_wet_volume", "ci_wet_shell_weight", "ci_pollution", "shell_thickness")]), na.rm= TRUE, method = "euclidean") # create distance matrix
+
+data$pah_group <- as.factor(data$pah_group) # make a factor for analysis
+
+permanova_full <- adonis2(dist_matrix_full ~ pah_group, data = data, permutations = 999) # run PERMANOVA
+
+pairwise_results <- list() # list to store post hoc result
+significant_results <- list() # list to store only significant post hoc results
+
+pairwise_model <- pairwise.perm.manova(dist_matrix_full, data$pah_group, nperm = 999, p.method = "bonferroni") # run post hoc 
+
+pairwise_df <- as.data.frame(pairwise_model$p.value) # Extract the results table correctly from `pairwise.htest` object
+colnames(pairwise_df) <- c("p.value")  # Ensure column name is consistent
+
+pairwise_results[["pah_group"]] <- pairwise_df # Store full results
+
+significant_results[["pah_group"]] <- pairwise_df[pairwise_df$p.value < 0.05, , drop = FALSE] # filter significant results
+
+cat("\n### PERMANOVA results for All pah_groups ###\n")
+print(permanova_full) # view permanova results
+
+if (nrow(significant_results[["pah_group"]]) > 0) {
+  cat("\n### Significant pairwise post hoc results (p < 0.05) ###\n")
+  print(significant_results[["pah_group"]])
+} else {
+  cat("\n### No significant pairwise differences found in All pah_groups ###\n") # view significant post hoc results
+}
+
+# write out significant results
+#write.csv(significant_results[["Full Data"]], "significant_pairwise_results_full_data.csv", row.names = FALSE)
+
+```
+
+## Geo Group
+### No significant results, p= 0.903
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+# don't need to recreate the matrix, we will use the same matrix created in the first step
+#dist_matrix_full <- vegdist(as.matrix(data[, c("p450", "sod", "ci_wet_volume", "ci_wet_shell_weight", "ci_pollution", "shell_thickness")]), na.rm= TRUE, method = "euclidean") # create distance matrix
+
+data$geo_group <- as.factor(data$geo_group) # make a factor for analysis
+
+permanova_full <- adonis2(dist_matrix_full ~ geo_group, data = data, permutations = 999) # run PERMANOVA
+
+pairwise_results <- list() # list to store post hoc result
+significant_results <- list() # list to store only significant post hoc results
+
+pairwise_model <- pairwise.perm.manova(dist_matrix_full, data$geo_group, nperm = 999, p.method = "bonferroni") # run post hoc 
+
+pairwise_df <- as.data.frame(pairwise_model$p.value) # Extract the results table correctly from `pairwise.htest` object
+colnames(pairwise_df) <- c("p.value")  # Ensure column name is consistent
+
+pairwise_results[["geo_group"]] <- pairwise_df # Store full results
+
+significant_results[["geo_group"]] <- pairwise_df[pairwise_df$p.value < 0.05, , drop = FALSE] # filter significant results
+
+cat("\n### PERMANOVA results for All geo_groups ###\n")
+print(permanova_full) # view permanova results
+
+if (nrow(significant_results[["geo_group"]]) > 0) {
+  cat("\n### Significant pairwise post hoc results (p < 0.05) ###\n")
+  print(significant_results[["geo_group"]])
+} else {
+  cat("\n### No significant pairwise differences found in All geo_groups ###\n") # view significant post hoc results
+}
+
+# write out significant results
+#write.csv(significant_results[["Full Data"]], "significant_pairwise_results_full_data.csv", row.names = FALSE)
+
+```
+
+# KW & Post Hoc
+## Site
+### No significant results, p= 0.083
+```{r}
 
 ```
 

@@ -1,5 +1,5 @@
 ---
-title: "02- Analysis Groups: Adding the Groupings for Analysis by Site, Reporting Area, Geographic Area, PCB Group and PAH Group"
+title: "02- Analysis Groups: Adding the Groupings for Analysis by Site, Reporting Area, PCB Group, Geographic Area and PAH Group"
 output:
   pdf_document: 
     fig_width: 20
@@ -58,13 +58,13 @@ summary(data) #checking df contents
 library(classInt)
 library(dplyr)
 
-df<- read.csv("../data/not_for_analysis/pcb_group_workbook.csv")
+df<- read.csv("../data/not_for_analysis/filtered_pcb_group_workbook.csv")
 
 # Extract the DryValue column
 dry_values <- df$DryValue
 
 # Compute Fisher-Jenks breaks for 6 groups
-num_classes <- 6
+num_classes <- 8
 breaks <- classIntervals(dry_values, num_classes, style = "fisher")$brks
 
 # Print the breakpoints
@@ -79,7 +79,7 @@ head(df)
 # Assign the lowest group number for each site
 df <- df %>%
   group_by(SiteName) %>%
-  summarise(pcb_group = min(as.numeric(DryValue_Group))) %>%
+  summarise(pcb_groupA = min(as.numeric(DryValue_Group))) %>%
   ungroup()
 
 df <- df %>%
@@ -92,14 +92,14 @@ print(df)
 data <- left_join(data, df, by = "site_name")
 
 # Check if each site in data now has a single assigned group
-table(data$pcb_group)  # Ensure no duplicates within a site
+table(data$pcb_groupA)  # Ensure no duplicates within a site
 
 # Check the first few rows
 head(data)
 
 # write out new table
 
-#write.csv(data, "all_cleaned_with_groups.csv", row.names = FALSE)
+#write.csv(data, "../data/cleaned/cleaned_with_pcb_groups.csv", row.names = FALSE)
 
 ```
 
@@ -107,9 +107,6 @@ head(data)
 ```{r}
 
 # make geographic clusters based on lat/ long coordinates in 5 groups since it looks like there are 5 distinct areas of sites
-
-# reload data
-data<- read.csv("../data/cleaned/all_cleaned_with_groups.csv")
 
 # use k-means clustering 
 set.seed(123)
@@ -130,7 +127,7 @@ latlong_ranges <- data %>%
 data <- data %>%
   left_join(latlong_ranges, by = "geo_group")
 
-#write.csv(data, "all_cleaned_all_groups.csv", row.names = FALSE)
+write.csv(data, "../data/cleaned/cleaned_with_pcb_and_geo_groups.csv", row.names = FALSE)
 
 ```
 
