@@ -223,63 +223,68 @@ for (i in 1:nrow(significant_results)) {
 
 ```
 
-# Kruskal- Wallis + Post Hoc
+# Spearman Correlations
 ## Individual analytes
 ### Analysis groups
 ```{r}
 
 # Load required libraries
 library(dplyr)
-library(ggplot2)
 
-# Convert group columns to factors
+# Ensure categorical group columns are factors
 groups <- c("geo_group", "reporting_area", "pah_group", "pcb_group", "site_number")
+data <- data %>% mutate(across(all_of(groups), as.factor))
 
-data <- data %>%
-  mutate(across(all_of(groups), as.factor))  # Convert groups to factors
-
-# Verify conversion
-str(data[groups])  # Check that the groups are now factors
-
-```
-
-```{r}
+# Identify numeric columns for metrics and analytes dynamically
+metrics_of_interest <- colnames(data)[9:14]  # Metrics (to be averaged & correlated)
+analyte_columns <- colnames(data)[15:ncol(data)]  # Analytes (to be averaged & correlated)
 
 # Create an empty results dataframe
-kruskal_results <- data.frame()
+group_spearman_results <- data.frame()
 
-# Loop through each metric and categorical group
-for (metric in colnames(data)[9:14]) {
+# Loop through each categorical group
+for (group in groups) {
   
-  for (group in groups) {
+  # Compute group-level means for metrics and analytes
+  group_means <- data %>%
+    group_by(.data[[group]]) %>%
+    summarise(across(all_of(c(metrics_of_interest, analyte_columns)), mean, na.rm = TRUE), .groups = "drop")
+
+  # Loop through each metric
+  for (metric in metrics_of_interest) {
     
-    # Perform Kruskal-Wallis test
-    kruskal_test <- kruskal.test(data[[metric]] ~ data[[group]])
-    
-    # Store results
-    kruskal_results <- rbind(kruskal_results, 
-      data.frame(
-        Metric = metric,
-        Group = group,
-        Chi_Square = kruskal_test$statistic,
-        P_Value = kruskal_test$p.value
-      ))
+    # Loop through each analyte
+    for (analyte in analyte_columns) {
+      
+      # Ensure both columns exist in the grouped dataframe
+      if (!(metric %in% colnames(group_means)) | !(analyte %in% colnames(group_means))) next
+      
+      # Perform Spearman correlation on grouped means
+      correlation_result <- cor.test(group_means[[metric]], group_means[[analyte]], method = "spearman")
+
+      # Store results
+      group_spearman_results <- rbind(group_spearman_results, 
+        data.frame(
+          Grouping_Variable = group,
+          Metric = metric,
+          Analyte = analyte,
+          Spearman_Rho = correlation_result$estimate,
+          P_Value = correlation_result$p.value
+        ))
+    }
   }
 }
 
-# Save Kruskal-Wallis results
-write.csv(kruskal_results, "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/kw_results_individual_analytes.csv", row.names = FALSE)
+# Print results
+print(group_spearman_results)
 
-# Print significant results
-significant_kruskal <- kruskal_results %>% filter(P_Value < 0.05)
-print(significant_kruskal)
+# Save results
+write.csv(group_spearman_results, "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/group_spearman_results.csv", row.names = FALSE)
 
-```
+# Filter significant correlations
+significant_group_correlations <- group_spearman_results %>% filter(P_Value < 0.05)
+print(significant_group_correlations)
 
-# Spearman Correlations
-## Individual analytes
-### Analysis groups
-```{r}
 
 ```
 
