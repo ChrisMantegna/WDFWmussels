@@ -66,9 +66,6 @@ summed<- read.csv("../data/cleaned/avg_all_summed.csv")
 library(ggplot2)
 library(dplyr)
 
-# Load your dataset
-data<- read.csv("../data/cleaned/avg_all_analytes_individual.csv")
-
 # Create an empty results data frame
 results_df <- data.frame()
 
@@ -227,9 +224,11 @@ for (i in 1:nrow(significant_results)) {
 ## Individual analytes
 ### Analysis groups
 ```{r}
+#/Users/cmantegna/Documents/GitHub/WDFWmussels/
 
 # Load required libraries
 library(dplyr)
+library(ggplot2)
 
 # Ensure categorical group columns are factors
 groups <- c("geo_group", "reporting_area", "pah_group", "pcb_group", "site_number")
@@ -245,28 +244,136 @@ group_spearman_results <- data.frame()
 # Loop through each categorical group
 for (group in groups) {
   
-  # Compute group-level means for metrics and analytes
-  group_means <- data %>%
-    group_by(.data[[group]]) %>%
-    summarise(across(all_of(c(metrics_of_interest, analyte_columns)), mean, na.rm = TRUE), .groups = "drop")
-
-  # Loop through each metric
-  for (metric in metrics_of_interest) {
+  # Loop through each unique level within the group
+  for (group_level in unique(data[[group]])) {
     
-    # Loop through each analyte
-    for (analyte in analyte_columns) {
+    # Filter dataset for only this group level
+    subset_data <- data %>% filter(.data[[group]] == group_level)
+    
+    # Compute group-level means for metrics and analytes
+    group_means <- subset_data %>%
+      summarise(across(all_of(c(metrics_of_interest, analyte_columns)), mean, na.rm = TRUE))
+    
+    # Ensure there are at least 2 valid data points in group_means
+    if (nrow(group_means) < 1 || sum(!is.na(group_means)) < 2) next  # Skip if not enough data
+    
+    # Loop through each metric
+    for (metric in metrics_of_interest) {
       
-      # Ensure both columns exist in the grouped dataframe
-      if (!(metric %in% colnames(group_means)) | !(analyte %in% colnames(group_means))) next
-      
-      # Perform Spearman correlation on grouped means
-      correlation_result <- cor.test(group_means[[metric]], group_means[[analyte]], method = "spearman")
+      # Loop through each analyte
+      for (analyte in analyte_columns) {
+        
+        # Ensure both columns exist and have at least 2 valid values
+        if (!(metric %in% colnames(group_means)) | !(analyte %in% colnames(group_means))) next
+        if (sum(!is.na(group_means[[metric]])) < 2 | sum(!is.na(group_means[[analyte]])) < 2) next
+        
+        # Perform Spearman correlation on grouped means
+        correlation_result <- cor.test(group_means[[metric]], group_means[[analyte]], method = "spearman")
 
-      # Store results
-      group_spearman_results <- rbind(group_spearman_results, 
+        # Store results
+        group_spearman_results <- rbind(group_spearman_results, 
+          data.frame(
+            Grouping_Variable = group,
+            Specific_Group = group_level,
+            Metric = metric,
+            Analyte = analyte,
+            Spearman_Rho = correlation_result$estimate,
+            P_Value = correlation_result$p.value
+          ))
+      }
+    }
+  }
+}
+
+# Save results
+write.csv(group_spearman_results, "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/group_spearman_results_detailed.csv", row.names = FALSE)
+
+# 🔍 Filter significant correlations (p < 0.05)
+significant_results <- group_spearman_results %>% filter(P_Value < 0.05)
+
+# Print significant results
+print(significant_results)
+
+# 🎨 Plot each significant correlation as scatter plot with trendline and color by group level
+for (i in 1:nrow(significant_results)) {
+  
+  group_var <- significant_results$Grouping_Variable[i]
+  group_level <- significant_results$Specific_Group[i]  # Now tracking the subgroup driving correlation
+  metric <- significant_results$Metric[i]
+  analyte <- significant_results$Analyte[i]
+  
+  # Get the relevant subset of data
+  subset_data <- data %>% filter(.data[[group_var]] == group_level)
+  
+  # Ensure at least 2 non-NA points before plotting
+  if (sum(!is.na(subset_data[[metric]])) < 2 | sum(!is.na(subset_data[[analyte]])) < 2) next
+  
+  # Generate scatter plot with trendline
+  plot <- ggplot(subset_data, aes_string(x = analyte, y = metric, color = group_var)) +
+    geom_point(alpha = 0.6) +
+    geom_smooth(method = "lm", color = "red", se = FALSE) +  # Trendline (linear model)
+    labs(
+      title = paste("Significant Spearman Correlation:", metric, "vs", analyte),
+      subtitle = paste("Grouping Variable:", group_var, "| Group Level:", group_level, 
+                       "| Spearman Rho:", round(significant_results$Spearman_Rho[i], 2), 
+                       "| p =", round(significant_results$P_Value[i], 4)),
+      x = analyte,
+      y = metric
+    ) +
+    theme_minimal()
+  
+  # Save plot to "output" folder
+  plot_filename <- paste0("/Users/cmantegna/Documents/GitHub/WDFWmussels/output/", group_var, "_", group_level, "_", metric, "_vs_", analyte, ".png")
+  ggsave(plot_filename, plot, width = 8, height = 6, dpi = 300)
+  
+  # Display plot in R
+  print(plot)
+}
+
+```
+
+# Testing Correlation df build
+```{r}
+
+# Load required libraries
+library(dplyr)
+
+data$geo_group <- as.factor(data$geo_group)
+
+# Define the metric and analyte columns
+metric_column <- "p450"  # Change this to your actual metric name
+analyte_columns <- colnames(data)[15:ncol(data)]  # Select all analytes dynamically
+
+# Create an empty results dataframe
+spearman_results <- data.frame()
+
+# Loop through each unique level of `geo_group`
+for (group_level in unique(data$geo_group)) {
+  
+  # Filter dataset for only this specific geo_group level
+  subset_data <- data %>% filter(geo_group == group_level)
+  
+  # Compute group-level means for metrics and analytes
+  group_means <- subset_data %>%
+    summarise(across(all_of(c(metric_column, analyte_columns)), mean, na.rm = TRUE))
+  
+  # Ensure there are at least 2 valid data points before correlation
+  if (nrow(group_means) < 1 || sum(!is.na(group_means)) < 2) next  # Skip if not enough data
+  
+  # Loop through each analyte and run Spearman correlation
+  for (analyte in analyte_columns) {
+    
+    # Ensure at least 2 valid observations exist
+    if (sum(!is.na(group_means[[metric_column]])) >= 2 & sum(!is.na(group_means[[analyte]])) >= 2) {
+      
+      correlation_result <- cor.test(group_means[[metric_column]], group_means[[analyte]], method = "spearman")
+      
+      # Store the results
+      spearman_results <- rbind(spearman_results, 
         data.frame(
-          Grouping_Variable = group,
-          Metric = metric,
+          Grouping_Variable = "geo_group",
+          Specific_Group = group_level,  # Now we track the exact group driving correlation!
+          Metric = metric_column,
           Analyte = analyte,
           Spearman_Rho = correlation_result$estimate,
           P_Value = correlation_result$p.value
@@ -275,16 +382,11 @@ for (group in groups) {
   }
 }
 
-# Print results
-print(group_spearman_results)
+# View results
+print(spearman_results)
 
-# Save results
-write.csv(group_spearman_results, "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/group_spearman_results.csv", row.names = FALSE)
-
-# Filter significant correlations
-significant_group_correlations <- group_spearman_results %>% filter(P_Value < 0.05)
-print(significant_group_correlations)
-
+# Save results to CSV
+#write.csv(spearman_results, "output/spearman_results_detailed.csv", row.names = FALSE)
 
 ```
 
