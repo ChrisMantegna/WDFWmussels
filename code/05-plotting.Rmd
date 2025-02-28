@@ -190,7 +190,7 @@ for (dataset_name in names(datasets)) {
 ```
 
 
-# Bow Plots by Grouping
+# Box Plots by Grouping
 ```{r}
 
 # Load required libraries
@@ -258,6 +258,7 @@ for (dataset_name in names(datasets)) {
 ```
 
 # Targeted Box Plots - metal + p450
+## something here is not accurate - will try another route
 ```{r}
 
 # Load required libraries
@@ -307,7 +308,7 @@ print(p)
 
 ```
 
-# sod
+# Scatterplots - Faceted 
 ```{r}
 
 # Load required libraries
@@ -315,41 +316,39 @@ library(ggplot2)
 library(dplyr)
 library(tidyr)
 
-# Define the dataset and column names
-metric_column <- "sod"  # Change to the actual metric name (e.g., "p450")
-analyte_columns <- colnames(metal)[15:20]  # Select metal analytes dynamically
-group_column <- "reporting_area"  # Grouping variable
+# Define dataset and columns
+metric_column <- "shell_thickness"  # Change to actual metric name
+analyte_columns <- colnames(metal)[15:20]  # Metal analytes
+group_column <- "geo_group"  # Grouping factor
 
-# Ensure the grouping column is a factor
-metal <- metal %>% mutate(across(all_of(group_column), as.factor))
-
-# Reshape the data from wide to long format for ggplot
-metal_long <- metal %>%
+# Reshape data into long format for faceted plotting
+data_long <- metal %>%
   select(all_of(c(group_column, metric_column, analyte_columns))) %>%
   pivot_longer(cols = all_of(analyte_columns), names_to = "Metal", values_to = "Metal_Concentration")
 
-# Generate the grouped boxplot
-p <- ggplot(metal_long, aes(x = .data[[group_column]], y = .data[[metric_column]], fill = Metal)) +
-  geom_boxplot() +
+# Generate faceted scatterplots
+p <- ggplot(data_long, aes(x = Metal_Concentration, y = .data[[metric_column]], color = Metal)) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +  # Add trendline
+  facet_wrap(~ .data[[group_column]], scales = "free") +  # Facet by reporting area
   labs(
-    title = paste("Distribution of", metric_column, "by", group_column, "with Metals"),
-    x = group_column,
-    y = metric_column,
-    fill = "Metal Type"
+    title = paste("Relationship Between", metric_column, "and Metal Concentrations by Geographic Area"),
+    x = "Metal Concentration",
+    y = metric_column
   ) +
-  theme_minimal() +  # Remove default grid
+  theme_minimal() +  
   theme(
-    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),  # Centered title
-    axis.title = element_text(size = 14, face = "bold"),  # Larger axis labels
-    axis.text = element_text(size = 12),  # Adjust tick labels
-    axis.line = element_line(size = 1, color = "black"),  # Bold major axes
-    panel.grid.major = element_blank(),  # Remove major grid
-    panel.grid.minor = element_blank()   # Remove minor grid
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),  
+    axis.title = element_text(size = 12, face = "bold"),  
+    axis.text = element_text(size = 12),  
+    axis.line = element_line(size = 1, color = "black"),  
+    panel.grid.major = element_blank(),  
+    panel.grid.minor = element_blank()  
   )
 
 # Save the plot
-#plot_filename <- paste0("output/metal_", metric_column, "_boxplot_", group_column, ".png")
-#ggsave(plot_filename, p, width = 10, height = 6, dpi = 300)
+#plot_filename <- paste0("output/metal_", metric_column, "_scatter_facet_", group_column, ".png")
+#ggsave(plot_filename, p, width = 12, height = 8, dpi = 300)
 
 # Print the plot
 print(p)
