@@ -950,3 +950,10 @@ anova_results <- anova_results[!sapply(anova_results, is.null)]
 
 ```
 
+## Write out current df for review
+```{r}
+
+write.csv(data, "../data/cleaned/all_individual_data_and_all_groups.csv", row.names = FALSE)
+
+```
+
