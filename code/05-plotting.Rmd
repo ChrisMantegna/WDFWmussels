@@ -1,0 +1,121 @@
+---
+title: "05- Box Plots of All Metrics by Groupings"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  #fig.width = 15,       # Set plot width in inches
+  #fig.height = 11,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load & Check Data
+```{r}
+
+# double check where you are
+# *NOTE* see 00-data_cleaned for directory issue
+getwd()
+
+# load data
+# complete df
+data<- read.csv("../data/cleaned/avg_all_analytes_individual.csv")
+hch<- read.csv("../data/cleaned/avg_all_chlordanesHch.csv")
+pest<-read.csv("../data/cleaned/avg_all_ddtPesticide.csv")
+hmw<- read.csv("../data/cleaned/avg_all_hmw.csv")
+lmw<- read.csv("../data/cleaned/avg_all_lmw.csv")
+metal<- read.csv("../data/cleaned/avg_all_metal.csv")
+pbde<- read.csv("../data/cleaned/avg_all_pbde.csv")
+pcb<- read.csv("../data/cleaned/avg_all_pcb.csv")
+summed<- read.csv("../data/cleaned/avg_all_summed.csv")
+
+# check it out
+#str(data) # checking df structure
+# note that sample_id and site_number are integers and may need to be adjusted to characters for analysis
+
+#summary(data) #checking df contents
+
+#colnames(data) <- tolower(colnames(data)) # if needed
+
+```
+
+# Box Plots by Grouping
+```{r}
+
+# Load required libraries
+library(ggplot2)
+library(patchwork)  # For arranging plots in a grid
+library(dplyr)
+
+# Ensure categorical group columns are factors
+groups <- c("reporting_area", "geo_group", "pah_group", "pcb_group")
+data <- data %>% mutate(across(all_of(groups), as.factor))
+
+# Identify the metric columns dynamically
+metrics_of_interest <- colnames(data)[9:14]  # Adjust if necessary
+
+# Loop through each metric
+for (metric in metrics_of_interest) {
+  
+  # List to store individual plots
+  plot_list <- list()
+  
+  # Loop through each categorical group
+  for (group in groups) {
+    
+    # Generate boxplot
+    p <- ggplot(data, aes_string(x = group, y = metric)) +
+      geom_boxplot(fill = "lightblue", color = "black") +
+      labs(
+        title = paste("Plot of", metric, "by", group),
+        x = group,
+        y = metric
+      ) +
+      theme_minimal() +  # Remove default grid
+      theme(
+        plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),  # Centered title
+        axis.title = element_text(size = 14, face = "bold"),  # Larger axis labels
+        axis.text = element_text(size = 12),  # Adjust tick labels
+        axis.line = element_line(size = 1, color = "black"),  # Bold major axes
+        panel.grid.major = element_blank(),  # Remove major grid
+        panel.grid.minor = element_blank()   # Remove minor grid
+      )
+    
+    # Store the plot
+    plot_list[[group]] <- p
+  }
+  
+  # Arrange plots in a 2x2 grid
+  final_plot <- (plot_list[[groups[1]]] | plot_list[[groups[2]]]) /
+                (plot_list[[groups[3]]] | plot_list[[groups[4]]])
+  
+  # Save the final plot
+  plot_filename <- paste0("/Users/cmantegna/Documents/GitHub/WDFWmussels/output/", metric, "_boxplots_grid.png")
+  ggsave(plot_filename, final_plot, width = 12, height = 10, dpi = 300)
+  
+  # Print the plot in R
+  print(final_plot)
+}
+
+
+```
+
