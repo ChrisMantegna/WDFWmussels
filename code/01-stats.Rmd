@@ -95,7 +95,7 @@ plot(density(filtered_datac$avg_thickness, na.rm= TRUE), main="Density Plot", xl
 ```
 
 # Significance
-## Variance, p= 0.7175, we can use PERMANOVA for the stats
+## Variance, p= 0.7293, we can use PERMANOVA for the stats
 ```{r}
 
 # when we looked at our plots, the data is highly variable and because of that it may incorrectly inflate our PERMANOVA results. Reminder, we are running PERMANOVAs on p450, sod and condition_factor because they aren't normally distributed). We check the variance of each group to determine if the PERMANOVA is the correct test. I used the 'bray' method for the matrix because it is ecological data and that's the standard. Note: variance can be evaluated with either bray or euclidian methods, bray is the most common until we get to permanova where euclidian method is used for continuous data. After testing both methods, the result is the same. 
@@ -205,7 +205,7 @@ if (nrow(significant_results[["Reporting Area"]]) > 0) {
 ```
 
 ## PCB Groups (n=8)
-### No significant results, p= 0.26
+### No significant results, p= 0.656
 ```{r}
 
 library(vegan)
@@ -247,7 +247,7 @@ if (nrow(significant_results[["pcb_group"]]) > 0) {
 ```
 
 ## PAH Group (n=8)
-### No significant results, p= 0.836
+### No significant results, p= 0.854
 ```{r}
 
 library(vegan)
@@ -288,7 +288,7 @@ if (nrow(significant_results[["pah_group"]]) > 0) {
 ```
 
 ## Geo Group (n=5)
-### No significant results, p= 0.903
+### No significant results, p= 0.973
 ```{r}
 
 library(vegan)

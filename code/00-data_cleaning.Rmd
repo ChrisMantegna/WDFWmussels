@@ -70,13 +70,13 @@ summary(data) # df stats for each column
 
 ```{r }
 
-# Fixing NAs or learning to live with them
+# Fixing NAs or errant values
 
-# replace p450 NAs (n=8) with the median
-data$p450[is.na(data$p450)] <- 3873418
+# replace 0's with NA
+data$p450[data$p450 == 0] <- NA
 
-# replace condition_factor NAs (n=16) with the median
-data$condition_factor[is.na(data$condition_factor)] <- 0.1738
+# replace any values below LOQ with imputed LOQ
+data$sod[data$sod <= 0] <- 0.0025
 
 # check
 summary(data)
@@ -102,6 +102,7 @@ colnames(data) <- tolower(colnames(data))
 shapiro.test(data$p450) # P450 is NOT normal
 shapiro.test(data$sod) # SOD is NOT normal
 shapiro.test(data$ci_wet_volume) # CI_wet_volume is NOT normal
+shapiro.test(data$ci_wet_shell_weight) # CI_wet_shell_weight is NOT normal
 shapiro.test(data$ci_pollution) # CI_pollution is NOT normal
 shapiro.test(data$shell_thickness) # Shell_Thickness is normal
 
