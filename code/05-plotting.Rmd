@@ -407,3 +407,71 @@ print(p)
 
 ```
 
+# ANOVA for Metal Indices
+```{r}
+
+library(car)
+library(multcomp)
+
+# Define grouping variables
+grouping_vars <- c("site_name", "reporting_area", "pcb_group", "pah_group", "geo_group")
+
+# Function to run ANOVA and post hoc test
+run_anova_posthoc <- function(group_var, data) {
+  # Remove NAs for shell thickness and the grouping variable
+  clean_data <- metal[!is.na(metal$zinc_index) & !is.na(data[[group_var]]), ]
+  
+  # Run ANOVA
+  metal$site_name <- as.factor(metal$site_name)
+
+  anova_model <- aov(zinc_index ~ site_name, data = metal)
+  anova_summary <- summary(anova_model)
+  print(anova_summary)
+
+  # Extract p-value from ANOVA table
+  anova_summary <- summary(anova_model)
+p_value <- anova_summary[[1]]$'Pr(>F)'[1]
+print(p_value)
+
+  p_value <- anova_summary[[1]]["Pr(>F)"][1,1]  
+
+  # Only proceed if ANOVA is significant
+  if (p_value < 0.05) {
+    cat("\n### Significant ANOVA results for shell thickness by", group_var, "###\n")
+    print(anova_summary)
+
+    # Run Tukey's HSD post hoc test
+    posthoc_result <- TukeyHSD(anova_model)
+
+    # Convert to data frame for filtering
+    posthoc_df <- as.data.frame(posthoc_result[[1]])
+    posthoc_df <- cbind(comparison = rownames(posthoc_df), posthoc_df)  # Add comparison column
+
+    # Filter only significant results (p < 0.05)
+    significant_posthoc <- posthoc_df[posthoc_df$`p adj` < 0.05, , drop = FALSE]
+
+    if (nrow(significant_posthoc) > 0) {
+      cat("\n### Significant Tukey Post Hoc Comparisons for", group_var, "###\n")
+      print(significant_posthoc)
+    } else {
+      cat("\n### No significant post hoc differences for", group_var, "###\n")
+    }
+
+    return(list(ANOVA = anova_summary, PostHoc = significant_posthoc))
+  } else {
+    cat("\n### No significant ANOVA differences for shell thickness by", group_var, "###\n")
+    return(NULL)
+  }
+}
+
+# Run ANOVA + post hoc for each grouping variable and store only significant results
+anova_results <- lapply(grouping_vars, function(var) run_anova_posthoc(var, data))
+names(anova_results) <- grouping_vars
+
+# Remove NULL results (where ANOVA was not significant)
+anova_results <- anova_results[!sapply(anova_results, is.null)]
+
+```
+
+```
+
