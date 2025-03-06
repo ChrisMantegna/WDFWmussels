@@ -47,50 +47,35 @@ summary(data) #checking df contents
 
 ```
 
-# Histograms - all data
+# Shapiro  - Normality test
 ```{r}
-# p450 basic histogram + basic density plot
-hist(data$p450)
-#plot(density(data$p450, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
 
-# SOD basic histogram + basic density plot
-hist(data$sod)
-#plot(density(data$sod, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+# verify data normality
+shapiro.test(data$p450) # not normal
+shapiro.test(data$sod) # not normal
+shapiro.test(data$ci1) # normal
+shapiro.test(data$ci2) # normal
+shapiro.test(data$ci3) # normal
+shapiro.test(data$shell) # normal
 
-# Condition_factor basic histogram + basic density plot
-hist(data$ci_wet_volume)
-hist(data$ci_wet_shell_weight)
-hist(data$ci_pollution)
-#plot(density(data$condition_factor, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
-
-# Avg_thickness basic histogram + basic density plot
-hist(data$shell_thickness)
-#plot(density(data$avg_thickness, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
 
 ```
 
-# Histograms - outliers removed - Don't Run
+# Histograms - all data
 ```{r}
-# p450
-filtered_data <- data[!data$p450_outlier, ]
-hist(filtered_data$p450, main="Histogram of p450 (Outliers Removed)", xlab="p450 Value")
-plot(density(filtered_data$p450, na.rm=TRUE), main="Density Plot (Outliers Removed)", xlab="p450 Value")
-
+# p450 
+hist(data$p450)
 
 # SOD 
-filtered_datas <- data[!data$sod_outlier, ]
-hist(filtered_datas$sod)
-plot(density(filtered_datas$sod, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+hist(data$sod)
 
-# Condition_factor
-filtered_datac <- data[!data$condition_factor_outlier, ]
-hist(filtered_datac$condition_factor)
-plot(density(filtered_datac$condition_factor, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+# CI
+hist(data$ci1)
+hist(data$ci2)
+hist(data$ci3)
 
-# Avg_thickness
-filtered_dataa <- data[!data$avg_thickness_outlier, ]
-hist(filtered_datac$avg_thickness)
-plot(density(filtered_datac$avg_thickness, na.rm= TRUE), main="Density Plot", xlab="p450 Value")
+# Shell
+hist(data$shell)
 
 ```
 

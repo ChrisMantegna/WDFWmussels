@@ -38,30 +38,29 @@ getwd()
 
 # load data
 # complete df
-data<- read.csv("../data/cleaned/all_cleaned_all_groups.csv")
-
+p16<- read.csv("../data/sumPah16.csv")
+p42<- read.csv("../data/sumPah42.csv")
+phmw<- read.csv("../data/sumPahHMW.csv")
+plmw<- read.csv("../data/sumPahLMW.csv")
+pcb<- read.csv("../data/sumPcbs.csv")
 # check it out
-str(data) # checking df structure
+#str(data) # checking df structure
 # note that sample_id and site_number are integers and may need to be adjusted to characters for analysis
 
-summary(data) #checking df contents
+#summary(data) #checking df contents
 
 #colnames(data) <- tolower(colnames(data))
 
 ```
 
-# Adding Identifiers for Grouping - Run 2.5.25; no need to rerun unless the df has been altered
-## PCB (n=6)
-### Note: Reporting Area is already in the df
+## Adding PAH + PCB groups, 5 groups in total
 ```{r}
 
 library(classInt)
 library(dplyr)
 
-df<- read.csv("../data/not_for_analysis/filtered_pcb_group_workbook.csv")
-
 # Extract the DryValue column
-dry_values <- df$DryValue
+dry_values <- pcb$DryValue
 
 # Compute Fisher-Jenks breaks for 6 groups
 num_classes <- 8
@@ -71,46 +70,28 @@ breaks <- classIntervals(dry_values, num_classes, style = "fisher")$brks
 print(breaks)
 
 # Create group assignments based on the breaks
-df$DryValue_Group <- cut(dry_values, breaks = breaks, labels = 1:num_classes, include.lowest = TRUE)
+pcb$DryValue_Group <- cut(dry_values, breaks = breaks, labels = 1:num_classes, include.lowest = TRUE)
 
 # Check the first few rows with the new grouping
-head(df)
+head(pcb)
 
-# Assign the lowest group number for each site
-df <- df %>%
-  group_by(SiteName) %>%
-  summarise(pcb_groupA = min(as.numeric(DryValue_Group))) %>%
-  ungroup()
-
-df <- df %>%
-  rename(site_name = SiteName)
-
-# Check results
-print(df)
-
-# Merge while keeping only matching site names
-data <- left_join(data, df, by = "site_name")
-
-# Check if each site in data now has a single assigned group
-table(data$pcb_groupA)  # Ensure no duplicates within a site
-
-# Check the first few rows
-head(data)
 
 # write out new table
 
-#write.csv(data, "../data/cleaned/cleaned_with_pcb_groups.csv", row.names = FALSE)
+write.csv(pcb, "../data/pcb_grouping_for_averages.csv", row.names = FALSE)
 
 ```
 
-## Geographic (lat/ long) (n=5)
+## Geographic (lat/ long) (n=6)
 ```{r}
 
 # make geographic clusters based on lat/ long coordinates in 5 groups since it looks like there are 5 distinct areas of sites
 
+data<- read.csv("../data/full_bio_morph_with_groups.csv")
+
 # use k-means clustering 
 set.seed(123)
-clusters <- kmeans(data[, c("latitude", "longitude")], centers = 5)
+clusters <- kmeans(data[, c("latitude", "longitude")], centers = 6)
 data <- data %>%
   mutate(geo_group = as.factor(clusters$cluster))
 
@@ -127,7 +108,7 @@ latlong_ranges <- data %>%
 data <- data %>%
   left_join(latlong_ranges, by = "geo_group")
 
-write.csv(data, "../data/cleaned/cleaned_with_pcb_and_geo_groups.csv", row.names = FALSE)
+#write.csv(data, "../data/full_bio_morph_with_geo_grouping.csv", row.names = FALSE)
 
 ```
 
@@ -137,53 +118,11 @@ write.csv(data, "../data/cleaned/cleaned_with_pcb_and_geo_groups.csv", row.names
 ## Set up Data for PERMANOVA/ ANOVA
 ```{r}
 
-library(dplyr)
-
-# change to a factor - all data
-data$pcb_group <- as.factor(data$pcb_group)
-data$geo_group <- as.factor(data$geo_group)
-data$reporting_area <- as.factor(data$reporting_area)
-data$site_name <- as.factor(data$site_name)
-data$PAHgroup8 <- as.factor(data$PAHgroup8)
-
-# change to a factor - outliers removed
-pdata$pcb_group <- as.factor(pdata$pcb_group)
-pdata$geo_group <- as.factor(pdata$geo_group)
-pdata$reporting_area <- as.factor(pdata$reporting_area)
-pdata$site_name <- as.factor(pdata$site_name)
-
-sdata$pcb_group <- as.factor(sdata$pcb_group)
-sdata$geo_group <- as.factor(sdata$geo_group)
-sdata$reporting_area <- as.factor(sdata$reporting_area)
-sdata$site_name <- as.factor(sdata$site_name)
-
-cdata$pcb_group <- as.factor(cdata$pcb_group)
-cdata$geo_group <- as.factor(cdata$geo_group)
-cdata$reporting_area <- as.factor(cdata$reporting_area)
-cdata$site_name <- as.factor(cdata$site_name)
-
-adata$pcb_group <- as.factor(adata$pcb_group)
-adata$geo_group <- as.factor(adata$geo_group)
-adata$reporting_area <- as.factor(adata$reporting_area)
-adata$site_name <- as.factor(adata$site_name)
-
-# remove outliers
-data_clean_p450 <- data %>% filter(!p450_outlier)
-data_clean_sod <- data %>% filter(!sod_outlier)
-data_clean_condition_factor <- data %>% filter(!condition_factor_outlier)
-data_clean_avg_thickness <- data %>% filter(!avg_thickness_outlier)
-
-# save df's with outliers removed
-#write.csv(data_clean_p450, "p450_clean_groups.csv", row.names = FALSE)
-#write.csv(data_clean_sod, "sod_clean_groups.csv", row.names = FALSE)
-#write.csv(data_clean_condition_factor, "cf_clean_groups.csv", row.names = FALSE)
-#write.csv(data_clean_avg_thickness, "at_clean_groups.csv", row.names = FALSE)
-
 # verify data normality
-shapiro.test(pdata$p450) # not normal
-shapiro.test(sdata$sod) # not normal
-shapiro.test(cdata$condition_factor) # normal
-shapiro.test(adata$avg_thickness) # normal
+shapiro.test(data$p450) # not normal
+shapiro.test(data$sod) # not normal
+shapiro.test(data$ci1) # normal
+shapiro.test(data$avg_thickness) # normal
 
 ```
 

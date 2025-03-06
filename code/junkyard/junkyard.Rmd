@@ -967,3 +967,30 @@ for (marker in metric) {
 # OUTCOME: No significant pairwise differences through post hoc confirmation
 
 ```
+
+#something about joing df in tidyverse
+```{r}
+
+# Assign the lowest group number for each site
+df <- df %>%
+  group_by(SiteName) %>%
+  summarise(pcb_groupA = min(as.numeric(DryValue_Group))) %>%
+  ungroup()
+
+df <- df %>%
+  rename(site_name = SiteName)
+
+# Check results
+print(df)
+
+# Merge while keeping only matching site names
+data <- left_join(data, df, by = "site_name")
+
+# Check if each site in data now has a single assigned group
+table(data$pcb_groupA)  # Ensure no duplicates within a site
+
+# Check the first few rows
+head(data)
+
+```
+
