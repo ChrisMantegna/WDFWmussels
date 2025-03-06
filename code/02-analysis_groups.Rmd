@@ -1,5 +1,5 @@
 ---
-title: "02- Analysis Groups: Adding the Groupings for Analysis by Site, Reporting Area, PCB Group, Geographic Area and PAH Group"
+title: "02- Analysis Groups: Adding the Groupings for Analysis by Site, Reporting Area, PCB Group, Geographic Area and PAH Groups"
 output:
   pdf_document: 
     fig_width: 20
