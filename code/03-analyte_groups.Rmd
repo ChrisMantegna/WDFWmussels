@@ -1,5 +1,5 @@
 ---
-title: "03- Analyte Groups"
+title: "03- Creating the df for metric averages and analysis groups"
 output:
   pdf_document: 
     fig_width: 20

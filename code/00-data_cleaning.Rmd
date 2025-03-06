@@ -73,7 +73,7 @@ summary(data) # df stats for each column
 # Fixing NAs or errant values
 
 # replace 0's with NA
-data$p450[data$p450 == 0] <- NA
+data$p450[data$p450 <= 0] <- NA
 
 # replace any values below LOQ with imputed LOQ
 data$sod[data$sod <= 0] <- 0.0025
