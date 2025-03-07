@@ -38,7 +38,7 @@ knitr::opts_chunk$set(
 getwd()
 
 # load data
-data<- read.csv("../data/all_lab_data_raw.csv")
+data<- read.csv("../data/full_bio_morph_with_geo_grouping.csv")
 
 
 ```
@@ -66,8 +66,7 @@ summary(data) # df stats for each column
 
 ```
 
-# Dealing with NA's - Don't Run
-
+# Dealing with NA's
 ```{r }
 
 # Fixing NAs or errant values
@@ -80,6 +79,8 @@ data$sod[data$sod <= 0] <- 0.0025
 
 # check
 summary(data)
+
+write.csv(data, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/full_with_na.csv")
 
 ```
 
@@ -99,12 +100,12 @@ colnames(data) <- tolower(colnames(data))
 # distribution normality or non-normality our analysis path, let's check
 # test assumes normality, so any p-value > .05 indicates a rejection of that assumption
 
-shapiro.test(data$p450) # P450 is NOT normal
-shapiro.test(data$sod) # SOD is NOT normal
-shapiro.test(data$ci_wet_volume) # CI_wet_volume is NOT normal
-shapiro.test(data$ci_wet_shell_weight) # CI_wet_shell_weight is NOT normal
-shapiro.test(data$ci_pollution) # CI_pollution is NOT normal
-shapiro.test(data$shell_thickness) # Shell_Thickness is normal
+shapiro.test(data$p450) # NOT normal
+shapiro.test(data$sod) # NOT normal
+shapiro.test(data$ci1) # NOT normal
+shapiro.test(data$ci2) # NOT normal
+shapiro.test(data$ci3) # NOT normal
+shapiro.test(data$shell) # Normal
 
 ```
 
@@ -150,60 +151,74 @@ boxplot(data$sod ~ factor(data$site_name),
 
 ```
 
-# Plot - CI_wet_volume
+# Plot - CI1
 
 ```{r}
 
 # taking a look before anything else is best practice - so let's
 # by sample ID
-plot(data$sample_id, data$ci_wet_volume, 
+plot(data$sample_id, data$ci1, 
      xlab = "Sample", ylab = "Condition Facotr", 
      main = "Condition Factor by Sample ID",
      pch = 16, col = "blue")
 
 # by site
-boxplot(data$ci_wet_volume ~ factor(data$site_name), 
+boxplot(data$ci1 ~ factor(data$site_name), 
         xlab = "Site", ylab = "Condition Factor", 
         main = "Condition Factor by Site",
         col = "blue")
 
-# there's an outlier cluster...
-
 ```
 
-# Plot - CI_pollution
+# Plot - CI2
 
 ```{r}
 
 # taking a look before anything else is best practice - so let's
 # by sample ID
-plot(data$sample_id, data$ci_pollution, 
+plot(data$sample_id, data$ci2, 
      xlab = "Sample", ylab = "Condition Facotr", 
      main = "Condition Factor by Sample ID",
      pch = 16, col = "blue")
 
 # by site
-boxplot(data$ci_pollution ~ factor(data$site_name), 
+boxplot(data$ci2 ~ factor(data$site_name), 
         xlab = "Site", ylab = "Condition Factor", 
         main = "Condition Factor by Site",
         col = "blue")
 
-# there's an outlier cluster...
+```
+
+# Plot - CI3
+```{r}
+
+# taking a look before anything else is best practice - so let's
+# by sample ID
+plot(data$sample_id, data$ci3, 
+     xlab = "Sample", ylab = "Condition Facotr", 
+     main = "Condition Factor by Sample ID",
+     pch = 16, col = "blue")
+
+# by site
+boxplot(data$ci3 ~ factor(data$site_name), 
+        xlab = "Site", ylab = "Condition Factor", 
+        main = "Condition Factor by Site",
+        col = "blue")
 
 ```
+
 # Plot - Shell_Thickness
-
 ```{r}
 
 # taking a look before anything else is best practice - so let's
 # by sample ID
-plot(data$sample_id, data$shell_thickness, 
+plot(data$sample_id, data$shell, 
      xlab = "Sample", ylab = "Shell Thickness", 
      main = "Shell Thickness by Sample ID",
      pch = 16, col = "blue")
 
 # by site
-boxplot(data$shell_thickness ~ factor(data$site_name), 
+boxplot(data$shell ~ factor(data$site_name), 
         xlab = "Site", ylab = "Shell Thickness", 
         main = "Shell Thickness by Site",
         col = "blue")
@@ -213,7 +228,6 @@ boxplot(data$shell_thickness ~ factor(data$site_name),
 ```
 
 # Check for Outliers - No Need
-
 ```{r}
 
 # let's find the outliers for each metric we are reviewing (p450, sod, condition_factor and avg_thickness). ChatGPT helped create the loop.

@@ -37,7 +37,7 @@ knitr::opts_chunk$set(
 getwd()
 
 # load data
-data<- read.csv("../data/all_lab_data_raw.csv")
+data<- read.csv("../data/full_with_na.csv")
 
 # check it out
 str(data) # checking df structure
@@ -53,9 +53,9 @@ summary(data) #checking df contents
 # verify data normality
 shapiro.test(data$p450) # not normal
 shapiro.test(data$sod) # not normal
-shapiro.test(data$ci1) # normal
-shapiro.test(data$ci2) # normal
-shapiro.test(data$ci3) # normal
+shapiro.test(data$ci1) # not normal
+shapiro.test(data$ci2) # not normal
+shapiro.test(data$ci3) # not normal
 shapiro.test(data$shell) # normal
 
 
@@ -91,14 +91,14 @@ library(cluster)
 
 data$site_name <- as.factor(data$site_name) # change site names to a factor instead of a character
 
-metric_matrix <- as.matrix(data[, 10:15]) # pull out my metrics - confirm column numbers are still correct
+metric_matrix <- as.matrix(data[, 8:13]) # pull out my metrics - confirm column numbers are still correct
 
 dist_matrix_variance <- vegdist(metric_matrix, na.rm= TRUE, method = "bray") # create a distance matrix
 
 dispersion_test <- betadisper(dist_matrix_variance, group = data$site_name) # check homogeneity of group variances
 
 
-anova(dispersion_test) # Perform permutation test for homogeneity. A p-value > .05 means we need to use PERMANOVA. p= 0.7359
+anova(dispersion_test) # Perform permutation test for homogeneity. A p-value > .05 means we need to use PERMANOVA. p= 0.8999
 
 ## *NOTE*: I don't actually know what it was supposed to look like, so I can followup in the future. Visualize results (boxplot of dispersions)
 boxplot(dispersion_test) # visualize results (boxplot of dispersions)
@@ -351,7 +351,7 @@ run_permanova_with_posthoc <- function(p450, data) {
 }
 
 # Run PERMANOVA and post hoc tests for each metric
-metrics <- c("p450", "sod", "ci_wet_volume", "ci_wet_shell_weight", "ci_pollution", "shell_thickness")
+metrics <- c("p450", "sod", "ci1", "ci2", "ci3", "shell")
 permanova_results <- lapply(metrics, function(metric) run_permanova_with_posthoc(metric, data))
 names(permanova_results) <- metrics
 
