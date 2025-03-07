@@ -39,11 +39,11 @@ getwd()
 # load data
 # complete df
 data<- read.csv("../data/full_with_na.csv")
-p16<- read.csv("../data/p16_grouping_for_averages.csv")
-p42<- read.csv("../data/p42_grouping_for_averages.csv")
-phmw<- read.csv("../data/phmw_grouping_for_averages.csv")
-plmw<- read.csv("../data/phmw_grouping_for_averages.csv")
-pcb<- read.csv("../data/pcb_grouping_for_averages.csv")
+#p16<- read.csv("../data/p16_grouping_for_averages.csv")
+#p42<- read.csv("../data/p42_grouping_for_averages.csv")
+#phmw<- read.csv("../data/phmw_grouping_for_averages.csv")
+plmw<- read.csv("../data/cleaned/plmw_grouping_for_averages.csv")
+#pcb<- read.csv("../data/pcb_grouping_for_averages.csv")
 # check it out
 #str(data) # checking df structure
 # note that sample_id and site_number are integers and may need to be adjusted to characters for analysis
@@ -62,7 +62,7 @@ library(classInt)
 library(dplyr)
 
 # Extract the DryValue column
-dry_values <- pcb$DryValue
+dry_values <- plmw$plmw
 
 # Compute Fisher-Jenks breaks for 6 groups
 num_classes <- 8
@@ -72,15 +72,15 @@ breaks <- classIntervals(dry_values, num_classes, style = "fisher")$brks
 print(breaks)
 
 # Create group assignments based on the breaks
-pcb$DryValue_Group <- cut(dry_values, breaks = breaks, labels = 1:num_classes, include.lowest = TRUE)
+plmw$DryValue_Group <- cut(dry_values, breaks = breaks, labels = 1:num_classes, include.lowest = TRUE)
 
 # Check the first few rows with the new grouping
-head(pcb)
+head(plmw)
 
 
 # write out new table
 
-write.csv(pcb, "../data/pcb_grouping_for_averages.csv", row.names = FALSE)
+write.csv(plmw, "../data/plmw_grouping_for_averages.csv", row.names = FALSE)
 
 ```
 
@@ -122,11 +122,11 @@ library(tidyr)
 library(dplyr)
 
 df <- df %>%
-  left_join(pcb, by = "site_name")
+  left_join(plmw, by = "site_name")
 
 # check
 head(df)
 
-write.csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/complete_with_nas.csv")
+write.csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/plmw_with_nas.csv")
 ```
 
