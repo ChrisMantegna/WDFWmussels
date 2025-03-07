@@ -1,5 +1,5 @@
 ---
-title: "00- Data Cleaning"
+title: "00- Data Cleaning: Checking out the raw data and making adjustments to support analysis, creating condition indices, and thickness averages"
 output:
   pdf_document: 
     fig_width: 20
@@ -44,7 +44,7 @@ data<- read.csv("../data/full_bio_morph_with_geo_grouping.csv")
 ```
 
 ---
-## Data Format
+# Data Format
 P450 & SOD Activity (Unit / mg"^"-1"~"protein)
 Length, Height, Width, Shell Thickness - mm
 Weight - g
@@ -67,14 +67,15 @@ summary(data) # df stats for each column
 ```
 
 # Dealing with NA's
+
 ```{r }
 
 # Fixing NAs or errant values
 
-# replace 0's with NA
+# replace 0's with NA, we can ignore them in further analyses
 data$p450[data$p450 <= 0] <- NA
 
-# replace any values below LOQ with imputed LOQ
+# replace any values below LOQ with imputed LOQ (.5 x LOD), LOD= 0.05
 data$sod[data$sod <= 0] <- 0.0025
 
 # check
@@ -84,12 +85,12 @@ write.csv(data, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/full_with_na
 
 ```
 
-# Column Names - Don't Run
+# Column Names - Don't Run 3.7.25
 
 ```{r}
 
 # i also noticed that all of my column names aren't lowercase, so let's fix that to prevent unnecessary mistakes
-colnames(data) <- tolower(colnames(data))
+#colnames(data) <- tolower(colnames(data))
 
 ```
 
@@ -97,7 +98,7 @@ colnames(data) <- tolower(colnames(data))
 
 ```{r}
 
-# distribution normality or non-normality our analysis path, let's check
+# distribution, normality or non-normality, affects our analysis path
 # test assumes normality, so any p-value > .05 indicates a rejection of that assumption
 
 shapiro.test(data$p450) # NOT normal
@@ -109,129 +110,61 @@ shapiro.test(data$shell) # Normal
 
 ```
 
-# Plot - P450
+# Histograms - all data
 
 ```{r}
 
-# taking a look before anything else is best practice - so let's
-# by sample ID
-plot(data$sample_id, data$p450, 
-     xlab = "Sample", ylab = "P450 Value", 
-     main = "P450 Activity by Sample ID",
-     pch = 16, col = "blue")
+# plotting histograms to visualize the Shapiro results and decide if I want to transform the data or maintain it
+# p450 
+hist(data$p450)
 
-# by site
-boxplot(data$p450 ~ factor(data$site_name), 
-        xlab = "Site", ylab = "P450 Value", 
-        main = "P450 Activity by Site",
-        col = "blue")
+# SOD 
+hist(data$sod)
 
-# looks like we have a team of outliers to address
+# CI
+hist(data$ci1)
+hist(data$ci2)
+hist(data$ci3)
+
+# Shell
+hist(data$shell)
 
 ```
 
-# Plot - SOD
+# Significance
+
+## Variance, p= 0.7293, we can use PERMANOVA for the stats
 
 ```{r}
 
-# taking a look before anything else is best practice - so let's
-# by sample ID
-plot(data$sample_id, data$sod, 
-     xlab = "Sample", ylab = "SOD Value", 
-     main = "SOD Activity by Sample ID",
-     pch = 16, col = "blue")
+# when we looked at our plots, the data is highly variable and that may incorrectly inflate our PERMANOVA results. We check the variance of each group to determine if the PERMANOVA is the correct test. I used the 'bray' method for the matrix because it is ecological data and that's the standard. Note: variance can be evaluated with either bray or euclidian methods, bray is the most common until we get to permanova where euclidian method is used for continuous data. After testing both methods, the result is the same. 
 
-# by site
-boxplot(data$sod ~ factor(data$site_name), 
-        xlab = "Site", ylab = "SOD Value", 
-        main = "SOD Activity by Site",
-        col = "blue")
+# packages for these tests
+library(vegan)
+library(cluster)
 
-# looks like we have a few outliers to deal with
+data$site_name <- as.factor(data$site_name) # change site names to a factor instead of a character
 
-```
+metric_matrix <- as.matrix(data[, 8:13]) # pull out my metrics - confirm column numbers are still correct
 
-# Plot - CI1
+dist_matrix_variance <- vegdist(metric_matrix, na.rm= TRUE, method = "bray") # create a distance matrix
 
-```{r}
+dispersion_test <- betadisper(dist_matrix_variance, group = data$site_name) # check homogeneity of group variances
 
-# taking a look before anything else is best practice - so let's
-# by sample ID
-plot(data$sample_id, data$ci1, 
-     xlab = "Sample", ylab = "Condition Facotr", 
-     main = "Condition Factor by Sample ID",
-     pch = 16, col = "blue")
 
-# by site
-boxplot(data$ci1 ~ factor(data$site_name), 
-        xlab = "Site", ylab = "Condition Factor", 
-        main = "Condition Factor by Site",
-        col = "blue")
+anova(dispersion_test) # Perform permutation test for homogeneity. A p-value > .05 means we need to use PERMANOVA. p= 0.8999
 
-```
-
-# Plot - CI2
-
-```{r}
-
-# taking a look before anything else is best practice - so let's
-# by sample ID
-plot(data$sample_id, data$ci2, 
-     xlab = "Sample", ylab = "Condition Facotr", 
-     main = "Condition Factor by Sample ID",
-     pch = 16, col = "blue")
-
-# by site
-boxplot(data$ci2 ~ factor(data$site_name), 
-        xlab = "Site", ylab = "Condition Factor", 
-        main = "Condition Factor by Site",
-        col = "blue")
-
-```
-
-# Plot - CI3
-```{r}
-
-# taking a look before anything else is best practice - so let's
-# by sample ID
-plot(data$sample_id, data$ci3, 
-     xlab = "Sample", ylab = "Condition Facotr", 
-     main = "Condition Factor by Sample ID",
-     pch = 16, col = "blue")
-
-# by site
-boxplot(data$ci3 ~ factor(data$site_name), 
-        xlab = "Site", ylab = "Condition Factor", 
-        main = "Condition Factor by Site",
-        col = "blue")
-
-```
-
-# Plot - Shell_Thickness
-```{r}
-
-# taking a look before anything else is best practice - so let's
-# by sample ID
-plot(data$sample_id, data$shell, 
-     xlab = "Sample", ylab = "Shell Thickness", 
-     main = "Shell Thickness by Sample ID",
-     pch = 16, col = "blue")
-
-# by site
-boxplot(data$shell ~ factor(data$site_name), 
-        xlab = "Site", ylab = "Shell Thickness", 
-        main = "Shell Thickness by Site",
-        col = "blue")
-
-# outliers are not clear here
+## *NOTE*: I don't actually know what it was supposed to look like, so I can followup in the future. Visualize results (boxplot of dispersions)
+boxplot(dispersion_test) # visualize results (boxplot of dispersions)
 
 ```
 
 # Check for Outliers - No Need
+
 ```{r}
 
 # let's find the outliers for each metric we are reviewing (p450, sod, condition_factor and avg_thickness). ChatGPT helped create the loop.
-metrics <- c("p450", "sod", "condition_factor", "avg_thickness")  # identify columns of interest
+metrics <- c("p450", "sod", "ci1", "ci2", "ci3", "shell")  # identify columns of interest
 
 # Loop through each metric and compute outliers
 for (marker in metrics) {
@@ -247,7 +180,7 @@ for (marker in metrics) {
 }
 
 # View a summary of outliers
-summary(data[, paste0(metrics, "_outlier")]) # outliers: p450= 8, sod= 19, cf= 10, at= 3 
+summary(data[, paste0(metrics, "_outlier")]) # outliers: p450= , sod= , cf1= , cf2= , cf3= , shell=  
 
 # write out this df for further use
 # *NOTE* check why it only saves with the full path and not the relative

@@ -1,5 +1,5 @@
 ---
-title: "01- Exploratory Statistics: Distribution, Variance and Outlier Detection"
+title: "01- Exploratory Statistics: Normality, Distribution, and Variance"
 output:
   pdf_document: 
     fig_width: 20
@@ -47,60 +47,5 @@ summary(data) #checking df contents
 
 ```
 
-# Shapiro  - Normality test
-```{r}
-
-# verify data normality
-shapiro.test(data$p450) # not normal
-shapiro.test(data$sod) # not normal
-shapiro.test(data$ci1) # not normal
-shapiro.test(data$ci2) # not normal
-shapiro.test(data$ci3) # not normal
-shapiro.test(data$shell) # normal
 
 
-```
-
-# Histograms - all data
-```{r}
-# p450 
-hist(data$p450)
-
-# SOD 
-hist(data$sod)
-
-# CI
-hist(data$ci1)
-hist(data$ci2)
-hist(data$ci3)
-
-# Shell
-hist(data$shell)
-
-```
-
-# Significance
-## Variance, p= 0.7293, we can use PERMANOVA for the stats
-```{r}
-
-# when we looked at our plots, the data is highly variable and because of that it may incorrectly inflate our PERMANOVA results. Reminder, we are running PERMANOVAs on p450, sod and condition_factor because they aren't normally distributed). We check the variance of each group to determine if the PERMANOVA is the correct test. I used the 'bray' method for the matrix because it is ecological data and that's the standard. Note: variance can be evaluated with either bray or euclidian methods, bray is the most common until we get to permanova where euclidian method is used for continuous data. After testing both methods, the result is the same. 
-
-# packages for these tests
-library(vegan)
-library(cluster)
-
-data$site_name <- as.factor(data$site_name) # change site names to a factor instead of a character
-
-metric_matrix <- as.matrix(data[, 8:13]) # pull out my metrics - confirm column numbers are still correct
-
-dist_matrix_variance <- vegdist(metric_matrix, na.rm= TRUE, method = "bray") # create a distance matrix
-
-dispersion_test <- betadisper(dist_matrix_variance, group = data$site_name) # check homogeneity of group variances
-
-
-anova(dispersion_test) # Perform permutation test for homogeneity. A p-value > .05 means we need to use PERMANOVA. p= 0.8999
-
-## *NOTE*: I don't actually know what it was supposed to look like, so I can followup in the future. Visualize results (boxplot of dispersions)
-boxplot(dispersion_test) # visualize results (boxplot of dispersions)
-
-```

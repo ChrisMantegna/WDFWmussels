@@ -1,0 +1,147 @@
+---
+title: "04- Pairwise Comparisons, PERMANOVA & KW"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  #fig.width = 15,       # Set plot width in inches
+  #fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load & Check Data
+```{r}
+
+# double check where you are
+# *NOTE* see 00-data_cleaned for directory issue
+getwd()
+
+# using ALL individual samples, not averages
+data<- read.csv("../data/complete_with_nas.csv")
+
+# check it out
+#str(data) # checking df structure
+
+#summary(data) #checking df contents
+
+#colnames(data) <- tolower(colnames(data)) # if needed
+
+```
+
+# making groups factors
+```{r}
+# make analysis groups a factor (reporting area, geographic group, pcb group, site, pah group)
+# change to a factor - all data
+data$site_number <- as.factor(data$site_number)
+data$reporting_area <- as.factor(data$reporting_area)
+data$geo_group <- as.factor(data$geo_group)
+data$p16 <- as.factor(data$p16)
+data$p42 <- as.factor(data$p42)
+data$plmw <- as.factor(data$plmw)
+data$phmw <- as.factor(data$phmw)
+data$pcb <- as.factor(data$pcb)
+
+```
+
+# PERMANOVA
+## trying to get all metrics to work with all groupings
+```{r}
+
+# No significant results for Site group
+# No significant results for Reporting Area
+# No significant results for Geographic Group
+# No significant results for P16
+# No significant results for P42
+# No significant results for PLMW
+# No significant results for PLMW
+# 
+library(vegan)
+library(RVAideMemoire)
+
+# Define columns for dependent variables (metrics to analyze)
+dependent_vars <- colnames(data)[17:22]  # Adjust if needed
+
+# Define independent variables (grouping variables)
+independent_vars <- colnames(data)[8:16]  # Adjust if needed
+
+# Loop through each dependent variable separately
+for (var in dependent_vars) {
+  cat("\nRunning PERMANOVA for:", var, "\n")
+
+  # Remove rows with NA in the current dependent variable
+  data_clean <- data[complete.cases(data[, var]), ]
+
+  # Skip analysis if all rows were removed due to NAs
+  if (nrow(data_clean) == 0) {
+    cat("Skipping", var, "- all values are NA.\n")
+    next
+  }
+
+  # Create a distance matrix using the single dependent variable
+  dist_matrix <- vegdist(data_clean[, var, drop = FALSE], method = "bray")
+
+  # Run PERMANOVA with grouping variables
+  formula <- as.formula(paste("dist_matrix ~", paste(independent_vars, collapse = " + ")))
+  permanova_result <- adonis2(formula, data = data_clean, permutations = 999)
+
+  # Print PERMANOVA result
+  print(permanova_result)
+
+  # Check if PERMANOVA result is significant (p < 0.05)
+  if (permanova_result$`Pr(>F)`[1] < 0.05) {
+    cat("\nPERMANOVA is significant for", var, ". Running post-hoc tests...\n")
+
+    # Run post-hoc pairwise comparisons using a main grouping variable (e.g., site_name)
+    pairwise_result <- adonis2(dist_matrix ~ pcb, data = data_clean, permutations = 999)
+
+    # Filter only significant results (p < 0.05)
+    significant_results <- pairwise_result[pairwise_result$p.adj < 0.05, ]
+
+    # Print results if any are significant
+    if (nrow(significant_results) > 0) {
+      print(significant_results)
+    } else {
+      cat("\nNo significant post-hoc comparisons found for", var, ".\n")
+    }
+  } else {
+    cat("\nNo significant PERMANOVA results for", var, ".\n")
+  }
+}
+
+```
+
+
+
+
+
+
+
+
+
+
+
+```{r}
+
+#data/all_metrics_avg_all_groups_with_nas.csv
+```
+

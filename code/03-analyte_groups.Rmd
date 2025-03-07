@@ -38,12 +38,7 @@ getwd()
 
 # load data
 # complete df
-data<- read.csv("../data/cleaned/all_cleaned_all_groups.csv")
-# outliers removed
-pdata<- read.csv("../data/cleaned/p450_clean_groups.csv")
-sdata<- read.csv("../data/cleaned/sod_clean_groups.csv")
-cdata<- read.csv("../data/cleaned/cf_clean_groups.csv")
-adata<- read.csv("../data/cleaned/at_clean_groups.csv")
+data<- read.csv("../data/complete_with_nas.csv")
 
 # check it out
 #str(data) # checking df structure
@@ -56,27 +51,19 @@ adata<- read.csv("../data/cleaned/at_clean_groups.csv")
 ```
 
 # Averaging Metrics for Analyte Analysis
-### factors - don't rerun unless absolutely necessay
+### making groupings factors
 ```{r}
 # make analysis groups a factor (reporting area, geographic group, pcb group, site, pah group)
 # change to a factor - all data
-data$pcb_group <- as.factor(data$pcb_group)
-data$geo_group <- as.factor(data$geo_group)
+data$site_number <- as.factor(data$site_number)
 data$reporting_area <- as.factor(data$reporting_area)
-data$site_name <- as.factor(data$site_name)
-data$PAHgroup8 <- as.factor(data$pah_group)
+data$geo_group <- as.factor(data$geo_group)
+data$p16 <- as.factor(data$p16)
+data$p42 <- as.factor(data$p42)
+data$plmw <- as.factor(data$plmw)
+data$phmw <- as.factor(data$phmw)
+data$pcb <- as.factor(data$pcb)
 
-# remove outliers
-data_clean_p450 <- data %>% filter(!p450_outlier)
-data_clean_sod <- data %>% filter(!sod_outlier)
-data_clean_condition_factor <- data %>% filter(!condition_factor_outlier)
-data_clean_avg_thickness <- data %>% filter(!avg_thickness_outlier)
-
-# save df's with outliers removed
-#write.csv(data_clean_p450, "p450_clean_groups.csv", row.names = FALSE)
-#write.csv(data_clean_sod, "sod_clean_groups.csv", row.names = FALSE)
-#write.csv(data_clean_condition_factor, "cf_clean_groups.csv", row.names = FALSE)
-#write.csv(data_clean_avg_thickness, "at_clean_groups.csv", row.names = FALSE)
 ```
 
 ### averaging
@@ -87,29 +74,35 @@ library(dplyr)
 library(dplyr)
 
 df_summary <- data %>%
-  group_by(site_name) %>%  # Group by site name
+  group_by(site_number) %>% 
   summarise(
     # Averaging numerical values per site
     p450 = mean(p450, na.rm = TRUE),
     sod = mean(sod, na.rm = TRUE),
-    ci_wet_volume = mean(ci_wet_volume, na.rm = TRUE),
-    ci_wet_shell_weight = mean(ci_wet_shell_weight, na.rm = TRUE),
-    ci_pollution = mean(ci_pollution, na.rm = TRUE),
-    shell_thickness = mean(shell_thickness, na.rm = TRUE),
+    ci1 = mean(ci1, na.rm = TRUE),
+    ci2 = mean(ci2, na.rm = TRUE),
+    ci3 = mean(ci3, na.rm = TRUE),
+    shell = mean(shell, na.rm = TRUE),
 
     # Retaining representative categorical values (assuming they are consistent per site)
-    site_number = first(site_number),
-    reporting_area = first(reporting_area),
-    pcb_group = first(pcb_group),
-    pah_group = first(pah_group),
     latitude = first(latitude),
     longitude = first(longitude),
-    geo_group = first(geo_group)
+    lat_range = first(lat_range),
+    long_range = first(long_range),
+    site_name = first(site_name),
+    site_number = first(site_number),
+    reporting_area = first(reporting_area),
+    geo_group = first(geo_group),
+    p16 = first(p16),
+    p42 = first(p42),
+    plmw = first(plmw),
+    phmw = first(phmw),
+    pcb = first(pcb)
   )
 
 head(df_summary)
 
-write.csv(df_summary, "all_metrics_avg_with_all_groups.csv", row.names = FALSE)
+#write.csv(df_summary, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/all_metrics_avg_all_groups_with_nas.csv", row.names = FALSE)
 
 ```
 
