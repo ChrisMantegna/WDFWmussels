@@ -1,0 +1,937 @@
+"","sample_id","latitude","longitude","lat_range","long_range","label","site_name","site_number","reporting_area","geo_group","p450","sod","shell","ci1","ci2","ci3","Analyte.x","Units.x","DryValue.x","Comments.x","p16","Analyte.y","Units.y","DryValue.y","Comments.y","p42","Analyte.x.x","Units.x.x","DryValue.x.x","Comments.x.x","phmw.x","Analyte.y.y","Units.y.y","DryValue.y.y","Comments.y.y","phmw.y","Analyte","Units","DryValue","Comments","pcb"
+"1",239,48.6793778,-122.6300583,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Aiston Preserve",77,7,4,5679312,4.027,0.88,31.754,0.6673,0.0493,"SumPAHs16","ng/g",31.65599129,NA,1,"SumPAHs42_DMNcorrected","ng/g",97.40305011,NA,1,"SumPAHsHMW","ng/g",19.48061002,NA,1,"SumPAHsHMW","ng/g",19.48061002,NA,1,"Sum40CBs","ng/g",23.1332244,NA,1
+"2",240,48.6793778,-122.6300583,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Aiston Preserve",77,7,4,6097784,4.41,1.145,33.897,0.6637,0.051,"SumPAHs16","ng/g",31.65599129,NA,1,"SumPAHs42_DMNcorrected","ng/g",97.40305011,NA,1,"SumPAHsHMW","ng/g",19.48061002,NA,1,"SumPAHsHMW","ng/g",19.48061002,NA,1,"Sum40CBs","ng/g",23.1332244,NA,1
+"3",241,48.6793778,-122.6300583,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Aiston Preserve",77,7,4,3868923,5.064,0.945,29.328,0.6363,0.0439,"SumPAHs16","ng/g",31.65599129,NA,1,"SumPAHs42_DMNcorrected","ng/g",97.40305011,NA,1,"SumPAHsHMW","ng/g",19.48061002,NA,1,"SumPAHsHMW","ng/g",19.48061002,NA,1,"Sum40CBs","ng/g",23.1332244,NA,1
+"4",242,48.6793778,-122.6300583,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Aiston Preserve",77,7,4,3899451,25.058,1.01,33.577,0.6453,0.0519,"SumPAHs16","ng/g",31.65599129,NA,1,"SumPAHs42_DMNcorrected","ng/g",97.40305011,NA,1,"SumPAHsHMW","ng/g",19.48061002,NA,1,"SumPAHsHMW","ng/g",19.48061002,NA,1,"Sum40CBs","ng/g",23.1332244,NA,1
+"5",281,47.50161,-122.38593,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Arroyo Beach",13,11,3,5346329,0.512,1.015,35.779,0.6876,0.0519,"SumPAHs16","ng/g",168.0932091,NA,2,"SumPAHs42_DMNcorrected","ng/g",408.2263648,NA,2,"SumPAHsHMW","ng/g",186.1031957,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",186.1031957,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",34.8193076,NA,2
+"6",282,47.50161,-122.38593,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Arroyo Beach",13,11,3,2044561,6.049,1.065,35.169,0.6545,0.0546,"SumPAHs16","ng/g",168.0932091,NA,2,"SumPAHs42_DMNcorrected","ng/g",408.2263648,NA,2,"SumPAHsHMW","ng/g",186.1031957,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",186.1031957,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",34.8193076,NA,2
+"7",283,47.50161,-122.38593,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Arroyo Beach",13,11,3,5633230,2.326,1.02,17.657,0.6584,0.0588,"SumPAHs16","ng/g",168.0932091,NA,2,"SumPAHs42_DMNcorrected","ng/g",408.2263648,NA,2,"SumPAHsHMW","ng/g",186.1031957,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",186.1031957,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",34.8193076,NA,2
+"8",284,47.50161,-122.38593,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Arroyo Beach",13,11,3,4330102,14.39,0.985,24.457,0.6591,0.0718,"SumPAHs16","ng/g",168.0932091,NA,2,"SumPAHs42_DMNcorrected","ng/g",408.2263648,NA,2,"SumPAHsHMW","ng/g",186.1031957,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",186.1031957,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",34.8193076,NA,2
+"9",285,47.50161,-122.38593,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Arroyo Beach",13,11,3,7518449,2.815,0.955,42.24,0.66,0.1167,"SumPAHs16","ng/g",168.0932091,NA,2,"SumPAHs42_DMNcorrected","ng/g",408.2263648,NA,2,"SumPAHsHMW","ng/g",186.1031957,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",186.1031957,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",34.8193076,NA,2
+"10",286,47.50161,-122.38593,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Arroyo Beach",13,11,3,2993202,4.845,0.81,20.851,0.6426,0.0503,"SumPAHs16","ng/g",168.0932091,NA,2,"SumPAHs42_DMNcorrected","ng/g",408.2263648,NA,2,"SumPAHsHMW","ng/g",186.1031957,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",186.1031957,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",34.8193076,NA,2
+"11",149,47.27568,-122.4173,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Blair Waterway",41,11,5,3607485,7.438,0.855,21.773,0.6943,0.0458,"SumPAHs16","ng/g",247.5323431,NA,2,"SumPAHs42_DMNcorrected","ng/g",715.0934356,NA,3,"SumPAHsHMW","ng/g",280.5366555,NA,2,"SumPAHsHMW","ng/g",280.5366555,NA,2,"Sum40CBs","ng/g",37.4048874,NA,2
+"12",150,47.27568,-122.4173,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Blair Waterway",41,11,5,2656342,2.9,0.81,20.443,0.7098,0.0456,"SumPAHs16","ng/g",247.5323431,NA,2,"SumPAHs42_DMNcorrected","ng/g",715.0934356,NA,3,"SumPAHsHMW","ng/g",280.5366555,NA,2,"SumPAHsHMW","ng/g",280.5366555,NA,2,"Sum40CBs","ng/g",37.4048874,NA,2
+"13",151,47.27568,-122.4173,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Blair Waterway",41,11,5,3719291,8.989,0.815,32.295,0.7158,0.0565,"SumPAHs16","ng/g",247.5323431,NA,2,"SumPAHs42_DMNcorrected","ng/g",715.0934356,NA,3,"SumPAHsHMW","ng/g",280.5366555,NA,2,"SumPAHsHMW","ng/g",280.5366555,NA,2,"Sum40CBs","ng/g",37.4048874,NA,2
+"14",152,47.27568,-122.4173,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Blair Waterway",41,11,5,5059896,7.334,0.855,35.693,0.6837,0.0587,"SumPAHs16","ng/g",247.5323431,NA,2,"SumPAHs42_DMNcorrected","ng/g",715.0934356,NA,3,"SumPAHsHMW","ng/g",280.5366555,NA,2,"SumPAHsHMW","ng/g",280.5366555,NA,2,"Sum40CBs","ng/g",37.4048874,NA,2
+"15",141,47.2632444,-122.385731,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Blair Waterway #2",42,11,5,4168799,0.978,0.78,33.657,0.7084,0.0605,"SumPAHs16","ng/g",299.3656536,NA,3,"SumPAHs42_DMNcorrected","ng/g",1038.615533,NA,3,"SumPAHsHMW","ng/g",403.2272069,NA,2,"SumPAHsHMW","ng/g",403.2272069,NA,2,"Sum40CBs","ng/g",42.1555716,NA,3
+"16",142,47.2632444,-122.385731,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Blair Waterway #2",42,11,5,1279705,27.927,0.695,34.016,0.7343,0.058,"SumPAHs16","ng/g",299.3656536,NA,3,"SumPAHs42_DMNcorrected","ng/g",1038.615533,NA,3,"SumPAHsHMW","ng/g",403.2272069,NA,2,"SumPAHsHMW","ng/g",403.2272069,NA,2,"Sum40CBs","ng/g",42.1555716,NA,3
+"17",143,47.2632444,-122.385731,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Blair Waterway #2",42,11,5,7725177,7.613,0.805,31.737,0.6859,0.0475,"SumPAHs16","ng/g",299.3656536,NA,3,"SumPAHs42_DMNcorrected","ng/g",1038.615533,NA,3,"SumPAHsHMW","ng/g",403.2272069,NA,2,"SumPAHsHMW","ng/g",403.2272069,NA,2,"Sum40CBs","ng/g",42.1555716,NA,3
+"18",144,47.2632444,-122.385731,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Blair Waterway #2",42,11,5,5159851,6.4,0.83,32.918,0.7091,0.0525,"SumPAHs16","ng/g",299.3656536,NA,3,"SumPAHs42_DMNcorrected","ng/g",1038.615533,NA,3,"SumPAHsHMW","ng/g",403.2272069,NA,2,"SumPAHsHMW","ng/g",403.2272069,NA,2,"Sum40CBs","ng/g",42.1555716,NA,3
+"19",96,47.68234,-122.5064,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Brackenwood Ln",23,10,3,3877914,0.271,0.855,31.808,0.675,0.0487,"SumPAHs16","ng/g",176.9850187,NA,2,"SumPAHs42_DMNcorrected","ng/g",389.3670412,NA,2,"SumPAHsHMW","ng/g",176.9850187,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",176.9850187,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",29.4975031,NA,2
+"20",97,47.68234,-122.5064,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Brackenwood Ln",23,10,3,3542349,16.142,0.675,33.924,0.7258,0.0543,"SumPAHs16","ng/g",176.9850187,NA,2,"SumPAHs42_DMNcorrected","ng/g",389.3670412,NA,2,"SumPAHsHMW","ng/g",176.9850187,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",176.9850187,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",29.4975031,NA,2
+"21",98,47.68234,-122.5064,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Brackenwood Ln",23,10,3,3150477,7.034,0.665,37.354,0.719,0.0546,"SumPAHs16","ng/g",176.9850187,NA,2,"SumPAHs42_DMNcorrected","ng/g",389.3670412,NA,2,"SumPAHsHMW","ng/g",176.9850187,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",176.9850187,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",29.4975031,NA,2
+"22",99,47.68234,-122.5064,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Brackenwood Ln",23,10,3,6702376,11.402,0.885,35.303,0.7032,0.053,"SumPAHs16","ng/g",176.9850187,NA,2,"SumPAHs42_DMNcorrected","ng/g",389.3670412,NA,2,"SumPAHsHMW","ng/g",176.9850187,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",176.9850187,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",29.4975031,NA,2
+"23",269,47.78184,-122.83474,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Broad Spit (Fisherman's Point)",30,12,2,52717198,34.355,0.865,32.749,0.6622,0.0503,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"24",270,47.78184,-122.83474,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Broad Spit (Fisherman's Point)",30,12,2,2444905,13.708,0.645,31.442,0.7031,0.0485,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"25",271,47.78184,-122.83474,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Broad Spit (Fisherman's Point)",30,12,2,4424850,2.988,0.985,34.475,0.6665,0.0551,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"26",272,47.78184,-122.83474,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Broad Spit (Fisherman's Point)",30,12,2,3385205,8.472,0.8,36.98,0.708,0.0668,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"27",194,47.30515,-122.44441,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Browns Point Lighthouse",54,11,5,3153370,13.731,0.475,31.62,0.7289,0.042,"SumPAHs16","ng/g",175.520428,NA,2,"SumPAHs42_DMNcorrected","ng/g",438.80107,NA,2,"SumPAHsHMW","ng/g",181.3711089,NA,1,"SumPAHsHMW","ng/g",181.3711089,NA,1,"Sum40CBs","ng/g",40.3696984,NA,3
+"28",195,47.30515,-122.44441,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Browns Point Lighthouse",54,11,5,1063470,25.619,0.65,32.12,0.6569,0.0561,"SumPAHs16","ng/g",175.520428,NA,2,"SumPAHs42_DMNcorrected","ng/g",438.80107,NA,2,"SumPAHsHMW","ng/g",181.3711089,NA,1,"SumPAHsHMW","ng/g",181.3711089,NA,1,"Sum40CBs","ng/g",40.3696984,NA,3
+"29",196,47.30515,-122.44441,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Browns Point Lighthouse",54,11,5,6892889,1.487,0.785,34.227,0.657,0.0439,"SumPAHs16","ng/g",175.520428,NA,2,"SumPAHs42_DMNcorrected","ng/g",438.80107,NA,2,"SumPAHsHMW","ng/g",181.3711089,NA,1,"SumPAHsHMW","ng/g",181.3711089,NA,1,"Sum40CBs","ng/g",40.3696984,NA,3
+"30",197,47.30515,-122.44441,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Browns Point Lighthouse",54,11,5,12192291,6.551,0.66,34.193,0.6678,0.0453,"SumPAHs16","ng/g",175.520428,NA,2,"SumPAHs42_DMNcorrected","ng/g",438.80107,NA,2,"SumPAHsHMW","ng/g",181.3711089,NA,1,"SumPAHsHMW","ng/g",181.3711089,NA,1,"Sum40CBs","ng/g",40.3696984,NA,3
+"31",214,48.520971,-122.600717,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Cap Sante",64,7,4,8571444,13.24,1.04,35.637,0.6305,0.0468,"SumPAHs16","ng/g",63.66423358,NA,1,"SumPAHs42_DMNcorrected","ng/g",375.6189781,NA,2,"SumPAHsHMW","ng/g",120.9620438,NA,1,"SumPAHsHMW","ng/g",120.9620438,NA,1,"Sum40CBs","ng/g",22.2824818,NA,1
+"32",215,48.520971,-122.600717,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Cap Sante",64,7,4,9119663,0.975,0.94,32.828,0.6568,0.0501,"SumPAHs16","ng/g",63.66423358,NA,1,"SumPAHs42_DMNcorrected","ng/g",375.6189781,NA,2,"SumPAHsHMW","ng/g",120.9620438,NA,1,"SumPAHsHMW","ng/g",120.9620438,NA,1,"Sum40CBs","ng/g",22.2824818,NA,1
+"33",216,48.520971,-122.600717,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Cap Sante",64,7,4,4058856,5.642,0.705,33.972,0.6425,0.0487,"SumPAHs16","ng/g",63.66423358,NA,1,"SumPAHs42_DMNcorrected","ng/g",375.6189781,NA,2,"SumPAHsHMW","ng/g",120.9620438,NA,1,"SumPAHsHMW","ng/g",120.9620438,NA,1,"Sum40CBs","ng/g",22.2824818,NA,1
+"34",217,48.520971,-122.600717,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Cap Sante",64,7,4,2991933,9.761,0.86,34.715,0.6677,0.0453,"SumPAHs16","ng/g",63.66423358,NA,1,"SumPAHs42_DMNcorrected","ng/g",375.6189781,NA,2,"SumPAHsHMW","ng/g",120.9620438,NA,1,"SumPAHsHMW","ng/g",120.9620438,NA,1,"Sum40CBs","ng/g",22.2824818,NA,1
+"35",127,47.1905742,-122.5834897,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Chambers Bay Park",56,13,5,3977493,1.005,0.935,35.234,0.676,0.0566,"SumPAHs16","ng/g",70.78364566,NA,1,"SumPAHs42_DMNcorrected","ng/g",182.8577513,NA,1,"SumPAHsHMW","ng/g",76.68228279,NA,1,"SumPAHsHMW","ng/g",76.68228279,NA,1,"Sum40CBs","ng/g",35.3918228,NA,2
+"36",128,47.1905742,-122.5834897,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Chambers Bay Park",56,13,5,3836553,1.463,0.975,34.381,0.6271,0.0506,"SumPAHs16","ng/g",70.78364566,NA,1,"SumPAHs42_DMNcorrected","ng/g",182.8577513,NA,1,"SumPAHsHMW","ng/g",76.68228279,NA,1,"SumPAHsHMW","ng/g",76.68228279,NA,1,"Sum40CBs","ng/g",35.3918228,NA,2
+"37",129,47.1905742,-122.5834897,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Chambers Bay Park",56,13,5,6882929,7.19,0.695,32.133,0.6612,0.0547,"SumPAHs16","ng/g",70.78364566,NA,1,"SumPAHs42_DMNcorrected","ng/g",182.8577513,NA,1,"SumPAHsHMW","ng/g",76.68228279,NA,1,"SumPAHsHMW","ng/g",76.68228279,NA,1,"Sum40CBs","ng/g",35.3918228,NA,2
+"38",130,47.1905742,-122.5834897,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Chambers Bay Park",56,13,5,6222187,4.194,0.8,33.077,0.658,0.0537,"SumPAHs16","ng/g",70.78364566,NA,1,"SumPAHs42_DMNcorrected","ng/g",182.8577513,NA,1,"SumPAHsHMW","ng/g",76.68228279,NA,1,"SumPAHsHMW","ng/g",76.68228279,NA,1,"Sum40CBs","ng/g",35.3918228,NA,2
+"39",33,48.8208,-122.7101,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Cherry Point Aquatic Reserve, Conoco Phillips",75,7,4,NA,17.324,0.66,33.067,0.6859,0.0494,"SumPAHs16","ng/g",126.770321,NA,1,"SumPAHs42_DMNcorrected","ng/g",325.9808253,NA,2,"SumPAHsHMW","ng/g",150.9170488,NA,1,"SumPAHsHMW","ng/g",150.9170488,NA,1,"Sum40CBs","ng/g",30.1834098,NA,2
+"40",34,48.8208,-122.7101,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Cherry Point Aquatic Reserve, Conoco Phillips",75,7,4,4654335,6.966,0.865,32.345,0.6644,0.0526,"SumPAHs16","ng/g",126.770321,NA,1,"SumPAHs42_DMNcorrected","ng/g",325.9808253,NA,2,"SumPAHsHMW","ng/g",150.9170488,NA,1,"SumPAHsHMW","ng/g",150.9170488,NA,1,"Sum40CBs","ng/g",30.1834098,NA,2
+"41",35,48.8208,-122.7101,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Cherry Point Aquatic Reserve, Conoco Phillips",75,7,4,2017393,22.233,0.545,35.666,0.727,0.0599,"SumPAHs16","ng/g",126.770321,NA,1,"SumPAHs42_DMNcorrected","ng/g",325.9808253,NA,2,"SumPAHsHMW","ng/g",150.9170488,NA,1,"SumPAHsHMW","ng/g",150.9170488,NA,1,"Sum40CBs","ng/g",30.1834098,NA,2
+"42",36,48.8208,-122.7101,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Cherry Point Aquatic Reserve, Conoco Phillips",75,7,4,3364046,34.492,0.645,32.993,0.6861,0.0491,"SumPAHs16","ng/g",126.770321,NA,1,"SumPAHs42_DMNcorrected","ng/g",325.9808253,NA,2,"SumPAHsHMW","ng/g",150.9170488,NA,1,"SumPAHsHMW","ng/g",150.9170488,NA,1,"Sum40CBs","ng/g",30.1834098,NA,2
+"43",100,48.04906,-122.7724,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Chimacum Creek delta",8,9,2,956176,29.84,0.6,31.764,0.7101,0.0593,"SumPAHs16","ng/g",68.63157895,NA,1,"SumPAHs42_DMNcorrected","ng/g",168.4593301,NA,1,"SumPAHsHMW","ng/g",56.77703349,NA,1,"SumPAHsHMW","ng/g",56.77703349,NA,1,"Sum40CBs","ng/g",22.461244,NA,1
+"44",101,48.04906,-122.7724,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Chimacum Creek delta",8,9,2,3373010,8.875,0.635,33.352,0.692,0.0619,"SumPAHs16","ng/g",68.63157895,NA,1,"SumPAHs42_DMNcorrected","ng/g",168.4593301,NA,1,"SumPAHsHMW","ng/g",56.77703349,NA,1,"SumPAHsHMW","ng/g",56.77703349,NA,1,"Sum40CBs","ng/g",22.461244,NA,1
+"45",102,48.04906,-122.7724,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Chimacum Creek delta",8,9,2,958833,8.638,0.805,33.371,0.6896,0.0575,"SumPAHs16","ng/g",68.63157895,NA,1,"SumPAHs42_DMNcorrected","ng/g",168.4593301,NA,1,"SumPAHsHMW","ng/g",56.77703349,NA,1,"SumPAHsHMW","ng/g",56.77703349,NA,1,"Sum40CBs","ng/g",22.461244,NA,1
+"46",103,48.04906,-122.7724,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Chimacum Creek delta",8,9,2,2088081,6.569,0.65,33.996,0.6994,0.068,"SumPAHs16","ng/g",68.63157895,NA,1,"SumPAHs42_DMNcorrected","ng/g",168.4593301,NA,1,"SumPAHsHMW","ng/g",56.77703349,NA,1,"SumPAHsHMW","ng/g",56.77703349,NA,1,"Sum40CBs","ng/g",22.461244,NA,1
+"47",25,48.68975,-122.50434,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Chuckanut, Clark's Point",74,7,4,1877700,15.572,0.635,33.746,0.6984,0.0484,"SumPAHs16","ng/g",80.33416459,NA,1,"SumPAHs42_DMNcorrected","ng/g",206.5735661,NA,1,"SumPAHsHMW","ng/g",74.59600998,NA,1,"SumPAHsHMW","ng/g",74.59600998,NA,1,"Sum40CBs","ng/g",22.378803,NA,1
+"48",26,48.68975,-122.50434,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Chuckanut, Clark's Point",74,7,4,1683751,73.345,0.66,36.626,0.7047,0.0622,"SumPAHs16","ng/g",80.33416459,NA,1,"SumPAHs42_DMNcorrected","ng/g",206.5735661,NA,1,"SumPAHsHMW","ng/g",74.59600998,NA,1,"SumPAHsHMW","ng/g",74.59600998,NA,1,"Sum40CBs","ng/g",22.378803,NA,1
+"49",27,48.68975,-122.50434,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Chuckanut, Clark's Point",74,7,4,3011817,0.0025,0.355,31.95,0.6887,0.0465,"SumPAHs16","ng/g",80.33416459,NA,1,"SumPAHs42_DMNcorrected","ng/g",206.5735661,NA,1,"SumPAHsHMW","ng/g",74.59600998,NA,1,"SumPAHsHMW","ng/g",74.59600998,NA,1,"Sum40CBs","ng/g",22.378803,NA,1
+"50",28,48.68975,-122.50434,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Chuckanut, Clark's Point",74,7,4,582761,13.708,0.405,33.174,0.7032,0.0479,"SumPAHs16","ng/g",80.33416459,NA,1,"SumPAHs42_DMNcorrected","ng/g",206.5735661,NA,1,"SumPAHsHMW","ng/g",74.59600998,NA,1,"SumPAHsHMW","ng/g",74.59600998,NA,1,"Sum40CBs","ng/g",22.378803,NA,1
+"51",37,47.29,-122.41,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Comm Bay Skookum",45,11,5,5287826,25.449,0.58,30.28,0.6727,0.051,"SumPAHs16","ng/g",342.9279231,NA,3,"SumPAHs42_DMNcorrected","ng/g",857.3198078,NA,3,"SumPAHsHMW","ng/g",369.3069941,NA,2,"SumPAHsHMW","ng/g",369.3069941,NA,2,"Sum40CBs","ng/g",72.5424453,NA,5
+"52",38,47.29,-122.41,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Comm Bay Skookum",45,11,5,1134272,8.685,0.52,34.049,0.6747,0.0517,"SumPAHs16","ng/g",342.9279231,NA,3,"SumPAHs42_DMNcorrected","ng/g",857.3198078,NA,3,"SumPAHsHMW","ng/g",369.3069941,NA,2,"SumPAHsHMW","ng/g",369.3069941,NA,2,"Sum40CBs","ng/g",72.5424453,NA,5
+"53",39,47.29,-122.41,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Comm Bay Skookum",45,11,5,3524590,2.056,0.805,6.995,0.5949,0.031,"SumPAHs16","ng/g",342.9279231,NA,3,"SumPAHs42_DMNcorrected","ng/g",857.3198078,NA,3,"SumPAHsHMW","ng/g",369.3069941,NA,2,"SumPAHsHMW","ng/g",369.3069941,NA,2,"Sum40CBs","ng/g",72.5424453,NA,5
+"54",40,47.29,-122.41,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Comm Bay Skookum",45,11,5,990580,72.981,0.8,43.904,0.7394,0.0712,"SumPAHs16","ng/g",342.9279231,NA,3,"SumPAHs42_DMNcorrected","ng/g",857.3198078,NA,3,"SumPAHsHMW","ng/g",369.3069941,NA,2,"SumPAHsHMW","ng/g",369.3069941,NA,2,"Sum40CBs","ng/g",72.5424453,NA,5
+"55",114,47.292549,-122.412175,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Comm Bay, Dick Gilmur Launch",48,11,5,1166004,12.507,0.855,32.334,0.6938,0.0613,"SumPAHs16","ng/g",332.0412736,NA,3,"SumPAHs42_DMNcorrected","ng/g",781.2735849,NA,3,"SumPAHsHMW","ng/g",338.5518868,NA,2,"SumPAHsHMW","ng/g",338.5518868,NA,2,"Sum40CBs","ng/g",71.6167453,NA,5
+"56",115,47.292549,-122.412175,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Comm Bay, Dick Gilmur Launch",48,11,5,5858996,35.436,0.87,14.432,0.6354,0.0467,"SumPAHs16","ng/g",332.0412736,NA,3,"SumPAHs42_DMNcorrected","ng/g",781.2735849,NA,3,"SumPAHsHMW","ng/g",338.5518868,NA,2,"SumPAHsHMW","ng/g",338.5518868,NA,2,"Sum40CBs","ng/g",71.6167453,NA,5
+"57",116,47.292549,-122.412175,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Comm Bay, Dick Gilmur Launch",48,11,5,2870476,27.272,0.815,47.979,0.8344,0.109,"SumPAHs16","ng/g",332.0412736,NA,3,"SumPAHs42_DMNcorrected","ng/g",781.2735849,NA,3,"SumPAHsHMW","ng/g",338.5518868,NA,2,"SumPAHsHMW","ng/g",338.5518868,NA,2,"Sum40CBs","ng/g",71.6167453,NA,5
+"58",117,47.292549,-122.412175,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Comm Bay, Dick Gilmur Launch",48,11,5,939029,2.07,0.91,29.37,0.6285,0.0258,"SumPAHs16","ng/g",332.0412736,NA,3,"SumPAHs42_DMNcorrected","ng/g",781.2735849,NA,3,"SumPAHsHMW","ng/g",338.5518868,NA,2,"SumPAHsHMW","ng/g",338.5518868,NA,2,"Sum40CBs","ng/g",71.6167453,NA,5
+"59",157,47.2694,-122.4243,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Comm Bay, Milwaukee Waterway",49,11,5,2018358,12.545,1.02,52.574,0.7524,0.0687,"SumPAHs16","ng/g",195.1832884,NA,2,"SumPAHs42_DMNcorrected","ng/g",599.0107817,NA,2,"SumPAHsHMW","ng/g",215.3746631,NA,2,"SumPAHsHMW","ng/g",215.3746631,NA,2,"Sum40CBs","ng/g",47.1132075,NA,3
+"60",158,47.2694,-122.4243,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Comm Bay, Milwaukee Waterway",49,11,5,1556940,58.783,0.825,26.875,0.8017,0.0563,"SumPAHs16","ng/g",195.1832884,NA,2,"SumPAHs42_DMNcorrected","ng/g",599.0107817,NA,2,"SumPAHsHMW","ng/g",215.3746631,NA,2,"SumPAHsHMW","ng/g",215.3746631,NA,2,"Sum40CBs","ng/g",47.1132075,NA,3
+"61",159,47.2694,-122.4243,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Comm Bay, Milwaukee Waterway",49,11,5,NA,5.992,0.73,51.846,0.8383,0.0906,"SumPAHs16","ng/g",195.1832884,NA,2,"SumPAHs42_DMNcorrected","ng/g",599.0107817,NA,2,"SumPAHsHMW","ng/g",215.3746631,NA,2,"SumPAHsHMW","ng/g",215.3746631,NA,2,"Sum40CBs","ng/g",47.1132075,NA,3
+"62",160,47.2694,-122.4243,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Comm Bay, Milwaukee Waterway",49,11,5,1669995,22.316,0.755,54.084,0.8237,0.0685,"SumPAHs16","ng/g",195.1832884,NA,2,"SumPAHs42_DMNcorrected","ng/g",599.0107817,NA,2,"SumPAHsHMW","ng/g",215.3746631,NA,2,"SumPAHsHMW","ng/g",215.3746631,NA,2,"Sum40CBs","ng/g",47.1132075,NA,3
+"63",161,47.2694,-122.4243,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Comm Bay, Milwaukee Waterway",49,11,5,4332608,26.721,0.74,28.989,0.7495,0.0841,"SumPAHs16","ng/g",195.1832884,NA,2,"SumPAHs42_DMNcorrected","ng/g",599.0107817,NA,2,"SumPAHsHMW","ng/g",215.3746631,NA,2,"SumPAHsHMW","ng/g",215.3746631,NA,2,"Sum40CBs","ng/g",47.1132075,NA,3
+"64",1,47.40301418,-122.3305538,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Des Moines Marina",21,11,5,4034245,17.031,0.825,73.81,0.7991,0.1094,"SumPAHs16","ng/g",9800.460617,NA,8,"SumPAHs42_DMNcorrected","ng/g",15313.21971,NA,8,"SumPAHsHMW","ng/g",8575.40304,NA,7,"SumPAHsHMW","ng/g",8575.40304,NA,7,"Sum40CBs","ng/g",44.1020728,NA,3
+"65",2,47.40301418,-122.3305538,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Des Moines Marina",21,11,5,3404367,17.331,0.8,52.81,0.7703,0.0735,"SumPAHs16","ng/g",9800.460617,NA,8,"SumPAHs42_DMNcorrected","ng/g",15313.21971,NA,8,"SumPAHsHMW","ng/g",8575.40304,NA,7,"SumPAHsHMW","ng/g",8575.40304,NA,7,"Sum40CBs","ng/g",44.1020728,NA,3
+"66",3,47.40301418,-122.3305538,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Des Moines Marina",21,11,5,2281563,8.189,0.965,55.68,0.7605,0.1009,"SumPAHs16","ng/g",9800.460617,NA,8,"SumPAHs42_DMNcorrected","ng/g",15313.21971,NA,8,"SumPAHsHMW","ng/g",8575.40304,NA,7,"SumPAHsHMW","ng/g",8575.40304,NA,7,"Sum40CBs","ng/g",44.1020728,NA,3
+"67",4,47.40301418,-122.3305538,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Des Moines Marina",21,11,5,1153344,6.983,0.535,14.576,0.6306,0.0269,"SumPAHs16","ng/g",9800.460617,NA,8,"SumPAHs42_DMNcorrected","ng/g",15313.21971,NA,8,"SumPAHsHMW","ng/g",8575.40304,NA,7,"SumPAHsHMW","ng/g",8575.40304,NA,7,"Sum40CBs","ng/g",44.1020728,NA,3
+"68",162,48.064957,-122.857524,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Discovery Bay",12,6,2,3237832,63.547,0.855,70.792,0.8135,0.1397,"SumPAHs16","ng/g",117.6769062,NA,1,"SumPAHs42_DMNcorrected","ng/g",235.3538124,NA,1,"SumPAHsHMW","ng/g",98.84860121,NA,1,"SumPAHsHMW","ng/g",98.84860121,NA,1,"Sum40CBs","ng/g",11.7676906,NA,1
+"69",163,48.064957,-122.857524,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Discovery Bay",12,6,2,1975307,39.159,0.89,33.09,0.6745,0.0609,"SumPAHs16","ng/g",117.6769062,NA,1,"SumPAHs42_DMNcorrected","ng/g",235.3538124,NA,1,"SumPAHsHMW","ng/g",98.84860121,NA,1,"SumPAHsHMW","ng/g",98.84860121,NA,1,"Sum40CBs","ng/g",11.7676906,NA,1
+"70",164,48.064957,-122.857524,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Discovery Bay",12,6,2,2362670,41.449,0.74,34.719,0.7119,0.0529,"SumPAHs16","ng/g",117.6769062,NA,1,"SumPAHs42_DMNcorrected","ng/g",235.3538124,NA,1,"SumPAHsHMW","ng/g",98.84860121,NA,1,"SumPAHsHMW","ng/g",98.84860121,NA,1,"Sum40CBs","ng/g",11.7676906,NA,1
+"71",165,48.064957,-122.857524,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Discovery Bay",12,6,2,3125326,28.087,0.615,34.005,0.6789,0.0556,"SumPAHs16","ng/g",117.6769062,NA,1,"SumPAHs42_DMNcorrected","ng/g",235.3538124,NA,1,"SumPAHsHMW","ng/g",98.84860121,NA,1,"SumPAHsHMW","ng/g",98.84860121,NA,1,"Sum40CBs","ng/g",11.7676906,NA,1
+"72",265,47.33775,-122.59014,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Donkey Creek Delta",44,11,5,2002597,20.437,0.935,37.472,0.702,0.0554,"SumPAHs16","ng/g",257.8723022,NA,2,"SumPAHs42_DMNcorrected","ng/g",522.3567146,NA,2,"SumPAHsHMW","ng/g",284.3207434,NA,2,"SumPAHsHMW","ng/g",284.3207434,NA,2,"Sum40CBs","ng/g",79.3453237,NA,5
+"73",266,47.33775,-122.59014,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Donkey Creek Delta",44,11,5,2881838,44.994,0.94,35.922,0.7059,0.0661,"SumPAHs16","ng/g",257.8723022,NA,2,"SumPAHs42_DMNcorrected","ng/g",522.3567146,NA,2,"SumPAHsHMW","ng/g",284.3207434,NA,2,"SumPAHsHMW","ng/g",284.3207434,NA,2,"Sum40CBs","ng/g",79.3453237,NA,5
+"74",267,47.33775,-122.59014,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Donkey Creek Delta",44,11,5,3562058,13.938,1.195,32.299,0.6665,0.0559,"SumPAHs16","ng/g",257.8723022,NA,2,"SumPAHs42_DMNcorrected","ng/g",522.3567146,NA,2,"SumPAHsHMW","ng/g",284.3207434,NA,2,"SumPAHsHMW","ng/g",284.3207434,NA,2,"Sum40CBs","ng/g",79.3453237,NA,5
+"75",268,47.33775,-122.59014,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Donkey Creek Delta",44,11,5,4066301,15.797,0.705,31.147,0.6997,0.0434,"SumPAHs16","ng/g",257.8723022,NA,2,"SumPAHs42_DMNcorrected","ng/g",522.3567146,NA,2,"SumPAHsHMW","ng/g",284.3207434,NA,2,"SumPAHsHMW","ng/g",284.3207434,NA,2,"Sum40CBs","ng/g",79.3453237,NA,5
+"76",57,47.61889,-122.5275,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Eagle Harbor Dr",31,10,3,1243643,9.53,0.83,31.801,0.7111,0.0519,"SumPAHs16","ng/g",577.4680463,NA,3,"SumPAHs42_DMNcorrected","ng/g",1031.19294,NA,3,"SumPAHsHMW","ng/g",653.0888618,NA,3,"SumPAHsHMW","ng/g",653.0888618,NA,3,"Sum40CBs","ng/g",75.6208156,NA,5
+"77",58,47.61889,-122.5275,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Eagle Harbor Dr",31,10,3,6878714,5.591,0.93,36.341,0.6946,0.0606,"SumPAHs16","ng/g",577.4680463,NA,3,"SumPAHs42_DMNcorrected","ng/g",1031.19294,NA,3,"SumPAHsHMW","ng/g",653.0888618,NA,3,"SumPAHsHMW","ng/g",653.0888618,NA,3,"Sum40CBs","ng/g",75.6208156,NA,5
+"78",59,47.61889,-122.5275,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Eagle Harbor Dr",31,10,3,2711200,84.419,0.755,34.755,0.7022,0.05,"SumPAHs16","ng/g",577.4680463,NA,3,"SumPAHs42_DMNcorrected","ng/g",1031.19294,NA,3,"SumPAHsHMW","ng/g",653.0888618,NA,3,"SumPAHsHMW","ng/g",653.0888618,NA,3,"Sum40CBs","ng/g",75.6208156,NA,5
+"79",60,47.61889,-122.5275,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Eagle Harbor Dr",31,10,3,2381238,9.393,0.905,35.871,0.6975,0.0505,"SumPAHs16","ng/g",577.4680463,NA,3,"SumPAHs42_DMNcorrected","ng/g",1031.19294,NA,3,"SumPAHsHMW","ng/g",653.0888618,NA,3,"SumPAHsHMW","ng/g",653.0888618,NA,3,"Sum40CBs","ng/g",75.6208156,NA,5
+"80",49,48.69368,-122.90985,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Eastsound, Fishing Bay",60,7,4,4956424,1.736,0.905,36.599,0.6913,0.0489,"SumPAHs16","ng/g",292.0675453,NA,3,"SumPAHs42_DMNcorrected","ng/g",518.0065898,NA,2,"SumPAHsHMW","ng/g",270.0247117,"dNPH Surrogate recovery below minimum QA value (60%)",2,"SumPAHsHMW","ng/g",270.0247117,"dNPH Surrogate recovery below minimum QA value (60%)",2,"Sum40CBs","ng/g",15.9810544,NA,1
+"81",50,48.69368,-122.90985,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Eastsound, Fishing Bay",60,7,4,2492074,0.0025,0.805,38.12,0.7242,0.0535,"SumPAHs16","ng/g",292.0675453,NA,3,"SumPAHs42_DMNcorrected","ng/g",518.0065898,NA,2,"SumPAHsHMW","ng/g",270.0247117,"dNPH Surrogate recovery below minimum QA value (60%)",2,"SumPAHsHMW","ng/g",270.0247117,"dNPH Surrogate recovery below minimum QA value (60%)",2,"Sum40CBs","ng/g",15.9810544,NA,1
+"82",51,48.69368,-122.90985,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Eastsound, Fishing Bay",60,7,4,2974772,27.353,0.58,36.761,0.723,0.0543,"SumPAHs16","ng/g",292.0675453,NA,3,"SumPAHs42_DMNcorrected","ng/g",518.0065898,NA,2,"SumPAHsHMW","ng/g",270.0247117,"dNPH Surrogate recovery below minimum QA value (60%)",2,"SumPAHsHMW","ng/g",270.0247117,"dNPH Surrogate recovery below minimum QA value (60%)",2,"Sum40CBs","ng/g",15.9810544,NA,1
+"83",52,48.69368,-122.90985,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Eastsound, Fishing Bay",60,7,4,5366142,39.581,0.615,35.309,0.6895,0.0618,"SumPAHs16","ng/g",292.0675453,NA,3,"SumPAHs42_DMNcorrected","ng/g",518.0065898,NA,2,"SumPAHsHMW","ng/g",270.0247117,"dNPH Surrogate recovery below minimum QA value (60%)",2,"SumPAHsHMW","ng/g",270.0247117,"dNPH Surrogate recovery below minimum QA value (60%)",2,"Sum40CBs","ng/g",15.9810544,NA,1
+"84",227,47.81407,-122.3825,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Edmonds Ferry",69,9,6,2235746,25.844,0.545,32.829,0.6942,0.0543,"SumPAHs16","ng/g",268.9280374,NA,2,"SumPAHs42_DMNcorrected","ng/g",526.1635514,NA,2,"SumPAHsHMW","ng/g",268.9280374,NA,2,"SumPAHsHMW","ng/g",268.9280374,NA,2,"Sum40CBs","ng/g",35.6621963,NA,2
+"85",228,47.81407,-122.3825,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Edmonds Ferry",69,9,6,3343459,20.453,0.45,33.93,0.7171,0.0585,"SumPAHs16","ng/g",268.9280374,NA,2,"SumPAHs42_DMNcorrected","ng/g",526.1635514,NA,2,"SumPAHsHMW","ng/g",268.9280374,NA,2,"SumPAHsHMW","ng/g",268.9280374,NA,2,"Sum40CBs","ng/g",35.6621963,NA,2
+"86",229,47.81407,-122.3825,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Edmonds Ferry",69,9,6,2786163,15.582,0.61,26.113,0.663,0.0398,"SumPAHs16","ng/g",268.9280374,NA,2,"SumPAHs42_DMNcorrected","ng/g",526.1635514,NA,2,"SumPAHsHMW","ng/g",268.9280374,NA,2,"SumPAHsHMW","ng/g",268.9280374,NA,2,"Sum40CBs","ng/g",35.6621963,NA,2
+"87",230,47.81407,-122.3825,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Edmonds Ferry",69,9,6,2874808,18.111,0.64,38.248,0.735,0.0599,"SumPAHs16","ng/g",268.9280374,NA,2,"SumPAHs42_DMNcorrected","ng/g",526.1635514,NA,2,"SumPAHsHMW","ng/g",268.9280374,NA,2,"SumPAHsHMW","ng/g",268.9280374,NA,2,"Sum40CBs","ng/g",35.6621963,NA,2
+"88",21,47.8111,-122.388,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Edmonds Marina",68,9,6,2226326,12.533,0.81,37.414,0.6723,0.0638,"SumPAHs16","ng/g",374.8520776,NA,3,"SumPAHs42_DMNcorrected","ng/g",702.8476454,NA,3,"SumPAHsHMW","ng/g",374.8520776,NA,2,"SumPAHsHMW","ng/g",374.8520776,NA,2,"Sum40CBs","ng/g",40.999446,NA,3
+"89",22,47.8111,-122.388,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Edmonds Marina",68,9,6,3074754,11.485,0.8,38.271,0.7051,0.0545,"SumPAHs16","ng/g",374.8520776,NA,3,"SumPAHs42_DMNcorrected","ng/g",702.8476454,NA,3,"SumPAHsHMW","ng/g",374.8520776,NA,2,"SumPAHsHMW","ng/g",374.8520776,NA,2,"Sum40CBs","ng/g",40.999446,NA,3
+"90",23,47.8111,-122.388,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Edmonds Marina",68,9,6,2424855,51.729,0.75,36.245,0.7208,0.0604,"SumPAHs16","ng/g",374.8520776,NA,3,"SumPAHs42_DMNcorrected","ng/g",702.8476454,NA,3,"SumPAHsHMW","ng/g",374.8520776,NA,2,"SumPAHsHMW","ng/g",374.8520776,NA,2,"Sum40CBs","ng/g",40.999446,NA,3
+"91",24,47.8111,-122.388,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Edmonds Marina",68,9,6,1614645,3.484,0.735,27.173,0.6407,0.0449,"SumPAHs16","ng/g",374.8520776,NA,3,"SumPAHs42_DMNcorrected","ng/g",702.8476454,NA,3,"SumPAHsHMW","ng/g",374.8520776,NA,2,"SumPAHsHMW","ng/g",374.8520776,NA,2,"Sum40CBs","ng/g",40.999446,NA,3
+"92",186,47.074603,-123.003527,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Eld Inlet",72,13,1,2166819,15.212,0.81,41.041,0.7247,0.0649,"SumPAHs16","ng/g",64.34929577,NA,1,"SumPAHs42_DMNcorrected","ng/g",171.5981221,NA,1,"SumPAHsHMW","ng/g",75.0741784,NA,1,"SumPAHsHMW","ng/g",75.0741784,NA,1,"Sum40CBs","ng/g",31.1021596,NA,2
+"93",187,47.074603,-123.003527,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Eld Inlet",72,13,1,7732418,17.148,0.845,33.993,0.6901,0.0749,"SumPAHs16","ng/g",64.34929577,NA,1,"SumPAHs42_DMNcorrected","ng/g",171.5981221,NA,1,"SumPAHsHMW","ng/g",75.0741784,NA,1,"SumPAHsHMW","ng/g",75.0741784,NA,1,"Sum40CBs","ng/g",31.1021596,NA,2
+"94",188,47.074603,-123.003527,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Eld Inlet",72,13,1,1617973,10.002,0.605,34.656,0.7061,0.0526,"SumPAHs16","ng/g",64.34929577,NA,1,"SumPAHs42_DMNcorrected","ng/g",171.5981221,NA,1,"SumPAHsHMW","ng/g",75.0741784,NA,1,"SumPAHsHMW","ng/g",75.0741784,NA,1,"Sum40CBs","ng/g",31.1021596,NA,2
+"95",189,47.074603,-123.003527,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Eld Inlet",72,13,1,4318486,36.283,0.7,33.231,0.6824,0.0579,"SumPAHs16","ng/g",64.34929577,NA,1,"SumPAHs42_DMNcorrected","ng/g",171.5981221,NA,1,"SumPAHsHMW","ng/g",75.0741784,NA,1,"SumPAHsHMW","ng/g",75.0741784,NA,1,"Sum40CBs","ng/g",31.1021596,NA,2
+"96",69,47.61862,-122.36108,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Elliot Bay Myrtle Edwards",19,10,3,1269238,0.0025,0.555,36.953,0.7229,0.0525,"SumPAHs16","ng/g",8052.281134,NA,7,"SumPAHs42_DMNcorrected","ng/g",12078.4217,NA,7,"SumPAHsHMW","ng/g",9394.32799,NA,8,"SumPAHsHMW","ng/g",9394.32799,NA,8,"Sum40CBs","ng/g",120.784217,NA,7
+"97",70,47.61862,-122.36108,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Elliot Bay Myrtle Edwards",19,10,3,2212557,15.989,0.625,33.051,0.6393,0.0502,"SumPAHs16","ng/g",8052.281134,NA,7,"SumPAHs42_DMNcorrected","ng/g",12078.4217,NA,7,"SumPAHsHMW","ng/g",9394.32799,NA,8,"SumPAHsHMW","ng/g",9394.32799,NA,8,"Sum40CBs","ng/g",120.784217,NA,7
+"98",71,47.61862,-122.36108,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Elliot Bay Myrtle Edwards",19,10,3,1783953,23.205,0.75,34.215,0.6722,0.0526,"SumPAHs16","ng/g",8052.281134,NA,7,"SumPAHs42_DMNcorrected","ng/g",12078.4217,NA,7,"SumPAHsHMW","ng/g",9394.32799,NA,8,"SumPAHsHMW","ng/g",9394.32799,NA,8,"Sum40CBs","ng/g",120.784217,NA,7
+"99",72,47.61862,-122.36108,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Elliot Bay Myrtle Edwards",19,10,3,2162299,0.144,0.755,34.283,0.7376,0.0557,"SumPAHs16","ng/g",8052.281134,NA,7,"SumPAHs42_DMNcorrected","ng/g",12078.4217,NA,7,"SumPAHsHMW","ng/g",9394.32799,NA,8,"SumPAHsHMW","ng/g",9394.32799,NA,8,"Sum40CBs","ng/g",120.784217,NA,7
+"100",73,47.61862,-122.36108,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Elliot Bay Myrtle Edwards",19,10,3,2951937,3.757,0.825,36.556,0.6925,0.0541,"SumPAHs16","ng/g",8052.281134,NA,7,"SumPAHs42_DMNcorrected","ng/g",12078.4217,NA,7,"SumPAHsHMW","ng/g",9394.32799,NA,8,"SumPAHsHMW","ng/g",9394.32799,NA,8,"Sum40CBs","ng/g",120.784217,NA,7
+"101",29,47.58766,-122.35065,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Elliott Bay, Harbor Island, Pier 17",14,10,3,1783000,2.837,0.75,28.647,0.6029,0.0452,"SumPAHs16","ng/g",1882.866557,NA,5,"SumPAHs42_DMNcorrected","ng/g",3195.16749,NA,5,"SumPAHsHMW","ng/g",2054.036244,"dNPH Surrogate recovery below minimum QA value (60%)",5,"SumPAHsHMW","ng/g",2054.036244,"dNPH Surrogate recovery below minimum QA value (60%)",5,"Sum40CBs","ng/g",108.407468,NA,7
+"102",30,47.58766,-122.35065,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Elliott Bay, Harbor Island, Pier 17",14,10,3,2742180,0.0025,0.995,33.471,0.654,0.0523,"SumPAHs16","ng/g",1882.866557,NA,5,"SumPAHs42_DMNcorrected","ng/g",3195.16749,NA,5,"SumPAHsHMW","ng/g",2054.036244,"dNPH Surrogate recovery below minimum QA value (60%)",5,"SumPAHsHMW","ng/g",2054.036244,"dNPH Surrogate recovery below minimum QA value (60%)",5,"Sum40CBs","ng/g",108.407468,NA,7
+"103",31,47.58766,-122.35065,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Elliott Bay, Harbor Island, Pier 17",14,10,3,3089178,2.177,1.045,29.726,0.5909,0.0566,"SumPAHs16","ng/g",1882.866557,NA,5,"SumPAHs42_DMNcorrected","ng/g",3195.16749,NA,5,"SumPAHsHMW","ng/g",2054.036244,"dNPH Surrogate recovery below minimum QA value (60%)",5,"SumPAHsHMW","ng/g",2054.036244,"dNPH Surrogate recovery below minimum QA value (60%)",5,"Sum40CBs","ng/g",108.407468,NA,7
+"104",32,47.58766,-122.35065,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Elliott Bay, Harbor Island, Pier 17",14,10,3,NA,0.0025,0.725,31.835,0.6719,0.0483,"SumPAHs16","ng/g",1882.866557,NA,5,"SumPAHs42_DMNcorrected","ng/g",3195.16749,NA,5,"SumPAHsHMW","ng/g",2054.036244,"dNPH Surrogate recovery below minimum QA value (60%)",5,"SumPAHsHMW","ng/g",2054.036244,"dNPH Surrogate recovery below minimum QA value (60%)",5,"Sum40CBs","ng/g",108.407468,NA,7
+"105",206,47.9726,-122.22977,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Everett Harbor",66,8.2,6,NA,9.83,0.69,34.177,0.6927,0.0576,"SumPAHs16","ng/g",173.0928652,NA,2,"SumPAHs42_DMNcorrected","ng/g",372.815402,NA,2,"SumPAHsHMW","ng/g",166.4354473,NA,1,"SumPAHsHMW","ng/g",166.4354473,NA,1,"Sum40CBs","ng/g",34.618573,NA,2
+"106",207,47.9726,-122.22977,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Everett Harbor",66,8.2,6,291641,0.0025,0.755,34.533,0.7053,0.0595,"SumPAHs16","ng/g",173.0928652,NA,2,"SumPAHs42_DMNcorrected","ng/g",372.815402,NA,2,"SumPAHsHMW","ng/g",166.4354473,NA,1,"SumPAHsHMW","ng/g",166.4354473,NA,1,"Sum40CBs","ng/g",34.618573,NA,2
+"107",208,47.9726,-122.22977,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Everett Harbor",66,8.2,6,1693665,0.0025,0.575,33.699,0.7143,0.0529,"SumPAHs16","ng/g",173.0928652,NA,2,"SumPAHs42_DMNcorrected","ng/g",372.815402,NA,2,"SumPAHsHMW","ng/g",166.4354473,NA,1,"SumPAHsHMW","ng/g",166.4354473,NA,1,"Sum40CBs","ng/g",34.618573,NA,2
+"108",209,47.9726,-122.22977,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Everett Harbor",66,8.2,6,NA,0.0025,0.63,35.312,0.6669,0.0547,"SumPAHs16","ng/g",173.0928652,NA,2,"SumPAHs42_DMNcorrected","ng/g",372.815402,NA,2,"SumPAHsHMW","ng/g",166.4354473,NA,1,"SumPAHsHMW","ng/g",166.4354473,NA,1,"Sum40CBs","ng/g",34.618573,NA,2
+"109",61,48.482448,-122.583879,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Fidalgo Bay Aq Reserve, Weaverling Spit",63,7,4,380110,0.0025,0.685,36.29,0.6879,0.0548,"SumPAHs16","ng/g",165.3510179,NA,2,"SumPAHs42_DMNcorrected","ng/g",699.5619988,NA,3,"SumPAHsHMW","ng/g",254.3861814,NA,2,"SumPAHsHMW","ng/g",254.3861814,NA,2,"Sum40CBs","ng/g",22.8947563,NA,1
+"110",62,48.482448,-122.583879,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Fidalgo Bay Aq Reserve, Weaverling Spit",63,7,4,2209441,4.647,0.79,35.526,0.718,0.0496,"SumPAHs16","ng/g",165.3510179,NA,2,"SumPAHs42_DMNcorrected","ng/g",699.5619988,NA,3,"SumPAHsHMW","ng/g",254.3861814,NA,2,"SumPAHsHMW","ng/g",254.3861814,NA,2,"Sum40CBs","ng/g",22.8947563,NA,1
+"111",63,48.482448,-122.583879,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Fidalgo Bay Aq Reserve, Weaverling Spit",63,7,4,1743980,24.677,0.79,37.144,0.7242,0.0569,"SumPAHs16","ng/g",165.3510179,NA,2,"SumPAHs42_DMNcorrected","ng/g",699.5619988,NA,3,"SumPAHsHMW","ng/g",254.3861814,NA,2,"SumPAHsHMW","ng/g",254.3861814,NA,2,"Sum40CBs","ng/g",22.8947563,NA,1
+"112",64,48.482448,-122.583879,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Fidalgo Bay Aq Reserve, Weaverling Spit",63,7,4,2845932,3.17,0.87,38.291,0.7001,0.0533,"SumPAHs16","ng/g",165.3510179,NA,2,"SumPAHs42_DMNcorrected","ng/g",699.5619988,NA,3,"SumPAHsHMW","ng/g",254.3861814,NA,2,"SumPAHsHMW","ng/g",254.3861814,NA,2,"Sum40CBs","ng/g",22.8947563,NA,1
+"113",174,47.19483,-122.748665,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Filucy Bay",59,13,1,1928074,11.043,0.905,36.324,0.7152,0.0588,"SumPAHs16","ng/g",65.24017003,NA,1,"SumPAHs42_DMNcorrected","ng/g",148.2731137,NA,1,"SumPAHsHMW","ng/g",59.30924548,NA,1,"SumPAHsHMW","ng/g",59.30924548,NA,1,"Sum40CBs","ng/g",41.5164718,NA,3
+"114",175,47.19483,-122.748665,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Filucy Bay",59,13,1,NA,118.683,0.635,36.525,0.7483,0.0488,"SumPAHs16","ng/g",65.24017003,NA,1,"SumPAHs42_DMNcorrected","ng/g",148.2731137,NA,1,"SumPAHsHMW","ng/g",59.30924548,NA,1,"SumPAHsHMW","ng/g",59.30924548,NA,1,"Sum40CBs","ng/g",41.5164718,NA,3
+"115",176,47.19483,-122.748665,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Filucy Bay",59,13,1,4982158,22.927,0.93,34.936,0.7034,0.0538,"SumPAHs16","ng/g",65.24017003,NA,1,"SumPAHs42_DMNcorrected","ng/g",148.2731137,NA,1,"SumPAHsHMW","ng/g",59.30924548,NA,1,"SumPAHsHMW","ng/g",59.30924548,NA,1,"Sum40CBs","ng/g",41.5164718,NA,3
+"116",177,47.19483,-122.748665,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Filucy Bay",59,13,1,4040973,14.762,0.87,30.614,0.6719,0.0496,"SumPAHs16","ng/g",65.24017003,NA,1,"SumPAHs42_DMNcorrected","ng/g",148.2731137,NA,1,"SumPAHsHMW","ng/g",59.30924548,NA,1,"SumPAHsHMW","ng/g",59.30924548,NA,1,"Sum40CBs","ng/g",41.5164718,NA,3
+"117",222,48.5069444,-123.0194444,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Friday Harbor",61,7,4,2353073,8.819,0.895,35.901,0.7105,0.0562,"SumPAHs16","ng/g",338.4171633,NA,3,"SumPAHs42_DMNcorrected","ng/g",532.693683,NA,2,"SumPAHsHMW","ng/g",319.6162098,NA,2,"SumPAHsHMW","ng/g",319.6162098,NA,2,"Sum40CBs","ng/g",16.2941597,NA,1
+"118",223,48.5069444,-123.0194444,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Friday Harbor",61,7,4,1010594,17.182,0.87,33.305,0.69,0.0468,"SumPAHs16","ng/g",338.4171633,NA,3,"SumPAHs42_DMNcorrected","ng/g",532.693683,NA,2,"SumPAHsHMW","ng/g",319.6162098,NA,2,"SumPAHsHMW","ng/g",319.6162098,NA,2,"Sum40CBs","ng/g",16.2941597,NA,1
+"119",224,48.5069444,-123.0194444,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Friday Harbor",61,7,4,1453659,13.402,0.89,36.253,0.6964,0.054,"SumPAHs16","ng/g",338.4171633,NA,3,"SumPAHs42_DMNcorrected","ng/g",532.693683,NA,2,"SumPAHsHMW","ng/g",319.6162098,NA,2,"SumPAHsHMW","ng/g",319.6162098,NA,2,"Sum40CBs","ng/g",16.2941597,NA,1
+"120",225,48.5069444,-123.0194444,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Friday Harbor",61,7,4,2434731,13.817,0.925,35.847,0.6802,0.051,"SumPAHs16","ng/g",338.4171633,NA,3,"SumPAHs42_DMNcorrected","ng/g",532.693683,NA,2,"SumPAHsHMW","ng/g",319.6162098,NA,2,"SumPAHsHMW","ng/g",319.6162098,NA,2,"Sum40CBs","ng/g",16.2941597,NA,1
+"121",226,48.5069444,-123.0194444,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Friday Harbor",61,7,4,NA,48.798,0.95,34.23,0.686,0.0599,"SumPAHs16","ng/g",338.4171633,NA,3,"SumPAHs42_DMNcorrected","ng/g",532.693683,NA,2,"SumPAHsHMW","ng/g",319.6162098,NA,2,"SumPAHsHMW","ng/g",319.6162098,NA,2,"Sum40CBs","ng/g",16.2941597,NA,1
+"122",131,47.33785,-122.58277,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Gig Harbor Boat Launch",58,11,5,8793166,0.255,0.85,6.999,0.3226,0.0119,"SumPAHs16","ng/g",233.949692,NA,2,"SumPAHs42_DMNcorrected","ng/g",418.6468172,NA,2,"SumPAHsHMW","ng/g",246.2628337,NA,2,"SumPAHsHMW","ng/g",246.2628337,NA,2,"Sum40CBs","ng/g",55.4091376,NA,4
+"123",132,47.33785,-122.58277,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Gig Harbor Boat Launch",58,11,5,916811,0.0025,0.935,32.111,0.6841,0.0651,"SumPAHs16","ng/g",233.949692,NA,2,"SumPAHs42_DMNcorrected","ng/g",418.6468172,NA,2,"SumPAHsHMW","ng/g",246.2628337,NA,2,"SumPAHsHMW","ng/g",246.2628337,NA,2,"Sum40CBs","ng/g",55.4091376,NA,4
+"124",133,47.33785,-122.58277,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Gig Harbor Boat Launch",58,11,5,2352491,12.933,0.685,34.418,0.6767,0.0546,"SumPAHs16","ng/g",233.949692,NA,2,"SumPAHs42_DMNcorrected","ng/g",418.6468172,NA,2,"SumPAHsHMW","ng/g",246.2628337,NA,2,"SumPAHsHMW","ng/g",246.2628337,NA,2,"Sum40CBs","ng/g",55.4091376,NA,4
+"125",134,47.33785,-122.58277,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Gig Harbor Boat Launch",58,11,5,2963755,8.918,0.8,34.151,0.6866,0.0541,"SumPAHs16","ng/g",233.949692,NA,2,"SumPAHs42_DMNcorrected","ng/g",418.6468172,NA,2,"SumPAHsHMW","ng/g",246.2628337,NA,2,"SumPAHsHMW","ng/g",246.2628337,NA,2,"Sum40CBs","ng/g",55.4091376,NA,4
+"126",104,47.5706,-122.9717,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Hood Canal Holly",29,12,1,1383018,51.47,1.035,33.345,0.6885,0.0423,"SumPAHs16","ng/g",24.58617512,NA,1,"SumPAHs42_DMNcorrected","ng/g",88.78341014,NA,1,"SumPAHsHMW","ng/g",11.61013825,NA,1,"SumPAHsHMW","ng/g",11.61013825,NA,1,"Sum40CBs","ng/g",18.4396313,NA,1
+"127",105,47.5706,-122.9717,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Hood Canal Holly",29,12,1,4935346,15.598,0.885,34.097,0.6475,0.0515,"SumPAHs16","ng/g",24.58617512,NA,1,"SumPAHs42_DMNcorrected","ng/g",88.78341014,NA,1,"SumPAHsHMW","ng/g",11.61013825,NA,1,"SumPAHsHMW","ng/g",11.61013825,NA,1,"Sum40CBs","ng/g",18.4396313,NA,1
+"128",106,47.5706,-122.9717,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Hood Canal Holly",29,12,1,3856796,14.492,1,26.772,0.5995,0.0409,"SumPAHs16","ng/g",24.58617512,NA,1,"SumPAHs42_DMNcorrected","ng/g",88.78341014,NA,1,"SumPAHsHMW","ng/g",11.61013825,NA,1,"SumPAHsHMW","ng/g",11.61013825,NA,1,"Sum40CBs","ng/g",18.4396313,NA,1
+"129",107,47.5706,-122.9717,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Hood Canal Holly",29,12,1,4797197,8.659,1.08,32.632,0.6341,0.0419,"SumPAHs16","ng/g",24.58617512,NA,1,"SumPAHs42_DMNcorrected","ng/g",88.78341014,NA,1,"SumPAHsHMW","ng/g",11.61013825,NA,1,"SumPAHsHMW","ng/g",11.61013825,NA,1,"Sum40CBs","ng/g",18.4396313,NA,1
+"130",108,47.5706,-122.9717,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Hood Canal Holly",29,12,1,4420012,0.0025,1.26,31.069,0.6524,0.0529,"SumPAHs16","ng/g",24.58617512,NA,1,"SumPAHs42_DMNcorrected","ng/g",88.78341014,NA,1,"SumPAHsHMW","ng/g",11.61013825,NA,1,"SumPAHsHMW","ng/g",11.61013825,NA,1,"Sum40CBs","ng/g",18.4396313,NA,1
+"131",109,47.5706,-122.9717,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Hood Canal Holly",29,12,1,5823222,5.435,0.89,30.701,0.6521,0.0562,"SumPAHs16","ng/g",24.58617512,NA,1,"SumPAHs42_DMNcorrected","ng/g",88.78341014,NA,1,"SumPAHsHMW","ng/g",11.61013825,NA,1,"SumPAHsHMW","ng/g",11.61013825,NA,1,"Sum40CBs","ng/g",18.4396313,NA,1
+"132",82,48.024789,-122.998135,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Jamestown",2,6,2,2932222,9.944,0.845,29.816,0.6485,0.049,"SumPAHs16","ng/g",31.15554399,NA,1,"SumPAHs42_DMNcorrected","ng/g",119.3191046,NA,1,"SumPAHsHMW","ng/g",15.24633004,NA,1,"SumPAHsHMW","ng/g",15.24633004,NA,1,"Sum40CBs","ng/g",32.4813118,NA,2
+"133",83,48.024789,-122.998135,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Jamestown",2,6,2,5726357,14.656,1.025,29.399,0.5801,0.0476,"SumPAHs16","ng/g",31.15554399,NA,1,"SumPAHs42_DMNcorrected","ng/g",119.3191046,NA,1,"SumPAHsHMW","ng/g",15.24633004,NA,1,"SumPAHsHMW","ng/g",15.24633004,NA,1,"Sum40CBs","ng/g",32.4813118,NA,2
+"134",84,48.024789,-122.998135,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Jamestown",2,6,2,1906238,0.0025,1.1,31.179,0.6257,0.0557,"SumPAHs16","ng/g",31.15554399,NA,1,"SumPAHs42_DMNcorrected","ng/g",119.3191046,NA,1,"SumPAHsHMW","ng/g",15.24633004,NA,1,"SumPAHsHMW","ng/g",15.24633004,NA,1,"Sum40CBs","ng/g",32.4813118,NA,2
+"135",85,48.024789,-122.998135,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Jamestown",2,6,2,5545198,20.048,0.875,36.227,0.7231,0.0531,"SumPAHs16","ng/g",31.15554399,NA,1,"SumPAHs42_DMNcorrected","ng/g",119.3191046,NA,1,"SumPAHsHMW","ng/g",15.24633004,NA,1,"SumPAHsHMW","ng/g",15.24633004,NA,1,"Sum40CBs","ng/g",32.4813118,NA,2
+"136",86,48.024789,-122.998135,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Jamestown",2,6,2,3670556,0.135,0.945,33.447,0.7025,0.0511,"SumPAHs16","ng/g",31.15554399,NA,1,"SumPAHs42_DMNcorrected","ng/g",119.3191046,NA,1,"SumPAHsHMW","ng/g",15.24633004,NA,1,"SumPAHsHMW","ng/g",15.24633004,NA,1,"Sum40CBs","ng/g",32.4813118,NA,2
+"137",87,48.024789,-122.998135,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Jamestown",2,6,2,7831524,9.075,0.855,35.911,0.727,0.0565,"SumPAHs16","ng/g",31.15554399,NA,1,"SumPAHs42_DMNcorrected","ng/g",119.3191046,NA,1,"SumPAHsHMW","ng/g",15.24633004,NA,1,"SumPAHsHMW","ng/g",15.24633004,NA,1,"Sum40CBs","ng/g",32.4813118,NA,2
+"138",166,47.794695,-122.499858,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Kingston Marina",36,10,3,5606185,0.787,0.835,34.977,0.7169,0.0625,"SumPAHs16","ng/g",123.5049608,NA,1,"SumPAHs42_DMNcorrected","ng/g",273.0109661,NA,1,"SumPAHsHMW","ng/g",123.5049608,NA,1,"SumPAHsHMW","ng/g",123.5049608,NA,1,"Sum40CBs","ng/g",36.4014621,NA,2
+"139",167,47.794695,-122.499858,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Kingston Marina",36,10,3,4974611,6.443,0.735,29.339,0.6766,0.0405,"SumPAHs16","ng/g",123.5049608,NA,1,"SumPAHs42_DMNcorrected","ng/g",273.0109661,NA,1,"SumPAHsHMW","ng/g",123.5049608,NA,1,"SumPAHsHMW","ng/g",123.5049608,NA,1,"Sum40CBs","ng/g",36.4014621,NA,2
+"140",168,47.794695,-122.499858,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Kingston Marina",36,10,3,5640873,1.035,1,34.323,0.7094,0.064,"SumPAHs16","ng/g",123.5049608,NA,1,"SumPAHs42_DMNcorrected","ng/g",273.0109661,NA,1,"SumPAHsHMW","ng/g",123.5049608,NA,1,"SumPAHsHMW","ng/g",123.5049608,NA,1,"Sum40CBs","ng/g",36.4014621,NA,2
+"141",169,47.794695,-122.499858,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Kingston Marina",36,10,3,3885225,26.424,0.745,32.363,0.6593,0.0515,"SumPAHs16","ng/g",123.5049608,NA,1,"SumPAHs42_DMNcorrected","ng/g",273.0109661,NA,1,"SumPAHsHMW","ng/g",123.5049608,NA,1,"SumPAHsHMW","ng/g",123.5049608,NA,1,"Sum40CBs","ng/g",36.4014621,NA,2
+"142",53,47.54167,-122.64034,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Kitsap St Boat Launch",25,10,3,2469960,12.854,0.97,31.47,0.6156,0.0581,"SumPAHs16","ng/g",303.4712736,NA,3,"SumPAHs42_DMNcorrected","ng/g",758.678184,NA,3,"SumPAHsHMW","ng/g",354.0498192,NA,2,"SumPAHsHMW","ng/g",354.0498192,NA,2,"Sum40CBs","ng/g",116.330655,NA,7
+"143",54,47.54167,-122.64034,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Kitsap St Boat Launch",25,10,3,3506452,2.637,0.9,33.482,0.6654,0.0524,"SumPAHs16","ng/g",303.4712736,NA,3,"SumPAHs42_DMNcorrected","ng/g",758.678184,NA,3,"SumPAHsHMW","ng/g",354.0498192,NA,2,"SumPAHsHMW","ng/g",354.0498192,NA,2,"Sum40CBs","ng/g",116.330655,NA,7
+"144",55,47.54167,-122.64034,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Kitsap St Boat Launch",25,10,3,4998033,1.269,0.815,30.924,0.6499,0.0463,"SumPAHs16","ng/g",303.4712736,NA,3,"SumPAHs42_DMNcorrected","ng/g",758.678184,NA,3,"SumPAHsHMW","ng/g",354.0498192,NA,2,"SumPAHsHMW","ng/g",354.0498192,NA,2,"Sum40CBs","ng/g",116.330655,NA,7
+"145",56,47.54167,-122.64034,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Kitsap St Boat Launch",25,10,3,6119860,0.0025,0.805,32.785,0.6775,0.0474,"SumPAHs16","ng/g",303.4712736,NA,3,"SumPAHs42_DMNcorrected","ng/g",758.678184,NA,3,"SumPAHsHMW","ng/g",354.0498192,NA,2,"SumPAHsHMW","ng/g",354.0498192,NA,2,"Sum40CBs","ng/g",116.330655,NA,7
+"146",249,47.30973,-122.68868,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Kopachuck State Park",52,13,1,5329851,0.0025,0.88,31.526,0.6644,0.0503,"SumPAHs16","ng/g",59.37693041,NA,1,"SumPAHs42_DMNcorrected","ng/g",141.6949476,NA,1,"SumPAHsHMW","ng/g",53.97902765,NA,1,"SumPAHsHMW","ng/g",53.97902765,NA,1,"Sum40CBs","ng/g",31.7126787,NA,2
+"147",250,47.30973,-122.68868,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Kopachuck State Park",52,13,1,4051273,0.0025,0.96,35.739,0.6776,0.046,"SumPAHs16","ng/g",59.37693041,NA,1,"SumPAHs42_DMNcorrected","ng/g",141.6949476,NA,1,"SumPAHsHMW","ng/g",53.97902765,NA,1,"SumPAHsHMW","ng/g",53.97902765,NA,1,"Sum40CBs","ng/g",31.7126787,NA,2
+"148",251,47.30973,-122.68868,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Kopachuck State Park",52,13,1,3471329,7.036,0.73,35.076,0.6982,0.0534,"SumPAHs16","ng/g",59.37693041,NA,1,"SumPAHs42_DMNcorrected","ng/g",141.6949476,NA,1,"SumPAHsHMW","ng/g",53.97902765,NA,1,"SumPAHsHMW","ng/g",53.97902765,NA,1,"Sum40CBs","ng/g",31.7126787,NA,2
+"149",253,47.30973,-122.68868,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Kopachuck State Park",52,13,1,4422422,0.672,0.89,35.765,0.7184,0.0543,"SumPAHs16","ng/g",59.37693041,NA,1,"SumPAHs42_DMNcorrected","ng/g",141.6949476,NA,1,"SumPAHsHMW","ng/g",53.97902765,NA,1,"SumPAHsHMW","ng/g",53.97902765,NA,1,"Sum40CBs","ng/g",31.7126787,NA,2
+"150",299,47.5833538,-122.6414587,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Lions Park",37,10,3,5411649,6.432,0.68,34.333,0.7299,0.0554,"SumPAHs16","ng/g",118.4697773,NA,1,"SumPAHs42_DMNcorrected","ng/g",289.592789,NA,1,"SumPAHsHMW","ng/g",131.6330859,NA,1,"SumPAHsHMW","ng/g",131.6330859,NA,1,"Sum40CBs","ng/g",58.5767232,NA,4
+"151",300,47.5833538,-122.6414587,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Lions Park",37,10,3,6052641,9.59,1.075,32.694,0.6652,0.0594,"SumPAHs16","ng/g",118.4697773,NA,1,"SumPAHs42_DMNcorrected","ng/g",289.592789,NA,1,"SumPAHsHMW","ng/g",131.6330859,NA,1,"SumPAHsHMW","ng/g",131.6330859,NA,1,"Sum40CBs","ng/g",58.5767232,NA,4
+"152",301,47.5833538,-122.6414587,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Lions Park",37,10,3,3631858,9.377,0.71,33.814,0.7362,0.067,"SumPAHs16","ng/g",118.4697773,NA,1,"SumPAHs42_DMNcorrected","ng/g",289.592789,NA,1,"SumPAHsHMW","ng/g",131.6330859,NA,1,"SumPAHsHMW","ng/g",131.6330859,NA,1,"Sum40CBs","ng/g",58.5767232,NA,4
+"153",302,47.5833538,-122.6414587,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Lions Park",37,10,3,6373497,8.315,0.71,33.934,0.6666,0.0486,"SumPAHs16","ng/g",118.4697773,NA,1,"SumPAHs42_DMNcorrected","ng/g",289.592789,NA,1,"SumPAHsHMW","ng/g",131.6330859,NA,1,"SumPAHsHMW","ng/g",131.6330859,NA,1,"Sum40CBs","ng/g",58.5767232,NA,4
+"154",235,48.77636877,-122.5378679,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Locust Beach",76,7,4,6651025,2.069,0.785,29.925,0.6422,0.0439,"SumPAHs16","ng/g",46.08157463,NA,1,"SumPAHs42_DMNcorrected","ng/g",147.2050301,NA,1,"SumPAHsHMW","ng/g",27.5209404,NA,1,"SumPAHsHMW","ng/g",27.5209404,NA,1,"Sum40CBs","ng/g",20.4806998,NA,1
+"155",236,48.77636877,-122.5378679,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Locust Beach",76,7,4,3417364,2.369,0.72,32.082,0.6621,0.0441,"SumPAHs16","ng/g",46.08157463,NA,1,"SumPAHs42_DMNcorrected","ng/g",147.2050301,NA,1,"SumPAHsHMW","ng/g",27.5209404,NA,1,"SumPAHsHMW","ng/g",27.5209404,NA,1,"Sum40CBs","ng/g",20.4806998,NA,1
+"156",237,48.77636877,-122.5378679,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Locust Beach",76,7,4,6776918,2.733,1.005,32.145,0.6714,0.0465,"SumPAHs16","ng/g",46.08157463,NA,1,"SumPAHs42_DMNcorrected","ng/g",147.2050301,NA,1,"SumPAHsHMW","ng/g",27.5209404,NA,1,"SumPAHsHMW","ng/g",27.5209404,NA,1,"Sum40CBs","ng/g",20.4806998,NA,1
+"157",238,48.77636877,-122.5378679,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","Locust Beach",76,7,4,4517486,5.02,0.82,37.13,0.6905,0.0539,"SumPAHs16","ng/g",46.08157463,NA,1,"SumPAHs42_DMNcorrected","ng/g",147.2050301,NA,1,"SumPAHsHMW","ng/g",27.5209404,NA,1,"SumPAHsHMW","ng/g",27.5209404,NA,1,"Sum40CBs","ng/g",20.4806998,NA,1
+"158",153,47.57995505,-122.6786,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Madrona Pont",28,10,3,15260103,16.268,0.955,34.571,0.6833,0.0549,"SumPAHs16","ng/g",108.4770642,NA,1,"SumPAHs42_DMNcorrected","ng/g",259.1396534,NA,1,"SumPAHsHMW","ng/g",120.5300714,NA,1,"SumPAHsHMW","ng/g",120.5300714,NA,1,"Sum40CBs","ng/g",53.0332314,NA,4
+"159",154,47.57995505,-122.6786,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Madrona Pont",28,10,3,3705987,5.768,0.75,37.227,0.6787,0.0554,"SumPAHs16","ng/g",108.4770642,NA,1,"SumPAHs42_DMNcorrected","ng/g",259.1396534,NA,1,"SumPAHsHMW","ng/g",120.5300714,NA,1,"SumPAHsHMW","ng/g",120.5300714,NA,1,"Sum40CBs","ng/g",53.0332314,NA,4
+"160",155,47.57995505,-122.6786,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Madrona Pont",28,10,3,8193639,4.93,0.75,34.803,0.6946,0.0534,"SumPAHs16","ng/g",108.4770642,NA,1,"SumPAHs42_DMNcorrected","ng/g",259.1396534,NA,1,"SumPAHsHMW","ng/g",120.5300714,NA,1,"SumPAHsHMW","ng/g",120.5300714,NA,1,"Sum40CBs","ng/g",53.0332314,NA,4
+"161",156,47.57995505,-122.6786,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Madrona Pont",28,10,3,6366494,0.0025,0.83,34.506,0.6222,0.0492,"SumPAHs16","ng/g",108.4770642,NA,1,"SumPAHs42_DMNcorrected","ng/g",259.1396534,NA,1,"SumPAHsHMW","ng/g",120.5300714,NA,1,"SumPAHsHMW","ng/g",120.5300714,NA,1,"Sum40CBs","ng/g",53.0332314,NA,4
+"162",261,47.55622,-122.54281,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Manchester, Stormwater Outfall",33,10,3,5437003,17.512,0.745,34.027,0.6749,0.0464,"SumPAHs16","ng/g",171.0284061,NA,2,"SumPAHs42_DMNcorrected","ng/g",369.4213572,NA,2,"SumPAHsHMW","ng/g",171.0284061,NA,1,"SumPAHsHMW","ng/g",171.0284061,NA,1,"Sum40CBs","ng/g",41.0468175,NA,3
+"163",262,47.55622,-122.54281,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Manchester, Stormwater Outfall",33,10,3,5775686,1.485,0.805,33.398,0.6859,0.0606,"SumPAHs16","ng/g",171.0284061,NA,2,"SumPAHs42_DMNcorrected","ng/g",369.4213572,NA,2,"SumPAHsHMW","ng/g",171.0284061,NA,1,"SumPAHsHMW","ng/g",171.0284061,NA,1,"Sum40CBs","ng/g",41.0468175,NA,3
+"164",263,47.55622,-122.54281,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Manchester, Stormwater Outfall",33,10,3,1513923,15.957,0.75,32.803,0.683,0.0692,"SumPAHs16","ng/g",171.0284061,NA,2,"SumPAHs42_DMNcorrected","ng/g",369.4213572,NA,2,"SumPAHsHMW","ng/g",171.0284061,NA,1,"SumPAHsHMW","ng/g",171.0284061,NA,1,"Sum40CBs","ng/g",41.0468175,NA,3
+"165",264,47.55622,-122.54281,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Manchester, Stormwater Outfall",33,10,3,3392978,0.0025,0.875,35.464,0.6897,0.0596,"SumPAHs16","ng/g",171.0284061,NA,2,"SumPAHs42_DMNcorrected","ng/g",369.4213572,NA,2,"SumPAHsHMW","ng/g",171.0284061,NA,1,"SumPAHsHMW","ng/g",171.0284061,NA,1,"Sum40CBs","ng/g",41.0468175,NA,3
+"166",202,47.30008,-122.74566,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Maple Hollow Park",51,13,1,2529572,4.546,0.815,34.552,0.6723,0.0552,"SumPAHs16","ng/g",71.97530864,NA,1,"SumPAHs42_DMNcorrected","ng/g",176.6666667,NA,1,"SumPAHsHMW","ng/g",64.77777778,NA,1,"SumPAHsHMW","ng/g",64.77777778,NA,1,"Sum40CBs","ng/g",35.9876543,NA,2
+"167",203,47.30008,-122.74566,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Maple Hollow Park",51,13,1,5982158,7.722,0.845,32.722,0.6564,0.0451,"SumPAHs16","ng/g",71.97530864,NA,1,"SumPAHs42_DMNcorrected","ng/g",176.6666667,NA,1,"SumPAHsHMW","ng/g",64.77777778,NA,1,"SumPAHsHMW","ng/g",64.77777778,NA,1,"Sum40CBs","ng/g",35.9876543,NA,2
+"168",204,47.30008,-122.74566,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Maple Hollow Park",51,13,1,4667834,3.94,0.875,27.431,0.6142,0.0506,"SumPAHs16","ng/g",71.97530864,NA,1,"SumPAHs42_DMNcorrected","ng/g",176.6666667,NA,1,"SumPAHsHMW","ng/g",64.77777778,NA,1,"SumPAHsHMW","ng/g",64.77777778,NA,1,"Sum40CBs","ng/g",35.9876543,NA,2
+"169",205,47.30008,-122.74566,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Maple Hollow Park",51,13,1,7944848,0.048,0.71,30.287,0.6038,0.0418,"SumPAHs16","ng/g",71.97530864,NA,1,"SumPAHs42_DMNcorrected","ng/g",176.6666667,NA,1,"SumPAHsHMW","ng/g",64.77777778,NA,1,"SumPAHsHMW","ng/g",64.77777778,NA,1,"Sum40CBs","ng/g",35.9876543,NA,2
+"170",307,48.018127,-122.699524,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Maristone Island",11,9,2,1476511,3.506,0.9,35.274,0.7173,0.0544,"SumPAHs16","ng/g",41.62759394,NA,1,"SumPAHs42_DMNcorrected","ng/g",134.0549635,NA,1,"SumPAHsHMW","ng/g",23.98878295,NA,1,"SumPAHsHMW","ng/g",23.98878295,NA,1,"Sum40CBs","ng/g",31.0443073,NA,2
+"171",308,48.018127,-122.699524,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Maristone Island",11,9,2,4087247,2.631,0.83,34.796,0.6945,0.053,"SumPAHs16","ng/g",41.62759394,NA,1,"SumPAHs42_DMNcorrected","ng/g",134.0549635,NA,1,"SumPAHsHMW","ng/g",23.98878295,NA,1,"SumPAHsHMW","ng/g",23.98878295,NA,1,"Sum40CBs","ng/g",31.0443073,NA,2
+"172",309,48.018127,-122.699524,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Maristone Island",11,9,2,3101248,0.844,0.745,33.57,0.7226,0.0585,"SumPAHs16","ng/g",41.62759394,NA,1,"SumPAHs42_DMNcorrected","ng/g",134.0549635,NA,1,"SumPAHsHMW","ng/g",23.98878295,NA,1,"SumPAHsHMW","ng/g",23.98878295,NA,1,"Sum40CBs","ng/g",31.0443073,NA,2
+"173",310,48.018127,-122.699524,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Maristone Island",11,9,2,4147207,1.999,0.765,34.982,0.7156,0.0492,"SumPAHs16","ng/g",41.62759394,NA,1,"SumPAHs42_DMNcorrected","ng/g",134.0549635,NA,1,"SumPAHsHMW","ng/g",23.98878295,NA,1,"SumPAHsHMW","ng/g",23.98878295,NA,1,"Sum40CBs","ng/g",31.0443073,NA,2
+"174",311,48.018127,-122.699524,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Maristone Island",11,9,2,6630611,0.0025,0.795,26.758,0.5987,0.0341,"SumPAHs16","ng/g",41.62759394,NA,1,"SumPAHs42_DMNcorrected","ng/g",134.0549635,NA,1,"SumPAHsHMW","ng/g",23.98878295,NA,1,"SumPAHsHMW","ng/g",23.98878295,NA,1,"Sum40CBs","ng/g",31.0443073,NA,2
+"175",312,48.018127,-122.699524,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Maristone Island",11,9,2,6728961,2.006,0.815,45.197,0.6938,0.0533,"SumPAHs16","ng/g",41.62759394,NA,1,"SumPAHs42_DMNcorrected","ng/g",134.0549635,NA,1,"SumPAHsHMW","ng/g",23.98878295,NA,1,"SumPAHsHMW","ng/g",23.98878295,NA,1,"Sum40CBs","ng/g",31.0443073,NA,2
+"176",65,47.11795,-122.83359,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Meyer's Point - Henderson Inlet",71,13,1,3656052,19.012,1.055,41.854,0.6691,0.0502,"SumPAHs16","ng/g",66.16884328,NA,1,"SumPAHs42_DMNcorrected","ng/g",200.7369403,NA,1,"SumPAHsHMW","ng/g",52.7863806,NA,1,"SumPAHsHMW","ng/g",52.7863806,NA,1,"Sum40CBs","ng/g",49.0690299,NA,3
+"177",66,47.11795,-122.83359,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Meyer's Point - Henderson Inlet",71,13,1,8044535,0.232,0.76,33.515,0.6486,0.0464,"SumPAHs16","ng/g",66.16884328,NA,1,"SumPAHs42_DMNcorrected","ng/g",200.7369403,NA,1,"SumPAHsHMW","ng/g",52.7863806,NA,1,"SumPAHsHMW","ng/g",52.7863806,NA,1,"Sum40CBs","ng/g",49.0690299,NA,3
+"178",67,47.11795,-122.83359,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Meyer's Point - Henderson Inlet",71,13,1,4961205,3.468,0.95,42.482,0.6317,0.052,"SumPAHs16","ng/g",66.16884328,NA,1,"SumPAHs42_DMNcorrected","ng/g",200.7369403,NA,1,"SumPAHsHMW","ng/g",52.7863806,NA,1,"SumPAHsHMW","ng/g",52.7863806,NA,1,"Sum40CBs","ng/g",49.0690299,NA,3
+"179",68,47.11795,-122.83359,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Meyer's Point - Henderson Inlet",71,13,1,6536182,2.525,1.095,29.091,0.6428,0.0484,"SumPAHs16","ng/g",66.16884328,NA,1,"SumPAHs42_DMNcorrected","ng/g",200.7369403,NA,1,"SumPAHsHMW","ng/g",52.7863806,NA,1,"SumPAHsHMW","ng/g",52.7863806,NA,1,"Sum40CBs","ng/g",49.0690299,NA,3
+"180",231,47.4436,-122.360316,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Miller Creek",20,11,5,6263391,0.0025,0.825,32.995,0.6634,0.0481,"SumPAHs16","ng/g",114.3848472,NA,1,"SumPAHs42_DMNcorrected","ng/g",285.962118,NA,1,"SumPAHsHMW","ng/g",120.7395609,NA,1,"SumPAHsHMW","ng/g",120.7395609,NA,1,"Sum40CBs","ng/g",43.8475248,NA,3
+"181",232,47.4436,-122.360316,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Miller Creek",20,11,5,7066217,1.97,0.8,43.288,0.6649,0.0546,"SumPAHs16","ng/g",114.3848472,NA,1,"SumPAHs42_DMNcorrected","ng/g",285.962118,NA,1,"SumPAHsHMW","ng/g",120.7395609,NA,1,"SumPAHsHMW","ng/g",120.7395609,NA,1,"Sum40CBs","ng/g",43.8475248,NA,3
+"182",233,47.4436,-122.360316,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Miller Creek",20,11,5,7223931,2.621,0.78,32.441,0.6721,0.0571,"SumPAHs16","ng/g",114.3848472,NA,1,"SumPAHs42_DMNcorrected","ng/g",285.962118,NA,1,"SumPAHsHMW","ng/g",120.7395609,NA,1,"SumPAHsHMW","ng/g",120.7395609,NA,1,"Sum40CBs","ng/g",43.8475248,NA,3
+"183",234,47.4436,-122.360316,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Miller Creek",20,11,5,4047412,3.572,0.66,33.461,0.7195,0.0672,"SumPAHs16","ng/g",114.3848472,NA,1,"SumPAHs42_DMNcorrected","ng/g",285.962118,NA,1,"SumPAHsHMW","ng/g",120.7395609,NA,1,"SumPAHsHMW","ng/g",120.7395609,NA,1,"Sum40CBs","ng/g",43.8475248,NA,3
+"184",178,47.3539722,-122.69175,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Minter Bay",55,13,1,7647788,5.789,0.845,35.007,0.6964,0.0581,"SumPAHs16","ng/g",78.94897959,NA,1,"SumPAHs42_DMNcorrected","ng/g",164.4770408,NA,1,"SumPAHsHMW","ng/g",65.79081633,NA,1,"SumPAHsHMW","ng/g",65.79081633,NA,1,"Sum40CBs","ng/g",31.5795918,NA,2
+"185",179,47.3539722,-122.69175,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Minter Bay",55,13,1,4006818,0.0025,0.805,30.982,0.6596,0.0429,"SumPAHs16","ng/g",78.94897959,NA,1,"SumPAHs42_DMNcorrected","ng/g",164.4770408,NA,1,"SumPAHsHMW","ng/g",65.79081633,NA,1,"SumPAHsHMW","ng/g",65.79081633,NA,1,"Sum40CBs","ng/g",31.5795918,NA,2
+"186",180,47.3539722,-122.69175,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Minter Bay",55,13,1,5090553,10.464,0.63,33.624,0.7331,0.0662,"SumPAHs16","ng/g",78.94897959,NA,1,"SumPAHs42_DMNcorrected","ng/g",164.4770408,NA,1,"SumPAHsHMW","ng/g",65.79081633,NA,1,"SumPAHsHMW","ng/g",65.79081633,NA,1,"Sum40CBs","ng/g",31.5795918,NA,2
+"187",181,47.3539722,-122.69175,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Minter Bay",55,13,1,1226696,35.599,0.62,34.824,0.6874,0.0614,"SumPAHs16","ng/g",78.94897959,NA,1,"SumPAHs42_DMNcorrected","ng/g",164.4770408,NA,1,"SumPAHsHMW","ng/g",65.79081633,NA,1,"SumPAHsHMW","ng/g",65.79081633,NA,1,"Sum40CBs","ng/g",31.5795918,NA,2
+"188",17,47.94968,-122.30158,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Mukilteo",65,8.2,6,6522867,14.268,0.835,33.791,0.7194,0.0638,"SumPAHs16","ng/g",207.1518271,NA,2,"SumPAHs42_DMNcorrected","ng/g",440.1976325,NA,2,"SumPAHsHMW","ng/g",194.2048379,NA,2,"SumPAHsHMW","ng/g",194.2048379,NA,2,"Sum40CBs","ng/g",31.0727741,NA,2
+"189",18,47.94968,-122.30158,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Mukilteo",65,8.2,6,5739407,22.833,0.745,32.817,0.7223,0.0577,"SumPAHs16","ng/g",207.1518271,NA,2,"SumPAHs42_DMNcorrected","ng/g",440.1976325,NA,2,"SumPAHsHMW","ng/g",194.2048379,NA,2,"SumPAHsHMW","ng/g",194.2048379,NA,2,"Sum40CBs","ng/g",31.0727741,NA,2
+"190",19,47.94968,-122.30158,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Mukilteo",65,8.2,6,4215635,1.126,0.845,30.673,0.673,0.0546,"SumPAHs16","ng/g",207.1518271,NA,2,"SumPAHs42_DMNcorrected","ng/g",440.1976325,NA,2,"SumPAHsHMW","ng/g",194.2048379,NA,2,"SumPAHsHMW","ng/g",194.2048379,NA,2,"Sum40CBs","ng/g",31.0727741,NA,2
+"191",20,47.94968,-122.30158,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Mukilteo",65,8.2,6,3759846,1.593,0.82,34.183,0.6939,0.049,"SumPAHs16","ng/g",207.1518271,NA,2,"SumPAHs42_DMNcorrected","ng/g",440.1976325,NA,2,"SumPAHsHMW","ng/g",194.2048379,NA,2,"SumPAHsHMW","ng/g",194.2048379,NA,2,"Sum40CBs","ng/g",31.0727741,NA,2
+"192",210,48.52108,-122.61531,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","N Avenue Park",62,7,4,4597377,0.0025,0.83,31.401,0.6912,0.0463,"SumPAHs16","ng/g",976.8238213,NA,4,"SumPAHs42_DMNcorrected","ng/g",2333.523573,NA,4,"SumPAHsHMW","ng/g",1085.359801,"dNPH Surrogate recovery below minimum QA value (60%)",4,"SumPAHsHMW","ng/g",1085.359801,"dNPH Surrogate recovery below minimum QA value (60%)",4,"Sum40CBs","ng/g",26.5913151,NA,1
+"193",211,48.52108,-122.61531,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","N Avenue Park",62,7,4,2521368,10.007,0.64,33.472,0.6989,0.0461,"SumPAHs16","ng/g",976.8238213,NA,4,"SumPAHs42_DMNcorrected","ng/g",2333.523573,NA,4,"SumPAHsHMW","ng/g",1085.359801,"dNPH Surrogate recovery below minimum QA value (60%)",4,"SumPAHsHMW","ng/g",1085.359801,"dNPH Surrogate recovery below minimum QA value (60%)",4,"Sum40CBs","ng/g",26.5913151,NA,1
+"194",212,48.52108,-122.61531,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","N Avenue Park",62,7,4,2165448,0.0025,0.84,35.25,0.6594,0.0512,"SumPAHs16","ng/g",976.8238213,NA,4,"SumPAHs42_DMNcorrected","ng/g",2333.523573,NA,4,"SumPAHsHMW","ng/g",1085.359801,"dNPH Surrogate recovery below minimum QA value (60%)",4,"SumPAHsHMW","ng/g",1085.359801,"dNPH Surrogate recovery below minimum QA value (60%)",4,"Sum40CBs","ng/g",26.5913151,NA,1
+"195",213,48.52108,-122.61531,"48.48 - 48.82",-0.52,"Group 4
+Lat: 48.48 - 48.82
+Long: -123.02 - -122.5","N Avenue Park",62,7,4,9793068,1.51,0.8,37.39,0.7207,0.0598,"SumPAHs16","ng/g",976.8238213,NA,4,"SumPAHs42_DMNcorrected","ng/g",2333.523573,NA,4,"SumPAHsHMW","ng/g",1085.359801,"dNPH Surrogate recovery below minimum QA value (60%)",4,"SumPAHsHMW","ng/g",1085.359801,"dNPH Surrogate recovery below minimum QA value (60%)",4,"Sum40CBs","ng/g",26.5913151,NA,1
+"196",303,48.255358,-122.507014,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","North Camano",7,8.1,6,7655768,2.472,0.82,35.763,0.7119,0.061,"SumPAHs16","ng/g",63.47931873,NA,1,"SumPAHs42_DMNcorrected","ng/g",165.0462287,NA,1,"SumPAHsHMW","ng/g",54.59221411,NA,1,"SumPAHsHMW","ng/g",54.59221411,NA,1,"Sum40CBs","ng/g",19.0437956,NA,1
+"197",304,48.255358,-122.507014,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","North Camano",7,8.1,6,9992165,1.531,0.935,37.732,0.7015,0.056,"SumPAHs16","ng/g",63.47931873,NA,1,"SumPAHs42_DMNcorrected","ng/g",165.0462287,NA,1,"SumPAHsHMW","ng/g",54.59221411,NA,1,"SumPAHsHMW","ng/g",54.59221411,NA,1,"Sum40CBs","ng/g",19.0437956,NA,1
+"198",305,48.255358,-122.507014,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","North Camano",7,8.1,6,6350828,0.0025,0.85,34.214,0.6791,0.0587,"SumPAHs16","ng/g",63.47931873,NA,1,"SumPAHs42_DMNcorrected","ng/g",165.0462287,NA,1,"SumPAHsHMW","ng/g",54.59221411,NA,1,"SumPAHsHMW","ng/g",54.59221411,NA,1,"Sum40CBs","ng/g",19.0437956,NA,1
+"199",306,48.255358,-122.507014,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","North Camano",7,8.1,6,9006878,16.642,0.955,36.615,0.6635,0.0548,"SumPAHs16","ng/g",63.47931873,NA,1,"SumPAHs42_DMNcorrected","ng/g",165.0462287,NA,1,"SumPAHsHMW","ng/g",54.59221411,NA,1,"SumPAHsHMW","ng/g",54.59221411,NA,1,"Sum40CBs","ng/g",19.0437956,NA,1
+"200",88,48.02218,-122.728709,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Oak Bay County Park",10,9,2,6605220,0.0025,0.925,30.386,0.6657,0.0512,"SumPAHs16","ng/g",47.45081136,NA,1,"SumPAHs42_DMNcorrected","ng/g",141.0699797,NA,1,"SumPAHsHMW","ng/g",33.98504057,NA,1,"SumPAHsHMW","ng/g",33.98504057,NA,1,"Sum40CBs","ng/g",30.1376775,NA,2
+"201",89,48.02218,-122.728709,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Oak Bay County Park",10,9,2,3512019,6.788,0.695,37.969,0.7195,0.0544,"SumPAHs16","ng/g",47.45081136,NA,1,"SumPAHs42_DMNcorrected","ng/g",141.0699797,NA,1,"SumPAHsHMW","ng/g",33.98504057,NA,1,"SumPAHsHMW","ng/g",33.98504057,NA,1,"Sum40CBs","ng/g",30.1376775,NA,2
+"202",90,48.02218,-122.728709,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Oak Bay County Park",10,9,2,5079449,0.0025,0.8,38.642,0.7156,0.0504,"SumPAHs16","ng/g",47.45081136,NA,1,"SumPAHs42_DMNcorrected","ng/g",141.0699797,NA,1,"SumPAHsHMW","ng/g",33.98504057,NA,1,"SumPAHsHMW","ng/g",33.98504057,NA,1,"Sum40CBs","ng/g",30.1376775,NA,2
+"203",91,48.02218,-122.728709,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Oak Bay County Park",10,9,2,4528128,3.694,0.665,34.37,0.6988,0.0533,"SumPAHs16","ng/g",47.45081136,NA,1,"SumPAHs42_DMNcorrected","ng/g",141.0699797,NA,1,"SumPAHsHMW","ng/g",33.98504057,NA,1,"SumPAHsHMW","ng/g",33.98504057,NA,1,"Sum40CBs","ng/g",30.1376775,NA,2
+"204",41,48.21423,-122.718972,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Penn Cove Reference",3,8.1,2,1311133,0.0025,0.735,35.849,0.7101,0.0571,"SumPAHs16","ng/g",64.37236927,NA,1,"SumPAHs42_DMNcorrected","ng/g",160.9309232,NA,1,"SumPAHsHMW","ng/g",46.81626856,NA,1,"SumPAHsHMW","ng/g",46.81626856,NA,1,"Sum40CBs","ng/g",24.8711427,NA,1
+"205",42,48.21423,-122.718972,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Penn Cove Reference",3,8.1,2,NA,14.787,0.9,36.774,0.7169,0.0571,"SumPAHs16","ng/g",64.37236927,NA,1,"SumPAHs42_DMNcorrected","ng/g",160.9309232,NA,1,"SumPAHsHMW","ng/g",46.81626856,NA,1,"SumPAHsHMW","ng/g",46.81626856,NA,1,"Sum40CBs","ng/g",24.8711427,NA,1
+"206",43,48.21423,-122.718972,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Penn Cove Reference",3,8.1,2,5318907,0.0025,0.885,35.516,0.6765,0.0579,"SumPAHs16","ng/g",64.37236927,NA,1,"SumPAHs42_DMNcorrected","ng/g",160.9309232,NA,1,"SumPAHsHMW","ng/g",46.81626856,NA,1,"SumPAHsHMW","ng/g",46.81626856,NA,1,"Sum40CBs","ng/g",24.8711427,NA,1
+"207",44,48.21423,-122.718972,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Penn Cove Reference",3,8.1,2,6420811,0.0025,0.865,31.607,0.6205,0.046,"SumPAHs16","ng/g",64.37236927,NA,1,"SumPAHs42_DMNcorrected","ng/g",160.9309232,NA,1,"SumPAHsHMW","ng/g",46.81626856,NA,1,"SumPAHsHMW","ng/g",46.81626856,NA,1,"Sum40CBs","ng/g",24.8711427,NA,1
+"208",9,47.2619,-122.7376,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Pennrose Point State Park",50,13,1,6149521,1.496,0.675,35.355,0.6691,0.0485,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"209",10,47.2619,-122.7376,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Pennrose Point State Park",50,13,1,3196587,0.0025,0.68,34.528,0.6655,0.045,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"210",11,47.2619,-122.7376,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Pennrose Point State Park",50,13,1,3680347,0.016,0.9,35.76,0.7072,0.0581,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"211",12,47.2619,-122.7376,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Pennrose Point State Park",50,13,1,4764132,0.064,0.79,32.892,0.6955,0.0539,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"212",110,47.3062,-122.5145,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Point Defiance Ferry",43,11,5,4827148,5.692,0.89,42.331,0.6749,0.0617,"SumPAHs16","ng/g",335.831589,NA,3,"SumPAHs42_DMNcorrected","ng/g",694.8239772,NA,3,"SumPAHsHMW","ng/g",335.831589,NA,2,"SumPAHsHMW","ng/g",335.831589,NA,2,"Sum40CBs","ng/g",48.0586584,NA,3
+"213",111,47.3062,-122.5145,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Point Defiance Ferry",43,11,5,3461581,0.0025,0.71,35.638,0.6975,0.0541,"SumPAHs16","ng/g",335.831589,NA,3,"SumPAHs42_DMNcorrected","ng/g",694.8239772,NA,3,"SumPAHsHMW","ng/g",335.831589,NA,2,"SumPAHsHMW","ng/g",335.831589,NA,2,"Sum40CBs","ng/g",48.0586584,NA,3
+"214",112,47.3062,-122.5145,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Point Defiance Ferry",43,11,5,1293754,14.371,0.955,26.107,0.6355,0.0379,"SumPAHs16","ng/g",335.831589,NA,3,"SumPAHs42_DMNcorrected","ng/g",694.8239772,NA,3,"SumPAHsHMW","ng/g",335.831589,NA,2,"SumPAHsHMW","ng/g",335.831589,NA,2,"Sum40CBs","ng/g",48.0586584,NA,3
+"215",113,47.3062,-122.5145,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Point Defiance Ferry",43,11,5,4083185,4.895,0.725,35.286,0.7232,0.0535,"SumPAHs16","ng/g",335.831589,NA,3,"SumPAHs42_DMNcorrected","ng/g",694.8239772,NA,3,"SumPAHsHMW","ng/g",335.831589,NA,2,"SumPAHsHMW","ng/g",335.831589,NA,2,"Sum40CBs","ng/g",48.0586584,NA,3
+"216",243,48.12823,-123.45715,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Port Angeles Yacht Club",1,6,2,3480344,133.268,0.6,35.286,0.7232,0.0535,"SumPAHs16","ng/g",1081.85567,NA,4,"SumPAHs42_DMNcorrected","ng/g",1983.402062,NA,4,"SumPAHsHMW","ng/g",1202.061856,"dNPH Surrogate recovery below minimum QA value (60%)",4,"SumPAHsHMW","ng/g",1202.061856,"dNPH Surrogate recovery below minimum QA value (60%)",4,"Sum40CBs","ng/g",57.6989691,NA,4
+"217",244,48.12823,-123.45715,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Port Angeles Yacht Club",1,6,2,6057021,11.947,0.88,35.683,0.6602,0.0484,"SumPAHs16","ng/g",1081.85567,NA,4,"SumPAHs42_DMNcorrected","ng/g",1983.402062,NA,4,"SumPAHsHMW","ng/g",1202.061856,"dNPH Surrogate recovery below minimum QA value (60%)",4,"SumPAHsHMW","ng/g",1202.061856,"dNPH Surrogate recovery below minimum QA value (60%)",4,"Sum40CBs","ng/g",57.6989691,NA,4
+"218",245,48.12823,-123.45715,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Port Angeles Yacht Club",1,6,2,6420643,0.0025,0.58,37.331,0.7535,0.0548,"SumPAHs16","ng/g",1081.85567,NA,4,"SumPAHs42_DMNcorrected","ng/g",1983.402062,NA,4,"SumPAHsHMW","ng/g",1202.061856,"dNPH Surrogate recovery below minimum QA value (60%)",4,"SumPAHsHMW","ng/g",1202.061856,"dNPH Surrogate recovery below minimum QA value (60%)",4,"Sum40CBs","ng/g",57.6989691,NA,4
+"219",246,48.12823,-123.45715,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Port Angeles Yacht Club",1,6,2,6767449,2.855,0.595,33.226,0.6783,0.0486,"SumPAHs16","ng/g",1081.85567,NA,4,"SumPAHs42_DMNcorrected","ng/g",1983.402062,NA,4,"SumPAHsHMW","ng/g",1202.061856,"dNPH Surrogate recovery below minimum QA value (60%)",4,"SumPAHsHMW","ng/g",1202.061856,"dNPH Surrogate recovery below minimum QA value (60%)",4,"Sum40CBs","ng/g",57.6989691,NA,4
+"220",247,48.12823,-123.45715,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Port Angeles Yacht Club",1,6,2,3322946,11.029,0.805,34.078,0.731,0.0524,"SumPAHs16","ng/g",1081.85567,NA,4,"SumPAHs42_DMNcorrected","ng/g",1983.402062,NA,4,"SumPAHsHMW","ng/g",1202.061856,"dNPH Surrogate recovery below minimum QA value (60%)",4,"SumPAHsHMW","ng/g",1202.061856,"dNPH Surrogate recovery below minimum QA value (60%)",4,"Sum40CBs","ng/g",57.6989691,NA,4
+"221",248,48.12823,-123.45715,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","Port Angeles Yacht Club",1,6,2,1581168,1.226,0.635,37.522,0.7345,0.0553,"SumPAHs16","ng/g",1081.85567,NA,4,"SumPAHs42_DMNcorrected","ng/g",1983.402062,NA,4,"SumPAHsHMW","ng/g",1202.061856,"dNPH Surrogate recovery below minimum QA value (60%)",4,"SumPAHsHMW","ng/g",1202.061856,"dNPH Surrogate recovery below minimum QA value (60%)",4,"Sum40CBs","ng/g",57.6989691,NA,4
+"222",145,47.38566,-122.627255,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Purdy - Dexters",57,13,5,2728430,0.0025,0.895,33.496,0.6827,0.0438,"SumPAHs16","ng/g",68.84158821,NA,1,"SumPAHs42_DMNcorrected","ng/g",149.1567745,NA,1,"SumPAHsHMW","ng/g",57.36799018,NA,1,"SumPAHsHMW","ng/g",57.36799018,NA,1,"Sum40CBs","ng/g",32.6997544,NA,2
+"223",146,47.38566,-122.627255,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Purdy - Dexters",57,13,5,2977245,12.311,0.625,33.536,0.6982,0.0517,"SumPAHs16","ng/g",68.84158821,NA,1,"SumPAHs42_DMNcorrected","ng/g",149.1567745,NA,1,"SumPAHsHMW","ng/g",57.36799018,NA,1,"SumPAHsHMW","ng/g",57.36799018,NA,1,"Sum40CBs","ng/g",32.6997544,NA,2
+"224",147,47.38566,-122.627255,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Purdy - Dexters",57,13,5,3660262,2.297,0.735,21.779,0.5576,0.0297,"SumPAHs16","ng/g",68.84158821,NA,1,"SumPAHs42_DMNcorrected","ng/g",149.1567745,NA,1,"SumPAHsHMW","ng/g",57.36799018,NA,1,"SumPAHsHMW","ng/g",57.36799018,NA,1,"Sum40CBs","ng/g",32.6997544,NA,2
+"225",148,47.38566,-122.627255,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Purdy - Dexters",57,13,5,6464229,0.0025,0.845,37.191,0.7223,0.0537,"SumPAHs16","ng/g",68.84158821,NA,1,"SumPAHs42_DMNcorrected","ng/g",149.1567745,NA,1,"SumPAHsHMW","ng/g",57.36799018,NA,1,"SumPAHsHMW","ng/g",57.36799018,NA,1,"Sum40CBs","ng/g",32.6997544,NA,2
+"226",74,47.386977,-122.6367089,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Purdy, Burley Lagoon",47,13,5,3941050,18.935,0.65,37.07,0.7034,0.0494,"SumPAHs16","ng/g",86.16853385,NA,1,"SumPAHs42_DMNcorrected","ng/g",215.4213346,NA,1,"SumPAHsHMW","ng/g",86.16853385,NA,1,"SumPAHsHMW","ng/g",86.16853385,NA,1,"Sum40CBs","ng/g",44.9307355,NA,3
+"227",75,47.386977,-122.6367089,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Purdy, Burley Lagoon",47,13,5,6928220,0.818,0.885,37.537,0.6955,0.0579,"SumPAHs16","ng/g",86.16853385,NA,1,"SumPAHs42_DMNcorrected","ng/g",215.4213346,NA,1,"SumPAHsHMW","ng/g",86.16853385,NA,1,"SumPAHsHMW","ng/g",86.16853385,NA,1,"Sum40CBs","ng/g",44.9307355,NA,3
+"228",76,47.386977,-122.6367089,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Purdy, Burley Lagoon",47,13,5,2077255,0.0025,0.665,37.174,0.7193,0.0502,"SumPAHs16","ng/g",86.16853385,NA,1,"SumPAHs42_DMNcorrected","ng/g",215.4213346,NA,1,"SumPAHsHMW","ng/g",86.16853385,NA,1,"SumPAHsHMW","ng/g",86.16853385,NA,1,"Sum40CBs","ng/g",44.9307355,NA,3
+"229",77,47.386977,-122.6367089,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Purdy, Burley Lagoon",47,13,5,5845804,0.0025,0.82,40.873,0.7041,0.0603,"SumPAHs16","ng/g",86.16853385,NA,1,"SumPAHs42_DMNcorrected","ng/g",215.4213346,NA,1,"SumPAHsHMW","ng/g",86.16853385,NA,1,"SumPAHsHMW","ng/g",86.16853385,NA,1,"Sum40CBs","ng/g",44.9307355,NA,3
+"230",218,47.32598,-122.66724,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Raft Island Park",53,13,1,3992468,0.0025,0.39,37.929,0.6929,0.0603,"SumPAHs16","ng/g",70.35650624,NA,1,"SumPAHs42_DMNcorrected","ng/g",147.7486631,NA,1,"SumPAHsHMW","ng/g",61.91372549,NA,1,"SumPAHsHMW","ng/g",61.91372549,NA,1,"Sum40CBs","ng/g",33.0675579,NA,2
+"231",219,47.32598,-122.66724,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Raft Island Park",53,13,1,5994423,0.0025,0.96,35.76,0.6604,0.0509,"SumPAHs16","ng/g",70.35650624,NA,1,"SumPAHs42_DMNcorrected","ng/g",147.7486631,NA,1,"SumPAHsHMW","ng/g",61.91372549,NA,1,"SumPAHsHMW","ng/g",61.91372549,NA,1,"Sum40CBs","ng/g",33.0675579,NA,2
+"232",220,47.32598,-122.66724,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Raft Island Park",53,13,1,4130787,1.041,0.745,34.605,0.7067,0.0631,"SumPAHs16","ng/g",70.35650624,NA,1,"SumPAHs42_DMNcorrected","ng/g",147.7486631,NA,1,"SumPAHsHMW","ng/g",61.91372549,NA,1,"SumPAHsHMW","ng/g",61.91372549,NA,1,"Sum40CBs","ng/g",33.0675579,NA,2
+"233",221,47.32598,-122.66724,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Raft Island Park",53,13,1,5542261,7.704,0.895,31.704,0.6979,0.0528,"SumPAHs16","ng/g",70.35650624,NA,1,"SumPAHs42_DMNcorrected","ng/g",147.7486631,NA,1,"SumPAHsHMW","ng/g",61.91372549,NA,1,"SumPAHsHMW","ng/g",61.91372549,NA,1,"Sum40CBs","ng/g",33.0675579,NA,2
+"234",273,47.346537,-122.82236,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Reach Island",39,13,1,7321595,7.314,0.685,34.789,0.7174,0.0564,"SumPAHs16","ng/g",81.73360656,NA,1,"SumPAHs42_DMNcorrected","ng/g",192.6577869,NA,1,"SumPAHsHMW","ng/g",81.73360656,NA,1,"SumPAHsHMW","ng/g",81.73360656,NA,1,"Sum40CBs","ng/g",21.0172131,NA,1
+"235",274,47.346537,-122.82236,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Reach Island",39,13,1,1911632,10.204,0.665,29.634,0.7315,0.0398,"SumPAHs16","ng/g",81.73360656,NA,1,"SumPAHs42_DMNcorrected","ng/g",192.6577869,NA,1,"SumPAHsHMW","ng/g",81.73360656,NA,1,"SumPAHsHMW","ng/g",81.73360656,NA,1,"Sum40CBs","ng/g",21.0172131,NA,1
+"236",275,47.346537,-122.82236,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Reach Island",39,13,1,2139153,7.076,0.6,33.17,0.7602,0.0467,"SumPAHs16","ng/g",81.73360656,NA,1,"SumPAHs42_DMNcorrected","ng/g",192.6577869,NA,1,"SumPAHsHMW","ng/g",81.73360656,NA,1,"SumPAHsHMW","ng/g",81.73360656,NA,1,"Sum40CBs","ng/g",21.0172131,NA,1
+"237",276,47.346537,-122.82236,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Reach Island",39,13,1,3303872,2.108,0.745,32.928,0.7059,0.0468,"SumPAHs16","ng/g",81.73360656,NA,1,"SumPAHs42_DMNcorrected","ng/g",192.6577869,NA,1,"SumPAHsHMW","ng/g",81.73360656,NA,1,"SumPAHsHMW","ng/g",81.73360656,NA,1,"Sum40CBs","ng/g",21.0172131,NA,1
+"238",170,47.578117,-122.524833,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Rich Passage",32,10,3,2252655,2.218,0.74,34.909,0.7264,0.0534,"SumPAHs16","ng/g",142.7194719,NA,2,"SumPAHs42_DMNcorrected","ng/g",338.9587459,NA,2,"SumPAHsHMW","ng/g",142.7194719,NA,1,"SumPAHsHMW","ng/g",142.7194719,NA,1,"Sum40CBs","ng/g",55.8984598,NA,4
+"239",171,47.578117,-122.524833,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Rich Passage",32,10,3,5965780,0.0025,0.7,36.926,0.7195,0.0537,"SumPAHs16","ng/g",142.7194719,NA,2,"SumPAHs42_DMNcorrected","ng/g",338.9587459,NA,2,"SumPAHsHMW","ng/g",142.7194719,NA,1,"SumPAHsHMW","ng/g",142.7194719,NA,1,"Sum40CBs","ng/g",55.8984598,NA,4
+"240",172,47.578117,-122.524833,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Rich Passage",32,10,3,1508156,4.877,0.79,31.288,0.6785,0.048,"SumPAHs16","ng/g",142.7194719,NA,2,"SumPAHs42_DMNcorrected","ng/g",338.9587459,NA,2,"SumPAHsHMW","ng/g",142.7194719,NA,1,"SumPAHsHMW","ng/g",142.7194719,NA,1,"Sum40CBs","ng/g",55.8984598,NA,4
+"241",173,47.578117,-122.524833,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Rich Passage",32,10,3,4674882,8.871,0.825,32.775,0.6787,0.0568,"SumPAHs16","ng/g",142.7194719,NA,2,"SumPAHs42_DMNcorrected","ng/g",338.9587459,NA,2,"SumPAHsHMW","ng/g",142.7194719,NA,1,"SumPAHsHMW","ng/g",142.7194719,NA,1,"Sum40CBs","ng/g",55.8984598,NA,4
+"242",295,47.60255,-122.66992,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Rocky Point",27,10,3,2861653,0.01,0.93,31.307,0.696,0.0505,"SumPAHs16","ng/g",133.9498778,NA,2,"SumPAHs42_DMNcorrected","ng/g",310.5201711,NA,2,"SumPAHsHMW","ng/g",133.9498778,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",133.9498778,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",60.8863081,NA,4
+"243",296,47.60255,-122.66992,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Rocky Point",27,10,3,5418454,14.895,0.545,35.73,0.6728,0.0489,"SumPAHs16","ng/g",133.9498778,NA,2,"SumPAHs42_DMNcorrected","ng/g",310.5201711,NA,2,"SumPAHsHMW","ng/g",133.9498778,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",133.9498778,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",60.8863081,NA,4
+"244",297,47.60255,-122.66992,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Rocky Point",27,10,3,6806288,3.323,0.64,28.311,0.7497,0.0632,"SumPAHs16","ng/g",133.9498778,NA,2,"SumPAHs42_DMNcorrected","ng/g",310.5201711,NA,2,"SumPAHsHMW","ng/g",133.9498778,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",133.9498778,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",60.8863081,NA,4
+"245",298,47.60255,-122.66992,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Rocky Point",27,10,3,4525700,24.332,0.89,32.84,0.6449,0.058,"SumPAHs16","ng/g",133.9498778,NA,2,"SumPAHs42_DMNcorrected","ng/g",310.5201711,NA,2,"SumPAHsHMW","ng/g",133.9498778,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",133.9498778,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",60.8863081,NA,4
+"246",13,48.02667,-122.75076,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","S of Skunk Island",9,9,2,2848746,0.0025,0.92,34.752,0.6517,0.0637,"SumPAHs16","ng/g",144.1391671,NA,2,"SumPAHs42_DMNcorrected","ng/g",294.2841328,NA,1,"SumPAHsHMW","ng/g",132.1275698,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",132.1275698,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",18.0173959,NA,1
+"247",14,48.02667,-122.75076,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","S of Skunk Island",9,9,2,12345151,0.0025,0.99,39.643,0.6948,0.0631,"SumPAHs16","ng/g",144.1391671,NA,2,"SumPAHs42_DMNcorrected","ng/g",294.2841328,NA,1,"SumPAHsHMW","ng/g",132.1275698,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",132.1275698,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",18.0173959,NA,1
+"248",15,48.02667,-122.75076,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","S of Skunk Island",9,9,2,2563791,1.758,0.82,35.098,0.7173,0.0584,"SumPAHs16","ng/g",144.1391671,NA,2,"SumPAHs42_DMNcorrected","ng/g",294.2841328,NA,1,"SumPAHsHMW","ng/g",132.1275698,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",132.1275698,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",18.0173959,NA,1
+"249",16,48.02667,-122.75076,"47.78 - 48.21",-0.76,"Group 2
+Lat: 47.78 - 48.21
+Long: -123.46 - -122.7","S of Skunk Island",9,9,2,8355096,4.823,0.86,37.266,0.6819,0.0594,"SumPAHs16","ng/g",144.1391671,NA,2,"SumPAHs42_DMNcorrected","ng/g",294.2841328,NA,1,"SumPAHsHMW","ng/g",132.1275698,"dNPH Surrogate recovery below minimum QA value (60%)",1,"SumPAHsHMW","ng/g",132.1275698,"dNPH Surrogate recovery below minimum QA value (60%)",1,"Sum40CBs","ng/g",18.0173959,NA,1
+"250",287,47.6663,-122.4018,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Salmon Bay, Commodore Park",16,10,3,9888442,4.096,0.77,34.889,0.6672,0.0541,"SumPAHs16","ng/g",409.2647059,NA,3,"SumPAHs42_DMNcorrected","ng/g",1041.764706,NA,3,"SumPAHsHMW","ng/g",535.7647059,NA,3,"SumPAHsHMW","ng/g",535.7647059,NA,3,"Sum40CBs","ng/g",96.7352941,NA,6
+"251",288,47.6663,-122.4018,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Salmon Bay, Commodore Park",16,10,3,2558683,9.21,0.69,34.151,0.6946,0.047,"SumPAHs16","ng/g",409.2647059,NA,3,"SumPAHs42_DMNcorrected","ng/g",1041.764706,NA,3,"SumPAHsHMW","ng/g",535.7647059,NA,3,"SumPAHsHMW","ng/g",535.7647059,NA,3,"Sum40CBs","ng/g",96.7352941,NA,6
+"252",289,47.6663,-122.4018,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Salmon Bay, Commodore Park",16,10,3,5178253,0.0025,0.575,36.209,0.7263,0.0507,"SumPAHs16","ng/g",409.2647059,NA,3,"SumPAHs42_DMNcorrected","ng/g",1041.764706,NA,3,"SumPAHsHMW","ng/g",535.7647059,NA,3,"SumPAHsHMW","ng/g",535.7647059,NA,3,"Sum40CBs","ng/g",96.7352941,NA,6
+"253",290,47.6663,-122.4018,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Salmon Bay, Commodore Park",16,10,3,8338308,0.775,0.79,13.883,0.6777,0.0564,"SumPAHs16","ng/g",409.2647059,NA,3,"SumPAHs42_DMNcorrected","ng/g",1041.764706,NA,3,"SumPAHsHMW","ng/g",535.7647059,NA,3,"SumPAHsHMW","ng/g",535.7647059,NA,3,"Sum40CBs","ng/g",96.7352941,NA,6
+"254",123,47.29464,-122.53053,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Salmon Beach",40,11,5,1705387,3.468,0.615,34.099,0.7126,0.0569,"SumPAHs16","ng/g",214.3288201,NA,2,"SumPAHs42_DMNcorrected","ng/g",428.6576402,NA,2,"SumPAHsHMW","ng/g",226.2359768,"dNPH Surrogate recovery below minimum QA value (60%)",2,"SumPAHsHMW","ng/g",226.2359768,"dNPH Surrogate recovery below minimum QA value (60%)",2,"Sum40CBs","ng/g",34.5307544,NA,2
+"255",124,47.29464,-122.53053,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Salmon Beach",40,11,5,1267023,5.287,0.785,31.693,0.6526,0.047,"SumPAHs16","ng/g",214.3288201,NA,2,"SumPAHs42_DMNcorrected","ng/g",428.6576402,NA,2,"SumPAHsHMW","ng/g",226.2359768,"dNPH Surrogate recovery below minimum QA value (60%)",2,"SumPAHsHMW","ng/g",226.2359768,"dNPH Surrogate recovery below minimum QA value (60%)",2,"Sum40CBs","ng/g",34.5307544,NA,2
+"256",125,47.29464,-122.53053,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Salmon Beach",40,11,5,3732773,17.073,0.71,33.888,0.6595,0.0503,"SumPAHs16","ng/g",214.3288201,NA,2,"SumPAHs42_DMNcorrected","ng/g",428.6576402,NA,2,"SumPAHsHMW","ng/g",226.2359768,"dNPH Surrogate recovery below minimum QA value (60%)",2,"SumPAHsHMW","ng/g",226.2359768,"dNPH Surrogate recovery below minimum QA value (60%)",2,"Sum40CBs","ng/g",34.5307544,NA,2
+"257",126,47.29464,-122.53053,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Salmon Beach",40,11,5,12721347,1.895,0.49,31.968,0.7298,0.0525,"SumPAHs16","ng/g",214.3288201,NA,2,"SumPAHs42_DMNcorrected","ng/g",428.6576402,NA,2,"SumPAHsHMW","ng/g",226.2359768,"dNPH Surrogate recovery below minimum QA value (60%)",2,"SumPAHsHMW","ng/g",226.2359768,"dNPH Surrogate recovery below minimum QA value (60%)",2,"Sum40CBs","ng/g",34.5307544,NA,2
+"258",78,47.607,-122.342,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Seattle Aquarium, Pier 59",17,10,3,2967756,3.933,0.62,33.043,0.7082,0.0534,"SumPAHs16","ng/g",1879.291339,NA,5,"SumPAHs42_DMNcorrected","ng/g",3304.96063,NA,5,"SumPAHsHMW","ng/g",2203.307087,NA,5,"SumPAHsHMW","ng/g",2203.307087,NA,5,"Sum40CBs","ng/g",110.165354,NA,7
+"259",79,47.607,-122.342,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Seattle Aquarium, Pier 59",17,10,3,5002813,1.755,0.59,34.435,0.7156,0.0558,"SumPAHs16","ng/g",1879.291339,NA,5,"SumPAHs42_DMNcorrected","ng/g",3304.96063,NA,5,"SumPAHsHMW","ng/g",2203.307087,NA,5,"SumPAHsHMW","ng/g",2203.307087,NA,5,"Sum40CBs","ng/g",110.165354,NA,7
+"260",80,47.607,-122.342,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Seattle Aquarium, Pier 59",17,10,3,1964479,9.362,0.535,34.892,0.6746,0.0503,"SumPAHs16","ng/g",1879.291339,NA,5,"SumPAHs42_DMNcorrected","ng/g",3304.96063,NA,5,"SumPAHsHMW","ng/g",2203.307087,NA,5,"SumPAHsHMW","ng/g",2203.307087,NA,5,"Sum40CBs","ng/g",110.165354,NA,7
+"261",81,47.607,-122.342,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Seattle Aquarium, Pier 59",17,10,3,12583522,2.13,0.61,35.556,0.7413,0.0654,"SumPAHs16","ng/g",1879.291339,NA,5,"SumPAHs42_DMNcorrected","ng/g",3304.96063,NA,5,"SumPAHsHMW","ng/g",2203.307087,NA,5,"SumPAHsHMW","ng/g",2203.307087,NA,5,"Sum40CBs","ng/g",110.165354,NA,7
+"262",291,47.671678,-122.406663,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Shilshole Bay",18,10,3,4548390,3.682,0.57,32.125,0.7439,0.0584,"SumPAHs16","ng/g",1052.399404,NA,4,"SumPAHs42_DMNcorrected","ng/g",1954.456036,NA,4,"SumPAHsHMW","ng/g",1277.913562,NA,4,"SumPAHsHMW","ng/g",1277.913562,NA,4,"Sum40CBs","ng/g",90.2056632,NA,6
+"263",292,47.671678,-122.406663,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Shilshole Bay",18,10,3,4658604,4.915,0.6,34.549,0.7492,0.0638,"SumPAHs16","ng/g",1052.399404,NA,4,"SumPAHs42_DMNcorrected","ng/g",1954.456036,NA,4,"SumPAHsHMW","ng/g",1277.913562,NA,4,"SumPAHsHMW","ng/g",1277.913562,NA,4,"Sum40CBs","ng/g",90.2056632,NA,6
+"264",293,47.671678,-122.406663,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Shilshole Bay",18,10,3,2700803,0.0025,0.645,34.477,0.6885,0.0606,"SumPAHs16","ng/g",1052.399404,NA,4,"SumPAHs42_DMNcorrected","ng/g",1954.456036,NA,4,"SumPAHsHMW","ng/g",1277.913562,NA,4,"SumPAHsHMW","ng/g",1277.913562,NA,4,"Sum40CBs","ng/g",90.2056632,NA,6
+"265",294,47.671678,-122.406663,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Shilshole Bay",18,10,3,4311572,0.189,0.755,36.763,0.7276,0.052,"SumPAHs16","ng/g",1052.399404,NA,4,"SumPAHs42_DMNcorrected","ng/g",1954.456036,NA,4,"SumPAHsHMW","ng/g",1277.913562,NA,4,"SumPAHsHMW","ng/g",1277.913562,NA,4,"Sum40CBs","ng/g",90.2056632,NA,6
+"266",45,47.6427936,-122.6967068,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Silverdale, Dyes Inlet",35,10,3,2345153,0.0025,0.635,32.098,0.7057,0.0475,"SumPAHs16","ng/g",137.081448,NA,2,"SumPAHs42_DMNcorrected","ng/g",370.1199095,NA,2,"SumPAHsHMW","ng/g",150.7895928,NA,1,"SumPAHsHMW","ng/g",150.7895928,NA,1,"Sum40CBs","ng/g",68.540724,NA,5
+"267",46,47.6427936,-122.6967068,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Silverdale, Dyes Inlet",35,10,3,2003071,6.206,0.695,32.513,0.7255,0.0553,"SumPAHs16","ng/g",137.081448,NA,2,"SumPAHs42_DMNcorrected","ng/g",370.1199095,NA,2,"SumPAHsHMW","ng/g",150.7895928,NA,1,"SumPAHsHMW","ng/g",150.7895928,NA,1,"Sum40CBs","ng/g",68.540724,NA,5
+"268",47,47.6427936,-122.6967068,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Silverdale, Dyes Inlet",35,10,3,4080904,3.605,0.85,36.748,0.6876,0.0535,"SumPAHs16","ng/g",137.081448,NA,2,"SumPAHs42_DMNcorrected","ng/g",370.1199095,NA,2,"SumPAHsHMW","ng/g",150.7895928,NA,1,"SumPAHsHMW","ng/g",150.7895928,NA,1,"Sum40CBs","ng/g",68.540724,NA,5
+"269",48,47.6427936,-122.6967068,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Silverdale, Dyes Inlet",35,10,3,1266317,0.897,0.645,32.155,0.7173,0.0362,"SumPAHs16","ng/g",137.081448,NA,2,"SumPAHs42_DMNcorrected","ng/g",370.1199095,NA,2,"SumPAHsHMW","ng/g",150.7895928,NA,1,"SumPAHsHMW","ng/g",150.7895928,NA,1,"Sum40CBs","ng/g",68.540724,NA,5
+"270",257,47.66142,-122.49884,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Skiff Point",24,10,3,1780096,10.875,0.56,32.612,0.694,0.0503,"SumPAHs16","ng/g",213.1009901,NA,2,"SumPAHs42_DMNcorrected","ng/g",449.879868,NA,2,"SumPAHsHMW","ng/g",213.1009901,"dNPH Surrogate recovery below minimum QA value (60%)",2,"SumPAHsHMW","ng/g",213.1009901,"dNPH Surrogate recovery below minimum QA value (60%)",2,"Sum40CBs","ng/g",21.310099,NA,1
+"271",258,47.66142,-122.49884,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Skiff Point",24,10,3,4813963,7.416,0.79,38.204,0.7016,0.0587,"SumPAHs16","ng/g",213.1009901,NA,2,"SumPAHs42_DMNcorrected","ng/g",449.879868,NA,2,"SumPAHsHMW","ng/g",213.1009901,"dNPH Surrogate recovery below minimum QA value (60%)",2,"SumPAHsHMW","ng/g",213.1009901,"dNPH Surrogate recovery below minimum QA value (60%)",2,"Sum40CBs","ng/g",21.310099,NA,1
+"272",259,47.66142,-122.49884,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Skiff Point",24,10,3,1386547,9.277,0.66,33.928,0.7278,0.0631,"SumPAHs16","ng/g",213.1009901,NA,2,"SumPAHs42_DMNcorrected","ng/g",449.879868,NA,2,"SumPAHsHMW","ng/g",213.1009901,"dNPH Surrogate recovery below minimum QA value (60%)",2,"SumPAHsHMW","ng/g",213.1009901,"dNPH Surrogate recovery below minimum QA value (60%)",2,"Sum40CBs","ng/g",21.310099,NA,1
+"273",260,47.66142,-122.49884,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Skiff Point",24,10,3,7178794,7.636,0.655,30.126,0.6434,0.0533,"SumPAHs16","ng/g",213.1009901,NA,2,"SumPAHs42_DMNcorrected","ng/g",449.879868,NA,2,"SumPAHsHMW","ng/g",213.1009901,"dNPH Surrogate recovery below minimum QA value (60%)",2,"SumPAHsHMW","ng/g",213.1009901,"dNPH Surrogate recovery below minimum QA value (60%)",2,"Sum40CBs","ng/g",21.310099,NA,1
+"274",92,47.63237,-122.37869,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Smith Cove, Terminal 91",15,10,3,7550982,0.367,0.85,33.555,0.7002,0.0574,"SumPAHs16","ng/g",4161.906653,NA,6,"SumPAHs42_DMNcorrected","ng/g",7153.277061,NA,6,"SumPAHsHMW","ng/g",4682.144985,NA,6,"SumPAHsHMW","ng/g",4682.144985,NA,6,"Sum40CBs","ng/g",143.065541,NA,8
+"275",93,47.63237,-122.37869,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Smith Cove, Terminal 91",15,10,3,1945061,0.028,0.765,34.233,0.67,0.0572,"SumPAHs16","ng/g",4161.906653,NA,6,"SumPAHs42_DMNcorrected","ng/g",7153.277061,NA,6,"SumPAHsHMW","ng/g",4682.144985,NA,6,"SumPAHsHMW","ng/g",4682.144985,NA,6,"Sum40CBs","ng/g",143.065541,NA,8
+"276",94,47.63237,-122.37869,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Smith Cove, Terminal 91",15,10,3,6947155,10.304,0.81,31.261,0.6531,0.0487,"SumPAHs16","ng/g",4161.906653,NA,6,"SumPAHs42_DMNcorrected","ng/g",7153.277061,NA,6,"SumPAHsHMW","ng/g",4682.144985,NA,6,"SumPAHsHMW","ng/g",4682.144985,NA,6,"Sum40CBs","ng/g",143.065541,NA,8
+"277",95,47.63237,-122.37869,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Smith Cove, Terminal 91",15,10,3,8434870,0.0025,0.73,34.27,0.7424,0.0584,"SumPAHs16","ng/g",4161.906653,NA,6,"SumPAHs42_DMNcorrected","ng/g",7153.277061,NA,6,"SumPAHsHMW","ng/g",4682.144985,NA,6,"SumPAHsHMW","ng/g",4682.144985,NA,6,"Sum40CBs","ng/g",143.065541,NA,8
+"278",198,47.17650485,-122.9046464,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Squaxin Island",38,13,1,9703015,8.998,0.765,35.936,0.7225,0.0581,"SumPAHs16","ng/g",71.20955056,NA,1,"SumPAHs42_DMNcorrected","ng/g",174.7870787,NA,1,"SumPAHsHMW","ng/g",77.68314607,NA,1,"SumPAHsHMW","ng/g",77.68314607,NA,1,"Sum40CBs","ng/g",25.2470225,NA,1
+"279",199,47.17650485,-122.9046464,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Squaxin Island",38,13,1,4665257,19.803,0.955,34.397,0.7171,0.0608,"SumPAHs16","ng/g",71.20955056,NA,1,"SumPAHs42_DMNcorrected","ng/g",174.7870787,NA,1,"SumPAHsHMW","ng/g",77.68314607,NA,1,"SumPAHsHMW","ng/g",77.68314607,NA,1,"Sum40CBs","ng/g",25.2470225,NA,1
+"280",200,47.17650485,-122.9046464,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Squaxin Island",38,13,1,6864899,3.697,0.8,34.722,0.7246,0.0639,"SumPAHs16","ng/g",71.20955056,NA,1,"SumPAHs42_DMNcorrected","ng/g",174.7870787,NA,1,"SumPAHsHMW","ng/g",77.68314607,NA,1,"SumPAHsHMW","ng/g",77.68314607,NA,1,"Sum40CBs","ng/g",25.2470225,NA,1
+"281",201,47.17650485,-122.9046464,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","Squaxin Island",38,13,1,3448794,7.084,0.92,35.453,0.7011,0.0553,"SumPAHs16","ng/g",71.20955056,NA,1,"SumPAHs42_DMNcorrected","ng/g",174.7870787,NA,1,"SumPAHsHMW","ng/g",77.68314607,NA,1,"SumPAHsHMW","ng/g",77.68314607,NA,1,"Sum40CBs","ng/g",25.2470225,NA,1
+"282",5,47.7296079,-122.5506191,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Suquamish Stormwater Outfall",34,10,3,6485447,0.635,0.965,31.88,0.6596,0.0537,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"283",6,47.7296079,-122.5506191,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Suquamish Stormwater Outfall",34,10,3,3563340,11.884,0.86,30.795,0.6448,0.0613,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"284",7,47.7296079,-122.5506191,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Suquamish Stormwater Outfall",34,10,3,1813227,18.105,0.955,34.438,0.6747,0.0575,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"285",8,47.7296079,-122.5506191,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Suquamish Stormwater Outfall",34,10,3,1987132,15.285,0.875,24.713,0.5996,0.0339,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA,NA
+"286",118,47.259189,-122.434689,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Thea Foss Waterway",46,11,5,9587219,0.0025,0.645,34.52,0.714,0.0529,"SumPAHs16","ng/g",454.3389662,NA,3,"SumPAHs42_DMNcorrected","ng/g",1103.394632,NA,3,"SumPAHsHMW","ng/g",545.2067594,NA,3,"SumPAHsHMW","ng/g",545.2067594,NA,3,"Sum40CBs","ng/g",61.6602883,NA,4
+"287",119,47.259189,-122.434689,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Thea Foss Waterway",46,11,5,5854695,0.0025,0.67,33.325,0.7435,0.0584,"SumPAHs16","ng/g",454.3389662,NA,3,"SumPAHs42_DMNcorrected","ng/g",1103.394632,NA,3,"SumPAHsHMW","ng/g",545.2067594,NA,3,"SumPAHsHMW","ng/g",545.2067594,NA,3,"Sum40CBs","ng/g",61.6602883,NA,4
+"288",120,47.259189,-122.434689,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Thea Foss Waterway",46,11,5,2506610,4.592,0.795,34.306,0.7052,0.062,"SumPAHs16","ng/g",454.3389662,NA,3,"SumPAHs42_DMNcorrected","ng/g",1103.394632,NA,3,"SumPAHsHMW","ng/g",545.2067594,NA,3,"SumPAHsHMW","ng/g",545.2067594,NA,3,"Sum40CBs","ng/g",61.6602883,NA,4
+"289",121,47.259189,-122.434689,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Thea Foss Waterway",46,11,5,2016415,1.33,0.725,35.209,0.6896,0.0535,"SumPAHs16","ng/g",454.3389662,NA,3,"SumPAHs42_DMNcorrected","ng/g",1103.394632,NA,3,"SumPAHsHMW","ng/g",545.2067594,NA,3,"SumPAHsHMW","ng/g",545.2067594,NA,3,"Sum40CBs","ng/g",61.6602883,NA,4
+"290",122,47.259189,-122.434689,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Thea Foss Waterway",46,11,5,4648754,0.0025,0.64,34.78,0.7353,0.0549,"SumPAHs16","ng/g",454.3389662,NA,3,"SumPAHs42_DMNcorrected","ng/g",1103.394632,NA,3,"SumPAHsHMW","ng/g",545.2067594,NA,3,"SumPAHsHMW","ng/g",545.2067594,NA,3,"Sum40CBs","ng/g",61.6602883,NA,4
+"291",277,47.44896,-122.372267,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Three Tree Point",22,11,5,4026125,0.854,0.56,36.954,0.7494,0.051,"SumPAHs16","ng/g",129.6053678,NA,1,"SumPAHs42_DMNcorrected","ng/g",312.2311133,NA,2,"SumPAHsHMW","ng/g",141.387674,NA,1,"SumPAHsHMW","ng/g",141.387674,NA,1,"Sum40CBs","ng/g",37.1142644,NA,2
+"292",278,47.44896,-122.372267,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Three Tree Point",22,11,5,2842961,1.541,0.575,31.404,0.6813,0.0502,"SumPAHs16","ng/g",129.6053678,NA,1,"SumPAHs42_DMNcorrected","ng/g",312.2311133,NA,2,"SumPAHsHMW","ng/g",141.387674,NA,1,"SumPAHsHMW","ng/g",141.387674,NA,1,"Sum40CBs","ng/g",37.1142644,NA,2
+"293",279,47.44896,-122.372267,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Three Tree Point",22,11,5,2013492,12.831,0.515,28.93,0.727,0.0534,"SumPAHs16","ng/g",129.6053678,NA,1,"SumPAHs42_DMNcorrected","ng/g",312.2311133,NA,2,"SumPAHsHMW","ng/g",141.387674,NA,1,"SumPAHsHMW","ng/g",141.387674,NA,1,"Sum40CBs","ng/g",37.1142644,NA,2
+"294",280,47.44896,-122.372267,"47.19 - 47.45",-0.31,"Group 5
+Lat: 47.19 - 47.45
+Long: -122.64 - -122.33","Three Tree Point",22,11,5,2568717,24.401,0.575,31.874,0.7566,0.0577,"SumPAHs16","ng/g",129.6053678,NA,1,"SumPAHs42_DMNcorrected","ng/g",312.2311133,NA,2,"SumPAHsHMW","ng/g",141.387674,NA,1,"SumPAHsHMW","ng/g",141.387674,NA,1,"Sum40CBs","ng/g",37.1142644,NA,2
+"295",135,48.0617,-122.2939,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Tulalip Bay",67,8.2,6,4297558,15.435,0.695,33.598,0.7048,0.0652,"SumPAHs16","ng/g",181.6903529,NA,2,"SumPAHs42_DMNcorrected","ng/g",356.8917647,NA,2,"SumPAHsHMW","ng/g",168.7124706,NA,1,"SumPAHsHMW","ng/g",168.7124706,NA,1,"Sum40CBs","ng/g",33.7424941,NA,2
+"296",136,48.0617,-122.2939,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Tulalip Bay",67,8.2,6,1980727,7.396,0.595,33.773,0.7114,0.0621,"SumPAHs16","ng/g",181.6903529,NA,2,"SumPAHs42_DMNcorrected","ng/g",356.8917647,NA,2,"SumPAHsHMW","ng/g",168.7124706,NA,1,"SumPAHsHMW","ng/g",168.7124706,NA,1,"Sum40CBs","ng/g",33.7424941,NA,2
+"297",137,48.0617,-122.2939,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Tulalip Bay",67,8.2,6,8616041,14.146,0.745,32.59,0.7054,0.0592,"SumPAHs16","ng/g",181.6903529,NA,2,"SumPAHs42_DMNcorrected","ng/g",356.8917647,NA,2,"SumPAHsHMW","ng/g",168.7124706,NA,1,"SumPAHsHMW","ng/g",168.7124706,NA,1,"Sum40CBs","ng/g",33.7424941,NA,2
+"298",138,48.0617,-122.2939,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Tulalip Bay",67,8.2,6,3139278,2.605,0.72,35.45,0.7348,0.0605,"SumPAHs16","ng/g",181.6903529,NA,2,"SumPAHs42_DMNcorrected","ng/g",356.8917647,NA,2,"SumPAHsHMW","ng/g",168.7124706,NA,1,"SumPAHsHMW","ng/g",168.7124706,NA,1,"Sum40CBs","ng/g",33.7424941,NA,2
+"299",139,48.0617,-122.2939,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Tulalip Bay",67,8.2,6,8920913,6.1,0.66,25.069,0.7306,0.059,"SumPAHs16","ng/g",181.6903529,NA,2,"SumPAHs42_DMNcorrected","ng/g",356.8917647,NA,2,"SumPAHsHMW","ng/g",168.7124706,NA,1,"SumPAHsHMW","ng/g",168.7124706,NA,1,"Sum40CBs","ng/g",33.7424941,NA,2
+"300",140,48.0617,-122.2939,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Tulalip Bay",67,8.2,6,8605549,31.368,0.75,22.388,0.6424,0.0499,"SumPAHs16","ng/g",181.6903529,NA,2,"SumPAHs42_DMNcorrected","ng/g",356.8917647,NA,2,"SumPAHsHMW","ng/g",168.7124706,NA,1,"SumPAHsHMW","ng/g",168.7124706,NA,1,"Sum40CBs","ng/g",33.7424941,NA,2
+"301",190,48.0697859,-122.2997764,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Tulalip Reservation",70,8.2,6,2556710,7.869,0.805,32.342,0.647,0.0475,"SumPAHs16","ng/g",123.7976695,NA,1,"SumPAHs42_DMNcorrected","ng/g",253.4904661,NA,1,"SumPAHsHMW","ng/g",117.9025424,NA,1,"SumPAHsHMW","ng/g",117.9025424,NA,1,"Sum40CBs","ng/g",22.9909958,NA,1
+"302",191,48.0697859,-122.2997764,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Tulalip Reservation",70,8.2,6,6089843,13.836,0.785,30.791,0.6925,0.0576,"SumPAHs16","ng/g",123.7976695,NA,1,"SumPAHs42_DMNcorrected","ng/g",253.4904661,NA,1,"SumPAHsHMW","ng/g",117.9025424,NA,1,"SumPAHsHMW","ng/g",117.9025424,NA,1,"Sum40CBs","ng/g",22.9909958,NA,1
+"303",192,48.0697859,-122.2997764,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Tulalip Reservation",70,8.2,6,8854036,0.0025,0.745,32.838,0.6938,0.0512,"SumPAHs16","ng/g",123.7976695,NA,1,"SumPAHs42_DMNcorrected","ng/g",253.4904661,NA,1,"SumPAHsHMW","ng/g",117.9025424,NA,1,"SumPAHsHMW","ng/g",117.9025424,NA,1,"Sum40CBs","ng/g",22.9909958,NA,1
+"304",193,48.0697859,-122.2997764,"47.81 - 48.26",-0.28,"Group 6
+Lat: 47.81 - 48.26
+Long: -122.51 - -122.23","Tulalip Reservation",70,8.2,6,31917668,0.564,0.725,33.059,0.7282,0.058,"SumPAHs16","ng/g",123.7976695,NA,1,"SumPAHs42_DMNcorrected","ng/g",253.4904661,NA,1,"SumPAHsHMW","ng/g",117.9025424,NA,1,"SumPAHsHMW","ng/g",117.9025424,NA,1,"Sum40CBs","ng/g",22.9909958,NA,1
+"305",182,47.052362,-122.910912,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","West Bay Park",73,13,1,5141401,2.438,0.855,32.412,0.6914,0.0507,"SumPAHs16","ng/g",161.9665484,NA,2,"SumPAHs42_DMNcorrected","ng/g",384.6705525,NA,2,"SumPAHsHMW","ng/g",202.4581855,NA,2,"SumPAHsHMW","ng/g",202.4581855,NA,2,"Sum40CBs","ng/g",46.5653827,NA,3
+"306",183,47.052362,-122.910912,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","West Bay Park",73,13,1,3248979,0.0025,0.745,31.456,0.693,0.0494,"SumPAHs16","ng/g",161.9665484,NA,2,"SumPAHs42_DMNcorrected","ng/g",384.6705525,NA,2,"SumPAHsHMW","ng/g",202.4581855,NA,2,"SumPAHsHMW","ng/g",202.4581855,NA,2,"Sum40CBs","ng/g",46.5653827,NA,3
+"307",184,47.052362,-122.910912,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","West Bay Park",73,13,1,2150285,12.992,0.61,36.184,0.7767,0.0551,"SumPAHs16","ng/g",161.9665484,NA,2,"SumPAHs42_DMNcorrected","ng/g",384.6705525,NA,2,"SumPAHsHMW","ng/g",202.4581855,NA,2,"SumPAHsHMW","ng/g",202.4581855,NA,2,"Sum40CBs","ng/g",46.5653827,NA,3
+"308",185,47.052362,-122.910912,"47.05 - 47.57",-0.33,"Group 1
+Lat: 47.05 - 47.57
+Long: -123 - -122.67","West Bay Park",73,13,1,5028627,5.332,0.705,31.352,0.7168,0.0558,"SumPAHs16","ng/g",161.9665484,NA,2,"SumPAHs42_DMNcorrected","ng/g",384.6705525,NA,2,"SumPAHsHMW","ng/g",202.4581855,NA,2,"SumPAHsHMW","ng/g",202.4581855,NA,2,"Sum40CBs","ng/g",46.5653827,NA,3
+"309",252,47.66586,-122.56698,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Williams Olson Park",26,10,3,5112018,0.0025,0.9,32.803,0.6666,0.0542,"SumPAHs16","ng/g",150.6265281,NA,2,"SumPAHs42_DMNcorrected","ng/g",301.2530562,NA,2,"SumPAHsHMW","ng/g",156.6515892,NA,1,"SumPAHsHMW","ng/g",156.6515892,NA,1,"Sum40CBs","ng/g",40.3679095,NA,3
+"310",254,47.66586,-122.56698,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Williams Olson Park",26,10,3,11966241,4.949,0.695,30.731,0.666,0.0518,"SumPAHs16","ng/g",150.6265281,NA,2,"SumPAHs42_DMNcorrected","ng/g",301.2530562,NA,2,"SumPAHsHMW","ng/g",156.6515892,NA,1,"SumPAHsHMW","ng/g",156.6515892,NA,1,"Sum40CBs","ng/g",40.3679095,NA,3
+"311",255,47.66586,-122.56698,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Williams Olson Park",26,10,3,2059689,8.389,0.61,36.79,0.7672,0.0525,"SumPAHs16","ng/g",150.6265281,NA,2,"SumPAHs42_DMNcorrected","ng/g",301.2530562,NA,2,"SumPAHsHMW","ng/g",156.6515892,NA,1,"SumPAHsHMW","ng/g",156.6515892,NA,1,"Sum40CBs","ng/g",40.3679095,NA,3
+"312",256,47.66586,-122.56698,"47.5 - 47.79",-0.36,"Group 3
+Lat: 47.5 - 47.79
+Long: -122.7 - -122.34","Williams Olson Park",26,10,3,2318505,2.408,0.675,34.051,0.7595,0.0643,"SumPAHs16","ng/g",150.6265281,NA,2,"SumPAHs42_DMNcorrected","ng/g",301.2530562,NA,2,"SumPAHsHMW","ng/g",156.6515892,NA,1,"SumPAHsHMW","ng/g",156.6515892,NA,1,"Sum40CBs","ng/g",40.3679095,NA,3
