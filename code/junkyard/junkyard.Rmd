@@ -994,3 +994,842 @@ head(data)
 
 ```
 
+# PERMANOVA & Post Hoc (using all metrics in a matrix)
+## Site (n=74)
+### No significant results, p= 0.083
+```{r}
+
+# we can proceed with the PERMANOVA based on the analysis of variance above. Let's check if Site has a statistically significant relationship with our metrics. Instead of creating a distance matrix for each individual metric, I am going to create one that housing all metrics of interest (biomarkers & morphometrics). This is not an ideal process with many metrics, but 4 metrics makes an easy test case for the process.
+
+#install.packages("RVAideMemoire") # only need to install once
+
+library(vegan)
+library(RVAideMemoire)
+
+dist_matrix_full <- vegdist(as.matrix(data[, c("p450", "sod", "ci_wet_volume", "ci_wet_shell_weight", "ci_pollution", "shell_thickness")]), na.rm= TRUE, method = "euclidean") # create distance matrix
+
+permanova_full <- adonis2(dist_matrix_full ~ site_name, data = data, permutations = 999) # run PERMANOVA
+
+pairwise_results <- list() # list to store post hoc result
+significant_results <- list() # list to store only significant post hoc results
+
+pairwise_model <- pairwise.perm.manova(dist_matrix_full, data$site_name, nperm = 999, p.method = "bonferroni") # run post hoc 
+
+pairwise_df <- as.data.frame(pairwise_model$p.value) # Extract the results table correctly from `pairwise.htest` object
+colnames(pairwise_df) <- c("p.value")  # Ensure column name is consistent
+
+pairwise_results[["Site"]] <- pairwise_df # Store full results
+
+significant_results[["Site"]] <- pairwise_df[pairwise_df$p.value < 0.05, , drop = FALSE] # filter significant results
+
+cat("\n### PERMANOVA results for All Sites ###\n")
+print(permanova_full) # view permanova results
+
+if (nrow(significant_results[["Site"]]) > 0) {
+  cat("\n### Significant pairwise post hoc results (p < 0.05) ###\n")
+  print(significant_results[["Site"]])
+} else {
+  cat("\n### No significant pairwise differences found in All Sites ###\n") # view significant post hoc results
+}
+
+# write out significant results
+#write.csv(significant_results[["Full Data"]], "significant_pairwise_results_full_data.csv", row.names = FALSE)
+
+```
+
+## Reporting Area (n=9)
+### No significant results, p= 0.32
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+# don't need to recreate the matrix, we will use the same matrix created in the first step
+#dist_matrix_full <- vegdist(as.matrix(data[, c("p450", "sod", "ci_wet_volume", "ci_wet_shell_weight", "ci_pollution", "shell_thickness")]), na.rm= TRUE, method = "euclidean") # create distance matrix
+
+data$reporting_area <- as.factor(data$reporting_area) # make a factor for analysis
+
+permanova_full <- adonis2(dist_matrix_full ~ reporting_area, data = data, permutations = 999) # run PERMANOVA
+
+pairwise_results <- list() # list to store post hoc result
+significant_results <- list() # list to store only significant post hoc results
+
+pairwise_model <- pairwise.perm.manova(dist_matrix_full, data$reporting_area, nperm = 999, p.method = "bonferroni") # run post hoc 
+
+pairwise_df <- as.data.frame(pairwise_model$p.value) # Extract the results table correctly from `pairwise.htest` object
+colnames(pairwise_df) <- c("p.value")  # Ensure column name is consistent
+
+pairwise_results[["Reporting Area"]] <- pairwise_df # Store full results
+
+significant_results[["Reporting Area"]] <- pairwise_df[pairwise_df$p.value < 0.05, , drop = FALSE] # filter significant results
+
+cat("\n### PERMANOVA results for All Reporting Areas ###\n")
+print(permanova_full) # view permanova results
+
+if (nrow(significant_results[["Reporting Area"]]) > 0) {
+  cat("\n### Significant pairwise post hoc results (p < 0.05) ###\n")
+  print(significant_results[["Reporting Area"]])
+} else {
+  cat("\n### No significant pairwise differences found in All Reporting Areas ###\n") # view significant post hoc results
+}
+
+# write out significant results
+#write.csv(significant_results[["Full Data"]], "significant_pairwise_results_full_data.csv", row.names = FALSE)
+
+```
+
+## PCB Groups (n=8)
+### No significant results, p= 0.656
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+# don't need to recreate the matrix, we will use the same matrix created in the first step
+#dist_matrix_full <- vegdist(as.matrix(data[, c("p450", "sod", "ci_wet_volume", "ci_wet_shell_weight", "ci_pollution", "shell_thickness")]), na.rm= TRUE, method = "euclidean") # create distance matrix
+
+data<- read.csv("../data/cleaned/cleaned_with_pcb_groups.csv")
+data$pcb_group <- as.factor(data$pcb_group) # make a factor for analysis
+
+permanova_full <- adonis2(dist_matrix_full ~ pcb_group, data = data, permutations = 999) # run PERMANOVA
+
+pairwise_results <- list() # list to store post hoc result
+significant_results <- list() # list to store only significant post hoc results
+
+pairwise_model <- pairwise.perm.manova(dist_matrix_full, data$pcb_group, nperm = 999, p.method = "bonferroni") # run post hoc 
+
+pairwise_df <- as.data.frame(pairwise_model$p.value) # Extract the results table correctly from `pairwise.htest` object
+colnames(pairwise_df) <- c("p.value")  # Ensure column name is consistent
+
+pairwise_results[["pcb_group"]] <- pairwise_df # Store full results
+
+significant_results[["pcb_group"]] <- pairwise_df[pairwise_df$p.value < 0.05, , drop = FALSE] # filter significant results
+
+cat("\n### PERMANOVA results for All pcb_groups ###\n")
+print(permanova_full) # view permanova results
+
+if (nrow(significant_results[["pcb_group"]]) > 0) {
+  cat("\n### Significant pairwise post hoc results (p < 0.05) ###\n")
+  print(significant_results[["pcb_group"]])
+} else {
+  cat("\n### No significant pairwise differences found in All pcb_groups ###\n") # view significant post hoc results
+}
+
+# write out significant results
+#write.csv(significant_results[["Full Data"]], "significant_pairwise_results_full_data.csv", row.names = FALSE)
+
+```
+
+## PAH Group (n=8)
+### No significant results, p= 0.854
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+# don't need to recreate the matrix, we will use the same matrix created in the first step
+#dist_matrix_full <- vegdist(as.matrix(data[, c("p450", "sod", "ci_wet_volume", "ci_wet_shell_weight", "ci_pollution", "shell_thickness")]), na.rm= TRUE, method = "euclidean") # create distance matrix
+
+data$pah_group <- as.factor(data$pah_group) # make a factor for analysis
+
+permanova_full <- adonis2(dist_matrix_full ~ pah_group, data = data, permutations = 999) # run PERMANOVA
+
+pairwise_results <- list() # list to store post hoc result
+significant_results <- list() # list to store only significant post hoc results
+
+pairwise_model <- pairwise.perm.manova(dist_matrix_full, data$pah_group, nperm = 999, p.method = "bonferroni") # run post hoc 
+
+pairwise_df <- as.data.frame(pairwise_model$p.value) # Extract the results table correctly from `pairwise.htest` object
+colnames(pairwise_df) <- c("p.value")  # Ensure column name is consistent
+
+pairwise_results[["pah_group"]] <- pairwise_df # Store full results
+
+significant_results[["pah_group"]] <- pairwise_df[pairwise_df$p.value < 0.05, , drop = FALSE] # filter significant results
+
+cat("\n### PERMANOVA results for All pah_groups ###\n")
+print(permanova_full) # view permanova results
+
+if (nrow(significant_results[["pah_group"]]) > 0) {
+  cat("\n### Significant pairwise post hoc results (p < 0.05) ###\n")
+  print(significant_results[["pah_group"]])
+} else {
+  cat("\n### No significant pairwise differences found in All pah_groups ###\n") # view significant post hoc results
+}
+
+# write out significant results
+#write.csv(significant_results[["Full Data"]], "significant_pairwise_results_full_data.csv", row.names = FALSE)
+
+```
+
+## Geo Group (n=5)
+### No significant results, p= 0.973
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+# don't need to recreate the matrix, we will use the same matrix created in the first step
+#dist_matrix_full <- vegdist(as.matrix(data[, c("p450", "sod", "ci_wet_volume", "ci_wet_shell_weight", "ci_pollution", "shell_thickness")]), na.rm= TRUE, method = "euclidean") # create distance matrix
+
+data$geo_group <- as.factor(data$geo_group) # make a factor for analysis
+
+permanova_full <- adonis2(dist_matrix_full ~ geo_group, data = data, permutations = 999) # run PERMANOVA
+
+pairwise_results <- list() # list to store post hoc result
+significant_results <- list() # list to store only significant post hoc results
+
+pairwise_model <- pairwise.perm.manova(dist_matrix_full, data$geo_group, nperm = 999, p.method = "bonferroni") # run post hoc 
+
+pairwise_df <- as.data.frame(pairwise_model$p.value) # Extract the results table correctly from `pairwise.htest` object
+colnames(pairwise_df) <- c("p.value")  # Ensure column name is consistent
+
+pairwise_results[["geo_group"]] <- pairwise_df # Store full results
+
+significant_results[["geo_group"]] <- pairwise_df[pairwise_df$p.value < 0.05, , drop = FALSE] # filter significant results
+
+cat("\n### PERMANOVA results for All geo_groups ###\n")
+print(permanova_full) # view permanova results
+
+if (nrow(significant_results[["geo_group"]]) > 0) {
+  cat("\n### Significant pairwise post hoc results (p < 0.05) ###\n")
+  print(significant_results[["geo_group"]])
+} else {
+  cat("\n### No significant pairwise differences found in All geo_groups ###\n") # view significant post hoc results
+}
+
+# write out significant results
+#write.csv(significant_results[["Full Data"]], "significant_pairwise_results_full_data.csv", row.names = FALSE)
+
+```
+
+# Permanova and Post Hoc (individual metrics)
+## Site
+### No significant results
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+# Function to run PERMANOVA and post hoc pairwise comparisons
+run_permanova_with_posthoc <- function(p450, data) {
+  # Remove NAs before creating the distance matrix
+  clean_data <- data[!is.na(data[[p450]]), ]
+  
+  # Ensure the metric is numeric
+  clean_data[[p450]] <- as.numeric(clean_data[[p450]])
+  
+  # Create distance matrix
+  dist_matrix <- vegdist(as.matrix(clean_data[[p450]]), method = "euclidean")
+  
+  # Run PERMANOVA
+  permanova_result <- adonis2(dist_matrix ~ site_name, data = clean_data, permutations = 999)
+
+  # Print PERMANOVA results
+  cat("\n### PERMANOVA results for", p450, "###\n")
+  print(permanova_result)
+
+  # Run post hoc pairwise comparisons
+  pairwise_result <- pairwise.perm.manova(dist_matrix, clean_data$site_name, nperm = 999, p.method = "bonferroni")
+
+  # Extract p-values from the results
+  pairwise_df <- as.data.frame(pairwise_result$p.value)
+  colnames(pairwise_df) <- c("p.value")  # Ensure consistent column naming
+
+  # Store results
+  return(list(PERMANOVA = permanova_result, Pairwise = pairwise_df))
+}
+
+# Run PERMANOVA and post hoc tests for each metric
+metrics <- c("p450", "sod", "ci1", "ci2", "ci3", "shell")
+permanova_results <- lapply(metrics, function(metric) run_permanova_with_posthoc(metric, data))
+names(permanova_results) <- metrics
+
+# Extract significant post hoc results (p < 0.05)
+significant_results <- lapply(permanova_results, function(res) res$Pairwise[res$Pairwise$p.value < 0.05, , drop = FALSE])
+
+# Print significant results
+cat("\n### Significant pairwise post hoc results (p < 0.05) ###\n")
+print(significant_results)
+
+```
+
+## Reporting Area
+### Only Shell is significant, RA 11
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+data$reporting_area <- as.factor(data$reporting_area)
+
+# Function to run PERMANOVA and post hoc pairwise comparisons
+run_permanova_with_posthoc <- function(p450, data) {
+  # Remove NAs before creating the distance matrix
+  clean_data <- data[!is.na(data[[p450]]), ]
+  
+  # Ensure the metric is numeric
+  clean_data[[p450]] <- as.numeric(clean_data[[p450]])
+  
+  # Create distance matrix
+  dist_matrix <- vegdist(as.matrix(clean_data[[p450]]), method = "euclidean")
+  
+  # Run PERMANOVA
+  permanova_result <- adonis2(dist_matrix ~ reporting_area, data = clean_data, permutations = 999)
+
+  # Print PERMANOVA results
+  cat("\n### PERMANOVA results for", p450, "###\n")
+  print(permanova_result)
+
+  # Run post hoc pairwise comparisons
+  pairwise_result <- pairwise.perm.manova(dist_matrix, clean_data$reporting_area, nperm = 999, p.method = "bonferroni")
+
+  # Extract p-values from the results
+  pairwise_df <- as.data.frame(pairwise_result$p.value)
+  colnames(pairwise_df) <- c("p.value")  # Ensure consistent column naming
+
+  # Store results
+  return(list(PERMANOVA = permanova_result, Pairwise = pairwise_df))
+}
+
+# Run PERMANOVA and post hoc tests for each metric
+metrics <- c("p450", "sod", "ci1", "ci2", "ci3", "shell")
+permanova_results <- lapply(metrics, function(metric) run_permanova_with_posthoc(metric, data))
+names(permanova_results) <- metrics
+
+# Extract significant post hoc results (p < 0.05)
+significant_results <- lapply(permanova_results, function(res) res$Pairwise[res$Pairwise$p.value < 0.05, , drop = FALSE])
+
+# Print significant results
+cat("\n### Significant pairwise post hoc results (p < 0.05) ###\n")
+print(significant_results)
+
+```
+
+## PCB Group
+### No significant results
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+data$pcb_group <- as.factor(data$pcb_group) # make a factor for analysis
+
+# Function to run PERMANOVA and post hoc pairwise comparisons
+run_permanova_with_posthoc <- function(p450, data) {
+  # Remove NAs before creating the distance matrix
+  clean_data <- data[!is.na(data[[p450]]), ]
+  
+  # Ensure the metric is numeric
+  clean_data[[p450]] <- as.numeric(clean_data[[p450]])
+  
+  # Create distance matrix
+  dist_matrix <- vegdist(as.matrix(clean_data[[p450]]), method = "euclidean")
+  
+  # Run PERMANOVA
+  permanova_result <- adonis2(dist_matrix ~ pcb_group, data = clean_data, permutations = 999)
+
+  # Print PERMANOVA results
+  cat("\n### PERMANOVA results for", p450, "###\n")
+  print(permanova_result)
+
+  # Run post hoc pairwise comparisons
+  pairwise_result <- pairwise.perm.manova(dist_matrix, clean_data$pcb_group, nperm = 999, p.method = "bonferroni")
+
+  # Extract p-values from the results
+  pairwise_df <- as.data.frame(pairwise_result$p.value)
+  colnames(pairwise_df) <- c("p.value")  # Ensure consistent column naming
+
+  # Store results
+  return(list(PERMANOVA = permanova_result, Pairwise = pairwise_df))
+}
+
+# Run PERMANOVA and post hoc tests for each metric
+metrics <- c("p450", "sod", "ci_wet_volume", "ci_wet_shell_weight", "ci_pollution", "shell_thickness")
+permanova_results <- lapply(metrics, function(metric) run_permanova_with_posthoc(metric, data))
+names(permanova_results) <- metrics
+
+# Extract significant post hoc results (p < 0.05)
+significant_results <- lapply(permanova_results, function(res) res$Pairwise[res$Pairwise$p.value < 0.05, , drop = FALSE])
+
+# Print significant results
+cat("\n### Significant pairwise post hoc results (p < 0.05) ###\n")
+print(significant_results)
+
+```
+
+## PAH Group
+### No significant results
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+data$pah_group <- as.factor(data$pah_group) # make a factor for analysis
+
+# Function to run PERMANOVA and post hoc pairwise comparisons
+run_permanova_with_posthoc <- function(p450, data) {
+  # Remove NAs before creating the distance matrix
+  clean_data <- data[!is.na(data[[p450]]), ]
+  
+  # Ensure the metric is numeric
+  clean_data[[p450]] <- as.numeric(clean_data[[p450]])
+  
+  # Create distance matrix
+  dist_matrix <- vegdist(as.matrix(clean_data[[p450]]), method = "euclidean")
+  
+  # Run PERMANOVA
+  permanova_result <- adonis2(dist_matrix ~ pah_group, data = clean_data, permutations = 999)
+
+  # Print PERMANOVA results
+  cat("\n### PERMANOVA results for", p450, "###\n")
+  print(permanova_result)
+
+  # Run post hoc pairwise comparisons
+  pairwise_result <- pairwise.perm.manova(dist_matrix, clean_data$pah_group, nperm = 999, p.method = "bonferroni")
+
+  # Extract p-values from the results
+  pairwise_df <- as.data.frame(pairwise_result$p.value)
+  colnames(pairwise_df) <- c("p.value")  # Ensure consistent column naming
+
+  # Store results
+  return(list(PERMANOVA = permanova_result, Pairwise = pairwise_df))
+}
+
+# Run PERMANOVA and post hoc tests for each metric
+metrics <- c("p450", "sod", "ci_wet_volume", "ci_wet_shell_weight", "ci_pollution", "shell_thickness")
+permanova_results <- lapply(metrics, function(metric) run_permanova_with_posthoc(metric, data))
+names(permanova_results) <- metrics
+
+# Extract significant post hoc results (p < 0.05)
+significant_results <- lapply(permanova_results, function(res) res$Pairwise[res$Pairwise$p.value < 0.05, , drop = FALSE])
+
+# Print significant results
+cat("\n### Significant pairwise post hoc results (p < 0.05) ###\n")
+print(significant_results)
+
+```
+
+## Geo Group
+### No significant results
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+data$geo_group <- as.factor(data$geo_group) # make a factor for analysis
+
+# Function to run PERMANOVA and post hoc pairwise comparisons
+run_permanova_with_posthoc <- function(p450, data) {
+  # Remove NAs before creating the distance matrix
+  clean_data <- data[!is.na(data[[p450]]), ]
+  
+  # Ensure the metric is numeric
+  clean_data[[p450]] <- as.numeric(clean_data[[p450]])
+  
+  # Create distance matrix
+  dist_matrix <- vegdist(as.matrix(clean_data[[p450]]), method = "euclidean")
+  
+  # Run PERMANOVA
+  permanova_result <- adonis2(dist_matrix ~ geo_group, data = clean_data, permutations = 999)
+
+  # Print PERMANOVA results
+  cat("\n### PERMANOVA results for", p450, "###\n")
+  print(permanova_result)
+
+  # Run post hoc pairwise comparisons
+  pairwise_result <- pairwise.perm.manova(dist_matrix, clean_data$geo_group, nperm = 999, p.method = "bonferroni")
+
+  # Extract p-values from the results
+  pairwise_df <- as.data.frame(pairwise_result$p.value)
+  colnames(pairwise_df) <- c("p.value")  # Ensure consistent column naming
+
+  # Store results
+  return(list(PERMANOVA = permanova_result, Pairwise = pairwise_df))
+}
+
+# Run PERMANOVA and post hoc tests for each metric
+metrics <- c("p450", "sod", "ci_wet_volume", "ci_wet_shell_weight", "ci_pollution", "shell_thickness")
+permanova_results <- lapply(metrics, function(metric) run_permanova_with_posthoc(metric, data))
+names(permanova_results) <- metrics
+
+# Extract significant post hoc results (p < 0.05)
+significant_results <- lapply(permanova_results, function(res) res$Pairwise[res$Pairwise$p.value < 0.05, , drop = FALSE])
+
+# Print significant results
+cat("\n### Significant pairwise post hoc results (p < 0.05) ###\n")
+print(significant_results)
+
+```
+
+# KW & Post Hoc (individual metrics for each group)
+## Site
+### No significant results
+```{r}
+
+library(vegan)
+library(FSA)
+
+# P450
+kruskal.test(p450 ~ site_name, data = data) # result: p= 8.077e-6
+dunn <- dunnTest(data$p450, data$site_name, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# SOD
+kruskal.test(sod ~ site_name, data = data) # result: p= 5.669e-6
+dunn <- dunnTest(data$sod, data$site_name, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# CI_Wet_Volume
+kruskal.test(ci_wet_volume ~ site_name, data = data) # result: p= 0.02581
+dunn <- dunnTest(data$ci_wet_volume, data$site_name, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# CI_Wet_Shell_Weight
+kruskal.test(ci_wet_shell_weight ~ site_name, data = data) # result: p= 2.832e-8
+dunn <- dunnTest(data$ci_wet_shell_weight, data$site_name, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# CI_Pollution
+kruskal.test(ci_pollution ~ site_name, data = data) # result: p= 0.05444
+dunn <- dunnTest(data$ci_pollution, data$site_name, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+```
+
+## Reporting Areas
+### No significant results
+```{r}
+
+library(vegan)
+library(FSA)
+
+data$reporting_area <- as.factor(data$reporting_area) # make a factor for analysis
+
+# P450
+kruskal.test(p450 ~ reporting_area, data = data) # result: p= 0.2722
+dunn <- dunnTest(data$p450, data$reporting_area, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# SOD
+kruskal.test(sod ~ reporting_area, data = data) # result: p= 0.01261
+dunn <- dunnTest(data$sod, data$reporting_area, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# CI_Wet_Volume
+kruskal.test(ci_wet_volume ~ reporting_area, data = data) # result: p= 0.8026
+dunn <- dunnTest(data$ci_wet_volume, data$reporting_area, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# CI_Wet_Shell_Weight
+kruskal.test(ci_wet_shell_weight ~ reporting_area, data = data) # result: p= 0.3923
+dunn <- dunnTest(data$ci_wet_shell_weight, data$reporting_area, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# CI_Pollution
+kruskal.test(ci_pollution ~ reporting_area, data = data) # result: p= 0.454
+dunn <- dunnTest(data$ci_pollution, data$reporting_area, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+```
+
+## PCB Groups
+### No significant results
+```{r}
+
+library(vegan)
+library(FSA)
+
+data$pcb_group <- as.factor(data$pcb_group) # make a factor for analysis
+
+# P450
+kruskal.test(p450 ~ pcb_group, data = data) # result: p= 0.003688
+dunn <- dunnTest(data$p450, data$pcb_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# SOD
+kruskal.test(sod ~ pcb_group, data = data) # result: p= 0.003041
+dunn <- dunnTest(data$sod, data$pcb_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# CI_Wet_Volume
+kruskal.test(ci_wet_volume ~ pcb_group, data = data) # result: p= 0.2901
+dunn <- dunnTest(data$ci_wet_volume, data$pcb_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# CI_Wet_Shell_Weight
+kruskal.test(ci_wet_shell_weight ~ pcb_group, data = data) # result: p= 0.05206
+dunn <- dunnTest(data$ci_wet_shell_weight, data$pcb_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# CI_Pollution
+kruskal.test(ci_pollution ~ pcb_group, data = data) # result: p= 0.8241
+dunn <- dunnTest(data$ci_pollution, data$pcb_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+```
+
+## PAH Group
+### No significant results
+```{r}
+
+library(vegan)
+library(FSA)
+
+data$pah_group <- as.factor(data$pah_group) # make a factor for analysis
+
+# P450
+kruskal.test(p450 ~ pah_group, data = data) # result: p= 0.2722
+dunn <- dunnTest(data$p450, data$pah_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# SOD
+kruskal.test(sod ~ pah_group, data = data) # result: p= 0.01261
+dunn <- dunnTest(data$sod, data$pah_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# CI_Wet_Volume
+kruskal.test(ci_wet_volume ~ pah_group, data = data) # result: p= 0.8026
+dunn <- dunnTest(data$ci_wet_volume, data$pah_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# CI_Wet_Shell_Weight
+kruskal.test(ci_wet_shell_weight ~ pah_group, data = data) # result: p= 0.3923
+dunn <- dunnTest(data$ci_wet_shell_weight, data$pah_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# CI_Pollution
+kruskal.test(ci_pollution ~ pah_group, data = data) # result: p= 0.454
+dunn <- dunnTest(data$ci_pollution, data$pah_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+```
+
+## Geo Group
+### No significant results
+```{r}
+
+library(vegan)
+library(FSA)
+
+data$geo_group <- as.factor(data$geo_group) # make a factor for analysis
+
+# P450
+kruskal.test(p450 ~ geo_group, data = data) # result: p= 0.0148
+dunn <- dunnTest(data$p450, data$geo_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# SOD
+kruskal.test(sod ~ geo_group, data = data) # result: p= 0.07454
+dunn <- dunnTest(data$sod, data$geo_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# CI_Wet_Volume
+kruskal.test(ci_wet_volume ~ geo_group, data = data) # result: p= 0.8462
+dunn <- dunnTest(data$ci_wet_volume, data$geo_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# CI_Wet_Shell_Weight
+kruskal.test(ci_wet_shell_weight ~ geo_group, data = data) # result: p= 0.09208
+dunn <- dunnTest(data$ci_wet_shell_weight, data$geo_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+# CI_Pollution
+kruskal.test(ci_pollution ~ geo_group, data = data) # result: p= 0.3182
+dunn <- dunnTest(data$ci_pollution, data$geo_group, method = "bonferroni", list = TRUE)
+mc <- data.frame(
+    Comparison = dunn$comparisons,
+    Z = dunn$Z,
+    P.adjusted = dunn$P.adjusted
+)
+print(mc) # NO significance confirmed
+
+```
+
+# ANOVA - Shell Thickness Only
+## All groupings (site, reporting area, pcb group, pah group, geo group)
+### Significant results for all groupings, confirmed in post hoc testing
+```{r}
+
+library(car)
+library(multcomp)
+
+# Define grouping variables
+grouping_vars <- c("site_name", "reporting_area", "pcb_group", "pah_group", "geo_group")
+
+# Function to run ANOVA and post hoc test
+run_anova_posthoc <- function(group_var, data) {
+  # Remove NAs for shell thickness and the grouping variable
+  clean_data <- data[!is.na(data$shell_thickness) & !is.na(data[[group_var]]), ]
+  
+  # Run ANOVA
+  anova_model <- aov(shell_thickness ~ get(group_var), data = clean_data)
+  anova_summary <- summary(anova_model)
+
+  # Extract p-value from ANOVA table
+  p_value <- anova_summary[[1]]["Pr(>F)"][1,1]  
+
+  # Only proceed if ANOVA is significant
+  if (p_value < 0.05) {
+    cat("\n### Significant ANOVA results for shell thickness by", group_var, "###\n")
+    print(anova_summary)
+
+    # Run Tukey's HSD post hoc test
+    posthoc_result <- TukeyHSD(anova_model)
+
+    # Convert to data frame for filtering
+    posthoc_df <- as.data.frame(posthoc_result[[1]])
+    posthoc_df <- cbind(comparison = rownames(posthoc_df), posthoc_df)  # Add comparison column
+
+    # Filter only significant results (p < 0.05)
+    significant_posthoc <- posthoc_df[posthoc_df$`p adj` < 0.05, , drop = FALSE]
+
+    if (nrow(significant_posthoc) > 0) {
+      cat("\n### Significant Tukey Post Hoc Comparisons for", group_var, "###\n")
+      print(significant_posthoc)
+    } else {
+      cat("\n### No significant post hoc differences for", group_var, "###\n")
+    }
+
+    return(list(ANOVA = anova_summary, PostHoc = significant_posthoc))
+  } else {
+    cat("\n### No significant ANOVA differences for shell thickness by", group_var, "###\n")
+    return(NULL)
+  }
+}
+
+# Run ANOVA + post hoc for each grouping variable and store only significant results
+anova_results <- lapply(grouping_vars, function(var) run_anova_posthoc(var, data))
+names(anova_results) <- grouping_vars
+
+# Remove NULL results (where ANOVA was not significant)
+anova_results <- anova_results[!sapply(anova_results, is.null)]
+
+```
+
+## Write out current df for review
+```{r}
+
+write.csv(data, "../data/cleaned/all_individual_data_and_all_groups.csv", row.names = FALSE)
+
+```
+
