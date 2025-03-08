@@ -1,5 +1,5 @@
 ---
-title: "02- Analysis Groups: Adding the Groupings for Analysis by Site, Reporting Area, PCB Group, Geographic Area and PAH Groups"
+title: "02- Analysis Groups: Creating the Grouping Metrics for Sample level and above analysis"
 output:
   pdf_document: 
     fig_width: 20
@@ -47,12 +47,12 @@ getwd()
 
 # load data
 # complete df
-data<- read.csv("../data/cleaned/complete_with_groups.csv")
-p16<- read.csv("../data/cleaned/p16_grouping_for_averages.csv")
-p42<- read.csv("../data/cleaned/p42_grouping_for_averages.csv")
-phmw<- read.csv("../data/cleaned/phmw_grouping_for_averages.csv")
-plmw<- read.csv("../data/cleaned/plmw_grouping_for_averages.csv")
-pcb<- read.csv("../data/cleaned/pcb_grouping_for_averages.csv")
+#data<- read.csv("../data/cleaned/complete_with_groups.csv")
+p16<- read.csv("../data/p16_group.csv")
+p42<- read.csv("../data/p42_group.csv")
+phmw<- read.csv("../data/phmw_group.csv")
+plmw<- read.csv("../data/plmw_group.csv")
+pcb<- read.csv("../data/pcb_group.csv")
 # check it out
 #str(data) # checking df structure
 # note that sample_id and site_number are integers and may need to be adjusted to characters for analysis
@@ -63,77 +63,656 @@ pcb<- read.csv("../data/cleaned/pcb_grouping_for_averages.csv")
 
 ```
 
-# All groups created. Do not run lines 66 - 124 unless rebuilding the df
-## Adding PAH + PCB groups, 5 groups in total
+# Fisher-Jenks Breaks (log transformations)
+### p16, p42, plmw, and pcb groups: n= 5, phmw: n=6
+
+## p16
 ```{r}
 
-library(classInt)
-library(dplyr)
+library(classInt)  # For Fisher-Jenks breaks
+library(cluster)   # For clustering methods
+library(factoextra) # For optimal K estimation
 
-# Extract the DryValue column
-dry_values <- p42$DryValue
+p16$log_concentration <- log1p(p16$DryValue)  # log transformation
 
-# Compute Fisher-Jenks breaks for 6 groups
-num_classes <- 6
-breaks <- classIntervals(dry_values, num_classes, style = "fisher")$brks
+# Function to compute Goodness of Variance Fit (GVF)
+compute_gvf <- function(p16, max_k = 10) {
+  gvf_results <- data.frame(k = integer(), gvf = numeric())
 
-# Print the breakpoints
-print(breaks)
+  for (k in 2:max_k) {  # Start from 2 to avoid a single category
+    breaks <- classIntervals(p16, n = k, style = "fisher")
+    total_var <- var(p16)
+    within_var <- sum(sapply(1:k, function(i) var(p16[breaks$brks[i] <= p16 & p16 <= breaks$brks[i+1]])))
+    
+    gvf <- (total_var - within_var) / total_var  # Goodness of Fit
+    gvf_results <- rbind(gvf_results, data.frame(k = k, gvf = gvf))
+  }
 
-# Create group assignments based on the breaks
-p42$DryValue_Group <- cut(dry_values, breaks = breaks, labels = 1:num_classes, include.lowest = TRUE)
+  return(gvf_results)
+}
 
-# Check the first few rows with the new grouping
-head(p42)
+# Compute GVF for different k values
+gvf_results <- compute_gvf(p16$log_concentration, max_k = 8)
 
+# Plot GVF to find the "elbow"
+ggplot(gvf_results, aes(x = k, y = gvf)) +
+  geom_line() +
+  geom_point() +
+  ggtitle("Goodness of Variance Fit (GVF) for Fisher-Jenks") +
+  xlab("Number of Breaks (k)") +
+  ylab("GVF (Higher is Better)")
 
-# write out new table
-
-write.csv(p42, "../data/p42_group.csv", row.names = FALSE)
 
 ```
 
-## Geographic (lat/ long) (n=6)
+## p42
 ```{r}
 
-# make geographic clusters based on lat/ long coordinates in 5 groups since it looks like there are 5 distinct areas of sites
+library(classInt)  # For Fisher-Jenks breaks
+library(cluster)   # For clustering methods
+library(factoextra) # For optimal K estimation
 
-# use k-means clustering 
-set.seed(123)
-clusters <- kmeans(data[, c("latitude", "longitude")], centers = 5)
-data <- data %>%
-  mutate(geo = as.factor(clusters$cluster))
+p42$log_concentration <- log1p(p42$DryValue)  # log transformation
 
-# lat/long ranges for each group
-latlong_ranges <- data %>%
-  group_by(geo) %>%
-  summarize(
-    lat_range = paste0(round(min(latitude), 2), " - ", round(max(latitude), 2)),
-    long_range = paste0(round(min(longitude), 2), " - ", round(max(longitude), 2))
-  ) %>%
-  mutate(label = paste0("Group ", geo, "\nLat: ", lat_range, "\nLong: ", long_range))
+# Function to compute Goodness of Variance Fit (GVF)
+compute_gvf <- function(p42, max_k = 10) {
+  gvf_results <- data.frame(k = integer(), gvf = numeric())
 
-# add lat/long ranges back to the df
-data <- data %>%
-  left_join(latlong_ranges, by = "geo")
+  for (k in 2:max_k) {  # Start from 2 to avoid a single category
+    breaks <- classIntervals(p42, n = k, style = "fisher")
+    total_var <- var(p42)
+    within_var <- sum(sapply(1:k, function(i) var(p42[breaks$brks[i] <= p42 & p42 <= breaks$brks[i+1]])))
+    
+    gvf <- (total_var - within_var) / total_var  # Goodness of Fit
+    gvf_results <- rbind(gvf_results, data.frame(k = k, gvf = gvf))
+  }
 
-write.csv(data, "../data/cleaned/updated_geo_grouping", row.names = FALSE)
+  return(gvf_results)
+}
+
+# Compute GVF for different k values
+gvf_results <- compute_gvf(p42$log_concentration, max_k = 8)
+
+# Plot GVF to find the "elbow"
+ggplot(gvf_results, aes(x = k, y = gvf)) +
+  geom_line() +
+  geom_point() +
+  ggtitle("Goodness of Variance Fit (GVF) for Fisher-Jenks") +
+  xlab("Number of Breaks (k)") +
+  ylab("GVF (Higher is Better)")
+
 
 ```
 
-# Adding chem groups to data
+## phmw
 ```{r}
 
-# just replace the df name in the parenthesis to add all of the chem groups
-library(tidyr)
-library(dplyr)
+library(classInt)  # For Fisher-Jenks breaks
+library(cluster)   # For clustering methods
+library(factoextra) # For optimal K estimation
 
-df <- df %>%
-  left_join(p42, by = "site_name")
+phmw$log_concentration <- log1p(phmw$DryValue)  # log transformation
 
-# check
-head(df)
+# Function to compute Goodness of Variance Fit (GVF)
+compute_gvf <- function(phmw, max_k = 10) {
+  gvf_results <- data.frame(k = integer(), gvf = numeric())
 
-write.csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/all_chem_join4.csv")
+  for (k in 2:max_k) {  # Start from 2 to avoid a single category
+    breaks <- classIntervals(phmw, n = k, style = "fisher")
+    total_var <- var(phmw)
+    within_var <- sum(sapply(1:k, function(i) var(phmw[breaks$brks[i] <= phmw & phmw <= breaks$brks[i+1]])))
+    
+    gvf <- (total_var - within_var) / total_var  # Goodness of Fit
+    gvf_results <- rbind(gvf_results, data.frame(k = k, gvf = gvf))
+  }
+
+  return(gvf_results)
+}
+
+# Compute GVF for different k values
+gvf_results <- compute_gvf(phmw$log_concentration, max_k = 8)
+
+# Plot GVF to find the "elbow"
+ggplot(gvf_results, aes(x = k, y = gvf)) +
+  geom_line() +
+  geom_point() +
+  ggtitle("Goodness of Variance Fit (GVF) for Fisher-Jenks") +
+  xlab("Number of Breaks (k)") +
+  ylab("GVF (Higher is Better)")
+
+
+```
+
+## plmw
+```{r}
+
+library(classInt)  # For Fisher-Jenks breaks
+library(cluster)   # For clustering methods
+library(factoextra) # For optimal K estimation
+
+plmw$log_concentration <- log1p(plmw$DryValue)  # log transformation
+
+# Function to compute Goodness of Variance Fit (GVF)
+compute_gvf <- function(plmw, max_k = 10) {
+  gvf_results <- data.frame(k = integer(), gvf = numeric())
+
+  for (k in 2:max_k) {  # Start from 2 to avoid a single category
+    breaks <- classIntervals(plmw, n = k, style = "fisher")
+    total_var <- var(plmw)
+    within_var <- sum(sapply(1:k, function(i) var(plmw[breaks$brks[i] <= plmw & plmw <= breaks$brks[i+1]])))
+    
+    gvf <- (total_var - within_var) / total_var  # Goodness of Fit
+    gvf_results <- rbind(gvf_results, data.frame(k = k, gvf = gvf))
+  }
+
+  return(gvf_results)
+}
+
+# Compute GVF for different k values
+gvf_results <- compute_gvf(plmw$log_concentration, max_k = 8)
+
+# Plot GVF to find the "elbow"
+ggplot(gvf_results, aes(x = k, y = gvf)) +
+  geom_line() +
+  geom_point() +
+  ggtitle("Goodness of Variance Fit (GVF) for Fisher-Jenks") +
+  xlab("Number of Breaks (k)") +
+  ylab("GVF (Higher is Better)")
+
+
+```
+
+## pcb
+```{r}
+
+library(classInt)  # For Fisher-Jenks breaks
+library(cluster)   # For clustering methods
+library(factoextra) # For optimal K estimation
+
+pcb$log_concentration <- log1p(pcb$DryValue)  # log transformation
+
+# Function to compute Goodness of Variance Fit (GVF)
+compute_gvf <- function(pcb, max_k = 10) {
+  gvf_results <- data.frame(k = integer(), gvf = numeric())
+
+  for (k in 2:max_k) {  # Start from 2 to avoid a single category
+    breaks <- classIntervals(pcb, n = k, style = "fisher")
+    total_var <- var(pcb)
+    within_var <- sum(sapply(1:k, function(i) var(pcb[breaks$brks[i] <= pcb & pcb <= breaks$brks[i+1]])))
+    
+    gvf <- (total_var - within_var) / total_var  # Goodness of Fit
+    gvf_results <- rbind(gvf_results, data.frame(k = k, gvf = gvf))
+  }
+
+  return(gvf_results)
+}
+
+# Compute GVF for different k values
+gvf_results <- compute_gvf(pcb$log_concentration, max_k = 8)
+
+# Plot GVF to find the "elbow"
+ggplot(gvf_results, aes(x = k, y = gvf)) +
+  geom_line() +
+  geom_point() +
+  ggtitle("Goodness of Variance Fit (GVF) for Fisher-Jenks") +
+  xlab("Number of Breaks (k)") +
+  ylab("GVF (Higher is Better)")
+
+
+```
+
+# Verifying Breaks
+## p16, 5-8 breaks
+```{r}
+
+# Fisher-Jenks classifications
+breaks_5 <- classIntervals(p16$log_concentration, n = 5, style = "fisher")
+breaks_6 <- classIntervals(p16$log_concentration, n = 6, style = "fisher")
+breaks_7 <- classIntervals(p16$log_concentration, n = 7, style = "fisher")
+breaks_8 <- classIntervals(p16$log_concentration, n = 8, style = "fisher")
+
+# Assign groups
+p16$category_5 <- cut(p16$log_concentration, breaks = breaks_5$brks, labels = 1:5, include.lowest = TRUE)
+p16$category_6 <- cut(p16$log_concentration, breaks = breaks_6$brks, labels = 1:6, include.lowest = TRUE)
+p16$category_7 <- cut(p16$log_concentration, breaks = breaks_7$brks, labels = 1:7, include.lowest = TRUE)
+p16$category_8 <- cut(p16$log_concentration, breaks = breaks_8$brks, labels = 1:8, include.lowest = TRUE)
+
+# Check distribution
+table(p16$category_5)
+table(p16$category_6)
+table(p16$category_7)
+table(p16$category_8)
+
+```
+## p42, 5-8 breaks
+```{r}
+
+# Fisher-Jenks classifications
+breaks_5 <- classIntervals(p42$log_concentration, n = 5, style = "fisher")
+breaks_6 <- classIntervals(p42$log_concentration, n = 6, style = "fisher")
+breaks_7 <- classIntervals(p42$log_concentration, n = 7, style = "fisher")
+breaks_8 <- classIntervals(p42$log_concentration, n = 8, style = "fisher")
+
+# Assign groups
+p42$category_5 <- cut(p42$log_concentration, breaks = breaks_5$brks, labels = 1:5, include.lowest = TRUE)
+p42$category_6 <- cut(p42$log_concentration, breaks = breaks_6$brks, labels = 1:6, include.lowest = TRUE)
+p42$category_7 <- cut(p42$log_concentration, breaks = breaks_7$brks, labels = 1:7, include.lowest = TRUE)
+p42$category_8 <- cut(p42$log_concentration, breaks = breaks_8$brks, labels = 1:8, include.lowest = TRUE)
+
+# Check distribution
+table(p42$category_5)
+table(p42$category_6)
+table(p42$category_7)
+table(p42$category_8)
+
+```
+
+## phmw, 6-8 breaks
+```{r}
+
+# Fisher-Jenks classifications
+breaks_6 <- classIntervals(phmw$log_concentration, n = 6, style = "fisher")
+breaks_7 <- classIntervals(phmw$log_concentration, n = 7, style = "fisher")
+breaks_8 <- classIntervals(phmw$log_concentration, n = 8, style = "fisher")
+
+# Assign groups
+phmw$category_6 <- cut(phmw$log_concentration, breaks = breaks_6$brks, labels = 1:6, include.lowest = TRUE)
+phmw$category_7 <- cut(phmw$log_concentration, breaks = breaks_7$brks, labels = 1:7, include.lowest = TRUE)
+phmw$category_8 <- cut(phmw$log_concentration, breaks = breaks_8$brks, labels = 1:8, include.lowest = TRUE)
+
+# Check distribution
+table(phmw$category_6)
+table(phmw$category_7)
+table(phmw$category_8)
+
+```
+
+## plmw, 5-6 breaks
+```{r}
+
+# Fisher-Jenks classifications
+breaks_5 <- classIntervals(plmw$log_concentration, n = 5, style = "fisher")
+breaks_6 <- classIntervals(plmw$log_concentration, n = 6, style = "fisher")
+
+# Assign groups
+plmw$category_5 <- cut(plmw$log_concentration, breaks = breaks_5$brks, labels = 1:5, include.lowest = TRUE)
+plmw$category_6 <- cut(plmw$log_concentration, breaks = breaks_6$brks, labels = 1:6, include.lowest = TRUE)
+
+# Check distribution
+table(plmw$category_5)
+table(plmw$category_6)
+
+```
+
+## pcb, 5-7 breaks
+```{r}
+
+# Fisher-Jenks classifications
+breaks_5 <- classIntervals(pcb$log_concentration, n = 5, style = "fisher")
+breaks_6 <- classIntervals(pcb$log_concentration, n = 6, style = "fisher")
+breaks_7 <- classIntervals(pcb$log_concentration, n = 7, style = "fisher")
+
+# Assign groups
+pcb$category_5 <- cut(pcb$log_concentration, breaks = breaks_5$brks, labels = 1:5, include.lowest = TRUE)
+pcb$category_6 <- cut(pcb$log_concentration, breaks = breaks_6$brks, labels = 1:6, include.lowest = TRUE)
+pcb$category_7 <- cut(pcb$log_concentration, breaks = breaks_7$brks, labels = 1:7, include.lowest = TRUE)
+
+# Check distribution
+table(pcb$category_5)
+table(pcb$category_6)
+table(pcb$category_7)
+
+```
+
+# Fisher-Jenks Breaks (sqrt transformations)
+### p16, p42, plmw, and pcb groups: n= 5, phmw: n=6
+
+## p16
+```{r}
+
+library(classInt)  # For Fisher-Jenks breaks
+library(cluster)   # For clustering methods
+library(factoextra) # For optimal K estimation
+
+p16$sqrt_concentration <- sqrt(p16$DryValue)  # log transformation
+
+# Function to compute Goodness of Variance Fit (GVF)
+compute_gvf <- function(p16, max_k = 10) {
+  gvf_results <- data.frame(k = integer(), gvf = numeric())
+
+  for (k in 2:max_k) {  # Start from 2 to avoid a single category
+    breaks <- classIntervals(p16, n = k, style = "fisher")
+    total_var <- var(p16)
+    within_var <- sum(sapply(1:k, function(i) var(p16[breaks$brks[i] <= p16 & p16 <= breaks$brks[i+1]])))
+    
+    gvf <- (total_var - within_var) / total_var  # Goodness of Fit
+    gvf_results <- rbind(gvf_results, data.frame(k = k, gvf = gvf))
+  }
+
+  return(gvf_results)
+}
+
+# Compute GVF for different k values
+gvf_results <- compute_gvf(p16$sqrt_concentration, max_k = 8)
+
+# Plot GVF to find the "elbow"
+ggplot(gvf_results, aes(x = k, y = gvf)) +
+  geom_line() +
+  geom_point() +
+  ggtitle("Goodness of Variance Fit (GVF) for Fisher-Jenks") +
+  xlab("Number of Breaks (k)") +
+  ylab("GVF (Higher is Better)")
+
+
+```
+
+## p42
+```{r}
+
+library(classInt)  # For Fisher-Jenks breaks
+library(cluster)   # For clustering methods
+library(factoextra) # For optimal K estimation
+
+p42$sqrt_concentration <- sqrt(p42$DryValue)  # log transformation
+
+# Function to compute Goodness of Variance Fit (GVF)
+compute_gvf <- function(p42, max_k = 10) {
+  gvf_results <- data.frame(k = integer(), gvf = numeric())
+
+  for (k in 2:max_k) {  # Start from 2 to avoid a single category
+    breaks <- classIntervals(p42, n = k, style = "fisher")
+    total_var <- var(p42)
+    within_var <- sum(sapply(1:k, function(i) var(p42[breaks$brks[i] <= p42 & p42 <= breaks$brks[i+1]])))
+    
+    gvf <- (total_var - within_var) / total_var  # Goodness of Fit
+    gvf_results <- rbind(gvf_results, data.frame(k = k, gvf = gvf))
+  }
+
+  return(gvf_results)
+}
+
+# Compute GVF for different k values
+gvf_results <- compute_gvf(p42$sqrt_concentration, max_k = 8)
+
+# Plot GVF to find the "elbow"
+ggplot(gvf_results, aes(x = k, y = gvf)) +
+  geom_line() +
+  geom_point() +
+  ggtitle("Goodness of Variance Fit (GVF) for Fisher-Jenks") +
+  xlab("Number of Breaks (k)") +
+  ylab("GVF (Higher is Better)")
+
+
+```
+
+## phmw
+```{r}
+
+library(classInt)  # For Fisher-Jenks breaks
+library(cluster)   # For clustering methods
+library(factoextra) # For optimal K estimation
+
+phmw$sqrt_concentration <- sqrt(phmw$DryValue)  # log transformation
+
+# Function to compute Goodness of Variance Fit (GVF)
+compute_gvf <- function(phmw, max_k = 10) {
+  gvf_results <- data.frame(k = integer(), gvf = numeric())
+
+  for (k in 2:max_k) {  # Start from 2 to avoid a single category
+    breaks <- classIntervals(phmw, n = k, style = "fisher")
+    total_var <- var(phmw)
+    within_var <- sum(sapply(1:k, function(i) var(phmw[breaks$brks[i] <= phmw & phmw <= breaks$brks[i+1]])))
+    
+    gvf <- (total_var - within_var) / total_var  # Goodness of Fit
+    gvf_results <- rbind(gvf_results, data.frame(k = k, gvf = gvf))
+  }
+
+  return(gvf_results)
+}
+
+# Compute GVF for different k values
+gvf_results <- compute_gvf(phmw$sqrt_concentration, max_k = 8)
+
+# Plot GVF to find the "elbow"
+ggplot(gvf_results, aes(x = k, y = gvf)) +
+  geom_line() +
+  geom_point() +
+  ggtitle("Goodness of Variance Fit (GVF) for Fisher-Jenks") +
+  xlab("Number of Breaks (k)") +
+  ylab("GVF (Higher is Better)")
+
+
+```
+
+## plmw
+```{r}
+
+library(classInt)  # For Fisher-Jenks breaks
+library(cluster)   # For clustering methods
+library(factoextra) # For optimal K estimation
+
+plmw$sqrt_concentration <- sqrt(plmw$DryValue)  # log transformation
+
+# Function to compute Goodness of Variance Fit (GVF)
+compute_gvf <- function(plmw, max_k = 10) {
+  gvf_results <- data.frame(k = integer(), gvf = numeric())
+
+  for (k in 2:max_k) {  # Start from 2 to avoid a single category
+    breaks <- classIntervals(plmw, n = k, style = "fisher")
+    total_var <- var(plmw)
+    within_var <- sum(sapply(1:k, function(i) var(plmw[breaks$brks[i] <= plmw & plmw <= breaks$brks[i+1]])))
+    
+    gvf <- (total_var - within_var) / total_var  # Goodness of Fit
+    gvf_results <- rbind(gvf_results, data.frame(k = k, gvf = gvf))
+  }
+
+  return(gvf_results)
+}
+
+# Compute GVF for different k values
+gvf_results <- compute_gvf(plmw$sqrt_concentration, max_k = 8)
+
+# Plot GVF to find the "elbow"
+ggplot(gvf_results, aes(x = k, y = gvf)) +
+  geom_line() +
+  geom_point() +
+  ggtitle("Goodness of Variance Fit (GVF) for Fisher-Jenks") +
+  xlab("Number of Breaks (k)") +
+  ylab("GVF (Higher is Better)")
+
+
+```
+
+## pcb, n= 4-8
+```{r}
+
+library(classInt)  # For Fisher-Jenks breaks
+library(cluster)   # For clustering methods
+library(factoextra) # For optimal K estimation
+
+pcb$sqrt_concentration <- sqrt(pcb$DryValue)  # log transformation
+
+# Function to compute Goodness of Variance Fit (GVF)
+compute_gvf <- function(pcb, max_k = 10) {
+  gvf_results <- data.frame(k = integer(), gvf = numeric())
+
+  for (k in 2:max_k) {  # Start from 2 to avoid a single category
+    breaks <- classIntervals(pcb, n = k, style = "fisher")
+    total_var <- var(pcb)
+    within_var <- sum(sapply(1:k, function(i) var(pcb[breaks$brks[i] <= pcb & pcb <= breaks$brks[i+1]])))
+    
+    gvf <- (total_var - within_var) / total_var  # Goodness of Fit
+    gvf_results <- rbind(gvf_results, data.frame(k = k, gvf = gvf))
+  }
+
+  return(gvf_results)
+}
+
+# Compute GVF for different k values
+gvf_results <- compute_gvf(pcb$sqrt_concentration, max_k = 8)
+
+# Plot GVF to find the "elbow"
+ggplot(gvf_results, aes(x = k, y = gvf)) +
+  geom_line() +
+  geom_point() +
+  ggtitle("Goodness of Variance Fit (GVF) for Fisher-Jenks") +
+  xlab("Number of Breaks (k)") +
+  ylab("GVF (Higher is Better)")
+
+
+```
+
+# Verifying Breaks (Only pcb had a positive result)
+## pcb, 4-8 breaks
+```{r}
+
+# Fisher-Jenks classifications
+breaks_4 <- classIntervals(pcb$sqrt_concentration, n = 4, style = "fisher")
+breaks_5 <- classIntervals(pcb$sqrt_concentration, n = 5, style = "fisher")
+breaks_6 <- classIntervals(pcb$sqrt_concentration, n = 6, style = "fisher")
+breaks_7 <- classIntervals(pcb$sqrt_concentration, n = 7, style = "fisher")
+breaks_8 <- classIntervals(pcb$sqrt_concentration, n = 8, style = "fisher")
+
+# Assign groups
+pcb$category_4 <- cut(pcb$sqrt_concentration, breaks = breaks_4$brks, labels = 1:4, include.lowest = TRUE)
+pcb$category_5 <- cut(pcb$sqrt_concentration, breaks = breaks_5$brks, labels = 1:5, include.lowest = TRUE)
+pcb$category_6 <- cut(pcb$sqrt_concentration, breaks = breaks_6$brks, labels = 1:6, include.lowest = TRUE)
+pcb$category_7 <- cut(pcb$sqrt_concentration, breaks = breaks_7$brks, labels = 1:7, include.lowest = TRUE)
+pcb$category_8 <- cut(pcb$sqrt_concentration, breaks = breaks_8$brks, labels = 1:8, include.lowest = TRUE)
+
+# Check distribution
+table(pcb$category_4)
+table(pcb$category_5)
+table(pcb$category_6)
+table(pcb$category_7)
+table(pcb$category_8)
+
+```
+
+# KDE Breaks- Not an option
+```{r}
+
+library(MASS)
+
+#max_density <- max(density_est$y)  # Get highest density value
+#threshold <- 0.1 * max_density  # Set threshold as 10% of peak density
+
+
+density_est <- density(p16$log_concentration)  # Kernel Density Estimation
+
+breaks_kde <- density_est$x[density_est$y < 0.08]  # Adjust threshold as needed, ID where density is LOW (local minima)
+breaks_kde <- unique(c(min(p16$log_concentration), breaks_kde, max(p16$log_concentration))) # Ensure the minimum and maximum values are included
+print(breaks_kde) # Print selected breakpoints
+
+# Assign KDE groups based on breakpoints
+p16$category_kde <- cut(p16$log_concentration, 
+                              breaks = breaks_kde, 
+                              labels = 1:(length(breaks_kde)-1), 
+                              include.lowest = TRUE)
+
+# View the distribution of KDE-based categories
+table(p16$category_kde)
+
+ggplot(p16, aes(x = log_concentration)) +
+  geom_density(fill = "blue", alpha = 0.3) +  # KDE density plot
+  geom_vline(xintercept = breaks_kde, linetype = "dashed", color = "red") +  # KDE Breaks
+  ggtitle("KDE-Based Breaks for Contaminant Data") +
+  xlab("Log Concentration") + ylab("Density")
+
+
+```
+
+# Quantile Breaks
+## p16
+```{r}
+
+quantile_breaks <- quantile(p16$log_concentration, probs = seq(0, 1, length.out = 6))  # 5 groups = 6 breakpoints
+print(quantile_breaks)
+
+p16$quantile_category <- cut(p16$log_concentration, 
+                                   breaks = quantile_breaks, 
+                                   labels = 1:5, 
+                                   include.lowest = TRUE)
+
+table(p16$quantile_category) # Check category distribution
+
+
+```
+
+## p42
+```{r}
+
+quantile_breaks <- quantile(p42$log_concentration, probs = seq(0, 1, length.out = 6))  # 5 groups = 6 breakpoints
+print(quantile_breaks)
+
+p42$quantile_category <- cut(p16$log_concentration, 
+                                   breaks = quantile_breaks, 
+                                   labels = 1:5, 
+                                   include.lowest = TRUE)
+
+table(p42$quantile_category) # Check category distribution
+
+
+```
+
+## phmw
+```{r}
+
+quantile_breaks <- quantile(phmw$log_concentration, probs = seq(0, 1, length.out = 7))  # 6 groups = 7 breakpoints
+print(quantile_breaks)
+
+phmw$quantile_category <- cut(phmw$log_concentration, 
+                                   breaks = quantile_breaks, 
+                                   labels = 1:6, 
+                                   include.lowest = TRUE)
+
+table(phmw$quantile_category) # Check category distribution
+
+
+```
+
+## plmw
+```{r}
+
+quantile_breaks <- quantile(plmw$log_concentration, probs = seq(0, 1, length.out = 6))  # 5 groups = 6 breakpoints
+print(quantile_breaks)
+
+plmw$quantile_category <- cut(plmw$log_concentration, 
+                                   breaks = quantile_breaks, 
+                                   labels = 1:5, 
+                                   include.lowest = TRUE)
+
+table(plmw$quantile_category) # Check category distribution
+
+
+```
+
+## pcb
+```{r}
+
+quantile_breaks <- quantile(pcb$log_concentration, probs = seq(0, 1, length.out = 6))  # 5 groups = 6 breakpoints
+print(quantile_breaks)
+
+pcb$quantile_category <- cut(pcb$log_concentration, 
+                                   breaks = quantile_breaks, 
+                                   labels = 1:5, 
+                                   include.lowest = TRUE)
+
+table(pcb$quantile_category) # Check category distribution
+
+
+```
+
+
+# Write out CSVs for the FJ breaks & Quantiles for manual manipulation
+```{r}
+getwd()
+
+write.csv(p16, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/p16_manual_groups.csv")
+write.csv(p42, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/p42_manual_groups.csv")
+write.csv(phmw, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/phmw_manual_groups.csv")
+write.csv(plmw, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/plmw_manual_groups.csv")
+write.csv(pcb, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/pcb_manual_groups.csv")
+
 ```
 
