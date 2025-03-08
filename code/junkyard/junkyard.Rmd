@@ -2435,3 +2435,188 @@ if (nrow(significant_tukey) > 0) {
 # Outcome: 4 significant pairings driven by group 1
 
 ```
+
+# Plot - P450
+
+```{r}
+
+# taking a look before anything else is best practice - so let's
+# by sample ID
+plot(data$sample_id, data$p450, 
+     xlab = "Sample", ylab = "P450 Value", 
+     main = "P450 Activity by Sample ID",
+     pch = 16, col = "blue")
+
+# by site
+boxplot(data$p450 ~ factor(data$site_name), 
+        xlab = "Site", ylab = "P450 Value", 
+        main = "P450 Activity by Site",
+        col = "blue")
+
+# looks like we have a team of outliers to address
+
+```
+
+# Plot - SOD
+
+```{r}
+
+# taking a look before anything else is best practice - so let's
+# by sample ID
+plot(data$sample_id, data$sod, 
+     xlab = "Sample", ylab = "SOD Value", 
+     main = "SOD Activity by Sample ID",
+     pch = 16, col = "blue")
+
+# by site
+boxplot(data$sod ~ factor(data$site_name), 
+        xlab = "Site", ylab = "SOD Value", 
+        main = "SOD Activity by Site",
+        col = "blue")
+
+# looks like we have a few outliers to deal with
+
+```
+
+# Plot - CI1
+
+```{r}
+
+# taking a look before anything else is best practice - so let's
+# by sample ID
+plot(data$sample_id, data$ci1, 
+     xlab = "Sample", ylab = "Condition Facotr", 
+     main = "Condition Factor by Sample ID",
+     pch = 16, col = "blue")
+
+# by site
+boxplot(data$ci1 ~ factor(data$site_name), 
+        xlab = "Site", ylab = "Condition Factor", 
+        main = "Condition Factor by Site",
+        col = "blue")
+
+```
+
+# Plot - CI2
+
+```{r}
+
+# taking a look before anything else is best practice - so let's
+# by sample ID
+plot(data$sample_id, data$ci2, 
+     xlab = "Sample", ylab = "Condition Facotr", 
+     main = "Condition Factor by Sample ID",
+     pch = 16, col = "blue")
+
+# by site
+boxplot(data$ci2 ~ factor(data$site_name), 
+        xlab = "Site", ylab = "Condition Factor", 
+        main = "Condition Factor by Site",
+        col = "blue")
+
+```
+
+# Plot - CI3
+```{r}
+
+# taking a look before anything else is best practice - so let's
+# by sample ID
+plot(data$sample_id, data$ci3, 
+     xlab = "Sample", ylab = "Condition Facotr", 
+     main = "Condition Factor by Sample ID",
+     pch = 16, col = "blue")
+
+# by site
+boxplot(data$ci3 ~ factor(data$site_name), 
+        xlab = "Site", ylab = "Condition Factor", 
+        main = "Condition Factor by Site",
+        col = "blue")
+
+```
+
+# Plot - Shell_Thickness
+```{r}
+
+# taking a look before anything else is best practice - so let's
+# by sample ID
+plot(data$sample_id, data$shell, 
+     xlab = "Sample", ylab = "Shell Thickness", 
+     main = "Shell Thickness by Sample ID",
+     pch = 16, col = "blue")
+
+# by site
+boxplot(data$shell ~ factor(data$site_name), 
+        xlab = "Site", ylab = "Shell Thickness", 
+        main = "Shell Thickness by Site",
+        col = "blue")
+
+# outliers are not clear here
+
+```
+
+# PERMANOVA
+## trying to get all metrics to work with all groupings
+```{r}
+
+# No significant results for Site group
+# No significant results for Reporting Area
+# No significant results for Geographic Group
+# No significant results for P16
+# No significant results for P42
+# No significant results for PLMW
+# No significant results for PLMW
+# 
+library(vegan)
+library(RVAideMemoire)
+
+# Define columns for dependent variables (metrics to analyze)
+dependent_vars <- colnames(data)[17:22]  # Adjust if needed
+
+# Define independent variables (grouping variables)
+independent_vars <- colnames(data)[8:16]  # Adjust if needed
+
+# Loop through each dependent variable separately
+for (var in dependent_vars) {
+  cat("\nRunning PERMANOVA for:", var, "\n")
+
+  # Remove rows with NA in the current dependent variable
+  data_clean <- data[complete.cases(data[, var]), ]
+
+  # Skip analysis if all rows were removed due to NAs
+  if (nrow(data_clean) == 0) {
+    cat("Skipping", var, "- all values are NA.\n")
+    next
+  }
+
+  # Create a distance matrix using the single dependent variable
+  dist_matrix <- vegdist(data_clean[, var, drop = FALSE], method = "bray")
+
+  # Run PERMANOVA with grouping variables
+  formula <- as.formula(paste("dist_matrix ~", paste(independent_vars, collapse = " + ")))
+  permanova_result <- adonis2(formula, data = data_clean, permutations = 999)
+
+  # Print PERMANOVA result
+  print(permanova_result)
+
+  # Check if PERMANOVA result is significant (p < 0.05)
+  if (permanova_result$`Pr(>F)`[1] < 0.05) {
+    cat("\nPERMANOVA is significant for", var, ". Running post-hoc tests...\n")
+
+    # Run post-hoc pairwise comparisons using a main grouping variable (e.g., site_name)
+    pairwise_result <- adonis2(dist_matrix ~ pcb, data = data_clean, permutations = 999)
+
+    # Filter only significant results (p < 0.05)
+    significant_results <- pairwise_result[pairwise_result$p.adj < 0.05, ]
+
+    # Print results if any are significant
+    if (nrow(significant_results) > 0) {
+      print(significant_results)
+    } else {
+      cat("\nNo significant post-hoc comparisons found for", var, ".\n")
+    }
+  } else {
+    cat("\nNo significant PERMANOVA results for", var, ".\n")
+  }
+}
+
+```

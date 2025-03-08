@@ -1,5 +1,5 @@
 ---
-title: "00- Data Cleaning: Checking out the raw data and making adjustments to support analysis, creating condition indices, and thickness averages"
+title: "00- Data Cleaning: Checking out the raw data and making adjustments to support analyses"
 output:
   pdf_document: 
     fig_width: 20
@@ -38,7 +38,7 @@ knitr::opts_chunk$set(
 getwd()
 
 # load data
-data<- read.csv("../data/full_bio_morph_with_geo_grouping.csv")
+data<- read.csv("../data/raw_complete_with_groups.csv")
 
 
 ```
@@ -46,7 +46,7 @@ data<- read.csv("../data/full_bio_morph_with_geo_grouping.csv")
 ---
 # Data Format
 P450 & SOD Activity (Unit / mg"^"-1"~"protein)
-Length, Height, Width, Shell Thickness - mm
+Shell Thickness - mm
 Weight - g
 CI - unitless
 ---
@@ -76,12 +76,12 @@ summary(data) # df stats for each column
 data$p450[data$p450 <= 0] <- NA
 
 # replace any values below LOQ with imputed LOQ (.5 x LOD), LOD= 0.05
-data$sod[data$sod <= 0] <- 0.0025
+data$sod[data$sod <= 0] <- 0.00354
 
 # check
 summary(data)
 
-write.csv(data, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/full_with_na.csv")
+write.csv(data, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/complete_with_groups.csv")
 
 ```
 
@@ -133,7 +133,7 @@ hist(data$shell)
 
 # Significance
 
-## Variance, p= 0.7293, we can use PERMANOVA for the stats
+## Variance, p= 5.744e-5, we can NOT use PERMANOVA for the stats, must use Kruskal-Wallis
 
 ```{r}
 
@@ -152,14 +152,14 @@ dist_matrix_variance <- vegdist(metric_matrix, na.rm= TRUE, method = "bray") # c
 dispersion_test <- betadisper(dist_matrix_variance, group = data$site_name) # check homogeneity of group variances
 
 
-anova(dispersion_test) # Perform permutation test for homogeneity. A p-value > .05 means we need to use PERMANOVA. p= 0.8999
+anova(dispersion_test) # Perform permutation test for homogeneity. A p-value > .05 means we need to use PERMANOVA. p= 5.744e-5
 
 ## *NOTE*: I don't actually know what it was supposed to look like, so I can followup in the future. Visualize results (boxplot of dispersions)
 boxplot(dispersion_test) # visualize results (boxplot of dispersions)
 
 ```
 
-# Check for Outliers - No Need
+# Check for Outliers - No Need. Outliers do not impact stats
 
 ```{r}
 

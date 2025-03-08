@@ -37,7 +37,7 @@ knitr::opts_chunk$set(
 getwd()
 
 # load data
-data<- read.csv("../data/full_with_na.csv")
+#data<- read.csv("../data/full_with_na.csv")
 
 # check it out
 str(data) # checking df structure
@@ -47,5 +47,7 @@ summary(data) #checking df contents
 
 ```
 
+Move the initial stats out of data cleaning file and put them here.
+Tests of Normality and Variance indicate KW test + Dunn posthoc for all metrics except Shell Thickness which was normally distributed.
 
 
