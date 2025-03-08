@@ -63,7 +63,7 @@ pcb<- read.csv("../data/cleaned/pcb_grouping_for_averages.csv")
 
 ```
 
-# All groups created. Do not run lines 57 - 115 unless rebuilding the df
+# All groups created. Do not run lines 66 - 124 unless rebuilding the df
 ## Adding PAH + PCB groups, 5 groups in total
 ```{r}
 
@@ -71,7 +71,7 @@ library(classInt)
 library(dplyr)
 
 # Extract the DryValue column
-dry_values <- plmw$plmw
+dry_values <- phmw$DryValue
 
 # Compute Fisher-Jenks breaks for 6 groups
 num_classes <- 6
@@ -81,15 +81,15 @@ breaks <- classIntervals(dry_values, num_classes, style = "fisher")$brks
 print(breaks)
 
 # Create group assignments based on the breaks
-plmw$DryValue_Group <- cut(dry_values, breaks = breaks, labels = 1:num_classes, include.lowest = TRUE)
+phmw$DryValue_Group <- cut(dry_values, breaks = breaks, labels = 1:num_classes, include.lowest = TRUE)
 
 # Check the first few rows with the new grouping
-head(plmw)
+head(phmw)
 
 
 # write out new table
 
-write.csv(plmw, "../data/plmw_grouping_for_averages.csv", row.names = FALSE)
+write.csv(phmw, "../data/phmw_group.csv", row.names = FALSE)
 
 ```
 
@@ -98,28 +98,26 @@ write.csv(plmw, "../data/plmw_grouping_for_averages.csv", row.names = FALSE)
 
 # make geographic clusters based on lat/ long coordinates in 5 groups since it looks like there are 5 distinct areas of sites
 
-data<- read.csv("../data/full_bio_morph_with_groups.csv")
-
 # use k-means clustering 
 set.seed(123)
 clusters <- kmeans(data[, c("latitude", "longitude")], centers = 5)
 data <- data %>%
-  mutate(geo_group = as.factor(clusters$cluster))
+  mutate(geo = as.factor(clusters$cluster))
 
 # lat/long ranges for each group
 latlong_ranges <- data %>%
-  group_by(geo_group) %>%
+  group_by(geo) %>%
   summarize(
     lat_range = paste0(round(min(latitude), 2), " - ", round(max(latitude), 2)),
     long_range = paste0(round(min(longitude), 2), " - ", round(max(longitude), 2))
   ) %>%
-  mutate(label = paste0("Group ", geo_group, "\nLat: ", lat_range, "\nLong: ", long_range))
+  mutate(label = paste0("Group ", geo, "\nLat: ", lat_range, "\nLong: ", long_range))
 
 # add lat/long ranges back to the df
 data <- data %>%
-  left_join(latlong_ranges, by = "geo_group")
+  left_join(latlong_ranges, by = "geo")
 
-write.csv(data, "../data/cleaned/updated_geo_group", row.names = FALSE)
+write.csv(data, "../data/cleaned/updated_geo_grouping", row.names = FALSE)
 
 ```
 
@@ -136,6 +134,6 @@ df <- df %>%
 # check
 head(df)
 
-write.csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/plmw_with_nas.csv")
+write.csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/all_chem_join.csv")
 ```
 
