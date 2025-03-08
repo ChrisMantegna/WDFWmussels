@@ -71,7 +71,7 @@ library(classInt)
 library(dplyr)
 
 # Extract the DryValue column
-dry_values <- phmw$DryValue
+dry_values <- p42$DryValue
 
 # Compute Fisher-Jenks breaks for 6 groups
 num_classes <- 6
@@ -81,15 +81,15 @@ breaks <- classIntervals(dry_values, num_classes, style = "fisher")$brks
 print(breaks)
 
 # Create group assignments based on the breaks
-phmw$DryValue_Group <- cut(dry_values, breaks = breaks, labels = 1:num_classes, include.lowest = TRUE)
+p42$DryValue_Group <- cut(dry_values, breaks = breaks, labels = 1:num_classes, include.lowest = TRUE)
 
 # Check the first few rows with the new grouping
-head(phmw)
+head(p42)
 
 
 # write out new table
 
-write.csv(phmw, "../data/phmw_group.csv", row.names = FALSE)
+write.csv(p42, "../data/p42_group.csv", row.names = FALSE)
 
 ```
 
@@ -129,11 +129,11 @@ library(tidyr)
 library(dplyr)
 
 df <- df %>%
-  left_join(plmw, by = "site_name")
+  left_join(p42, by = "site_name")
 
 # check
 head(df)
 
-write.csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/all_chem_join.csv")
+write.csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/all_chem_join4.csv")
 ```
 
