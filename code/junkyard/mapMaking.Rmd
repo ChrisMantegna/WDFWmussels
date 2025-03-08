@@ -64,11 +64,11 @@ Mapping Puget Sound and my cage retrieval sites
 ```{r}
 getwd()
 
-location<- read_csv("/home/shared/8TB_HDD_02/cnmntgna/GitHub/WDFWmussels/data/mussel.csv")
+location<- read_csv("/Users/cmantegna/Documents/GitHub/WDFWmussels/data/raw_complete_no_groups.csv")
 head(location)
-lat <- location[,5]
-long <- location[,6]
-site <- location[,2]
+lat <- location[,2]
+long <- location[,3]
+site <- location[,4]
 cage <- data.frame(long, lat, site)
 head(cage)
 

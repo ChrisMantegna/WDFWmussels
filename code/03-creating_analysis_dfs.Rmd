@@ -1,5 +1,5 @@
 ---
-title: "03- Creating the df for metric averages and analysis groups"
+title: "03- Creating the df's for individaul metrics and average metrics for analysis"
 output:
   pdf_document: 
     fig_width: 20
@@ -40,13 +40,11 @@ knitr::opts_chunk$set(
 # Load & Check Data
 ```{r}
 
-# double check where you are
-# *NOTE* see 00-data_cleaned for directory issue
 getwd()
 
-# load data
 # complete df
 data<- read.csv("../data/cleaned/complete_with_groups.csv")
+
 
 # check it out
 #str(data) # checking df structure
@@ -58,78 +56,22 @@ data<- read.csv("../data/cleaned/complete_with_groups.csv")
 
 ```
 
-
-## Adding PAH + PCB groups, 5 groups in total
-```{r}
-
-library(classInt)
-library(dplyr)
-
-# Extract the DryValue column
-dry_values <- p42$DryValue
-
-# Compute Fisher-Jenks breaks for 6 groups
-num_classes <- 6
-breaks <- classIntervals(dry_values, num_classes, style = "fisher")$brks
-
-# Print the breakpoints
-print(breaks)
-
-# Create group assignments based on the breaks
-p42$DryValue_Group <- cut(dry_values, breaks = breaks, labels = 1:num_classes, include.lowest = TRUE)
-
-# Check the first few rows with the new grouping
-head(p42)
-
-
-# write out new table
-
-write.csv(p42, "../data/p42_group.csv", row.names = FALSE)
-
-```
-
-## Geographic (lat/ long) (n=6)
-```{r}
-
-# make geographic clusters based on lat/ long coordinates in 5 groups since it looks like there are 5 distinct areas of sites
-
-# use k-means clustering 
-set.seed(123)
-clusters <- kmeans(data[, c("latitude", "longitude")], centers = 5)
-data <- data %>%
-  mutate(geo = as.factor(clusters$cluster))
-
-# lat/long ranges for each group
-latlong_ranges <- data %>%
-  group_by(geo) %>%
-  summarize(
-    lat_range = paste0(round(min(latitude), 2), " - ", round(max(latitude), 2)),
-    long_range = paste0(round(min(longitude), 2), " - ", round(max(longitude), 2))
-  ) %>%
-  mutate(label = paste0("Group ", geo, "\nLat: ", lat_range, "\nLong: ", long_range))
-
-# add lat/long ranges back to the df
-data <- data %>%
-  left_join(latlong_ranges, by = "geo")
-
-write.csv(data, "../data/cleaned/updated_geo_grouping", row.names = FALSE)
-
-```
-
 # Adding chem groups to data
 ```{r}
 
-# just replace the df name in the parenthesis to add all of the chem groups
-library(tidyr)
-library(dplyr)
+df <- data %>%
+  left_join(p42, by = "site_name")
+
+head(df) # check
+
+# now, just replace the df name in the parenthesis to add all of the chem groups
 
 df <- df %>%
   left_join(p42, by = "site_name")
 
-# check
-head(df)
+head(df) # check
 
-write.csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/all_chem_join4.csv")
+#write.csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/all_chem_join4.csv")
 ```
 
 # Averaging Metrics for Analyte Analysis
