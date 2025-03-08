@@ -16,6 +16,15 @@ output:
 
 ```{r, setup, eval=TRUE, include=TRUE}
 
+# libraries
+library(knitr)
+library(tidyr)
+library(dplyr)
+library(vegan)
+library(pgirmess)
+library(ggplot2)
+
+# global options
 knitr::opts_chunk$set(
   root.dir = here::here(),
   echo = TRUE,         # Display code chunks
@@ -37,8 +46,8 @@ knitr::opts_chunk$set(
 getwd()
 
 # using ALL individual samples, not averages
-data<- read.csv("../data/complete_with_nas.csv")
-
+data<- read.csv("../data/cleaned/complete_with_groups.csv")
+pdata<- read.csv("../data/cleaned/p450_complete_with_groups_for_kw.csv")
 # check it out
 #str(data) # checking df structure
 
@@ -48,343 +57,190 @@ data<- read.csv("../data/complete_with_nas.csv")
 
 ```
 
-# making groups factors
+# making groups characters
 ```{r}
 # make analysis groups a factor (reporting area, geographic group, pcb group, site, pah group)
 # change to a factor - all data
-data$site_number <- as.factor(data$site_number)
-data$reporting_area <- as.factor(data$reporting_area)
-data$geo_group <- as.factor(data$geo_group)
-data$p16 <- as.factor(data$p16)
-data$p42 <- as.factor(data$p42)
-data$plmw <- as.factor(data$plmw)
-data$phmw <- as.factor(data$phmw)
-data$pcb <- as.factor(data$pcb)
+data$site_name <- as.character(data$site_name)
+data$reporting_area <- as.character(data$reporting_area)
+data$geo_group <- as.character(data$geo_group)
+data$p16 <- as.character(data$p16)
+data$p42 <- as.character(data$p42)
+data$plmw <- as.character(data$plmw)
+data$phmw <- as.character(data$phmw)
+data$pcb <- as.character(data$pcb)
+
+#p450 data
+pdata$site_name <- as.character(pdata$site_name)
+pdata$reporting_area <- as.character(pdata$reporting_area)
+pdata$geo_group <- as.character(pdata$geo_group)
+pdata$p16 <- as.character(pdata$p16)
+pdata$p42 <- as.character(pdata$p42)
+pdata$plmw <- as.character(pdata$plmw)
+pdata$phmw <- as.character(pdata$phmw)
+pdata$pcb <- as.character(pdata$pcb)
 
 ```
 
 # KW & Post Hoc (individual metrics for each group)
-## Site Group
-### 
+## p450
+### All to post hoc except geo_group
 ```{r}
 
-library(vegan)
-library(FSA)
+kruskal.test(p450 ~ site_name, data = pdata) # p= 6.442e-6
+kruskal.test(p450 ~ reporting_area, data = pdata) # p= 0.0001749
+kruskal.test(p450 ~ geo_group, data = pdata) # p= 0.309
+kruskal.test(p450 ~ p16, data = pdata)  # p= 0.002045
+kruskal.test(p450 ~ p42, data = pdata) # p= 0.000756
+kruskal.test(p450 ~ plmw, data = pdata) # p= 0.001638
+kruskal.test(p450 ~ phmw, data = pdata) # p= 0.002376
+kruskal.test(p450 ~ pcb, data = pdata) # p= 0.0076
 
-# p450
-kruskal.test(p450 ~ site_name, data = data) # result: p= 
-dunn <- dunnTest(data$p450, data$site_name, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # 
+```
+### 10-13 reporting area significance
+### 1-2 p42 significance
+### 1-2 phmw significance
+```{r}
 
-# SOD
-kruskal.test(sod ~ site_name, data = data) # result: p= 5.669e-6
-dunn <- dunnTest(data$sod, data$site_name, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # 
+mc_site<- as.data.frame(kruskalmc(p450 ~ site_name, data = pdata, method = "bonferroni"))
+mc_reporting<- as.data.frame(kruskalmc(p450 ~ reporting_area, data = pdata, method = "bonferroni")) 
+mc_16<- as.data.frame(kruskalmc(p450 ~ p16, data = pdata, method = "bonferroni"))
+mc_42<- as.data.frame(kruskalmc(p450 ~ p42, data = pdata, method = "bonferroni"))
+mc_low<- as.data.frame(kruskalmc(p450 ~ plmw, data = pdata, method = "bonferroni"))
+mc_high<- as.data.frame(kruskalmc(p450 ~ phmw, data = pdata, method = "bonferroni"))
+mc_pcb<- as.data.frame(kruskalmc(p450 ~ pcb, data = pdata, method = "bonferroni"))
 
-# ci1
-kruskal.test(ci_wet_volume ~ site_name, data = data) # result: p= 0.02581
-dunn <- dunnTest(data$ci_wet_volume, data$site_name, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # 
 
-# ci2
-kruskal.test(ci_wet_shell_weight ~ site_name, data = data) # result: p= 2.832e-8
-dunn <- dunnTest(data$ci_wet_shell_weight, data$site_name, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # 
-
-# ci3
-kruskal.test(ci_pollution ~ site_name, data = data) # result: p= 0.05444
-dunn <- dunnTest(data$ci_pollution, data$site_name, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # 
+head(mc_site)
+head(mc_reporting)
+head(mc_16)
+head(mc_42)
+head(mc_low)
+head(mc_high)
+head(mc_pcb)
 
 ```
 
-## Reporting Areas
-### No significant results
+## sod
+### Site and PCB group to posthoc
 ```{r}
 
-library(vegan)
-library(FSA)
+kruskal.test(sod ~ site_name, data = data) # p= 0.001777
+kruskal.test(sod ~ reporting_area, data = data) # p= 0.3136
+kruskal.test(sod ~ geo_group, data = data) # p= 0.6698
+kruskal.test(sod ~ p16, data = data)  # p= 0.2081
+kruskal.test(sod ~ p42, data = data) # p= 0.1482
+kruskal.test(sod ~ plmw, data = data) # p= 0.1077
+kruskal.test(sod ~ phmw, data = data) # p= 0.06894
+kruskal.test(sod ~ pcb, data = data) # p= 0.0289
 
-data$reporting_area <- as.factor(data$reporting_area) # make a factor for analysis
+```
+### No significant results 
+```{r}
 
-# P450
-kruskal.test(p450 ~ reporting_area, data = data) # result: p= 0.2722
-dunn <- dunnTest(data$p450, data$reporting_area, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
+mc_site<- as.data.frame(kruskalmc(sod ~ site_name, data = data, method = "bonferroni"))
+mc_pcb<- as.data.frame(kruskalmc(sod ~ pcb, data = data, method = "bonferroni"))
 
-# SOD
-kruskal.test(sod ~ reporting_area, data = data) # result: p= 0.01261
-dunn <- dunnTest(data$sod, data$reporting_area, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
-
-# CI_Wet_Volume
-kruskal.test(ci_wet_volume ~ reporting_area, data = data) # result: p= 0.8026
-dunn <- dunnTest(data$ci_wet_volume, data$reporting_area, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
-
-# CI_Wet_Shell_Weight
-kruskal.test(ci_wet_shell_weight ~ reporting_area, data = data) # result: p= 0.3923
-dunn <- dunnTest(data$ci_wet_shell_weight, data$reporting_area, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
-
-# CI_Pollution
-kruskal.test(ci_pollution ~ reporting_area, data = data) # result: p= 0.454
-dunn <- dunnTest(data$ci_pollution, data$reporting_area, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
+head(mc_site)
+head(mc_pcb)
 
 ```
 
-## PCB Groups
-### No significant results
+## ci1
+### Only site to post hoc
 ```{r}
 
-library(vegan)
-library(FSA)
+kruskal.test(ci1 ~ site_name, data = data) # p= 4.216e-5
+kruskal.test(ci1 ~ reporting_area, data = data) # p= 0.1622
+kruskal.test(ci1 ~ geo_group, data = data) # p= 0.386
+kruskal.test(ci1 ~ p16, data = data)  # p= 0.3497
+kruskal.test(ci1 ~ p42, data = data) # p= 1.3653
+kruskal.test(ci1 ~ plmw, data = data) # p= 0.285
+kruskal.test(ci1 ~ phmw, data = data) # p= 0.4321
+kruskal.test(ci1 ~ pcb, data = data) # p= 0.1851
 
-data$pcb_group <- as.factor(data$pcb_group) # make a factor for analysis
+```
+### No significant result
+```{r}
 
-# P450
-kruskal.test(p450 ~ pcb_group, data = data) # result: p= 0.003688
-dunn <- dunnTest(data$p450, data$pcb_group, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
+mc_site<- as.data.frame(kruskalmc(ci1 ~ site_name, data = data, method = "bonferroni"))
 
-# SOD
-kruskal.test(sod ~ pcb_group, data = data) # result: p= 0.003041
-dunn <- dunnTest(data$sod, data$pcb_group, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
-
-# CI_Wet_Volume
-kruskal.test(ci_wet_volume ~ pcb_group, data = data) # result: p= 0.2901
-dunn <- dunnTest(data$ci_wet_volume, data$pcb_group, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
-
-# CI_Wet_Shell_Weight
-kruskal.test(ci_wet_shell_weight ~ pcb_group, data = data) # result: p= 0.05206
-dunn <- dunnTest(data$ci_wet_shell_weight, data$pcb_group, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
-
-# CI_Pollution
-kruskal.test(ci_pollution ~ pcb_group, data = data) # result: p= 0.8241
-dunn <- dunnTest(data$ci_pollution, data$pcb_group, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
+head(mc_site)
 
 ```
 
-## PAH Group
-### No significant results
+## ci2
+### Site and plmw to post hoc
 ```{r}
 
-library(vegan)
-library(FSA)
-
-data$pah_group <- as.factor(data$pah_group) # make a factor for analysis
-
-# P450
-kruskal.test(p450 ~ pah_group, data = data) # result: p= 0.2722
-dunn <- dunnTest(data$p450, data$pah_group, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
-
-# SOD
-kruskal.test(sod ~ pah_group, data = data) # result: p= 0.01261
-dunn <- dunnTest(data$sod, data$pah_group, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
-
-# CI_Wet_Volume
-kruskal.test(ci_wet_volume ~ pah_group, data = data) # result: p= 0.8026
-dunn <- dunnTest(data$ci_wet_volume, data$pah_group, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
-
-# CI_Wet_Shell_Weight
-kruskal.test(ci_wet_shell_weight ~ pah_group, data = data) # result: p= 0.3923
-dunn <- dunnTest(data$ci_wet_shell_weight, data$pah_group, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
-
-# CI_Pollution
-kruskal.test(ci_pollution ~ pah_group, data = data) # result: p= 0.454
-dunn <- dunnTest(data$ci_pollution, data$pah_group, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
+kruskal.test(ci2 ~ site_name, data = data) # p= 1.255e-8
+kruskal.test(ci2 ~ reporting_area, data = data) # p= 0.2123
+kruskal.test(ci2 ~ geo_group, data = data) # p= 0.3529
+kruskal.test(ci2 ~ p16, data = data)  # p= 0.08039
+kruskal.test(ci2 ~ p42, data = data) # p= 0.1298
+kruskal.test(ci2 ~ plmw, data = data) # p= 0.03071
+kruskal.test(ci2 ~ phmw, data = data) # p= 0.1718
+kruskal.test(ci2 ~ pcb, data = data) # p= 0.1205
 
 ```
 
-## Geo Group
-### No significant results
+### No significant result
 ```{r}
 
-library(vegan)
-library(FSA)
+mc_site<- as.data.frame(kruskalmc(ci2 ~ site_name, data = data, method = "bonferroni"))
+mc_plmw<- as.data.frame(kruskalmc(sod ~ plmw, data = data, method = "bonferroni"))
 
-data$geo_group <- as.factor(data$geo_group) # make a factor for analysis
-
-# P450
-kruskal.test(p450 ~ geo_group, data = data) # result: p= 0.0148
-dunn <- dunnTest(data$p450, data$geo_group, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
-
-# SOD
-kruskal.test(sod ~ geo_group, data = data) # result: p= 0.07454
-dunn <- dunnTest(data$sod, data$geo_group, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
-
-# CI_Wet_Volume
-kruskal.test(ci_wet_volume ~ geo_group, data = data) # result: p= 0.8462
-dunn <- dunnTest(data$ci_wet_volume, data$geo_group, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
-
-# CI_Wet_Shell_Weight
-kruskal.test(ci_wet_shell_weight ~ geo_group, data = data) # result: p= 0.09208
-dunn <- dunnTest(data$ci_wet_shell_weight, data$geo_group, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
-
-# CI_Pollution
-kruskal.test(ci_pollution ~ geo_group, data = data) # result: p= 0.3182
-dunn <- dunnTest(data$ci_pollution, data$geo_group, method = "bonferroni", list = TRUE)
-mc <- data.frame(
-    Comparison = dunn$comparisons,
-    Z = dunn$Z,
-    P.adjusted = dunn$P.adjusted
-)
-print(mc) # NO significance confirmed
+head(mc_site)
+head(mc_plmw)
 
 ```
 
-# ANOVA - Shell Thickness Only
-## All groupings (site, reporting area, pcb group, pah group, geo group)
-### Significant results for all groupings, confirmed in post hoc testing
+## ci3
+### Site, RA and geo_group to post hoc
+```{r}
+
+kruskal.test(ci3 ~ site_name, data = data) # p= 1.673e-5
+kruskal.test(ci3 ~ reporting_area, data = data) # p= 0.001512
+kruskal.test(ci3 ~ geo_group, data = data) # p= 0.001814
+kruskal.test(ci3 ~ p16, data = data)  # p= 0.2777
+kruskal.test(ci3 ~ p42, data = data) # p= 0.9086
+kruskal.test(ci3 ~ plmw, data = data) # p= 0.6458
+kruskal.test(ci3 ~ phmw, data = data) # p= 0.9712
+kruskal.test(ci3 ~ pcb, data = data) # p= 0.813
+
+```
+
+### No signficant result
+```{r}
+
+mc_site<- as.data.frame(kruskalmc(ci3 ~ site_name, data = data, method = "bonferroni"))
+mc_reporting<- as.data.frame(kruskalmc(ci3 ~ reporting_area, data = data, method = "bonferroni")) 
+mc_geo<- as.data.frame(kruskalmc(ci3 ~ geo_group, data = data, method = "bonferroni"))
+
+
+
+head(mc_site)
+head(mc_reporting)
+head(mc_geo)
+
+```
+
+# ANOVA 
+## shell thickness
+### Significant result for site (p= 5.71e-16 ), RA (p= 1.09e-6), plmw (p= 0.00751)
 ```{r}
 
 library(car)
 library(multcomp)
 
 # Define grouping variables
-grouping_vars <- c("site_name", "reporting_area", "pcb_group", "pah_group", "geo_group")
+grouping_vars <- c("site_name", "reporting_area", "geo_group", "p16", "p42", "phmw", "plmw", "pcb")
 
 # Function to run ANOVA and post hoc test
 run_anova_posthoc <- function(group_var, data) {
-  # Remove NAs for shell thickness and the grouping variable
-  clean_data <- data[!is.na(data$shell_thickness) & !is.na(data[[group_var]]), ]
   
   # Run ANOVA
-  anova_model <- aov(shell_thickness ~ get(group_var), data = clean_data)
+  anova_model <- aov(shell ~ get(group_var), data = data)
   anova_summary <- summary(anova_model)
 
   # Extract p-value from ANOVA table
@@ -427,20 +283,3 @@ names(anova_results) <- grouping_vars
 anova_results <- anova_results[!sapply(anova_results, is.null)]
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-```{r}
-
-#data/all_metrics_avg_all_groups_with_nas.csv
-```
-

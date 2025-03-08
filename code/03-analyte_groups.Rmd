@@ -13,9 +13,17 @@ output:
 ---
 
 # Directory and doc rules
-
 ```{r, setup, eval=TRUE, include=TRUE}
 
+# libraries
+library(knitr)
+library(tidyr)
+library(dplyr)
+library(vegan)
+library(pgirmess)
+library(ggplot2)
+
+# global options
 knitr::opts_chunk$set(
   root.dir = here::here(),
   echo = TRUE,         # Display code chunks
@@ -38,7 +46,7 @@ getwd()
 
 # load data
 # complete df
-data<- read.csv("../data/complete_with_nas.csv")
+data<- read.csv("../data/cleaned/complete_with_groups.csv")
 
 # check it out
 #str(data) # checking df structure
@@ -68,8 +76,6 @@ data$pcb <- as.factor(data$pcb)
 
 ### averaging
 ```{r}
-
-library(dplyr)
 
 library(dplyr)
 
