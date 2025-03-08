@@ -1,75 +1,75 @@
-"site_name","Analyte","Units","DryValue","Comments","phmw","DryValue_Group"
-"Aiston Preserve","SumPAHsHMW","ng/g",19.48061002,NA,1,"1"
-"Arroyo Beach","SumPAHsHMW","ng/g",186.1031957,"dNPH Surrogate recovery below minimum QA value (60%)",1,"1"
-"Blair Waterway","SumPAHsHMW","ng/g",280.5366555,NA,2,"2"
-"Blair Waterway #2","SumPAHsHMW","ng/g",403.2272069,NA,2,"2"
-"Brackenwood Ln","SumPAHsHMW","ng/g",176.9850187,"dNPH Surrogate recovery below minimum QA value (60%)",1,"1"
-"Broad Spit","SumPAHsHMW","ng/g",18.75421552,NA,1,"1"
-"Browns Point Lighthouse","SumPAHsHMW","ng/g",181.3711089,NA,1,"1"
-"Cap Sante","SumPAHsHMW","ng/g",120.9620438,NA,1,"1"
-"Chambers Bay Park","SumPAHsHMW","ng/g",76.68228279,NA,1,"1"
-"Cherry Point Aquatic Reserve, Conoco Phillips","SumPAHsHMW","ng/g",150.9170488,NA,1,"1"
-"Chimacum Creek delta","SumPAHsHMW","ng/g",56.77703349,NA,1,"1"
-"Chuckanut, Clark's Point","SumPAHsHMW","ng/g",74.59600998,NA,1,"1"
-"Comm Bay Skookum","SumPAHsHMW","ng/g",369.3069941,NA,2,"2"
-"Comm Bay, Dick Gilmur Launch","SumPAHsHMW","ng/g",338.5518868,NA,2,"2"
-"Comm Bay, Milwaukee Waterway","SumPAHsHMW","ng/g",215.3746631,NA,2,"1"
-"Des Moines Marina","SumPAHsHMW","ng/g",8575.40304,NA,7,"6"
-"Discovery Bay","SumPAHsHMW","ng/g",98.84860121,NA,1,"1"
-"Donkey Creek Delta","SumPAHsHMW","ng/g",284.3207434,NA,2,"2"
-"Eagle Harbor Dr","SumPAHsHMW","ng/g",653.0888618,NA,3,"2"
-"Eastsound, Fishing Bay","SumPAHsHMW","ng/g",270.0247117,"dNPH Surrogate recovery below minimum QA value (60%)",2,"2"
-"Edmonds Ferry","SumPAHsHMW","ng/g",268.9280374,NA,2,"2"
-"Edmonds Marina","SumPAHsHMW","ng/g",374.8520776,NA,2,"2"
-"Eld Inlet","SumPAHsHMW","ng/g",75.0741784,NA,1,"1"
-"Elliot Bay Myrtle Edwards","SumPAHsHMW","ng/g",9394.32799,NA,8,"6"
-"Elliott Bay, Harbor Island, Pier 17","SumPAHsHMW","ng/g",2054.036244,"dNPH Surrogate recovery below minimum QA value (60%)",5,"4"
-"Everett Harbor","SumPAHsHMW","ng/g",166.4354473,NA,1,"1"
-"Fidalgo Bay Aq Reserve, Weaverling Spit","SumPAHsHMW","ng/g",254.3861814,NA,2,"2"
-"Filucy Bay","SumPAHsHMW","ng/g",59.30924548,NA,1,"1"
-"Friday Harbor","SumPAHsHMW","ng/g",319.6162098,NA,2,"2"
-"Gig Harbor Boat Launch","SumPAHsHMW","ng/g",246.2628337,NA,2,"2"
-"Hood Canal Holly","SumPAHsHMW","ng/g",11.61013825,NA,1,"1"
-"Jamestown","SumPAHsHMW","ng/g",15.24633004,NA,1,"1"
-"Kingston Marina","SumPAHsHMW","ng/g",123.5049608,NA,1,"1"
-"Kitsap St Boat Launch","SumPAHsHMW","ng/g",354.0498192,NA,2,"2"
-"Kopachuck State Park","SumPAHsHMW","ng/g",53.97902765,NA,1,"1"
-"Lions Park","SumPAHsHMW","ng/g",131.6330859,NA,1,"1"
-"Locust Beach","SumPAHsHMW","ng/g",27.5209404,NA,1,"1"
-"Madrona Pont","SumPAHsHMW","ng/g",120.5300714,NA,1,"1"
-"Manchester, Stormwater Outfall","SumPAHsHMW","ng/g",171.0284061,NA,1,"1"
-"Maple Hollow Park","SumPAHsHMW","ng/g",64.77777778,NA,1,"1"
-"Maristone Island","SumPAHsHMW","ng/g",23.98878295,NA,1,"1"
-"Meyer's Point - Henderson Inlet","SumPAHsHMW","ng/g",52.7863806,NA,1,"1"
-"Miller Creek","SumPAHsHMW","ng/g",120.7395609,NA,1,"1"
-"Minter Bay","SumPAHsHMW","ng/g",65.79081633,NA,1,"1"
-"Mukilteo","SumPAHsHMW","ng/g",194.2048379,NA,2,"1"
-"N Avenue Park","SumPAHsHMW","ng/g",1085.359801,"dNPH Surrogate recovery below minimum QA value (60%)",4,"3"
-"North Camano","SumPAHsHMW","ng/g",54.59221411,NA,1,"1"
-"Oak Bay County Park","SumPAHsHMW","ng/g",33.98504057,NA,1,"1"
-"Penn Cove Reference","SumPAHsHMW","ng/g",46.81626856,NA,1,"1"
-"Penrose Point State Park","SumPAHsHMW","ng/g",85.8165362,NA,1,"1"
-"Point Defiance Ferry","SumPAHsHMW","ng/g",335.831589,NA,2,"2"
-"Port Angeles Yacht Club","SumPAHsHMW","ng/g",1202.061856,"dNPH Surrogate recovery below minimum QA value (60%)",4,"3"
-"Purdy - Dexters","SumPAHsHMW","ng/g",57.36799018,NA,1,"1"
-"Purdy, Burley Lagoon","SumPAHsHMW","ng/g",86.16853385,NA,1,"1"
-"Raft Island Park","SumPAHsHMW","ng/g",61.91372549,NA,1,"1"
-"Reach Island","SumPAHsHMW","ng/g",81.73360656,NA,1,"1"
-"Rich Passage","SumPAHsHMW","ng/g",142.7194719,NA,1,"1"
-"Rocky Point","SumPAHsHMW","ng/g",133.9498778,"dNPH Surrogate recovery below minimum QA value (60%)",1,"1"
-"S of Skunk Island","SumPAHsHMW","ng/g",132.1275698,"dNPH Surrogate recovery below minimum QA value (60%)",1,"1"
-"Salmon Bay, Commodore Park","SumPAHsHMW","ng/g",535.7647059,NA,3,"2"
-"Salmon Beach","SumPAHsHMW","ng/g",226.2359768,"dNPH Surrogate recovery below minimum QA value (60%)",2,"1"
-"Seattle Aquarium, Pier 59","SumPAHsHMW","ng/g",2203.307087,NA,5,"4"
-"Shilshole Bay","SumPAHsHMW","ng/g",1277.913562,NA,4,"3"
-"Silverdale, Dyes Inlet","SumPAHsHMW","ng/g",150.7895928,NA,1,"1"
-"Skiff Point","SumPAHsHMW","ng/g",213.1009901,"dNPH Surrogate recovery below minimum QA value (60%)",2,"1"
-"Smith Cove, Terminal 91","SumPAHsHMW","ng/g",4682.144985,NA,6,"5"
-"Squaxin Island","SumPAHsHMW","ng/g",77.68314607,NA,1,"1"
-"Suquamish, Stormwater Outfall","SumPAHsHMW","ng/g",193.3237327,NA,2,"1"
-"Thea Foss Waterway","SumPAHsHMW","ng/g",545.2067594,NA,3,"2"
-"Three Tree Point","SumPAHsHMW","ng/g",141.387674,NA,1,"1"
-"Tulalip Bay","SumPAHsHMW","ng/g",168.7124706,NA,1,"1"
-"Tulalip Reservation","SumPAHsHMW","ng/g",117.9025424,NA,1,"1"
-"West Bay Park","SumPAHsHMW","ng/g",202.4581855,NA,2,"1"
-"Williams Olson Park","SumPAHsHMW","ng/g",156.6515892,NA,1,"1"
+site_name,Analyte,Units,DryValue,Comments,phmw,DryValue_Group
+Aiston Preserve,SumPAHsHMW,ng/g,19.48061002,NA,1,1
+Arroyo Beach,SumPAHsHMW,ng/g,186.1031957,dNPH Surrogate recovery below minimum QA value (60%),1,1
+Blair Waterway,SumPAHsHMW,ng/g,280.5366555,NA,2,2
+Blair Waterway #2,SumPAHsHMW,ng/g,403.2272069,NA,2,2
+Brackenwood Ln,SumPAHsHMW,ng/g,176.9850187,dNPH Surrogate recovery below minimum QA value (60%),1,1
+Broad Spit,SumPAHsHMW,ng/g,18.75421552,NA,1,1
+Browns Point Lighthouse,SumPAHsHMW,ng/g,181.3711089,NA,1,1
+Cap Sante,SumPAHsHMW,ng/g,120.9620438,NA,1,1
+Chambers Bay Park,SumPAHsHMW,ng/g,76.68228279,NA,1,1
+"Cherry Point Aquatic Reserve, Conoco Phillips",SumPAHsHMW,ng/g,150.9170488,NA,1,1
+Chimacum Creek delta,SumPAHsHMW,ng/g,56.77703349,NA,1,1
+"Chuckanut, Clark's Point",SumPAHsHMW,ng/g,74.59600998,NA,1,1
+Comm Bay Skookum,SumPAHsHMW,ng/g,369.3069941,NA,2,2
+"Comm Bay, Dick Gilmur Launch",SumPAHsHMW,ng/g,338.5518868,NA,2,2
+"Comm Bay, Milwaukee Waterway",SumPAHsHMW,ng/g,215.3746631,NA,2,1
+Des Moines Marina,SumPAHsHMW,ng/g,8575.40304,NA,7,6
+Discovery Bay,SumPAHsHMW,ng/g,98.84860121,NA,1,1
+Donkey Creek Delta,SumPAHsHMW,ng/g,284.3207434,NA,2,2
+Eagle Harbor Dr,SumPAHsHMW,ng/g,653.0888618,NA,3,2
+"Eastsound, Fishing Bay",SumPAHsHMW,ng/g,270.0247117,dNPH Surrogate recovery below minimum QA value (60%),2,2
+Edmonds Ferry,SumPAHsHMW,ng/g,268.9280374,NA,2,2
+Edmonds Marina,SumPAHsHMW,ng/g,374.8520776,NA,2,2
+Eld Inlet,SumPAHsHMW,ng/g,75.0741784,NA,1,1
+Elliot Bay Myrtle Edwards,SumPAHsHMW,ng/g,9394.32799,NA,8,6
+"Elliott Bay, Harbor Island, Pier 17",SumPAHsHMW,ng/g,2054.036244,dNPH Surrogate recovery below minimum QA value (60%),5,4
+Everett Harbor,SumPAHsHMW,ng/g,166.4354473,NA,1,1
+"Fidalgo Bay Aq Reserve, Weaverling Spit",SumPAHsHMW,ng/g,254.3861814,NA,2,2
+Filucy Bay,SumPAHsHMW,ng/g,59.30924548,NA,1,1
+Friday Harbor,SumPAHsHMW,ng/g,319.6162098,NA,2,2
+Gig Harbor Boat Launch,SumPAHsHMW,ng/g,246.2628337,NA,2,2
+Hood Canal Holly,SumPAHsHMW,ng/g,11.61013825,NA,1,1
+Jamestown,SumPAHsHMW,ng/g,15.24633004,NA,1,1
+Kingston Marina,SumPAHsHMW,ng/g,123.5049608,NA,1,1
+Kitsap St Boat Launch,SumPAHsHMW,ng/g,354.0498192,NA,2,2
+Kopachuck State Park,SumPAHsHMW,ng/g,53.97902765,NA,1,1
+Lions Park,SumPAHsHMW,ng/g,131.6330859,NA,1,1
+Locust Beach,SumPAHsHMW,ng/g,27.5209404,NA,1,1
+Madrona Pont,SumPAHsHMW,ng/g,120.5300714,NA,1,1
+"Manchester, Stormwater Outfall",SumPAHsHMW,ng/g,171.0284061,NA,1,1
+Maple Hollow Park,SumPAHsHMW,ng/g,64.77777778,NA,1,1
+Maristone Island,SumPAHsHMW,ng/g,23.98878295,NA,1,1
+Meyer's Point - Henderson Inlet,SumPAHsHMW,ng/g,52.7863806,NA,1,1
+Miller Creek,SumPAHsHMW,ng/g,120.7395609,NA,1,1
+Minter Bay,SumPAHsHMW,ng/g,65.79081633,NA,1,1
+Mukilteo,SumPAHsHMW,ng/g,194.2048379,NA,2,1
+N Avenue Park,SumPAHsHMW,ng/g,1085.359801,dNPH Surrogate recovery below minimum QA value (60%),4,3
+North Camano,SumPAHsHMW,ng/g,54.59221411,NA,1,1
+Oak Bay County Park,SumPAHsHMW,ng/g,33.98504057,NA,1,1
+Penn Cove Reference,SumPAHsHMW,ng/g,46.81626856,NA,1,1
+Pennrose Point State Park,SumPAHsHMW,ng/g,85.8165362,NA,1,1
+Point Defiance Ferry,SumPAHsHMW,ng/g,335.831589,NA,2,2
+Port Angeles Yacht Club,SumPAHsHMW,ng/g,1202.061856,dNPH Surrogate recovery below minimum QA value (60%),4,3
+Purdy - Dexters,SumPAHsHMW,ng/g,57.36799018,NA,1,1
+"Purdy, Burley Lagoon",SumPAHsHMW,ng/g,86.16853385,NA,1,1
+Raft Island Park,SumPAHsHMW,ng/g,61.91372549,NA,1,1
+Reach Island,SumPAHsHMW,ng/g,81.73360656,NA,1,1
+Rich Passage,SumPAHsHMW,ng/g,142.7194719,NA,1,1
+Rocky Point,SumPAHsHMW,ng/g,133.9498778,dNPH Surrogate recovery below minimum QA value (60%),1,1
+S of Skunk Island,SumPAHsHMW,ng/g,132.1275698,dNPH Surrogate recovery below minimum QA value (60%),1,1
+"Salmon Bay, Commodore Park",SumPAHsHMW,ng/g,535.7647059,NA,3,2
+Salmon Beach,SumPAHsHMW,ng/g,226.2359768,dNPH Surrogate recovery below minimum QA value (60%),2,1
+"Seattle Aquarium, Pier 59",SumPAHsHMW,ng/g,2203.307087,NA,5,4
+Shilshole Bay,SumPAHsHMW,ng/g,1277.913562,NA,4,3
+"Silverdale, Dyes Inlet",SumPAHsHMW,ng/g,150.7895928,NA,1,1
+Skiff Point,SumPAHsHMW,ng/g,213.1009901,dNPH Surrogate recovery below minimum QA value (60%),2,1
+"Smith Cove, Terminal 91",SumPAHsHMW,ng/g,4682.144985,NA,6,5
+Squaxin Island,SumPAHsHMW,ng/g,77.68314607,NA,1,1
+Suquamish Stormwater Outfall,SumPAHsHMW,ng/g,193.3237327,NA,2,1
+Thea Foss Waterway,SumPAHsHMW,ng/g,545.2067594,NA,3,2
+Three Tree Point,SumPAHsHMW,ng/g,141.387674,NA,1,1
+Tulalip Bay,SumPAHsHMW,ng/g,168.7124706,NA,1,1
+Tulalip Reservation,SumPAHsHMW,ng/g,117.9025424,NA,1,1
+West Bay Park,SumPAHsHMW,ng/g,202.4581855,NA,2,1
+Williams Olson Park,SumPAHsHMW,ng/g,156.6515892,NA,1,1

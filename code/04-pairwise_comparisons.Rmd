@@ -46,8 +46,8 @@ knitr::opts_chunk$set(
 getwd()
 
 # using ALL individual samples, not averages
-data<- read.csv("../data/cleaned/complete_with_groups.csv")
-pdata<- read.csv("../data/cleaned/p450_complete_with_groups_for_kw.csv")
+data<- read.csv("../data/cleaned/all_chem_join.csv")
+pdata<- read.csv("../data/cleaned/p450_all_chem_join.csv")
 # check it out
 #str(data) # checking df structure
 
@@ -63,7 +63,7 @@ pdata<- read.csv("../data/cleaned/p450_complete_with_groups_for_kw.csv")
 # change to a factor - all data
 data$site_name <- as.character(data$site_name)
 data$reporting_area <- as.character(data$reporting_area)
-data$geo_group <- as.character(data$geo_group)
+data$geo <- as.character(data$geo)
 data$p16 <- as.character(data$p16)
 data$p42 <- as.character(data$p42)
 data$plmw <- as.character(data$plmw)
@@ -73,7 +73,7 @@ data$pcb <- as.character(data$pcb)
 #p450 data
 pdata$site_name <- as.character(pdata$site_name)
 pdata$reporting_area <- as.character(pdata$reporting_area)
-pdata$geo_group <- as.character(pdata$geo_group)
+pdata$geo <- as.character(pdata$geo)
 pdata$p16 <- as.character(pdata$p16)
 pdata$p42 <- as.character(pdata$p42)
 pdata$plmw <- as.character(pdata$plmw)
@@ -89,9 +89,9 @@ pdata$pcb <- as.character(pdata$pcb)
 
 kruskal.test(p450 ~ site_name, data = pdata) # p= 6.442e-6
 kruskal.test(p450 ~ reporting_area, data = pdata) # p= 0.0001749
-kruskal.test(p450 ~ geo_group, data = pdata) # p= 0.309
-kruskal.test(p450 ~ p16, data = pdata)  # p= 0.002045
-kruskal.test(p450 ~ p42, data = pdata) # p= 0.000756
+kruskal.test(p450 ~ geo, data = pdata) # p= 0.007549
+kruskal.test(p450 ~ p16, data = pdata)  # p= 0.1403
+kruskal.test(p450 ~ p42, data = pdata) # p= 0.1403
 kruskal.test(p450 ~ plmw, data = pdata) # p= 0.001638
 kruskal.test(p450 ~ phmw, data = pdata) # p= 0.002376
 kruskal.test(p450 ~ pcb, data = pdata) # p= 0.0076
