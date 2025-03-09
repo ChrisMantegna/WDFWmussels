@@ -1,5 +1,5 @@
 ---
-title: "04- Pairwise Comparisons, KW + Dunn Post Hoc"
+title: "04- Pairwise Comparisons, PERMANOVA, KW + Dunn Post Hoc"
 output:
   pdf_document: 
     fig_width: 20
@@ -45,9 +45,11 @@ knitr::opts_chunk$set(
 # *NOTE* see 00-data_cleaned for directory issue
 getwd()
 
-# using ALL individual samples, not averages
-data<- read.csv("../data/cleaned/all_chem_join.csv")
-pdata<- read.csv("../data/cleaned/p450_all_chem_join.csv")
+# ALL individual samples
+data<- read.csv("../data/cleaned/all_samples_all_groups.csv", row.names = FALSE)
+pdata<- read.csv("../data/cleaned/p450_samples_all_groups.csv", , row.names = FALSE)
+# Averaged
+adata<- read.csv("../data/cleaned/avg_samples_all_groups.csv", row.names = FALSE)
 # check it out
 #str(data) # checking df structure
 
