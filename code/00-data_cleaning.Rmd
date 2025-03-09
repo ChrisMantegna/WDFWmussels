@@ -38,7 +38,7 @@ knitr::opts_chunk$set(
 getwd()
 
 # load data
-data<- read.csv("../data/raw_complete_with_groups.csv")
+data<- read.csv("../data/cleaned/full_data_all_geo_groups.csv")
 
 
 ```
@@ -76,12 +76,10 @@ summary(data) # df stats for each column
 data$p450[data$p450 <= 0] <- NA
 
 # replace any values below LOQ with imputed LOQ (.5 x LOD), LOD= 0.05
-data$sod[data$sod <= 0] <- 0.00354
+data$sod[data$sod <= 0] <- 0.0025
 
 # check
 summary(data)
-
-write.csv(data, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/complete_with_groups.csv")
 
 ```
 
@@ -133,7 +131,7 @@ hist(data$shell)
 
 # Significance
 
-## Variance, p= 5.744e-5, we can NOT use PERMANOVA for the stats, must use Kruskal-Wallis
+## Variance, p= 0.3598, we can use PERMANOVA or Kruskal-Wallis
 
 ```{r}
 
@@ -159,8 +157,8 @@ boxplot(dispersion_test) # visualize results (boxplot of dispersions)
 
 ```
 
-# Check for Outliers - No Need. Outliers do not impact stats
-
+# Check for Outliers
+## Outliers identified for downstream viz; no impact to stats
 ```{r}
 
 # let's find the outliers for each metric we are reviewing (p450, sod, condition_factor and avg_thickness). ChatGPT helped create the loop.
@@ -180,12 +178,12 @@ for (marker in metrics) {
 }
 
 # View a summary of outliers
-summary(data[, paste0(metrics, "_outlier")]) # outliers: p450= , sod= , cf1= , cf2= , cf3= , shell=  
+summary(data[, paste0(metrics, "_outlier")]) # outliers: p450= 14, sod= 11, cf1= 31, cf2= 5, cf3= 17, shell= 3  
 
 # write out this df for further use
 # *NOTE* check why it only saves with the full path and not the relative
 
-# last saved on 2.6.25
-#write.csv(data, file = "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/all_cleaned.csv", row.names = FALSE)
+# last saved on 3.8.25
+#write.csv(data, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/full_data_all_geo_groups.csv")
 
 ```

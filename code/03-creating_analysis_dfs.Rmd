@@ -17,6 +17,7 @@ output:
 
 # libraries
 library(knitr)
+library(readr)
 library(tidyr)
 library(dplyr)
 library(vegan)
@@ -43,8 +44,8 @@ knitr::opts_chunk$set(
 getwd()
 
 # complete df
-data<- read.csv("../data/cleaned/complete_with_groups.csv")
-
+data<- read_csv("../data/cleaned/full_data_all_geo_groups.csv")
+chem<- read_csv("../data/cleaned/chemical_analysis_groups.csv")
 
 # check it out
 #str(data) # checking df structure
@@ -60,18 +61,11 @@ data<- read.csv("../data/cleaned/complete_with_groups.csv")
 ```{r}
 
 df <- data %>%
-  left_join(p42, by = "site_name")
+  left_join(chem, by = "site_name")
 
 head(df) # check
 
-# now, just replace the df name in the parenthesis to add all of the chem groups
-
-df <- df %>%
-  left_join(p42, by = "site_name")
-
-head(df) # check
-
-#write.csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/all_chem_join4.csv")
+write.csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/all_samples_all_groups.csv")
 ```
 
 # Averaging Metrics for Analyte Analysis
