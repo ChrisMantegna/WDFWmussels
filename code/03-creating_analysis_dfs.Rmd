@@ -44,8 +44,8 @@ knitr::opts_chunk$set(
 getwd()
 
 # complete df
-data<- read_csv("../data/cleaned/full_data_all_geo_groups.csv")
-chem<- read_csv("../data/cleaned/chemical_analysis_groups.csv")
+data<- read_csv("../data/cleaned/all_samples_all_groups.csv")
+#chem<- read_csv("../data/cleaned/chemical_analysis_groups.csv")
 
 # check it out
 #str(data) # checking df structure
@@ -57,7 +57,7 @@ chem<- read_csv("../data/cleaned/chemical_analysis_groups.csv")
 
 ```
 
-# Adding chem groups to data
+# Adding chem groups to data - done 3.8.25
 ```{r}
 
 df <- data %>%
@@ -65,7 +65,7 @@ df <- data %>%
 
 head(df) # check
 
-write.csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/all_samples_all_groups.csv")
+#write.csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/all_samples_all_groups.csv")
 ```
 
 # Averaging Metrics for Analyte Analysis
@@ -73,9 +73,12 @@ write.csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/all_sa
 ```{r}
 # make analysis groups a factor (reporting area, geographic group, pcb group, site, pah group)
 # change to a factor - all data
-data$site_number <- as.factor(data$site_number)
+data$site_name <- as.character(data$site_name)
 data$reporting_area <- as.factor(data$reporting_area)
-data$geo_group <- as.factor(data$geo_group)
+data$km4 <- as.factor(data$km4)
+data$km5 <- as.factor(data$km5)
+data$hc4 <- as.factor(data$hc4)
+data$hc5 <- as.factor(data$hc5)
 data$p16 <- as.factor(data$p16)
 data$p42 <- as.factor(data$p42)
 data$plmw <- as.factor(data$plmw)
@@ -89,8 +92,8 @@ data$pcb <- as.factor(data$pcb)
 
 library(dplyr)
 
-df_summary <- data %>%
-  group_by(site_number) %>% 
+df<- data %>%
+  group_by(site_name) %>% 
   summarise(
     # Averaging numerical values per site
     p450 = mean(p450, na.rm = TRUE),
@@ -103,12 +106,13 @@ df_summary <- data %>%
     # Retaining representative categorical values (assuming they are consistent per site)
     latitude = first(latitude),
     longitude = first(longitude),
-    lat_range = first(lat_range),
-    long_range = first(long_range),
     site_name = first(site_name),
     site_number = first(site_number),
     reporting_area = first(reporting_area),
-    geo_group = first(geo_group),
+    km4 = first(km4),
+    km5 = first(km5),
+    hc4 = first(hc4),
+    hc5 = first(hc5),
     p16 = first(p16),
     p42 = first(p42),
     plmw = first(plmw),
@@ -116,9 +120,9 @@ df_summary <- data %>%
     pcb = first(pcb)
   )
 
-head(df_summary)
+head(df)
 
-#write.csv(df_summary, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/all_metrics_avg_all_groups_with_nas.csv", row.names = FALSE)
+write.csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/avg_samples_all_groups.csv", row.names = FALSE)
 
 ```
 
