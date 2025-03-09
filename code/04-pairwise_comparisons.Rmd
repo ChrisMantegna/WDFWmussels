@@ -46,10 +46,10 @@ knitr::opts_chunk$set(
 getwd()
 
 # ALL individual samples
-data<- read.csv("../data/cleaned/all_samples_all_groups.csv", row.names = FALSE)
-pdata<- read.csv("../data/cleaned/p450_samples_all_groups.csv", , row.names = FALSE)
+data<- read.csv("../data/cleaned/all_samples_all_groups.csv")
+pdata<- read.csv("../data/cleaned/p450_samples_all_groups.csv")
 # Averaged
-adata<- read.csv("../data/cleaned/avg_samples_all_groups.csv", row.names = FALSE)
+adata<- read.csv("../data/cleaned/avg_samples_all_groups.csv")
 # check it out
 #str(data) # checking df structure
 
@@ -64,62 +64,71 @@ adata<- read.csv("../data/cleaned/avg_samples_all_groups.csv", row.names = FALSE
 # make analysis groups a factor (reporting area, geographic group, pcb group, site, pah group)
 # change to a factor - all data
 data$site_name <- as.character(data$site_name)
-data$reporting_area <- as.character(data$reporting_area)
-data$geo <- as.character(data$geo)
-data$p16 <- as.character(data$p16)
-data$p42 <- as.character(data$p42)
-data$plmw <- as.character(data$plmw)
-data$phmw <- as.character(data$phmw)
-data$pcb <- as.character(data$pcb)
+data$reporting_area <- as.factor(data$reporting_area)
+data$km4 <- as.factor(data$km4)
+data$km5 <- as.factor(data$km5)
+data$hc4 <- as.factor(data$hc4)
+data$hc5 <- as.factor(data$hc5)
+data$p16 <- as.factor(data$p16)
+data$p42 <- as.factor(data$p42)
+data$plmw <- as.factor(data$plmw)
+data$phmw <- as.factor(data$phmw)
+data$pcb <- as.factor(data$pcb)
 
 #p450 data
 pdata$site_name <- as.character(pdata$site_name)
-pdata$reporting_area <- as.character(pdata$reporting_area)
-pdata$geo <- as.character(pdata$geo)
-pdata$p16 <- as.character(pdata$p16)
-pdata$p42 <- as.character(pdata$p42)
-pdata$plmw <- as.character(pdata$plmw)
-pdata$phmw <- as.character(pdata$phmw)
-pdata$pcb <- as.character(pdata$pcb)
+pdata$reporting_area <- as.factor(pdata$reporting_area)
+pdata$km4 <- as.factor(pdata$km4)
+pdata$km5 <- as.factor(pdata$km5)
+pdata$hc4 <- as.factor(pdata$hc4)
+pdata$hc5 <- as.factor(pdata$hc5)
+pdata$p16 <- as.factor(pdata$p16)
+pdata$p42 <- as.factor(pdata$p42)
+pdata$plmw <- as.factor(pdata$plmw)
+pdata$phmw <- as.factor(pdata$phmw)
+pdata$pcb <- as.factor(pdata$pcb)
 
 ```
 
 # KW & Post Hoc (individual metrics for each group)
 ## p450
-### All to post hoc except geo_group
+### All to post hoc except p16, p42, plmw
 ```{r}
 
 kruskal.test(p450 ~ site_name, data = pdata) # p= 6.442e-6
 kruskal.test(p450 ~ reporting_area, data = pdata) # p= 0.0001749
-kruskal.test(p450 ~ geo, data = pdata) # p= 0.007549
-kruskal.test(p450 ~ p16, data = pdata)  # p= 0.1403
-kruskal.test(p450 ~ p42, data = pdata) # p= 0.1403
-kruskal.test(p450 ~ plmw, data = pdata) # p= 0.001638
-kruskal.test(p450 ~ phmw, data = pdata) # p= 0.002376
-kruskal.test(p450 ~ pcb, data = pdata) # p= 0.0076
+kruskal.test(p450 ~ km4, data = pdata) # p= 0.001926
+kruskal.test(p450 ~ km5, data = pdata) # p= 0.007549
+kruskal.test(p450 ~ hc4, data = pdata) # p= 0.03691
+kruskal.test(p450 ~ hc5, data = pdata) # p= 0.02398
+kruskal.test(p450 ~ p16, data = pdata)  # p= 0.07492
+kruskal.test(p450 ~ p42, data = pdata) # p= 0.6623
+kruskal.test(p450 ~ plmw, data = pdata) # p= 0.2345
+kruskal.test(p450 ~ phmw, data = pdata) # p= 0.01149
+kruskal.test(p450 ~ pcb, data = pdata) # p= 0.006962
 
 ```
-### 10-13 reporting area significance
-### 1-2 p42 significance
-### 1-2 phmw significance
+
 ```{r}
 
 mc_site<- as.data.frame(kruskalmc(p450 ~ site_name, data = pdata, method = "bonferroni"))
 mc_reporting<- as.data.frame(kruskalmc(p450 ~ reporting_area, data = pdata, method = "bonferroni")) 
-mc_16<- as.data.frame(kruskalmc(p450 ~ p16, data = pdata, method = "bonferroni"))
-mc_42<- as.data.frame(kruskalmc(p450 ~ p42, data = pdata, method = "bonferroni"))
-mc_low<- as.data.frame(kruskalmc(p450 ~ plmw, data = pdata, method = "bonferroni"))
-mc_high<- as.data.frame(kruskalmc(p450 ~ phmw, data = pdata, method = "bonferroni"))
+mc_km4<- as.data.frame(kruskalmc(p450 ~ km4, data = pdata, method = "bonferroni"))
+mc_km5<- as.data.frame(kruskalmc(p450 ~ km5, data = pdata, method = "bonferroni"))
+mc_hc4<- as.data.frame(kruskalmc(p450 ~ hc4, data = pdata, method = "bonferroni"))
+mc_hc5<- as.data.frame(kruskalmc(p450 ~ hc5, data = pdata, method = "bonferroni"))
+mc_phmw<- as.data.frame(kruskalmc(p450 ~ phmw, data = pdata, method = "bonferroni"))
 mc_pcb<- as.data.frame(kruskalmc(p450 ~ pcb, data = pdata, method = "bonferroni"))
 
 
-head(mc_site)
-head(mc_reporting)
-head(mc_16)
-head(mc_42)
-head(mc_low)
-head(mc_high)
-head(mc_pcb)
+head(mc_site) #no
+head(mc_reporting) #no
+head(mc_km4) # 1-3, 3-4
+head(mc_km5) #no
+head(mc_hc4) #1-3
+head(mc_hc5) #1-3
+head(mc_phmw) #1-3
+head(mc_pcb) #no
 
 ```
 
@@ -129,114 +138,146 @@ head(mc_pcb)
 
 kruskal.test(sod ~ site_name, data = data) # p= 0.001777
 kruskal.test(sod ~ reporting_area, data = data) # p= 0.3136
-kruskal.test(sod ~ geo_group, data = data) # p= 0.6698
-kruskal.test(sod ~ p16, data = data)  # p= 0.2081
-kruskal.test(sod ~ p42, data = data) # p= 0.1482
-kruskal.test(sod ~ plmw, data = data) # p= 0.1077
-kruskal.test(sod ~ phmw, data = data) # p= 0.06894
-kruskal.test(sod ~ pcb, data = data) # p= 0.0289
+kruskal.test(sod ~ km4, data = data) # p= 0.8714
+kruskal.test(sod ~ km5, data = data) # p= 0.2262
+kruskal.test(sod ~ hc4, data = data) # p= 0.7625
+kruskal.test(sod ~ hc5, data = data) # p= 0.8258
+kruskal.test(sod ~ p16, data = data)  # p= 0.4546
+kruskal.test(sod ~ p42, data = data) # p= 0.1848
+kruskal.test(sod ~ plmw, data = data) # p= 0.3703
+kruskal.test(sod ~ phmw, data = data) # p= 0.2044
+kruskal.test(sod ~ pcb, data = data) # p= 0.02254
 
 ```
-### No significant results 
+
 ```{r}
 
 mc_site<- as.data.frame(kruskalmc(sod ~ site_name, data = data, method = "bonferroni"))
 mc_pcb<- as.data.frame(kruskalmc(sod ~ pcb, data = data, method = "bonferroni"))
 
-head(mc_site)
-head(mc_pcb)
+head(mc_site) #no
+head(mc_pcb) #1-5
 
 ```
 
 ## ci1
-### Only site to post hoc
+### Site, hc5, p16, p42, plmw to posthoc
 ```{r}
 
-kruskal.test(ci1 ~ site_name, data = data) # p= 4.216e-5
+kruskal.test(ci1 ~ site_name, data = data) # p= 4.216e-05
 kruskal.test(ci1 ~ reporting_area, data = data) # p= 0.1622
-kruskal.test(ci1 ~ geo_group, data = data) # p= 0.386
-kruskal.test(ci1 ~ p16, data = data)  # p= 0.3497
-kruskal.test(ci1 ~ p42, data = data) # p= 1.3653
-kruskal.test(ci1 ~ plmw, data = data) # p= 0.285
-kruskal.test(ci1 ~ phmw, data = data) # p= 0.4321
-kruskal.test(ci1 ~ pcb, data = data) # p= 0.1851
+kruskal.test(ci1 ~ km4, data = data) # p= 0.6122
+kruskal.test(ci1 ~ km5, data = data) # p= 0.5029
+kruskal.test(ci1 ~ hc4, data = data) # p= 0.6041
+kruskal.test(ci1 ~ hc5, data = data) # p= 0.001344
+kruskal.test(ci1 ~ p16, data = data)  # p= 0.003065
+kruskal.test(ci1 ~ p42, data = data) # p= 0.02241
+kruskal.test(ci1 ~ plmw, data = data) # p= 0.003599
+kruskal.test(ci1 ~ phmw, data = data) # p= 0.06767
+kruskal.test(ci1 ~ pcb, data = data) # p= 0.05673
 
 ```
-### No significant result
+
 ```{r}
 
 mc_site<- as.data.frame(kruskalmc(ci1 ~ site_name, data = data, method = "bonferroni"))
+mc_hc5<- as.data.frame(kruskalmc(ci1 ~ hc5, data = data, method = "bonferroni"))
+mc_p16<- as.data.frame(kruskalmc(ci1 ~ p16, data = data, method = "bonferroni"))
+mc_p42<- as.data.frame(kruskalmc(ci1 ~ p42, data = data, method = "bonferroni"))
+mc_plmw<- as.data.frame(kruskalmc(ci1 ~ plmw, data = data, method = "bonferroni"))
 
-head(mc_site)
+head(mc_site) #no
+head(mc_hc5) #1-5
+head(mc_p16) #no
+head(mc_p42) #no
+head(mc_plmw) #2-4
 
 ```
 
 ## ci2
-### Site and plmw to post hoc
+### Site, km4, km5, hc4, hc5, p16, pcb to post hoc
 ```{r}
 
-kruskal.test(ci2 ~ site_name, data = data) # p= 1.255e-8
+kruskal.test(ci2 ~ site_name, data = data) # p= 1.255e-08
 kruskal.test(ci2 ~ reporting_area, data = data) # p= 0.2123
-kruskal.test(ci2 ~ geo_group, data = data) # p= 0.3529
-kruskal.test(ci2 ~ p16, data = data)  # p= 0.08039
-kruskal.test(ci2 ~ p42, data = data) # p= 0.1298
-kruskal.test(ci2 ~ plmw, data = data) # p= 0.03071
-kruskal.test(ci2 ~ phmw, data = data) # p= 0.1718
-kruskal.test(ci2 ~ pcb, data = data) # p= 0.1205
+kruskal.test(ci2 ~ km4, data = data) # p= 0.04206
+kruskal.test(ci2 ~ km5, data = data) # p= 0.02856
+kruskal.test(ci2 ~ hc4, data = data) # p= 0.04803
+kruskal.test(ci2 ~ hc5, data = data) # p= 0.02338
+kruskal.test(ci2 ~ p16, data = data)  # p= 0.00433
+kruskal.test(ci2 ~ p42, data = data) # p= 0.06513
+kruskal.test(ci2 ~ plmw, data = data) # p= 0.6611
+kruskal.test(ci2 ~ phmw, data = data) # p= 0.6535
+kruskal.test(ci2 ~ pcb, data = data) # p= 0.00243
 
 ```
 
-### No significant result
 ```{r}
 
 mc_site<- as.data.frame(kruskalmc(ci2 ~ site_name, data = data, method = "bonferroni"))
-mc_plmw<- as.data.frame(kruskalmc(sod ~ plmw, data = data, method = "bonferroni"))
+mc_km4<- as.data.frame(kruskalmc(ci2 ~ km4, data = data, method = "bonferroni"))
+mc_km5<- as.data.frame(kruskalmc(ci2 ~ km5, data = data, method = "bonferroni"))
+mc_hc4<- as.data.frame(kruskalmc(ci2 ~ hc4, data = data, method = "bonferroni"))
+mc_hc5<- as.data.frame(kruskalmc(ci2 ~ hc5, data = data, method = "bonferroni"))
+mc_p16<- as.data.frame(kruskalmc(ci2 ~ p16, data = data, method = "bonferroni"))
+mc_pcb<- as.data.frame(kruskalmc(ci2 ~ pcb, data = data, method = "bonferroni"))
 
-head(mc_site)
-head(mc_plmw)
+head(mc_site) #no
+head(mc_km4) #no
+head(mc_km5) #no
+head(mc_hc4) #no
+head(mc_hc5) #no
+head(mc_p16) #1-2
+head(mc_pcb) #2-4
 
 ```
 
 ## ci3
-### Site, RA and geo_group to post hoc
+### All but chems to post hoc
 ```{r}
 
-kruskal.test(ci3 ~ site_name, data = data) # p= 1.673e-5
+kruskal.test(ci3 ~ site_name, data = data) # p= 1.673e-05
 kruskal.test(ci3 ~ reporting_area, data = data) # p= 0.001512
-kruskal.test(ci3 ~ geo_group, data = data) # p= 0.001814
-kruskal.test(ci3 ~ p16, data = data)  # p= 0.2777
-kruskal.test(ci3 ~ p42, data = data) # p= 0.9086
-kruskal.test(ci3 ~ plmw, data = data) # p= 0.6458
-kruskal.test(ci3 ~ phmw, data = data) # p= 0.9712
-kruskal.test(ci3 ~ pcb, data = data) # p= 0.813
+kruskal.test(ci3 ~ km4, data = data) # p= 0.0003531
+kruskal.test(ci3 ~ km5, data = data) # p= 0.0007519
+kruskal.test(ci3 ~ hc4, data = data) # p= 0.0001921
+kruskal.test(ci3 ~ hc5, data = data) # p= 1.089e-05
+kruskal.test(ci3 ~ p16, data = data)  # p= 0.2789
+kruskal.test(ci3 ~ p42, data = data) # p= 0.2736
+kruskal.test(ci3 ~ plmw, data = data) # p= 0.4666
+kruskal.test(ci3 ~ phmw, data = data) # p= 0.6491
+kruskal.test(ci3 ~ pcb, data = data) # p= 0.07342
 
 ```
 
-### No signficant result
 ```{r}
 
 mc_site<- as.data.frame(kruskalmc(ci3 ~ site_name, data = data, method = "bonferroni"))
 mc_reporting<- as.data.frame(kruskalmc(ci3 ~ reporting_area, data = data, method = "bonferroni")) 
-mc_geo<- as.data.frame(kruskalmc(ci3 ~ geo_group, data = data, method = "bonferroni"))
+mc_km4<- as.data.frame(kruskalmc(ci3 ~ km4, data = data, method = "bonferroni"))
+mc_km5<- as.data.frame(kruskalmc(ci3 ~ km5, data = data, method = "bonferroni"))
+mc_hc4<- as.data.frame(kruskalmc(ci3 ~ hc4, data = data, method = "bonferroni"))
+mc_hc5<- as.data.frame(kruskalmc(ci3 ~ hc5, data = data, method = "bonferroni"))
 
-
-
-head(mc_site)
-head(mc_reporting)
-head(mc_geo)
+head(mc_site) #no
+head(mc_reporting) #6-7, 6-8.2, 6,11
+head(mc_km4) #1-3, 2-3, 3-4
+head(mc_km5) #1-5
+head(mc_hc4) #1-3, 2-3, 3-4
+head(mc_hc5) #1-5
 
 ```
 
 # ANOVA 
 ## shell thickness
-### Significant result for site (p= 5.71e-16 ), RA (p= 1.09e-6), plmw (p= 0.00751)
+### Significant result for site (p= 5.71e-16 ), RA (p= 1.09e-6), km4 (p= 1.34e-05), km5 (p= 9e-08), hc4 (p= 7.16e-05),  hc5 (p= 0.000103), p16 (p= 0.00016), p42 (p= 0.00527), phmw (p= 0.0194), pcb (p=1.8e-06)
 ```{r}
 
 library(car)
 library(multcomp)
 
 # Define grouping variables
-grouping_vars <- c("site_name", "reporting_area", "geo_group", "p16", "p42", "phmw", "plmw", "pcb")
+grouping_vars <- c("site_name", "reporting_area", "km4", "km5", "hc4", "hc5", "p16", "p42", "phmw", "plmw", "pcb")
 
 # Function to run ANOVA and post hoc test
 run_anova_posthoc <- function(group_var, data) {
