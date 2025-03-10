@@ -51,7 +51,7 @@ getwd()
 data<- read.csv("../data/cleaned/all_samples_all_groups.csv")
 pdata<- read.csv("../data/cleaned/p450_samples_all_groups.csv")
 # Averaged
-avgdata<- read.csv("../data/cleaned/avg_samples_all_groups.csv")
+#avgdata<- read.csv("../data/cleaned/avg_samples_all_groups.csv")
 
 ```
 
@@ -60,6 +60,7 @@ avgdata<- read.csv("../data/cleaned/avg_samples_all_groups.csv")
 # make analysis groups a factor (reporting area, geographic group, pcb group, site, pah group)
 # change to a factor - all data
 data$site_name <- as.character(data$site_name)
+data$site_name <- as.factor(data$site_number)
 data$reporting_area <- as.factor(data$reporting_area)
 data$km4 <- as.factor(data$km4)
 data$km5 <- as.factor(data$km5)
@@ -98,3 +99,403 @@ avgdata$phmw <- as.factor(avgdata$phmw)
 avgdata$pcb <- as.factor(avgdata$pcb)
 
 ```
+
+# KW
+```{r}
+
+# Function to run Kruskal-Wallis for contamination groups
+kruskal_results_contamination <- function(df, contamination_vars) {
+  results <- list()
+  
+  for (contaminant in contamination_vars) {
+    results[[contaminant]] <- list()
+    
+    for (biomarker in c("p450", "sod", "shell", "ci1", "ci2", "ci3")) {
+      df_subset <- df[!is.na(df[[biomarker]]), ]  # Remove NAs only for the biomarker
+      kw <- kruskal.test(df_subset[[biomarker]] ~ df_subset[[contaminant]])  # Run KW test
+      results[[contaminant]][[biomarker]] <- kw
+    }
+  }
+  
+  return(results)
+}
+
+# Function to run Dunn’s test and write results to CSV
+dunn_posthoc_contamination <- function(df, contamination_vars, output_dir = "dunn_results/") {
+  if (!dir.exists(output_dir)) dir.create(output_dir)  # Create output directory if it doesn't exist
+  
+  results <- list()
+  
+  for (contaminant in contamination_vars) {
+    results[[contaminant]] <- list()
+    
+    for (biomarker in c("p450", "sod", "shell", "ci1", "ci2", "ci3")) {
+      df_subset <- df[!is.na(df[[biomarker]]), ]
+      
+      if (length(unique(df_subset[[contaminant]])) > 1) {  # Ensure at least 2 groups exist
+        dunn_test <- dunnTest(df_subset[[biomarker]] ~ df_subset[[contaminant]], method = "bh")
+        
+        dunn_df <- dunn_test$res  # Extract Dunn’s test results
+        
+        # Store results
+        results[[contaminant]][[biomarker]] <- dunn_df
+        
+        # Save CSV
+        file_name <- paste0(output_dir, "Dunn_", contaminant, "_", biomarker, ".csv")
+        write.csv(dunn_df, file = file_name, row.names = FALSE)
+        
+        message("Saved: ", file_name)
+      }
+    }
+  }
+  
+  return(results)
+}
+
+# Run Dunn’s test and save results
+dunn_results_contamination <- dunn_posthoc_contamination(df, contamination_vars)
+
+
+
+```
+
+# PERMANOVA
+```{r}
+
+# Load required package
+library(vegan)
+
+# Function for PERMANOVA with results written to CSV
+permanova_contamination <- function(df, contamination_vars, output_dir = "permanova_results/") {
+  if (!dir.exists(output_dir)) dir.create(output_dir)  # Create output directory if it doesn't exist
+  
+  results <- list()
+  
+  for (contaminant in contamination_vars) {
+    message("Running PERMANOVA for: ", contaminant)
+    
+    df_subset <- df[!is.na(df$p450), ]  # Remove only p450 NAs
+    
+    # Create a biomarker matrix
+    biomarker_matrix <- df_subset %>%
+      select(p450, sod, shell, ci1, ci2, ci3) %>%
+      scale() %>%
+      as.matrix()
+    
+    # Ensure contamination variable is a factor
+    df_subset[[contaminant]] <- as.factor(df_subset[[contaminant]])
+
+    # Run PERMANOVA (fixed: data argument removed, direct variable use)
+    permanova_test <- adonis2(biomarker_matrix ~ df_subset[[contaminant]], 
+                              method = "euclidean", permutations = 999)
+
+    # Convert to dataframe for saving
+    permanova_df <- as.data.frame(permanova_test)
+
+    # Store results
+    results[[contaminant]] <- permanova_df
+
+    # Save CSV
+    file_name <- paste0(output_dir, "PERMANOVA_", contaminant, ".csv")
+    write.csv(permanova_df, file = file_name, row.names = TRUE)
+
+    message("Saved: ", file_name)
+  }
+  
+  return(results)
+}
+
+# Run PERMANOVA and save results
+permanova_results_contamination <- permanova_contamination(df, contamination_vars)
+
+
+# Function for pairwise PERMANOVA and CSV output
+pairwise_permanova_contamination <- function(df, contamination_vars, output_dir = "pairwise_permanova_results/") {
+  if (!dir.exists(output_dir)) dir.create(output_dir)  # Create output directory if it doesn't exist
+  
+  results <- list()
+  
+  for (contaminant in contamination_vars) {
+    message("Running post-hoc PERMANOVA for: ", contaminant)
+    
+    df_subset <- df[!is.na(df$p450), ]  # Remove only p450 NAs
+    biomarker_matrix <- df_subset %>%
+      select(p450, sod, shell, ci1, ci2, ci3) %>%
+      scale() %>%
+      as.matrix()
+    
+    dist_matrix <- vegdist(biomarker_matrix, method = "euclidean")  # Create distance matrix
+    
+    pairwise_result <- pairwise.perm.manova(dist_matrix, df_subset[[contaminant]], nperm = 999, p.method = "BH")
+    
+    pairwise_df <- as.data.frame(pairwise_result$p.value)  # Extract p-values
+    
+    # Store results
+    results[[contaminant]] <- pairwise_df
+    
+    # Save CSV
+    file_name <- paste0(output_dir, "Pairwise_PERMANOVA_", contaminant, ".csv")
+    write.csv(pairwise_df, file = file_name, row.names = TRUE)
+    
+    message("Saved: ", file_name)
+  }
+  
+  return(results)
+}
+
+# Run pairwise PERMANOVA and save results
+pairwise_permanova_results <- pairwise_permanova_contamination(df, contamination_vars)
+
+
+```
+
+# Spearman (test before the run on the averages)
+```{r}
+
+# Load necessary package
+library(dplyr)
+
+# Function for Spearman’s correlation & CSV output
+spearman_results_contamination <- function(df, contamination_vars, output_dir = "spearman_results/") {
+  if (!dir.exists(output_dir)) dir.create(output_dir)  # Create output directory if it doesn't exist
+  
+  results <- list()
+  
+  for (contaminant in contamination_vars) {
+    results[[contaminant]] <- list()
+    
+    for (biomarker in c("p450", "sod", "shell", "ci1", "ci2", "ci3")) {
+      df_subset <- df[!is.na(df[[biomarker]]), ]  # Remove NAs only for the biomarker
+
+      spearman_test <- cor.test(df_subset[[biomarker]], as.numeric(df_subset[[contaminant]]), method = "spearman")
+
+      # Convert results into a dataframe
+      spearman_df <- data.frame(
+        Contaminant = contaminant,
+        Biomarker = biomarker,
+        Correlation = spearman_test$estimate,
+        P_Value = spearman_test$p.value
+      )
+
+      # Store results
+      results[[contaminant]][[biomarker]] <- spearman_df
+    }
+  }
+  
+  return(results)
+}
+
+# Define contamination grouping variables
+contamination_vars <- c("p16", "p42", "phmw", "plmw", "pcb")
+
+# Run Spearman’s correlation
+spearman_results <- spearman_results_contamination(df, contamination_vars)
+
+# Function to save significant Spearman correlations
+save_significant_spearman <- function(spearman_results, output_dir = "spearman_results/") {
+  if (!dir.exists(output_dir)) dir.create(output_dir)  # Ensure directory exists
+  
+  for (contaminant in names(spearman_results)) {
+    for (biomarker in names(spearman_results[[contaminant]])) {
+      spearman_df <- spearman_results[[contaminant]][[biomarker]]
+      
+      # Filter significant correlations
+      sig_results <- spearman_df %>% filter(P_Value < 0.05)
+      
+      if (nrow(sig_results) > 0) {  # Only save if significant results exist
+        file_name <- paste0(output_dir, "Spearman_", contaminant, "_", biomarker, ".csv")
+        write.csv(sig_results, file = file_name, row.names = FALSE)
+        message("Saved: ", file_name)
+      }
+    }
+  }
+}
+
+# Run function to save significant results
+save_significant_spearman(spearman_results)
+
+
+```
+
+# troubleshooting for spearman - too many issue with the full dataset
+```{r}
+
+summary(df$p450)  # Check if all values are the same
+summary(df$ci2)
+summary(df$ci3)
+
+length(unique(df$p450))  # Count unique values
+length(unique(df$ci2))
+length(unique(df$ci3))
+
+```
+
+# Kendall's Tau
+```{r}
+
+# Load necessary package
+library(dplyr)
+
+# Function for Kendall’s correlation & CSV output
+kendall_results_contamination <- function(df, contamination_vars, output_dir = "kendall_results/") {
+  if (!dir.exists(output_dir)) dir.create(output_dir)  # Create output directory if it doesn't exist
+  
+  results <- list()
+  
+  for (contaminant in contamination_vars) {
+    results[[contaminant]] <- list()
+    
+    for (biomarker in c("p450", "sod", "shell", "ci1", "ci2", "ci3")) {
+      df_subset <- df[!is.na(df[[biomarker]]), ]  # Remove NAs for this biomarker
+      
+      # Skip biomarker if all values are the same (no variability)
+      if (length(unique(df_subset[[biomarker]])) > 1) {
+        kendall_test <- cor.test(df_subset[[biomarker]], as.numeric(df_subset[[contaminant]]), 
+                                 method = "kendall", exact = FALSE)  # Handle ties
+        
+        # Convert results into a dataframe
+        kendall_df <- data.frame(
+          Contaminant = contaminant,
+          Biomarker = biomarker,
+          Correlation = kendall_test$estimate,
+          P_Value = kendall_test$p.value
+        )
+
+        # Store results
+        results[[contaminant]][[biomarker]] <- kendall_df
+      } else {
+        message("Skipping ", biomarker, " - No variation in values.")
+      }
+    }
+  }
+  
+  return(results)
+}
+
+# Define contamination grouping variables
+contamination_vars <- c("p16", "p42", "phmw", "plmw", "pcb")
+
+# Run Kendall’s correlation
+kendall_results <- kendall_results_contamination(df, contamination_vars)
+
+# Function to save significant Kendall correlations
+save_significant_kendall <- function(kendall_results, output_dir = "kendall_results/") {
+  if (!dir.exists(output_dir)) dir.create(output_dir)  # Ensure directory exists
+  
+  for (contaminant in names(kendall_results)) {
+    for (biomarker in names(kendall_results[[contaminant]])) {
+      kendall_df <- kendall_results[[contaminant]][[biomarker]]
+      
+      # Filter significant correlations
+      sig_results <- kendall_df %>% filter(P_Value < 0.05)
+      
+      if (nrow(sig_results) > 0) {  # Only save if significant results exist
+        file_name <- paste0(output_dir, "Kendall_", contaminant, "_", biomarker, ".csv")
+        write.csv(sig_results, file = file_name, row.names = FALSE)
+        message("Saved: ", file_name)
+      }
+    }
+  }
+}
+
+# Run function to save significant results
+save_significant_kendall(kendall_results)
+
+
+```
+
+# Plotting Spearman 
+```{r}
+
+library(reshape2)
+
+# Function to read & combine all significant Spearman results
+combine_spearman_results <- function(input_dir = "spearman_results/") {
+  files <- list.files(input_dir, pattern = "Spearman_.*\\.csv", full.names = TRUE)
+  
+  if (length(files) == 0) {
+    message("No significant Spearman correlations found.")
+    return(NULL)
+  }
+  
+  spearman_data <- do.call(rbind, lapply(files, read.csv))
+  
+  return(spearman_data)
+}
+
+# Run function to get significant correlations
+sig_spearman_data <- combine_spearman_results()
+
+# Check if data exists before plotting
+if (!is.null(sig_spearman_data)) {
+  print(head(sig_spearman_data))  # View the first few rows
+}
+
+# Reshape data for heatmap
+spearman_heatmap_data <- sig_spearman_data %>%
+  select(Contaminant, Biomarker, Correlation) %>%
+  dcast(Biomarker ~ Contaminant, value.var = "Correlation")
+
+# Convert to matrix for plotting
+rownames(spearman_heatmap_data) <- spearman_heatmap_data$Biomarker
+spearman_heatmap_data <- spearman_heatmap_data[, -1]  # Remove Biomarker column
+spearman_heatmap_matrix <- as.matrix(spearman_heatmap_data)
+
+# Heatmap with ggplot2
+ggplot(sig_spearman_data, aes(x = Contaminant, y = Biomarker, fill = Correlation)) +
+  geom_tile(color = "grey") +  # White grid lines
+  scale_fill_gradient2(low = "white", mid = "blue", high = "red", midpoint = 0, 
+                       name = "Spearman Correlation") +
+  labs(title = "Heatmap of Significant Spearman Correlations",
+       x = "Contaminant",
+       y = "Biomarker") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
+```
+
+# Multiple Linear Regression - will revisit and tweak
+```{r}
+
+library(stats)
+
+# Run multiple linear regression for SOD
+shell_model <- lm(shell ~ pcb + p16 + p42, data = df)
+
+# Check model summary
+summary(shell_model)
+
+par(mfrow=c(2,2))  # Set up plotting grid
+plot(shell_model)  # Check residuals
+
+vif(shell_model) #testing colinearity; <5 means no major colinearity and >10 shows strong colinearity
+
+```
+
+# SIMPER
+```{r}
+
+# Filter dataset to remove NAs for p450
+df_simper <- df[!is.na(df$p450), ]
+
+# Select biomarker data
+biomarker_matrix <- df_simper %>%
+  select(p450, sod, shell, ci1, ci2, ci3) %>%
+  scale() %>%
+  as.matrix()
+
+# Convert contamination levels to factors
+df_simper$p16 <- as.factor(df_simper$p16)
+df_simper$p42 <- as.factor(df_simper$p42)
+df_simper$pcb <- as.factor(df_simper$pcb)
+df_simper$phmw <- as.factor(df_simper$phmw)
+df_simper$plmw <- as.factor(df_simper$plmw)
+
+# pcb
+simper_p42 <- simper(biomarker_matrix, df_simper$p42, permutations = 999)
+summary(simper_p42)  # View summary results
+
+
+```
+
