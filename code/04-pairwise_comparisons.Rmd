@@ -326,3 +326,62 @@ names(anova_results) <- grouping_vars
 anova_results <- anova_results[!sapply(anova_results, is.null)]
 
 ```
+
+# PERMANOVA
+
+```{r}
+
+library(vegan)
+library(RVAideMemoire)
+
+# Define columns for dependent variables (metrics to analyze)
+dependent_vars <- colnames(data)[5:10]  # Adjust if needed
+
+# Define independent variables (grouping variables)
+independent_vars <- colnames(data)[11:21]  # Adjust if needed
+
+# Loop through each dependent variable separately
+for (var in dependent_vars) {
+  cat("\nRunning PERMANOVA for:", var, "\n")
+
+  # Remove rows with NA in the current dependent variable
+  data_clean <- data[complete.cases(data[, var]), ]
+
+  # Skip analysis if all rows were removed due to NAs
+  if (nrow(data_clean) == 0) {
+    cat("Skipping", var, "- all values are NA.\n")
+    next
+  }
+
+  # Create a distance matrix using the single dependent variable
+  dist_matrix <- vegdist(data_clean[, var, drop = FALSE], method = "bray")
+
+  # Run PERMANOVA with grouping variables
+  formula <- as.formula(paste("dist_matrix ~", paste(independent_vars, collapse = " + ")))
+  permanova_result <- adonis2(formula, data = data_clean, permutations = 999)
+
+  # Print PERMANOVA result
+  print(permanova_result)
+
+  # Check if PERMANOVA result is significant (p < 0.05)
+  if (permanova_result$`Pr(>F)`[1] < 0.05) {
+    cat("\nPERMANOVA is significant for", var, ". Running post-hoc tests...\n")
+
+    # Run post-hoc pairwise comparisons using a main grouping variable (e.g., site_name)
+    pairwise_result <- adonis2(dist_matrix ~ pcb, data = data_clean, permutations = 999)
+
+    # Filter only significant results (p < 0.05)
+    significant_results <- pairwise_result[pairwise_result$p.adj < 0.05, ]
+
+    # Print results if any are significant
+    if (nrow(significant_results) > 0) {
+      print(significant_results)
+    } else {
+      cat("\nNo significant post-hoc comparisons found for", var, ".\n")
+    }
+  } else {
+    cat("\nNo significant PERMANOVA results for", var, ".\n")
+  }
+}
+
+```

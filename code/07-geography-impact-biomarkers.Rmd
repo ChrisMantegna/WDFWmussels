@@ -1,0 +1,268 @@
+---
+title: "07- Geographical assessment of measured metrics"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+# libraries
+library(knitr)
+library(tidyr)
+library(dplyr)
+library(vegan)
+library(pgirmess)
+library(ggplot2)
+library(FSA)           
+library(rstatix)       
+library(car)
+library(RVAideMemoire)
+
+# global options
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  #fig.width = 15,       # Set plot width in inches
+  #fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load & Check Data
+```{r}
+
+getwd()
+
+# ALL individual samples
+data<- read.csv("../data/cleaned/all_samples_all_groups.csv")
+pdata<- read.csv("../data/cleaned/p450_samples_all_groups.csv")
+# Averaged
+avgdata<- read.csv("../data/cleaned/avg_samples_all_groups.csv")
+
+```
+
+# making groups characters
+```{r}
+# make analysis groups a factor (reporting area, geographic group, pcb group, site, pah group)
+# change to a factor - all data
+data$site_name <- as.character(data$site_name)
+data$reporting_area <- as.factor(data$reporting_area)
+data$km4 <- as.factor(data$km4)
+data$km5 <- as.factor(data$km5)
+data$hc4 <- as.factor(data$hc4)
+data$hc5 <- as.factor(data$hc5)
+data$p16 <- as.factor(data$p16)
+data$p42 <- as.factor(data$p42)
+data$plmw <- as.factor(data$plmw)
+data$phmw <- as.factor(data$phmw)
+data$pcb <- as.factor(data$pcb)
+
+#p450 data
+pdata$site_name <- as.character(pdata$site_name)
+pdata$reporting_area <- as.factor(pdata$reporting_area)
+pdata$km4 <- as.factor(pdata$km4)
+pdata$km5 <- as.factor(pdata$km5)
+pdata$hc4 <- as.factor(pdata$hc4)
+pdata$hc5 <- as.factor(pdata$hc5)
+pdata$p16 <- as.factor(pdata$p16)
+pdata$p42 <- as.factor(pdata$p42)
+pdata$plmw <- as.factor(pdata$plmw)
+pdata$phmw <- as.factor(pdata$phmw)
+pdata$pcb <- as.factor(pdata$pcb)
+
+# change to a factor - avg data
+avgdata$site_name <- as.character(avgdata$site_name)
+avgdata$reporting_area <- as.factor(avgdata$reporting_area)
+avgdata$km4 <- as.factor(avgdata$km4)
+avgdata$km5 <- as.factor(avgdata$km5)
+avgdata$hc4 <- as.factor(avgdata$hc4)
+avgdata$hc5 <- as.factor(avgdata$hc5)
+avgdata$p16 <- as.factor(avgdata$p16)
+avgdata$p42 <- as.factor(avgdata$p42)
+avgdata$plmw <- as.factor(avgdata$plmw)
+avgdata$phmw <- as.factor(avgdata$phmw)
+avgdata$pcb <- as.factor(avgdata$pcb)
+
+```
+
+# KW + Dunn's Post Hoc
+```{r}
+
+# Function to run Kruskal-Wallis for each biomarker across multiple geographic grouping variables
+kruskal_results <- function(data, grouping_vars) {
+  results <- list()
+  
+  for (grouping_var in grouping_vars) {
+    results[[grouping_var]] <- list()  # Create a sublist for each grouping variable
+    
+    for (biomarker in c("p450", "sod", "shell", "ci1", "ci2", "ci3")) {
+      if (biomarker %in% colnames(data) & grouping_var %in% colnames(data)) {  
+        df_subset <- data[!is.na(data[[biomarker]]), ]  # Remove NAs only for that biomarker
+        kw <- kruskal.test(df_subset[[biomarker]] ~ df_subset[[grouping_var]])  # Run KW test
+        
+        results[[grouping_var]][[biomarker]] <- kw
+      } else {
+        warning(paste("Column", biomarker, "or", grouping_var, "not found in dataset"))
+      }
+    }
+  }
+  
+  return(results)
+}
+
+# Define the geographic grouping variables
+geo_vars <- c("km4", "km5", "hc4", "hc5", "reporting_area", "site_name")
+
+# Run Kruskal-Wallis for all geographic groups
+kw_results <- kruskal_results(data, geo_vars)
+
+# Check results for km4
+kw_results$km4
+kw_results$km5
+kw_results$hc4
+kw_results$hc5
+kw_results$site_name
+kw_results$reporting_area
+
+# Function to run Dunn's post-hoc test for each biomarker across multiple geographic grouping variables
+dunn_posthoc_results <- function(data, grouping_vars) {
+  results <- list()
+  
+  for (grouping_var in grouping_vars) {
+    results[[grouping_var]] <- list()  # Create a sublist for each grouping variable
+    
+    for (biomarker in c("p450", "sod", "shell", "ci1", "ci2", "ci3")) {
+      if (biomarker %in% colnames(data) & grouping_var %in% colnames(data)) {
+        
+        # Remove NAs only for the current biomarker
+        df_subset <- data[!is.na(data[[biomarker]]), ]
+        
+        # Check if there are at least 2 unique groups
+        if (length(unique(df_subset[[grouping_var]])) > 1) {
+          dunn_test <- dunnTest(df_subset[[biomarker]] ~ df_subset[[grouping_var]], method = "bh")  # Benjamini-Hochberg correction
+          results[[grouping_var]][[biomarker]] <- dunn_test
+        } else {
+          results[[grouping_var]][[biomarker]] <- "Not enough unique groups for pairwise comparisons"
+        }
+      } else {
+        warning(paste("Column", biomarker, "or", grouping_var, "not found in dataset"))
+      }
+    }
+  }
+  
+  return(results)
+}
+
+# Run Dunn’s test for all geographic groups
+dunn_results <- dunn_posthoc_results(data, geo_vars)
+
+# Example: Check results for km4
+dunn_results$km4
+dunn_results$km5
+dunn_results$hc4
+dunn_results$hc5
+dunn_results$site_name
+dunn_results$reporting_area
+
+# Function to extract and write Dunn’s test results to CSV
+save_dunn_results <- function(dunn_results, output_dir = "dunn_results/") {
+  if (!dir.exists(output_dir)) dir.create(output_dir)  # Create output directory if it doesn't exist
+  
+  for (grouping_var in names(dunn_results)) {  # Loop through geographic grouping variables
+    for (biomarker in names(dunn_results[[grouping_var]])) {  # Loop through biomarkers
+      
+      test_results <- dunn_results[[grouping_var]][[biomarker]]
+      
+      # Ensure it's not an error message or empty
+      if (is.list(test_results) && "res" %in% names(test_results)) {
+        res_df <- test_results$res  # Extract results data frame
+        
+        # Define file name
+        file_name <- paste0(output_dir, "Dunn_", grouping_var, "_", biomarker, ".csv")
+        
+        # Write to CSV
+        write.csv(res_df, file = file_name, row.names = FALSE)
+        
+        message("Saved: ", file_name)  # Notify user
+      }
+    }
+  }
+}
+
+# Run function to save results
+save_dunn_results(dunn_results)
+
+```
+
+# Permanova
+```{r}
+
+df<- data
+
+# Function for pairwise post-hoc PERMANOVA using RVAideMemoire
+pairwise_permanova_rva <- function(df, grouping_vars, output_dir = "permanova_results/") {
+  if (!dir.exists(output_dir)) dir.create(output_dir)  # Create output directory if it doesn't exist
+  
+  results <- list()
+  
+  for (grouping_var in grouping_vars) {
+    message("Running post-hoc PERMANOVA for: ", grouping_var)
+    
+    df_subset <- df[!is.na(df$p450), ]  # Remove only p450 NAs
+    
+    # Create a biomarker matrix
+    biomarker_matrix <- df_subset %>%
+      select(p450, sod, shell, ci1, ci2, ci3) %>%
+      scale() %>%
+      as.matrix()
+    
+    dist_matrix <- vegdist(biomarker_matrix, method = "euclidean")  # Create distance matrix
+    
+    # Perform pairwise PERMANOVA
+    pairwise_result <- pairwise.perm.manova(dist_matrix, df_subset[[grouping_var]], nperm = 999, p.method = "BH")
+    
+    # Extract results into a data frame
+    pairwise_df <- as.data.frame(pairwise_result$p.value)  # Extract only p-values
+    
+    # Store results
+    results[[grouping_var]] <- pairwise_df
+    
+    # Save as CSV
+    file_name <- paste0(output_dir, "Pairwise_PERMANOVA_", grouping_var, ".csv")
+    write.csv(pairwise_df, file = file_name, row.names = TRUE)
+    
+    message("Saved: ", file_name)
+  }
+  
+  return(results)
+}
+
+# Rename dataset to avoid issues
+df <- data  # If your dataset is named "data", rename it to "df"
+
+# Define geographic grouping variables
+geo_vars <- c("km4", "km5", "hc4", "hc5", "reporting_area", "site_name")
+
+# Run pairwise PERMANOVA for all geographic grouping variables
+pairwise_permanova_results <- pairwise_permanova_rva(df, geo_vars)
+
+# Example: Check results for km4
+pairwise_permanova_results$km4
+
+
+```
+
