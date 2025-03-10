@@ -444,7 +444,7 @@ spearman_heatmap_matrix <- as.matrix(spearman_heatmap_data)
 # Heatmap with ggplot2
 ggplot(sig_spearman_data, aes(x = Contaminant, y = Biomarker, fill = Correlation)) +
   geom_tile(color = "grey") +  # White grid lines
-  scale_fill_gradient2(low = "white", mid = "blue", high = "red", midpoint = 0, 
+  scale_fill_gradient2(low = "yellow", mid = "blue", high = "red", midpoint = 0, 
                        name = "Spearman Correlation") +
   labs(title = "Heatmap of Significant Spearman Correlations",
        x = "Contaminant",
