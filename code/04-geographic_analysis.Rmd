@@ -1,5 +1,5 @@
 ---
-title: "07- Geographical assessment of measured metrics"
+title: "07- Geographical assessment of measured metrics, n=312"
 output:
   pdf_document: 
     fig_width: 20
@@ -262,6 +262,94 @@ pairwise_permanova_results <- pairwise_permanova_rva(df, geo_vars)
 
 # Example: Check results for km4
 pairwise_permanova_results$km4
+
+
+```
+
+# ANOSIM, Analysis of similarity
+```{r}
+
+df_anosim <- df %>%
+  filter(!is.na(p450))  # Remove only p450 NAs
+
+# Create a new distance matrix
+dist_matrix <- vegdist(df_anosim %>%
+                         select(p450, sod, shell, ci1, ci2, ci3) %>%
+                         scale(), method = "euclidean")
+
+# Run ANOSIM
+anosim_results <- anosim(dist_matrix, grouping = df_anosim$reporting_area)
+print(anosim_results)
+
+#Interpretation:
+#If R > 0.5 and p < 0.05, group differences are meaningful.
+#If R < 0.2, groups are not well-separated.
+
+```
+
+# NMDS
+```{r}
+
+library(ggrepel)
+
+# Remove rows with NA in p450
+df_nmds <- df[!is.na(df$p450), ]
+
+# Select only biomarker columns
+biomarker_matrix <- df_nmds %>%
+  select(p450, sod, shell, ci1, ci2, ci3) %>%
+  scale() %>%
+  as.matrix()
+
+# Compute NMDS using Bray-Curtis distance
+set.seed(123)  # For reproducibility
+nmds_result <- metaMDS(biomarker_matrix, distance = "bray", k = 2, trymax = 100)
+
+# Extract NMDS coordinates
+nmds_scores <- as.data.frame(scores(nmds_result))
+nmds_scores$SampleID <- rownames(nmds_scores)  # Retain sample info
+
+# Add geographic grouping for coloring
+nmds_scores$Geography <- df_nmds$reporting_area  # Change to "km5", "hc4", etc., as needed
+
+# NMDS Plot with ggplot2
+ggplot(nmds_scores, aes(x = NMDS1, y = NMDS2, color = Geography)) +
+  geom_point(size = 3, alpha = 0.8) +  # Sample points
+  geom_text_repel(aes(label = SampleID), size = 3, show.legend = FALSE) +  # Avoid label overlap
+  labs(title = "NMDS of Biomarker Data by Geographic Group",
+       x = "NMDS Axis 1", y = "NMDS Axis 2",
+       color = "Geographic Group") +
+  theme_minimal() +
+  theme(legend.position = "right")
+
+
+```
+
+# Mantel
+```{r}
+
+library(geosphere)
+
+# Remove NA rows for p450
+df_mantel <- df[!is.na(df$p450), ]
+
+# Create biomarker dissimilarity matrix (Euclidean)
+biomarker_matrix <- df_mantel %>%
+  select(p450, sod, shell, ci1, ci2, ci3) %>%
+  scale() %>%
+  as.matrix()
+
+biomarker_dist <- vegdist(biomarker_matrix, method = "euclidean")  # Biomarker dissimilarity
+
+# Create geographic distance matrix (Haversine great-circle distance)
+geo_dist <- distm(cbind(df_mantel$longitude, df_mantel$latitude), fun = distHaversine)  # Distance in meters
+geo_dist <- as.dist(geo_dist)  # Convert to dist object
+
+# Run Mantel test
+mantel_result <- mantel(biomarker_dist, geo_dist, method = "spearman", permutations = 999)
+
+# Print result
+print(mantel_result)
 
 
 ```

@@ -1,0 +1,100 @@
+---
+title: "07- Contaminant assessment of measured metrics, n=312"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+# libraries
+library(knitr)
+library(tidyr)
+library(dplyr)
+library(vegan)
+library(pgirmess)
+library(ggplot2)
+library(FSA)           
+library(rstatix)       
+library(car)
+library(RVAideMemoire)
+
+# global options
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  #fig.width = 15,       # Set plot width in inches
+  #fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load & Check Data
+```{r}
+
+getwd()
+
+# ALL individual samples
+data<- read.csv("../data/cleaned/all_samples_all_groups.csv")
+pdata<- read.csv("../data/cleaned/p450_samples_all_groups.csv")
+# Averaged
+avgdata<- read.csv("../data/cleaned/avg_samples_all_groups.csv")
+
+```
+
+# making groups characters
+```{r}
+# make analysis groups a factor (reporting area, geographic group, pcb group, site, pah group)
+# change to a factor - all data
+data$site_name <- as.character(data$site_name)
+data$reporting_area <- as.factor(data$reporting_area)
+data$km4 <- as.factor(data$km4)
+data$km5 <- as.factor(data$km5)
+data$hc4 <- as.factor(data$hc4)
+data$hc5 <- as.factor(data$hc5)
+data$p16 <- as.factor(data$p16)
+data$p42 <- as.factor(data$p42)
+data$plmw <- as.factor(data$plmw)
+data$phmw <- as.factor(data$phmw)
+data$pcb <- as.factor(data$pcb)
+
+#p450 data
+pdata$site_name <- as.character(pdata$site_name)
+pdata$reporting_area <- as.factor(pdata$reporting_area)
+pdata$km4 <- as.factor(pdata$km4)
+pdata$km5 <- as.factor(pdata$km5)
+pdata$hc4 <- as.factor(pdata$hc4)
+pdata$hc5 <- as.factor(pdata$hc5)
+pdata$p16 <- as.factor(pdata$p16)
+pdata$p42 <- as.factor(pdata$p42)
+pdata$plmw <- as.factor(pdata$plmw)
+pdata$phmw <- as.factor(pdata$phmw)
+pdata$pcb <- as.factor(pdata$pcb)
+
+# change to a factor - avg data
+avgdata$site_name <- as.character(avgdata$site_name)
+avgdata$reporting_area <- as.factor(avgdata$reporting_area)
+avgdata$km4 <- as.factor(avgdata$km4)
+avgdata$km5 <- as.factor(avgdata$km5)
+avgdata$hc4 <- as.factor(avgdata$hc4)
+avgdata$hc5 <- as.factor(avgdata$hc5)
+avgdata$p16 <- as.factor(avgdata$p16)
+avgdata$p42 <- as.factor(avgdata$p42)
+avgdata$plmw <- as.factor(avgdata$plmw)
+avgdata$phmw <- as.factor(avgdata$phmw)
+avgdata$pcb <- as.factor(avgdata$pcb)
+
+```
