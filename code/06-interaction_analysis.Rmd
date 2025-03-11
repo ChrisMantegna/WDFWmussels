@@ -54,3 +54,149 @@ pdata<- read.csv("../data/cleaned/p450_samples_all_groups.csv")
 #avgdata<- read.csv("../data/cleaned/avg_samples_all_groups.csv")
 
 ```
+
+# making groups characters
+```{r}
+# make analysis groups a factor (reporting area, geographic group, pcb group, site, pah group)
+# change to a factor - all data
+data$site_name <- as.character(data$site_name)
+data$site_name <- as.factor(data$site_number)
+data$reporting_area <- as.factor(data$reporting_area)
+data$km4 <- as.factor(data$km4)
+data$km5 <- as.factor(data$km5)
+data$hc4 <- as.factor(data$hc4)
+data$hc5 <- as.factor(data$hc5)
+data$p16 <- as.factor(data$p16)
+data$p42 <- as.factor(data$p42)
+data$plmw <- as.factor(data$plmw)
+data$phmw <- as.factor(data$phmw)
+data$pcb <- as.factor(data$pcb)
+
+#p450 data
+pdata$site_name <- as.character(pdata$site_name)
+pdata$reporting_area <- as.factor(pdata$reporting_area)
+pdata$km4 <- as.factor(pdata$km4)
+pdata$km5 <- as.factor(pdata$km5)
+pdata$hc4 <- as.factor(pdata$hc4)
+pdata$hc5 <- as.factor(pdata$hc5)
+pdata$p16 <- as.factor(pdata$p16)
+pdata$p42 <- as.factor(pdata$p42)
+pdata$plmw <- as.factor(pdata$plmw)
+pdata$phmw <- as.factor(pdata$phmw)
+pdata$pcb <- as.factor(pdata$pcb)
+
+# change to a factor - avg data
+avgdata$site_name <- as.character(avgdata$site_name)
+avgdata$reporting_area <- as.factor(avgdata$reporting_area)
+avgdata$km4 <- as.factor(avgdata$km4)
+avgdata$km5 <- as.factor(avgdata$km5)
+avgdata$hc4 <- as.factor(avgdata$hc4)
+avgdata$hc5 <- as.factor(avgdata$hc5)
+avgdata$p16 <- as.factor(avgdata$p16)
+avgdata$p42 <- as.factor(avgdata$p42)
+avgdata$plmw <- as.factor(avgdata$plmw)
+avgdata$phmw <- as.factor(avgdata$phmw)
+avgdata$pcb <- as.factor(avgdata$pcb)
+
+```
+
+# 2-Way PERMANOVA
+```{r}
+
+# Function for Two-Way PERMANOVA + Pairwise Post-hoc Comparisons
+pairwise_permanova_rva <- function(df, geo_vars, contam_vars, biomarker_vars, output_dir = "permanova_results/") {
+  if (!dir.exists(output_dir)) dir.create(output_dir)  # Create output directory if it doesn't exist
+
+  results <- list()
+
+  # Ensure all contaminant variables exist in the dataset
+  missing_contam_vars <- setdiff(contam_vars, colnames(df))
+  if (length(missing_contam_vars) > 0) {
+    stop(paste("Error: The following contaminant variables are missing from the dataset:", paste(missing_contam_vars, collapse = ", ")))
+  }
+
+  # Convert contamination group variables to factors
+  df[contam_vars] <- lapply(df[contam_vars], as.factor)
+
+  # Remove only NAs in p450, preserving other data
+  df_subset <- df[!is.na(df$p450), ] 
+
+  # Create a biomarker matrix
+  biomarker_matrix <- df_subset %>%
+    select(all_of(biomarker_vars)) %>%
+    scale() %>%
+    as.matrix()
+
+  # Compute Euclidean distance matrix
+  dist_matrix <- vegdist(biomarker_matrix, method = "euclidean")
+
+  # Run Two-Way PERMANOVA for each geo variable against each contam variable
+  for (geo_var in geo_vars) {
+    if (!geo_var %in% colnames(df_subset)) next  # Skip if the column does not exist
+    df_subset[[geo_var]] <- as.factor(df_subset[[geo_var]])
+
+    for (contam_var in contam_vars) {
+      message("Running Two-Way PERMANOVA for: ", geo_var, " and ", contam_var)
+
+      permanova_result <- adonis2(dist_matrix ~ df_subset[[geo_var]] * df_subset[[contam_var]], data = df_subset, permutations = 999)
+
+      # Save PERMANOVA results
+      file_name <- paste0(output_dir, "PERMANOVA_", geo_var, "_", contam_var, ".csv")
+      write.csv(as.data.frame(permanova_result), file = file_name, row.names = TRUE)
+      message("Saved: ", file_name)
+
+      # Store results
+      results[[paste("PERMANOVA", geo_var, contam_var, sep = "_")]] <- permanova_result
+
+      # Run post-hoc pairwise comparisons for the geographic group
+      message("Running post-hoc PERMANOVA for: ", geo_var)
+      pairwise_result <- pairwise.perm.manova(dist_matrix, df_subset[[geo_var]], nperm = 999, p.method = "BH")
+      pairwise_df <- as.data.frame(pairwise_result$p.value)
+
+      # Save pairwise geo results
+      file_name_geo <- paste0(output_dir, "Pairwise_PERMANOVA_", geo_var, ".csv")
+      write.csv(pairwise_df, file = file_name_geo, row.names = TRUE)
+      message("Saved: ", file_name_geo)
+
+      results[[paste("Pairwise", geo_var, sep = "_")]] <- pairwise_df
+
+      # Run post-hoc pairwise comparisons for contaminant groups
+      message("Running post-hoc PERMANOVA for: ", contam_var)
+      pairwise_contam <- pairwise.perm.manova(dist_matrix, df_subset[[contam_var]], nperm = 999, p.method = "BH")
+      pairwise_contam_df <- as.data.frame(pairwise_contam$p.value)
+
+      # Save pairwise contamination results
+      file_name_contam <- paste0(output_dir, "Pairwise_PERMANOVA_", contam_var, ".csv")
+      write.csv(pairwise_contam_df, file = file_name_contam, row.names = TRUE)
+      message("Saved: ", file_name_contam)
+
+      results[[paste("Pairwise", contam_var, sep = "_")]] <- pairwise_contam_df
+    }
+  }
+
+  return(results)
+}
+
+# Define dataset
+df <- data  # Ensure your dataset is assigned to "df"
+
+# Define geographic grouping variables 
+geo_vars <- c("km4", "km5", "hc4", "hc5", "reporting_area", "site_name")
+
+# Define the contamination grouping variables 
+contam_vars <- c("p16", "p42", "phmw", "plmw", "pcb")
+
+# Define biomarker variables
+biomarker_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3")
+
+# Run Two-Way PERMANOVA and pairwise comparisons
+pairwise_permanova_results <- pairwise_permanova_rva(df, geo_vars, contam_vars, biomarker_vars)
+
+# Example: Check results for km4
+pairwise_permanova_results[["Pairwise_site_name"]]
+
+# Example: Check results for contamination group
+pairwise_permanova_results[["p16"]]
+
+```
+
