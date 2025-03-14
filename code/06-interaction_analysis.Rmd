@@ -49,7 +49,7 @@ knitr::opts_chunk$set(
 getwd()
 
 # ALL individual samples
-df<- read.csv("../data/cleaned/all_samples_all_groups.csv")
+df1<- read.csv("../data/cleaned/all_samples_all_groups.csv")
 pdata<- read.csv("../data/cleaned/p450_samples_all_groups.csv")
 # Averaged
 #avgdata<- read.csv("../data/cleaned/avg_samples_all_groups.csv")
@@ -511,25 +511,26 @@ message("Done! Results saved.")
 ```{r}
 
 # Define dataset
-df <- data  # Ensure your dataset is assigned to "data"
+#df <- data  # Ensure your dataset is assigned to "data"
 
 # Run Two-Way PERMANOVA
-permanova <- adonis2(vegdist(scale(df$sod), method = "euclidean") ~ site_name * p16, 
-                      data = df, permutations = 999)
+permanova <- adonis2(vegdist(scale(df1$sod), method = "euclidean") ~ site_name * p16, 
+                      data = df1, permutations = 999)
 
 # Print results
 print(permanova)
 
 # Run post-hoc pairwise tests
-pairwise_geo <- pairwise.perm.manova(vegdist(scale(df$sod), method = "euclidean"), df$site_name, nperm = 999)
-pairwise_contam <- pairwise.perm.manova(vegdist(scale(df$sod), method = "euclidean"), df$p16, nperm = 999)
-pairwise_interaction <- pairwise.perm.manova(vegdist(scale(df$sod), method = "euclidean"), interaction(df$site_name, df$p16), nperm = 999)
+pairwise_geo <- pairwise.perm.manova(vegdist(scale(df1$sod), method = "euclidean"), df1$site_name, nperm = 999)
+pairwise_contam <- pairwise.perm.manova(vegdist(scale(df1$sod), method = "euclidean"), df1$p16, nperm = 999)
+pairwise_interaction <- pairwise.perm.manova(vegdist(scale(df1$sod), method = "euclidean"), interaction(df1$site_name, df1$p16), nperm = 999)
 
 # Print pairwise results
 #print(pairwise_geo$p.value)
 #print(pairwise_contam$p.value)
 print(pairwise_interaction$p.value)
 
+write.csv(as.data.frame(pairwise_interaction$p.value), "Pairwise_Interaction.csv", row.names = TRUE)
 
 ```
 

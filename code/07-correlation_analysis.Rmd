@@ -1,0 +1,132 @@
+---
+title: "07- Correlations with Averaged Data, n=74"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+# libraries
+library(knitr)
+library(tidyr)
+library(dplyr)
+library(vegan)
+library(pgirmess)
+library(ggplot2)
+library(FSA)           
+library(rstatix)       
+library(car)
+library(RVAideMemoire)
+library(rcompanion)
+
+# global options
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  #fig.width = 15,       # Set plot width in inches
+  #fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load & Check Data
+```{r}
+
+getwd()
+
+# ALL individual samples
+#df1<- read.csv("../data/cleaned/all_samples_all_groups.csv")
+#pdata<- read.csv("../data/cleaned/p450_samples_all_groups.csv")
+# Averaged
+avgdata<- read.csv("../data/cleaned/avg_samples_all_groups.csv") #all data + groups without contaminants data
+avgsummed<-  read.csv("../data/cleaned/avg_all_summed.csv")
+avgpcb<-  read.csv("../data/cleaned/avg_all_pcb.csv")
+avgpbde<-  read.csv("../data/cleaned/avg_all_pbde.csv")
+avgmetal<-  read.csv("../data/cleaned/avg_all_metal.csv")
+avglmw<-  read.csv("../data/cleaned/avg_all_lmw.csv")
+avghmw<-  read.csv("../data/cleaned/avg_all_hmw.csv")
+avgddt<-  read.csv("../data/cleaned/avg_all_ddtPesticide.csv")
+avghch<-  read.csv("../data/cleaned/avg_all_chlordanesHch.csv")
+avgall<-  read.csv("../data/cleaned/avg_all_analytes_individual.csv")
+
+
+```
+
+# Spearman Correlations
+```{r}
+
+# Load required package
+library(Hmisc)
+
+# Define dataset
+df <- avgall  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:150
+
+# Convert grouping metrics to factors
+df[, grouping_cols] <- lapply(df[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarker_data <- df[, biomarker_cols]
+analyte_data <- df[, analyte_cols]
+
+# Get biomarker and analyte names
+biomarkers <- colnames(biomarker_data)
+analytes <- colnames(analyte_data)
+
+# Initialize storage for results
+results_list <- list()
+
+# Run Spearman correlation for each biomarker against all analytes
+for (biomarker in biomarkers) {
+  spearman_result <- rcorr(as.matrix(df[[biomarker]]), as.matrix(analyte_data), type = "spearman")
+  
+  # Extract correlation coefficients and p-values
+  corr_matrix <- spearman_result$r[, 1, drop = FALSE]  # Ensure it's a column matrix
+  p_matrix <- spearman_result$P[, 1, drop = FALSE]  # Ensure p-values align properly
+
+  # Convert matrices to data frames
+  corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+  p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+  # Merge correlation values with p-values
+  merged_df <- merge(corr_df, p_df, by = "Analyte")
+
+  # Add the correct biomarker label
+  merged_df$Biomarker <- biomarker  # Ensures proper alignment
+
+  # Reorder columns
+  merged_df <- merged_df[, c("Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+  # Filter significant results (p < 0.05)
+  significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+  # Store results
+  results_list[[biomarker]] <- significant_results
+
+  # Save as CSV
+  write.csv(significant_results, paste0("Spearman_Significant_", biomarker, ".csv"), row.names = FALSE)
+}
+
+# Print message
+message("Spearman correlation complete. Significant results saved.")
+
+```
+
