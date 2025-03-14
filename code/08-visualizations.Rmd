@@ -181,8 +181,129 @@ for (metric in metrics_of_interest) {
 
 
 ```
+# Mapping - ggOceanMaps - Don't run
+```{r}
+#install.packages("ggOceanMaps")
+library(ggOceanMaps)
+
+basemap(limits= c(-121, -124, 46, 49),
+        bathymetry= TRUE)
+
+```
+
+# Mapping - ggspatial
 ```{r}
 
+library(scales)  # For gradient color function
+
+# Define base colors for each reporting area
+reporting_area_colors <- c(
+  "6" = "red",
+  "7" = "blue",
+  "8.1" = "green",
+  "8.2" = "purple",
+  "9" = "orange",
+  "10" = "yellow",
+  "11" = "brown",
+  "12" = "pink",
+  "13" = "gray"
+)
+
+# Ensure reporting_area is a factor for mapping
+data$reporting_area <- as.factor(data$reporting_area)
+
+# Create a new column that scales SOD values within each reporting area
+data <- data %>%
+  group_by(reporting_area) %>%
+  mutate(sod_scaled = scales::rescale(sod, to = c(0.3, 1))) %>%  # Ensures color is not too light
+  ungroup()
+
+# Generate color gradients for each reporting area
+data$color <- mapply(
+  function(area, sod_value) {
+    base_color <- reporting_area_colors[as.character(area)]
+    colorspace::lighten(base_color, amount= 1- sod_value)
+  },
+ data$reporting_area, data$sod_scaled
+)
+
+# Plot
+ggplot() +
+  annotation_map_tile(type = "toner-lite", cachedir = "map_tiles/", zoomin = -1) +
+  geom_point(data = data, 
+             aes(x = longitude, y = latitude, 
+                 color = color), 
+             size = 3, alpha = 0.9) +
+  scale_color_identity() +  # Uses pre-generated colors
+  coord_sf(xlim = xlim_values, ylim = ylim_values, crs = 4326) +
+  theme_minimal() +
+  labs(title = "SOD Biomarker Values by Reporting Area",
+       color = "SOD Activity (Gradient by Area)") +
+  theme(legend.position = "none")  # Legend is unnecessary since colors are pre-defined
+
+
+
+```
+
+# Interactive mapping
+```{r}
+
+library(leaflet)
+library(colorspace)
+
+reporting_area_colors <- c(
+  "6" = "red",
+  "7" = "blue",
+  "8.1" = "green",
+  "8.2" = "purple",
+  "9" = "#DAA520",
+  "10" = "yellow",
+  "11" = "brown",
+  "12" = "magenta",
+  "13" = "#008080"
+)
+
+# Ensure reporting_area is a factor
+data$reporting_area <- as.factor(data$reporting_area)
+
+# Scale SOD values within each reporting area
+data <- data %>%
+  group_by(reporting_area) %>%
+  mutate(sod_scaled = scales::rescale(sod, to = c(0.3, 1))) %>%  # Keeps colors visible
+  ungroup()
+
+# Apply color gradient to each reporting area
+data$color <- mapply(
+  function(area, sod_value) {
+    base_color <- reporting_area_colors[as.character(area)]  # Get base color
+    colorspace::lighten(base_color, amount = 1 - sod_value)  # Light-to-dark scaling
+  },
+  data$reporting_area, data$sod_scaled
+)
+
+# Create a single representative color per reporting area for the legend
+legend_areas <- unique(data$reporting_area)
+legend_colors <- sapply(legend_areas, function(area) {
+  base_color <- reporting_area_colors[as.character(area)]
+  colorspace::lighten(base_color, amount = 0.4)  # Mid-light color for legend
+})  
+  
+# Create the interactive map
+leaflet(data) %>%
+  addProviderTiles(providers$CartoDB.Positron) %>%  # Muted background
+  addCircleMarkers(
+    ~longitude, ~latitude,
+    color = ~color,  # Use pre-generated color
+    fillColor = ~color,
+    radius = 6,  # Size of points
+    fillOpacity = 0.9,
+    popup = ~paste("Reporting Area:", reporting_area, "<br>",
+                   "SOD Activity:", round(sod, 2))  # Hover popup
+  ) %>%
+  addLegend("bottomright",
+            colors = legend_colors,
+            labels = legend_areas,
+            title = "Reporting Areas")
 
 
 ```
