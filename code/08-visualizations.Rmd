@@ -256,11 +256,11 @@ reporting_area_colors <- c(
   "7" = "blue",
   "8.1" = "green",
   "8.2" = "purple",
-  "9" = "#DAA520",
+  "9" = "orange",
   "10" = "yellow",
   "11" = "brown",
-  "12" = "magenta",
-  "13" = "#008080"
+  "12" = "pink",
+  "13" = "gray"
 )
 
 # Ensure reporting_area is a factor
