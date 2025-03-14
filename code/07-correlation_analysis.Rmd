@@ -210,3 +210,1147 @@ message("Grouped Spearman correlation complete. Significant results saved.")
 
 ```
 
+
+## avgDDT - n= 74
+```{r}
+
+# Load required package
+library(Hmisc)
+
+# Define dataset
+df1 <- avgddt  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:31
+
+# Convert grouping metrics to factors
+df1[, grouping_cols] <- lapply(df1[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarker_data <- df1[, biomarker_cols]
+analyte_data <- df1[, analyte_cols]
+
+# Get biomarker and analyte names
+biomarkers <- colnames(biomarker_data)
+analytes <- colnames(analyte_data)
+
+# Initialize storage for results
+results_list <- list()
+
+# Run Spearman correlation for each biomarker against all analytes
+for (biomarker in biomarkers) {
+  spearman_result <- rcorr(as.matrix(df1[[biomarker]]), as.matrix(analyte_data), type = "spearman")
+  
+  # Extract correlation coefficients and p-values
+  corr_matrix <- spearman_result$r[, 1, drop = FALSE]  # Ensure it's a column matrix
+  p_matrix <- spearman_result$P[, 1, drop = FALSE]  # Ensure p-values align properly
+
+  # Convert matrices to data frames
+  corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+  p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+  # Merge correlation values with p-values
+  merged_df <- merge(corr_df, p_df, by = "Analyte")
+
+  # Add the correct biomarker label
+  merged_df$Biomarker <- biomarker  # Ensures proper alignment
+
+  # Reorder columns
+  merged_df <- merged_df[, c("Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+  # Filter significant results (p < 0.05)
+  significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+  # Store results
+  results_list[[biomarker]] <- significant_results
+
+  # Save as CSV
+  write.csv(significant_results, paste0("Spearman_Significant_", biomarker, ".csv"), row.names = FALSE)
+}
+
+# Print message
+message("Spearman correlation complete. Significant results saved.")
+
+```
+
+## avgDDT by groups - n= 9 groups
+```{r}
+
+# Load required package
+library(Hmisc)
+library(dplyr)
+
+# Define dataset
+#df <- avgall  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:31
+
+# Convert grouping metrics to factors
+df1[, grouping_cols] <- lapply(df1[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarkers <- colnames(df1[, biomarker_cols])
+analytes <- colnames(df1[, analyte_cols])
+grouping_vars <- colnames(df1[, grouping_cols])
+
+# Run Spearman correlation within each group
+for (group_var in grouping_vars) {
+  message("Running Spearman correlation for group: ", group_var)
+  
+  # Split data by the grouping variable
+  group_levels <- unique(df1[[group_var]])
+
+  # Initialize storage
+  group_results <- list()
+
+  for (level in group_levels) {
+    subset_df <- df1[df1[[group_var]] == level, ]  # Filter for group level
+    
+    # Skip if too few observations
+    if (nrow(subset_df) < 5) next
+    
+    for (biomarker in biomarkers) {
+      spearman_result <- rcorr(as.matrix(subset_df[[biomarker]]), as.matrix(subset_df[, analyte_cols]), type = "spearman")
+      
+      # Extract correlation coefficients and p-values
+      corr_matrix <- spearman_result$r[, 1, drop = FALSE]
+      p_matrix <- spearman_result$P[, 1, drop = FALSE]
+
+      # Convert matrices to data frames
+      corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+      p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+      # Merge correlation values with p-values
+      merged_df <- merge(corr_df, p_df, by = "Analyte")
+      merged_df$Biomarker <- biomarker  # Ensure correct biomarker labeling
+      merged_df$Group <- group_var
+      merged_df$Level <- level
+
+      # Reorder columns
+      merged_df <- merged_df[, c("Group", "Level", "Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+      # Filter significant results (p < 0.05)
+      significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+      # Store results
+      group_results[[paste0(biomarker, "_", level)]] <- significant_results
+    }
+  }
+
+  # Combine all results for the group and save as CSV
+  if (length(group_results) > 0) {
+    final_results <- do.call(rbind, group_results)
+    write.csv(final_results, paste0("Spearman_Grouped_", group_var, ".csv"), row.names = FALSE)
+  }
+}
+
+message("Grouped Spearman correlation complete. Significant results saved.")
+
+
+```
+
+## avgHCH - n= 74
+```{r}
+
+# Load required package
+library(Hmisc)
+
+# Define dataset
+df2 <- avghch  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:30
+
+# Convert grouping metrics to factors
+df2[, grouping_cols] <- lapply(df2[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarker_data <- df2[, biomarker_cols]
+analyte_data <- df2[, analyte_cols]
+
+# Get biomarker and analyte names
+biomarkers <- colnames(biomarker_data)
+analytes <- colnames(analyte_data)
+
+# Initialize storage for results
+results_list <- list()
+
+# Run Spearman correlation for each biomarker against all analytes
+for (biomarker in biomarkers) {
+  spearman_result <- rcorr(as.matrix(df2[[biomarker]]), as.matrix(analyte_data), type = "spearman")
+  
+  # Extract correlation coefficients and p-values
+  corr_matrix <- spearman_result$r[, 1, drop = FALSE]  # Ensure it's a column matrix
+  p_matrix <- spearman_result$P[, 1, drop = FALSE]  # Ensure p-values align properly
+
+  # Convert matrices to data frames
+  corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+  p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+  # Merge correlation values with p-values
+  merged_df <- merge(corr_df, p_df, by = "Analyte")
+
+  # Add the correct biomarker label
+  merged_df$Biomarker <- biomarker  # Ensures proper alignment
+
+  # Reorder columns
+  merged_df <- merged_df[, c("Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+  # Filter significant results (p < 0.05)
+  significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+  # Store results
+  results_list[[biomarker]] <- significant_results
+
+  # Save as CSV
+  write.csv(significant_results, paste0(" HCH Spearman_Significant_", biomarker, ".csv"), row.names = FALSE)
+}
+
+# Print message
+message("Spearman correlation complete. Significant results saved.")
+
+```
+
+## avgHCH by groups - n= 9 groups
+```{r}
+
+# Load required package
+library(Hmisc)
+library(dplyr)
+
+# Define dataset
+#df <- avgall  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:30
+
+# Convert grouping metrics to factors
+df2[, grouping_cols] <- lapply(df2[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarkers <- colnames(df2[, biomarker_cols])
+analytes <- colnames(df2[, analyte_cols])
+grouping_vars <- colnames(df2[, grouping_cols])
+
+# Run Spearman correlation within each group
+for (group_var in grouping_vars) {
+  message("Running Spearman correlation for group: ", group_var)
+  
+  # Split data by the grouping variable
+  group_levels <- unique(df2[[group_var]])
+
+  # Initialize storage
+  group_results <- list()
+
+  for (level in group_levels) {
+    subset_df <- df2[df2[[group_var]] == level, ]  # Filter for group level
+    
+    # Skip if too few observations
+    if (nrow(subset_df) < 5) next
+    
+    for (biomarker in biomarkers) {
+      spearman_result <- rcorr(as.matrix(subset_df[[biomarker]]), as.matrix(subset_df[, analyte_cols]), type = "spearman")
+      
+      # Extract correlation coefficients and p-values
+      corr_matrix <- spearman_result$r[, 1, drop = FALSE]
+      p_matrix <- spearman_result$P[, 1, drop = FALSE]
+
+      # Convert matrices to data frames
+      corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+      p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+      # Merge correlation values with p-values
+      merged_df <- merge(corr_df, p_df, by = "Analyte")
+      merged_df$Biomarker <- biomarker  # Ensure correct biomarker labeling
+      merged_df$Group <- group_var
+      merged_df$Level <- level
+
+      # Reorder columns
+      merged_df <- merged_df[, c("Group", "Level", "Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+      # Filter significant results (p < 0.05)
+      significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+      # Store results
+      group_results[[paste0(biomarker, "_", level)]] <- significant_results
+    }
+  }
+
+  # Combine all results for the group and save as CSV
+  if (length(group_results) > 0) {
+    final_results <- do.call(rbind, group_results)
+    write.csv(final_results, paste0("HCH Spearman_Grouped_", group_var, ".csv"), row.names = FALSE)
+  }
+}
+
+message("Grouped Spearman correlation complete. Significant results saved.")
+
+
+```
+
+## avgHMW - n= 74
+```{r}
+
+# Load required package
+library(Hmisc)
+
+# Define dataset
+df3 <- avghmw  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:39
+
+# Convert grouping metrics to factors
+df3[, grouping_cols] <- lapply(df3[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarker_data <- df3[, biomarker_cols]
+analyte_data <- df3[, analyte_cols]
+
+# Get biomarker and analyte names
+biomarkers <- colnames(biomarker_data)
+analytes <- colnames(analyte_data)
+
+# Initialize storage for results
+results_list <- list()
+
+# Run Spearman correlation for each biomarker against all analytes
+for (biomarker in biomarkers) {
+  spearman_result <- rcorr(as.matrix(df3[[biomarker]]), as.matrix(analyte_data), type = "spearman")
+  
+  # Extract correlation coefficients and p-values
+  corr_matrix <- spearman_result$r[, 1, drop = FALSE]  # Ensure it's a column matrix
+  p_matrix <- spearman_result$P[, 1, drop = FALSE]  # Ensure p-values align properly
+
+  # Convert matrices to data frames
+  corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+  p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+  # Merge correlation values with p-values
+  merged_df <- merge(corr_df, p_df, by = "Analyte")
+
+  # Add the correct biomarker label
+  merged_df$Biomarker <- biomarker  # Ensures proper alignment
+
+  # Reorder columns
+  merged_df <- merged_df[, c("Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+  # Filter significant results (p < 0.05)
+  significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+  # Store results
+  results_list[[biomarker]] <- significant_results
+
+  # Save as CSV
+  write.csv(significant_results, paste0(" HMW Spearman_Significant_", biomarker, ".csv"), row.names = FALSE)
+}
+
+# Print message
+message("Spearman correlation complete. Significant results saved.")
+
+```
+
+## avgHMW by groups - n= 9 groups
+```{r}
+
+# Load required package
+library(Hmisc)
+library(dplyr)
+
+# Define dataset
+#df <- avgall  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:39
+
+# Convert grouping metrics to factors
+df3[, grouping_cols] <- lapply(df3[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarkers <- colnames(df3[, biomarker_cols])
+analytes <- colnames(df3[, analyte_cols])
+grouping_vars <- colnames(df3[, grouping_cols])
+
+# Run Spearman correlation within each group
+for (group_var in grouping_vars) {
+  message("Running Spearman correlation for group: ", group_var)
+  
+  # Split data by the grouping variable
+  group_levels <- unique(df3[[group_var]])
+
+  # Initialize storage
+  group_results <- list()
+
+  for (level in group_levels) {
+    subset_df <- df3[df3[[group_var]] == level, ]  # Filter for group level
+    
+    # Skip if too few observations
+    if (nrow(subset_df) < 5) next
+    
+    for (biomarker in biomarkers) {
+      spearman_result <- rcorr(as.matrix(subset_df[[biomarker]]), as.matrix(subset_df[, analyte_cols]), type = "spearman")
+      
+      # Extract correlation coefficients and p-values
+      corr_matrix <- spearman_result$r[, 1, drop = FALSE]
+      p_matrix <- spearman_result$P[, 1, drop = FALSE]
+
+      # Convert matrices to data frames
+      corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+      p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+      # Merge correlation values with p-values
+      merged_df <- merge(corr_df, p_df, by = "Analyte")
+      merged_df$Biomarker <- biomarker  # Ensure correct biomarker labeling
+      merged_df$Group <- group_var
+      merged_df$Level <- level
+
+      # Reorder columns
+      merged_df <- merged_df[, c("Group", "Level", "Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+      # Filter significant results (p < 0.05)
+      significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+      # Store results
+      group_results[[paste0(biomarker, "_", level)]] <- significant_results
+    }
+  }
+
+  # Combine all results for the group and save as CSV
+  if (length(group_results) > 0) {
+    final_results <- do.call(rbind, group_results)
+    write.csv(final_results, paste0(" HMW Spearman_Grouped_", group_var, ".csv"), row.names = FALSE)
+  }
+}
+
+message("Grouped Spearman correlation complete. Significant results saved.")
+
+
+```
+
+## avgLMW - n= 74
+```{r}
+
+# Load required package
+library(Hmisc)
+
+# Define dataset
+df4 <- avglmw  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:51
+
+# Convert grouping metrics to factors
+df4[, grouping_cols] <- lapply(df4[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarker_data <- df4[, biomarker_cols]
+analyte_data <- df4[, analyte_cols]
+
+# Get biomarker and analyte names
+biomarkers <- colnames(biomarker_data)
+analytes <- colnames(analyte_data)
+
+# Initialize storage for results
+results_list <- list()
+
+# Run Spearman correlation for each biomarker against all analytes
+for (biomarker in biomarkers) {
+  spearman_result <- rcorr(as.matrix(df4[[biomarker]]), as.matrix(analyte_data), type = "spearman")
+  
+  # Extract correlation coefficients and p-values
+  corr_matrix <- spearman_result$r[, 1, drop = FALSE]  # Ensure it's a column matrix
+  p_matrix <- spearman_result$P[, 1, drop = FALSE]  # Ensure p-values align properly
+
+  # Convert matrices to data frames
+  corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+  p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+  # Merge correlation values with p-values
+  merged_df <- merge(corr_df, p_df, by = "Analyte")
+
+  # Add the correct biomarker label
+  merged_df$Biomarker <- biomarker  # Ensures proper alignment
+
+  # Reorder columns
+  merged_df <- merged_df[, c("Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+  # Filter significant results (p < 0.05)
+  significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+  # Store results
+  results_list[[biomarker]] <- significant_results
+
+  # Save as CSV
+  write.csv(significant_results, paste0(" LMW Spearman_Significant_", biomarker, ".csv"), row.names = FALSE)
+}
+
+# Print message
+message("Spearman correlation complete. Significant results saved.")
+
+```
+
+## avgLMW by groups - n= 9 groups
+```{r}
+
+# Load required package
+library(Hmisc)
+library(dplyr)
+
+# Define dataset
+#df <- avgall  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:51
+
+# Convert grouping metrics to factors
+df4[, grouping_cols] <- lapply(df4[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarkers <- colnames(df4[, biomarker_cols])
+analytes <- colnames(df4[, analyte_cols])
+grouping_vars <- colnames(df4[, grouping_cols])
+
+# Run Spearman correlation within each group
+for (group_var in grouping_vars) {
+  message("Running Spearman correlation for group: ", group_var)
+  
+  # Split data by the grouping variable
+  group_levels <- unique(df4[[group_var]])
+
+  # Initialize storage
+  group_results <- list()
+
+  for (level in group_levels) {
+    subset_df <- df4[df1[[group_var]] == level, ]  # Filter for group level
+    
+    # Skip if too few observations
+    if (nrow(subset_df) < 5) next
+    
+    for (biomarker in biomarkers) {
+      spearman_result <- rcorr(as.matrix(subset_df[[biomarker]]), as.matrix(subset_df[, analyte_cols]), type = "spearman")
+      
+      # Extract correlation coefficients and p-values
+      corr_matrix <- spearman_result$r[, 1, drop = FALSE]
+      p_matrix <- spearman_result$P[, 1, drop = FALSE]
+
+      # Convert matrices to data frames
+      corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+      p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+      # Merge correlation values with p-values
+      merged_df <- merge(corr_df, p_df, by = "Analyte")
+      merged_df$Biomarker <- biomarker  # Ensure correct biomarker labeling
+      merged_df$Group <- group_var
+      merged_df$Level <- level
+
+      # Reorder columns
+      merged_df <- merged_df[, c("Group", "Level", "Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+      # Filter significant results (p < 0.05)
+      significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+      # Store results
+      group_results[[paste0(biomarker, "_", level)]] <- significant_results
+    }
+  }
+
+  # Combine all results for the group and save as CSV
+  if (length(group_results) > 0) {
+    final_results <- do.call(rbind, group_results)
+    write.csv(final_results, paste0(" LMW Spearman_Grouped_", group_var, ".csv"), row.names = FALSE)
+  }
+}
+
+message("Grouped Spearman correlation complete. Significant results saved.")
+
+
+```
+
+## avgMetal - n= 74
+```{r}
+
+# Load required package
+library(Hmisc)
+
+# Define dataset
+df5 <- avgmetal  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:26
+
+# Convert grouping metrics to factors
+df5[, grouping_cols] <- lapply(df5[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarker_data <- df5[, biomarker_cols]
+analyte_data <- df5[, analyte_cols]
+
+# Get biomarker and analyte names
+biomarkers <- colnames(biomarker_data)
+analytes <- colnames(analyte_data)
+
+# Initialize storage for results
+results_list <- list()
+
+# Run Spearman correlation for each biomarker against all analytes
+for (biomarker in biomarkers) {
+  spearman_result <- rcorr(as.matrix(df5[[biomarker]]), as.matrix(analyte_data), type = "spearman")
+  
+  # Extract correlation coefficients and p-values
+  corr_matrix <- spearman_result$r[, 1, drop = FALSE]  # Ensure it's a column matrix
+  p_matrix <- spearman_result$P[, 1, drop = FALSE]  # Ensure p-values align properly
+
+  # Convert matrices to data frames
+  corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+  p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+  # Merge correlation values with p-values
+  merged_df <- merge(corr_df, p_df, by = "Analyte")
+
+  # Add the correct biomarker label
+  merged_df$Biomarker <- biomarker  # Ensures proper alignment
+
+  # Reorder columns
+  merged_df <- merged_df[, c("Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+  # Filter significant results (p < 0.05)
+  significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+  # Store results
+  results_list[[biomarker]] <- significant_results
+
+  # Save as CSV
+  write.csv(significant_results, paste0(" Metal Spearman_Significant_", biomarker, ".csv"), row.names = FALSE)
+}
+
+# Print message
+message("Spearman correlation complete. Significant results saved.")
+
+```
+
+## avgMetal by groups - n= 9 groups
+```{r}
+
+# Load required package
+library(Hmisc)
+library(dplyr)
+
+# Define dataset
+#df <- avgall  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:26
+
+# Convert grouping metrics to factors
+df5[, grouping_cols] <- lapply(df5[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarkers <- colnames(df5[, biomarker_cols])
+analytes <- colnames(df5[, analyte_cols])
+grouping_vars <- colnames(df5[, grouping_cols])
+
+# Run Spearman correlation within each group
+for (group_var in grouping_vars) {
+  message("Running Spearman correlation for group: ", group_var)
+  
+  # Split data by the grouping variable
+  group_levels <- unique(df5[[group_var]])
+
+  # Initialize storage
+  group_results <- list()
+
+  for (level in group_levels) {
+    subset_df <- df5[df5[[group_var]] == level, ]  # Filter for group level
+    
+    # Skip if too few observations
+    if (nrow(subset_df) < 5) next
+    
+    for (biomarker in biomarkers) {
+      spearman_result <- rcorr(as.matrix(subset_df[[biomarker]]), as.matrix(subset_df[, analyte_cols]), type = "spearman")
+      
+      # Extract correlation coefficients and p-values
+      corr_matrix <- spearman_result$r[, 1, drop = FALSE]
+      p_matrix <- spearman_result$P[, 1, drop = FALSE]
+
+      # Convert matrices to data frames
+      corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+      p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+      # Merge correlation values with p-values
+      merged_df <- merge(corr_df, p_df, by = "Analyte")
+      merged_df$Biomarker <- biomarker  # Ensure correct biomarker labeling
+      merged_df$Group <- group_var
+      merged_df$Level <- level
+
+      # Reorder columns
+      merged_df <- merged_df[, c("Group", "Level", "Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+      # Filter significant results (p < 0.05)
+      significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+      # Store results
+      group_results[[paste0(biomarker, "_", level)]] <- significant_results
+    }
+  }
+
+  # Combine all results for the group and save as CSV
+  if (length(group_results) > 0) {
+    final_results <- do.call(rbind, group_results)
+    write.csv(final_results, paste0(" Metal Spearman_Grouped_", group_var, ".csv"), row.names = FALSE)
+  }
+}
+
+message("Grouped Spearman correlation complete. Significant results saved.")
+
+
+```
+
+## avgPBDE - n= 74
+```{r}
+
+# Load required package
+library(Hmisc)
+
+# Define dataset
+df6 <- avgpbde  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:36
+
+# Convert grouping metrics to factors
+df6[, grouping_cols] <- lapply(df6[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarker_data <- df6[, biomarker_cols]
+analyte_data <- df6[, analyte_cols]
+
+# Get biomarker and analyte names
+biomarkers <- colnames(biomarker_data)
+analytes <- colnames(analyte_data)
+
+# Initialize storage for results
+results_list <- list()
+
+# Run Spearman correlation for each biomarker against all analytes
+for (biomarker in biomarkers) {
+  spearman_result <- rcorr(as.matrix(df6[[biomarker]]), as.matrix(analyte_data), type = "spearman")
+  
+  # Extract correlation coefficients and p-values
+  corr_matrix <- spearman_result$r[, 1, drop = FALSE]  # Ensure it's a column matrix
+  p_matrix <- spearman_result$P[, 1, drop = FALSE]  # Ensure p-values align properly
+
+  # Convert matrices to data frames
+  corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+  p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+  # Merge correlation values with p-values
+  merged_df <- merge(corr_df, p_df, by = "Analyte")
+
+  # Add the correct biomarker label
+  merged_df$Biomarker <- biomarker  # Ensures proper alignment
+
+  # Reorder columns
+  merged_df <- merged_df[, c("Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+  # Filter significant results (p < 0.05)
+  significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+  # Store results
+  results_list[[biomarker]] <- significant_results
+
+  # Save as CSV
+  write.csv(significant_results, paste0(" PBDE Spearman_Significant_", biomarker, ".csv"), row.names = FALSE)
+}
+
+# Print message
+message("Spearman correlation complete. Significant results saved.")
+
+```
+
+## avgPBDE by groups - n= 9 groups
+```{r}
+
+# Load required package
+library(Hmisc)
+library(dplyr)
+
+# Define dataset
+#df <- avgall  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:36
+
+# Convert grouping metrics to factors
+df6[, grouping_cols] <- lapply(df6[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarkers <- colnames(df6[, biomarker_cols])
+analytes <- colnames(df6[, analyte_cols])
+grouping_vars <- colnames(df6[, grouping_cols])
+
+# Run Spearman correlation within each group
+for (group_var in grouping_vars) {
+  message("Running Spearman correlation for group: ", group_var)
+  
+  # Split data by the grouping variable
+  group_levels <- unique(df6[[group_var]])
+
+  # Initialize storage
+  group_results <- list()
+
+  for (level in group_levels) {
+    subset_df <- df6[df6[[group_var]] == level, ]  # Filter for group level
+    
+    # Skip if too few observations
+    if (nrow(subset_df) < 5) next
+    
+    for (biomarker in biomarkers) {
+      spearman_result <- rcorr(as.matrix(subset_df[[biomarker]]), as.matrix(subset_df[, analyte_cols]), type = "spearman")
+      
+      # Extract correlation coefficients and p-values
+      corr_matrix <- spearman_result$r[, 1, drop = FALSE]
+      p_matrix <- spearman_result$P[, 1, drop = FALSE]
+
+      # Convert matrices to data frames
+      corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+      p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+      # Merge correlation values with p-values
+      merged_df <- merge(corr_df, p_df, by = "Analyte")
+      merged_df$Biomarker <- biomarker  # Ensure correct biomarker labeling
+      merged_df$Group <- group_var
+      merged_df$Level <- level
+
+      # Reorder columns
+      merged_df <- merged_df[, c("Group", "Level", "Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+      # Filter significant results (p < 0.05)
+      significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+      # Store results
+      group_results[[paste0(biomarker, "_", level)]] <- significant_results
+    }
+  }
+
+  # Combine all results for the group and save as CSV
+  if (length(group_results) > 0) {
+    final_results <- do.call(rbind, group_results)
+    write.csv(final_results, paste0(" PBDE Spearman_Grouped_", group_var, ".csv"), row.names = FALSE)
+  }
+}
+
+message("Grouped Spearman correlation complete. Significant results saved.")
+
+
+```
+
+## avgPCB - n= 74
+```{r}
+
+# Load required package
+library(Hmisc)
+
+# Define dataset
+df7 <- avgpcb  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:62
+
+# Convert grouping metrics to factors
+df7[, grouping_cols] <- lapply(df7[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarker_data <- df7[, biomarker_cols]
+analyte_data <- df7[, analyte_cols]
+
+# Get biomarker and analyte names
+biomarkers <- colnames(biomarker_data)
+analytes <- colnames(analyte_data)
+
+# Initialize storage for results
+results_list <- list()
+
+# Run Spearman correlation for each biomarker against all analytes
+for (biomarker in biomarkers) {
+  spearman_result <- rcorr(as.matrix(df7[[biomarker]]), as.matrix(analyte_data), type = "spearman")
+  
+  # Extract correlation coefficients and p-values
+  corr_matrix <- spearman_result$r[, 1, drop = FALSE]  # Ensure it's a column matrix
+  p_matrix <- spearman_result$P[, 1, drop = FALSE]  # Ensure p-values align properly
+
+  # Convert matrices to data frames
+  corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+  p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+  # Merge correlation values with p-values
+  merged_df <- merge(corr_df, p_df, by = "Analyte")
+
+  # Add the correct biomarker label
+  merged_df$Biomarker <- biomarker  # Ensures proper alignment
+
+  # Reorder columns
+  merged_df <- merged_df[, c("Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+  # Filter significant results (p < 0.05)
+  significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+  # Store results
+  results_list[[biomarker]] <- significant_results
+
+  # Save as CSV
+  write.csv(significant_results, paste0(" PCB Spearman_Significant_", biomarker, ".csv"), row.names = FALSE)
+}
+
+# Print message
+message("Spearman correlation complete. Significant results saved.")
+
+```
+
+## avgPCB by groups - n= 9 groups
+```{r}
+
+# Load required package
+library(Hmisc)
+library(dplyr)
+
+# Define dataset
+#df <- avgall  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:62
+
+# Convert grouping metrics to factors
+df7[, grouping_cols] <- lapply(df7[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarkers <- colnames(df7[, biomarker_cols])
+analytes <- colnames(df7[, analyte_cols])
+grouping_vars <- colnames(df7[, grouping_cols])
+
+# Run Spearman correlation within each group
+for (group_var in grouping_vars) {
+  message("Running Spearman correlation for group: ", group_var)
+  
+  # Split data by the grouping variable
+  group_levels <- unique(df7[[group_var]])
+
+  # Initialize storage
+  group_results <- list()
+
+  for (level in group_levels) {
+    subset_df <- df7[df7[[group_var]] == level, ]  # Filter for group level
+    
+    # Skip if too few observations
+    if (nrow(subset_df) < 5) next
+    
+    for (biomarker in biomarkers) {
+      spearman_result <- rcorr(as.matrix(subset_df[[biomarker]]), as.matrix(subset_df[, analyte_cols]), type = "spearman")
+      
+      # Extract correlation coefficients and p-values
+      corr_matrix <- spearman_result$r[, 1, drop = FALSE]
+      p_matrix <- spearman_result$P[, 1, drop = FALSE]
+
+      # Convert matrices to data frames
+      corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+      p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+      # Merge correlation values with p-values
+      merged_df <- merge(corr_df, p_df, by = "Analyte")
+      merged_df$Biomarker <- biomarker  # Ensure correct biomarker labeling
+      merged_df$Group <- group_var
+      merged_df$Level <- level
+
+      # Reorder columns
+      merged_df <- merged_df[, c("Group", "Level", "Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+      # Filter significant results (p < 0.05)
+      significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+      # Store results
+      group_results[[paste0(biomarker, "_", level)]] <- significant_results
+    }
+  }
+
+  # Combine all results for the group and save as CSV
+  if (length(group_results) > 0) {
+    final_results <- do.call(rbind, group_results)
+    write.csv(final_results, paste0(" PCB Spearman_Grouped_", group_var, ".csv"), row.names = FALSE)
+  }
+}
+
+message("Grouped Spearman correlation complete. Significant results saved.")
+
+
+```
+
+## avgSummed - n= 74
+```{r}
+
+# Load required package
+library(Hmisc)
+
+# Define dataset
+df8 <- avgsummed  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:31
+
+# Convert grouping metrics to factors
+df8[, grouping_cols] <- lapply(df8[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarker_data <- df8[, biomarker_cols]
+analyte_data <- df8[, analyte_cols]
+
+# Get biomarker and analyte names
+biomarkers <- colnames(biomarker_data)
+analytes <- colnames(analyte_data)
+
+# Initialize storage for results
+results_list <- list()
+
+# Run Spearman correlation for each biomarker against all analytes
+for (biomarker in biomarkers) {
+  spearman_result <- rcorr(as.matrix(df8[[biomarker]]), as.matrix(analyte_data), type = "spearman")
+  
+  # Extract correlation coefficients and p-values
+  corr_matrix <- spearman_result$r[, 1, drop = FALSE]  # Ensure it's a column matrix
+  p_matrix <- spearman_result$P[, 1, drop = FALSE]  # Ensure p-values align properly
+
+  # Convert matrices to data frames
+  corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+  p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+  # Merge correlation values with p-values
+  merged_df <- merge(corr_df, p_df, by = "Analyte")
+
+  # Add the correct biomarker label
+  merged_df$Biomarker <- biomarker  # Ensures proper alignment
+
+  # Reorder columns
+  merged_df <- merged_df[, c("Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+  # Filter significant results (p < 0.05)
+  significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+  # Store results
+  results_list[[biomarker]] <- significant_results
+
+  # Save as CSV
+  write.csv(significant_results, paste0(" Summed Spearman_Significant_", biomarker, ".csv"), row.names = FALSE)
+}
+
+# Print message
+message("Spearman correlation complete. Significant results saved.")
+
+```
+
+## avgSummed by groups - n= 9 groups
+```{r}
+
+# Load required package
+library(Hmisc)
+library(dplyr)
+
+# Define dataset
+#df <- avgall  # Ensure avgall is your dataset
+
+# Define column ranges
+biomarker_cols <- 4:9
+grouping_cols <- 10:20
+analyte_cols <- 21:31
+
+# Convert grouping metrics to factors
+df8[, grouping_cols] <- lapply(df8[, grouping_cols], as.factor)
+
+# Extract biomarker and analyte data
+biomarkers <- colnames(df8[, biomarker_cols])
+analytes <- colnames(df8[, analyte_cols])
+grouping_vars <- colnames(df8[, grouping_cols])
+
+# Run Spearman correlation within each group
+for (group_var in grouping_vars) {
+  message("Running Spearman correlation for group: ", group_var)
+  
+  # Split data by the grouping variable
+  group_levels <- unique(df8[[group_var]])
+
+  # Initialize storage
+  group_results <- list()
+
+  for (level in group_levels) {
+    subset_df <- df8[df8[[group_var]] == level, ]  # Filter for group level
+    
+    # Skip if too few observations
+    if (nrow(subset_df) < 5) next
+    
+    for (biomarker in biomarkers) {
+      spearman_result <- rcorr(as.matrix(subset_df[[biomarker]]), as.matrix(subset_df[, analyte_cols]), type = "spearman")
+      
+      # Extract correlation coefficients and p-values
+      corr_matrix <- spearman_result$r[, 1, drop = FALSE]
+      p_matrix <- spearman_result$P[, 1, drop = FALSE]
+
+      # Convert matrices to data frames
+      corr_df <- data.frame(Analyte = rownames(corr_matrix), Spearman_Correlation = corr_matrix[, 1], row.names = NULL)
+      p_df <- data.frame(Analyte = rownames(p_matrix), P_Value = p_matrix[, 1], row.names = NULL)
+
+      # Merge correlation values with p-values
+      merged_df <- merge(corr_df, p_df, by = "Analyte")
+      merged_df$Biomarker <- biomarker  # Ensure correct biomarker labeling
+      merged_df$Group <- group_var
+      merged_df$Level <- level
+
+      # Reorder columns
+      merged_df <- merged_df[, c("Group", "Level", "Biomarker", "Analyte", "Spearman_Correlation", "P_Value")]
+
+      # Filter significant results (p < 0.05)
+      significant_results <- merged_df[merged_df$P_Value < 0.05, ]
+
+      # Store results
+      group_results[[paste0(biomarker, "_", level)]] <- significant_results
+    }
+  }
+
+  # Combine all results for the group and save as CSV
+  if (length(group_results) > 0) {
+    final_results <- do.call(rbind, group_results)
+    write.csv(final_results, paste0(" Summed Spearman_Grouped_", group_var, ".csv"), row.names = FALSE)
+  }
+}
+
+message("Grouped Spearman correlation complete. Significant results saved.")
+
+
+```
