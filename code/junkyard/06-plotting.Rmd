@@ -38,15 +38,15 @@ getwd()
 
 # load data
 # complete df
-data<- read.csv("../data/cleaned/avg_all_analytes_individual.csv")
-hch<- read.csv("../data/cleaned/avg_all_chlordanesHch.csv")
-pest<-read.csv("../data/cleaned/avg_all_ddtPesticide.csv")
-hmw<- read.csv("../data/cleaned/avg_all_hmw.csv")
-lmw<- read.csv("../data/cleaned/avg_all_lmw.csv")
-metal<- read.csv("../data/cleaned/avg_all_metal.csv")
-pbde<- read.csv("../data/cleaned/avg_all_pbde.csv")
-pcb<- read.csv("../data/cleaned/avg_all_pcb.csv")
-summed<- read.csv("../data/cleaned/avg_all_summed.csv")
+data<- read.csv("../data/cleaned/all_samples_all_groups.csv")
+#hch<- read.csv("../data/cleaned/avg_all_chlordanesHch.csv")
+#pest<-read.csv("../data/cleaned/avg_all_ddtPesticide.csv")
+#hmw<- read.csv("../data/cleaned/avg_all_hmw.csv")
+#lmw<- read.csv("../data/cleaned/avg_all_lmw.csv")
+#metal<- read.csv("../data/cleaned/avg_all_metal.csv")
+#pbde<- read.csv("../data/cleaned/avg_all_pbde.csv")
+#pcb<- read.csv("../data/cleaned/avg_all_pcb.csv")
+#summed<- read.csv("../data/cleaned/avg_all_summed.csv")
 
 # check it out
 #str(data) # checking df structure
