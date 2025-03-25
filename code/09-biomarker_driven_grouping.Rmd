@@ -1,0 +1,63 @@
+---
+title: "09- Creating Analysis Groups Based on Biomarker Values"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+# libraries
+library(knitr)
+library(tidyr)
+library(tidyverse)
+library(dplyr)
+library(vegan)
+library(cluster)
+library(pgirmess)
+library(ggplot2)
+library(factoextra)
+library(FSA)           
+library(rstatix)       
+library(car)
+library(RVAideMemoire)
+library(rcompanion)
+
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  #fig.width = 15,       # Set plot width in inches
+  #fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load & Check Data
+```{r}
+
+# double check where you are
+# *NOTE* see 00-data_cleaned for directory issue
+getwd()
+
+# load data
+data<- read.csv("../data/raw_complete_no_groups.csv")
+
+# check it out
+str(data) # checking df structure
+summary(data) #checking df contents
+
+```
+
