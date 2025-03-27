@@ -26,11 +26,13 @@ library(cluster)
 library(pgirmess)
 library(ggplot2)
 library(factoextra)
+library(FactoMineR)
 library(FSA)           
 library(rstatix)       
 library(car)
 library(RVAideMemoire)
 library(rcompanion)
+library(scales)
 
 knitr::opts_chunk$set(
   root.dir = here::here(),
@@ -51,7 +53,7 @@ knitr::opts_chunk$set(
 getwd()
 
 # load data
-df<- read.csv("../data/raw_biomarkers_and_weights_with_site_and_ra.csv")
+df<- read.csv("../data/cleaned/all_with_imputation_weights_site_ra.csv")
 
 # check it out
 str(df) # checking df structure
@@ -62,10 +64,10 @@ summary(df) #checking df contents
 ```{r }
 
 # replace any values below LOQ with imputed LOQ (.5 x LOD), LOD= 0.05
-bio_df$sod[bio_df$sod <= 0] <- 0.0025
+df$sod[df$sod <= 0] <- 0.0025
 
 # check
-summary(bio_df)
+summary(df)
 
 ```
 
@@ -74,6 +76,30 @@ Step 1 - Normalize biomarker values. Use z-scores/ min-max scaling per site or s
 Step 2 -Transform morphometrics to reduce scale variability.
 Step 3 - Check for outliers. Extreme values may skew integrated scores.
 ```{r}
+
+# ---- Step 1: Select and scale biomarkers and morphometrics ----
+ibr_vars <- df %>%
+  select(p450, sod, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm, ci1, ci2, ci3)
+
+# Standardize (Z-score)
+ibr_scaled <- scale(ibr_vars)
+
+# ---- Step 2: Convert to absolute Z-scores (deviation) ----
+ibr_scores <- abs(as.data.frame(ibr_scaled))
+
+# ---- Step 3: Calculate IBR Index (sum of absolute scores) ----
+df$IBR <- rowSums(ibr_scores)
+
+# ---- Optional: Inspect IBR scores by site or condition ----
+ggplot(df, aes(x = site_name, y = IBR)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "Integrated Biomarker Response (IBR) by Site",
+       y = "IBR Index", x = "Site") +
+  theme(axis.text.x= element_text(angle= 45, hjust= 1))
+
+write_csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/ibr_output.csv")
+
 
 ```
 
