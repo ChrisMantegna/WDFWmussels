@@ -51,7 +51,7 @@ knitr::opts_chunk$set(
 ```{r}
 
 getwd()
-
+setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels")
 # load data
 df<- read.csv("../data/cleaned/all_with_imputation_weights_site_ra.csv")
 
@@ -71,44 +71,230 @@ summary(df)
 
 ```
 
-# Normalizing the data
+# Creating the Beliaeff and Burgeot IBR Index with biomarkers and morphometrics
+## Normalizing the data
 Step 1 - Normalize biomarker values. Use z-scores/ min-max scaling per site or sample to put them on a comparable scale.
 Step 2 -Transform morphometrics to reduce scale variability.
 Step 3 - Check for outliers. Extreme values may skew integrated scores.
+## Optional 
+Step 0 - Separate IBRs: IBR biomarkers, IBR morphometrics, IBR both (do this after step 3)
+Step 1 - Score biomarkers and morphometrics. Use grand mean or the reference site - Penn Cove Ref Site.
+Step 2 - Find deviation from the reference. A positive deviation is more stressed and a negative deviation is less stress.
+Step 3 - Plot it. Radar plots and polygon area plots will support calculations.
 ```{r}
 
-# ---- Step 1: Select and scale biomarkers and morphometrics ----
+# select and scale biomarkers and raw morphometrics
 ibr_vars <- df %>%
-  select(p450, sod, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm, ci1, ci2, ci3)
+  select(p450, sod, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm)
 
-# Standardize (Z-score)
-ibr_scaled <- scale(ibr_vars)
+ibr_scaled <- scale(ibr_vars) # standardize (Z-score)
 
-# ---- Step 2: Convert to absolute Z-scores (deviation) ----
-ibr_scores <- abs(as.data.frame(ibr_scaled))
+ibr_scores <- abs(as.data.frame(ibr_scaled)) # convert to absolute Z-scores (deviation) 
 
-# ---- Step 3: Calculate IBR Index (sum of absolute scores) ----
-df$IBR <- rowSums(ibr_scores)
+df$IBR <- rowSums(ibr_scores) # calculate IBR Index (sum of absolute scores)
 
-# ---- Optional: Inspect IBR scores by site or condition ----
-ggplot(df, aes(x = site_name, y = IBR)) +
+# plot
+ibr_box<- ggplot(df, aes(x = site_name, y = IBR)) +
   geom_boxplot() +
   theme_minimal() +
   labs(title = "Integrated Biomarker Response (IBR) by Site",
        y = "IBR Index", x = "Site") +
   theme(axis.text.x= element_text(angle= 45, hjust= 1))
 
-write_csv(df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/ibr_output.csv")
+#save and view
+ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibr_box.png", plot= ibr_box, width = 16, height = 14, dpi = 300)
 
+print(ibr_box)
+
+```
+# Radar Plots
+## Test sample
+```{r}
+
+#install.packages("fmsb")
+library("fmsb")
+
+# Select and scale
+ibr_vars <- df %>%
+  select(p450, sod, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm, ci1, ci2, ci3)
+
+scaled_df <- scale(ibr_vars)
+abs_scores <- abs(as.data.frame(scaled_df))
+
+# Add sample/site identifiers back
+abs_scores$site_name <- df$site_name
+abs_scores$sample_id <- df$sample_id
+
+# Choose one sample (e.g., row 1)
+sample <- abs_scores[1, 1:11]  # only the numeric variables
+max_min <- rbind(apply(abs_scores[ ,1:11], 2, max),
+                 apply(abs_scores[ ,1:11], 2, min))
+radar_data <- rbind(max_min, sample)
+
+radarchart(radar_data,
+           axistype = 1,
+           pcol = "darkblue", pfcol = rgb(0.2, 0.4, 0.8, 0.4),
+           plwd = 2,
+           title = paste("IBR Radar Plot for Sample", abs_scores$sample_id[1]))
 
 ```
 
-# Create the IBR
-Step 0 - Separate IBRs: IBR biomarkers, IBR morphometrics, IBR both
+## All individual samples
+```{r}
+
+library(fmsb)
+
+# Prepare absolute z-score data
+ibr_vars <- df %>%
+  select(p450, sod, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm, ci1, ci2, ci3)
+
+scaled <- scale(ibr_vars)
+abs_scores <- abs(as.data.frame(scaled))
+
+# Add ID columns back
+abs_scores$sample_id <- df$sample_id
+abs_scores$site_name <- df$site_name
+
+# Loop through each sample and create radar plots
+for (i in 1:nrow(abs_scores)) {
+  sample_data <- abs_scores[i, 1:11]
+  max_min <- rbind(apply(abs_scores[ ,1:11], 2, max),
+                   apply(abs_scores[ ,1:11], 2, min))
+  radar_data <- rbind(max_min, sample_data)
+  
+  # Save to file
+  png(paste0("radar_sample_", abs_scores$sample_id[i], ".png"), width = 600, height = 600)
+  radarchart(radar_data,
+             axistype = 1,
+             pcol = "darkblue", pfcol = rgb(0.2, 0.8, 0.4, 0.4),
+             plwd = 2,
+             title = paste("Sample", abs_scores$sample_id[i], "\nSite:", abs_scores$site_name[i]))
+  dev.off()
+}
+
+```
+
+## Site plots
+```{r}
+
+# Calculate site-level mean absolute Z-scores
+site_means <- abs_scores %>%
+  group_by(site_name) %>%
+  summarise(across(1:11, mean, na.rm = TRUE))
+
+# Loop through each site
+for (i in 1:nrow(site_means)) {
+  site_data <- site_means[i, 2:12]  # skip site_name column
+  max_min <- rbind(apply(site_means[ ,2:12], 2, max),
+                   apply(site_means[ ,2:12], 2, min))
+  radar_data <- rbind(max_min, site_data)
+  
+  # Save to file
+  png(paste0("radar_site_", gsub(" ", "_", site_means$site_name[i]), ".png"), width = 600, height = 600)
+  radarchart(radar_data,
+             axistype = 1,
+             pcol = "darkblue", pfcol = rgb(0.2, 0.4, 0.9, 0.4),
+             plwd = 2,
+             title = paste("Mean IBR Profile\nSite:", site_means$site_name[i]))
+  dev.off()
+}
+
+```
+
+
+# Creating the Mattos IBRv2i Index with biomarkers and morphometrics
+Step 0: Identify reference site (Penn Cove Ref)
+Step 1 - Normalize biomarker and morphometric values. Use z-scores/ min-max scaling per site or sample to put them on a comparable scale and retain the directionality of responses based on ref site.
+## Optional 
+Step 0 - Separate IBRs: IBR biomarkers, IBR morphometrics, IBR both (do this after step 3)
 Step 1 - Score biomarkers and morphometrics. Use grand mean or the reference site - Penn Cove Ref Site.
 Step 2 - Find deviation from the reference. A positive deviation is more stressed and a negative deviation is less stress.
 Step 3 - Plot it. Radar plots and polygon area plots will support calculations.
 ```{r}
+
+# select and scale biomarkers and raw morphometrics
+ibr_vars <- df %>%
+  select(p450, sod, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm)
+
+# ID ref site/ samples
+ref_df <- df %>% filter(site_number == 3)
+ref_vars <- ref_df %>%
+  select(p450, sod, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm)
+
+# calculate reference means and SDs
+ref_means <- colMeans(ref_vars, na.rm = TRUE)
+ref_sds <- apply(ref_vars, 2, sd, na.rm = TRUE)
+
+# Z-score relative to ref site
+z_scores <- sweep(ibr_vars, 2, ref_means, FUN = "-")
+z_scores <- sweep(z_scores, 2, ref_sds, FUN = "/")
+
+df$IBRv2i <- rowMeans(z_scores, na.rm = TRUE) # IBRv2i = mean of reference-based Z-scores (preserving sign)
+
+#plot
+ibrv2i_box<- ggplot(df, aes(x = site_name, y = IBRv2i)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "IBRv2i by Site", y = "IBRv2i Index", x = "Site") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# save and view
+ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibrv2i_box.png", plot= ibrv2i_box, width = 16, height = 14, dpi = 300)
+
+print(ibrv2i_box)
+
+```
+
+# Plotting All Samples IBRv2i
+```{r}
+
+# Site-averaged Z-scores
+site_means <- z_scores %>%
+  group_by(site_name) %>%
+  summarise(across(1:8, mean, na.rm = TRUE))
+
+# Loop through sites
+for (i in 1:nrow(site_means)) {
+  site_data <- site_means[i, 2:9]
+  max_min <- rbind(apply(site_means[ ,2:9], 2, max),
+                   apply(site_means[ ,2:9], 2, min))
+  radar_data <- rbind(max_min, site_data)
+
+  png(paste0("IBRv2i_radar_site_", gsub(" ", "_", site_means$site_name[i]), ".png"), width = 600, height = 600)
+  radarchart(radar_data,
+             axistype = 1,
+             pcol = "darkblue", pfcol = rgb(0.2, 0.4, 0.9, 0.4),
+             plwd = 2,
+             title = paste("IBRv2i Radar Plot\nSite:", site_means$site_name[i]))
+  dev.off()
+}
+
+
+```
+
+
+```{r}
+
+# Loop through each site
+for (i in 1:nrow(site_means)) {
+  site_data <- site_means[i, 2:9]
+  max_min <- rbind(apply(site_means[ ,2:9], 2, max),
+                   apply(site_means[ ,2:9], 2, min))
+  radar_data <- rbind(max_min, site_data)
+  
+  # Save to your custom path
+  output_file <- paste0("/Users/cmantegna/Documents/GitHub/WDFWmussels/output/radar_plots_ibrv2i/radar_site_", 
+                        gsub(" ", "_", site_means$site_name[i]), ".png")
+  
+  png(output_file, width = 600, height = 600)
+  radarchart(radar_data,
+             axistype = 1,
+             pcol = "darkblue", pfcol = rgb(0.2, 0.4, 0.9, 0.4),
+             plwd = 2,
+             title = paste("IBRv2i Radar Plot\nSite:", site_means$site_name[i]))
+  dev.off()
+}
+
 
 ```
 
