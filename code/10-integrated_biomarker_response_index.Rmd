@@ -33,6 +33,7 @@ library(car)
 library(RVAideMemoire)
 library(rcompanion)
 library(scales)
+library(fmsb)
 
 knitr::opts_chunk$set(
   root.dir = here::here(),
@@ -205,7 +206,8 @@ for (i in 1:nrow(site_means)) {
 # Creating the Mattos IBRv2i Index with biomarkers and morphometrics
 Step 0: Identify reference site (Penn Cove Ref)
 Step 1 - Normalize biomarker and morphometric values. Use z-scores/ min-max scaling per site or sample to put them on a comparable scale and retain the directionality of responses based on ref site.
-## Optional 
+
+## Optional Extra IBRv2i breakdown
 Step 0 - Separate IBRs: IBR biomarkers, IBR morphometrics, IBR both (do this after step 3)
 Step 1 - Score biomarkers and morphometrics. Use grand mean or the reference site - Penn Cove Ref Site.
 Step 2 - Find deviation from the reference. A positive deviation is more stressed and a negative deviation is less stress.
@@ -245,8 +247,13 @@ print(ibrv2i_box)
 
 ```
 
-# Plotting All Samples IBRv2i
+# Plotting All Sites IBRv2i
 ```{r}
+
+library(fmsb)
+
+z_scores$sample_id <- df$sample_id
+z_scores$site_name <- df$site_name
 
 # Site-averaged Z-scores
 site_means <- z_scores %>%
@@ -269,29 +276,37 @@ for (i in 1:nrow(site_means)) {
   dev.off()
 }
 
-
 ```
 
-
+# Plotting All Samples IBRv2i
 ```{r}
 
-# Loop through each site
-for (i in 1:nrow(site_means)) {
-  site_data <- site_means[i, 2:9]
-  max_min <- rbind(apply(site_means[ ,2:9], 2, max),
-                   apply(site_means[ ,2:9], 2, min))
-  radar_data <- rbind(max_min, site_data)
+library(fmsb)
+
+# Loop through each sample
+for (i in 1:nrow(z_scores)) {
   
-  # Save to your custom path
-  output_file <- paste0("/Users/cmantegna/Documents/GitHub/WDFWmussels/output/radar_plots_ibrv2i/radar_site_", 
-                        gsub(" ", "_", site_means$site_name[i]), ".png")
+  # Extract sample data
+  sample_data <- z_scores[i, 1:8]
   
-  png(output_file, width = 600, height = 600)
+  # Get axis limits (min/max across all samples)
+  max_min <- rbind(apply(z_scores[, 1:8], 2, max, na.rm = TRUE),
+                   apply(z_scores[, 1:8], 2, min, na.rm = TRUE))
+  
+  # Combine for radar input
+  radar_data <- rbind(max_min, sample_data)
+  
+  # Set output file name (in current directory)
+  filename <- paste0("radar_sample_", z_scores$sample_id[i], ".png")
+  
+  # Save plot
+  png(filename, width = 600, height = 600)
   radarchart(radar_data,
              axistype = 1,
-             pcol = "darkblue", pfcol = rgb(0.2, 0.4, 0.9, 0.4),
+             pcol = "darkblue", pfcol = rgb(0.8, 0.2, 0.2, 0.4),
              plwd = 2,
-             title = paste("IBRv2i Radar Plot\nSite:", site_means$site_name[i]))
+             title = paste("IBRv2i Radar Plot\nSample:", z_scores$sample_id[i],
+                           "\nSite:", z_scores$site_name[i]))
   dev.off()
 }
 
