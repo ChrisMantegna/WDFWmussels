@@ -272,3 +272,51 @@ autoplot(pca_ds4, data = bio_clust_df, colour = 'k4_cluster', frame = TRUE) +
 
 ```
 
+# assessing intra-site variability
+```{r}
+
+# Make sure site_number is a factor (or character)
+bio_df <- bio_df %>%
+  mutate(site_number = as.factor(site_number))  # or use `as.character()` if you prefer
+
+# Calculate within-site variability for p450 and SOD (columns 7 and 8)
+site_variability <- bio_df %>%
+  group_by(site_number) %>%
+  summarise(across(c(6, 7), ~sd(.x, na.rm = TRUE), .names = "sd_{col}")) %>%
+  rowwise() %>%
+  mutate(site_variability_score = mean(c_across(starts_with("sd_")), na.rm = TRUE))
+
+bio_df <- left_join(bio_df, site_variability[, c("site_number", "site_variability_score")], by = "site_number")
+
+# Optionally group into low/medium/high variability
+bio_df <- bio_df %>%
+  mutate(variability_group = cut(site_variability_score.y,
+                                 breaks = quantile(site_variability_score.y, probs = seq(0, 1, 0.33), na.rm = TRUE),
+                                 labels = c("Low", "Medium", "High"),
+                                 include.lowest = TRUE))
+
+# plot p450
+ggplot(bio_df, aes(x = variability_group, y = p450)) +
+  geom_boxplot() +
+  theme_minimal() +
+  labs(title = "p450 by Site Variability Group")
+
+#testing for both biomarkers
+site_variability %>%
+  pivot_longer(cols = starts_with("sd_"), names_to = "biomarker", values_to = "site_sd") %>%
+  ggplot(aes(x = site_number, y = site_sd, fill = biomarker)) +
+  geom_col(position = "dodge") +
+  theme_minimal() +
+  labs(title = "Which biomarker drives site variability?",
+       y = "Standard Deviation", x = "Site")
+
+site_variability <- site_variability %>%
+  mutate(p450_to_sod_sd_ratio = sd_p450 / sd_sod)
+
+ggplot(site_variability, aes(x = site_number, y = p450_to_sod_sd_ratio)) +
+  geom_point() +
+  geom_hline(yintercept = 1, linetype = "dashed") +
+  labs(title = "Ratio of p450 to SOD variability by site")
+
+```
+

@@ -1,0 +1,101 @@
+---
+title: "10- Creating an IBR Index"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+# libraries
+library(knitr)
+library(tidyr)
+library(tidyverse)
+library(dplyr)
+library(vegan)
+library(cluster)
+library(pgirmess)
+library(ggplot2)
+library(factoextra)
+library(FSA)           
+library(rstatix)       
+library(car)
+library(RVAideMemoire)
+library(rcompanion)
+
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  #fig.width = 15,       # Set plot width in inches
+  #fig.height = 9,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load & Check Data
+```{r}
+
+getwd()
+
+# load data
+df<- read.csv("../data/raw_biomarkers_and_weights_with_site_and_ra.csv")
+
+# check it out
+str(df) # checking df structure
+summary(df) #checking df contents
+
+```
+
+```{r }
+
+# replace any values below LOQ with imputed LOQ (.5 x LOD), LOD= 0.05
+bio_df$sod[bio_df$sod <= 0] <- 0.0025
+
+# check
+summary(bio_df)
+
+```
+
+# Normalizing the data
+Step 1 - Normalize biomarker values. Use z-scores/ min-max scaling per site or sample to put them on a comparable scale.
+Step 2 -Transform morphometrics to reduce scale variability.
+Step 3 - Check for outliers. Extreme values may skew integrated scores.
+```{r}
+
+```
+
+# Create the IBR
+Step 0 - Separate IBRs: IBR biomarkers, IBR morphometrics, IBR both
+Step 1 - Score biomarkers and morphometrics. Use grand mean or the reference site - Penn Cove Ref Site.
+Step 2 - Find deviation from the reference. A positive deviation is more stressed and a negative deviation is less stress.
+Step 3 - Plot it. Radar plots and polygon area plots will support calculations.
+```{r}
+
+```
+
+# Stats
+PERMANOVA
+```{r}
+
+```
+
+# Visualization
+PCA/ NMDS
+Correlation heatmaps
+```{r}
+
+```
+
