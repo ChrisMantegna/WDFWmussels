@@ -313,6 +313,117 @@ for (i in 1:nrow(z_scores)) {
 
 ```
 
+# All sites w/ reference site overlay, IBRv2i
+```{r}
+
+library(fmsb)
+
+# 1. Create reference profile from known sample IDs
+reference_profile <- z_scores %>%
+  filter(sample_id %in% 41:44) %>%
+  select(1:8) %>%
+  summarise(across(everything(), mean, na.rm = TRUE))
+
+# 2. Create site-level means
+site_means <- z_scores %>%
+  group_by(site_name) %>%
+  summarise(across(1:8, mean, na.rm = TRUE)) %>%
+  ungroup()
+
+# 3. Loop through each site and plot with reference overlay
+for (i in 1:nrow(site_means)) {
+  site <- site_means[i, ]
+  site_profile <- site[ , 2:9]  # select just the variable means
+
+  # Skip the reference site if it's in the list
+  if (all.equal(as.numeric(site_profile), as.numeric(reference_profile)) == TRUE) next
+
+  # Combine with reference profile
+  combined <- rbind(reference_profile, site_profile)
+
+  # Define radar axis limits (across all site means)
+  max_min <- rbind(apply(site_means[, 2:9], 2, max, na.rm = TRUE),
+                   apply(site_means[, 2:9], 2, min, na.rm = TRUE))
+  radar_data <- rbind(max_min, combined)
+
+  # Set filename
+  filename <- paste0("radar_site_with_ref_", gsub(" ", "_", site$site_name), ".png")
+
+  # Plot
+  png(filename, width = 600, height = 600)
+  radarchart(radar_data,
+             axistype = 1,
+             pcol = c("gray40", "steelblue"),
+             pfcol = c(rgb(0.4, 0.4, 0.4, 0.3), rgb(0.2, 0.5, 0.8, 0.4)),
+             plwd = 2,
+             plty = 1,
+             title = paste("IBRv2i Radar Plot with Reference\nSite:", site$site_name))
+  legend("topright", legend = c("Reference (Penn Cove)", site$site_name),
+         col = c("gray40", "steelblue"), lty = 1, lwd = 2, bty = "n")
+  dev.off()
+}
+
+```
+
+# Plotting Reporting Areas w/ Reference, IBRv2i
+```{r}
+
+# Join reporting_area into z_scores
+#z_scores <- z_scores %>%
+#  left_join(df %>% select(sample_id, reporting_area), by = "sample_id") %>%
+#  mutate(reporting_area = as.factor(reporting_area))  # or as.character(reporting_area)
+
+# Reference profile from sample IDs 41–44
+reference_profile <- z_scores %>%
+  filter(sample_id %in% 41:44) %>%
+  select(1:8) %>%
+  summarise(across(everything(), mean, na.rm = TRUE))
+
+# Calculate mean Z-scores per reporting area
+reporting_means <- z_scores %>%
+  group_by(reporting_area) %>%
+  summarise(across(1:8, mean, na.rm = TRUE)) %>%
+  ungroup()
+
+# Combine reference and reporting area means for limit setting
+combined_means <- rbind(reference_profile, reporting_means[, 2:9])
+
+# Calculate consistent min and max for all plots
+global_max_min <- rbind(apply(combined_means, 2, max),
+                        apply(combined_means, 2, min))
+
+
+# Loop through each reporting area
+for (i in 1:nrow(reporting_means)) {
+  ra <- reporting_means[i, ]
+  ra_profile <- ra[, 2:9]
+
+  # Combine with reference profile
+  combined <- rbind(reference_profile, ra_profile)
+
+  # Define min/max from all reporting area means
+  radar_data <- rbind(global_max_min, combined)
+
+  # File name
+  filename <- paste0("radar_reporting_area_", gsub(" ", "_", ra$reporting_area), ".png")
+
+  # Plot
+  png(filename, width = 600, height = 600)
+  radarchart(radar_data,
+             axistype = 1,
+             pcol = c("gray40", "darkorange"),
+             pfcol = c(rgb(0.4, 0.4, 0.4, 0.3), rgb(1, 0.6, 0.1, 0.4)),
+             plwd = 2,
+             plty = 1,
+             title = paste("IBRv2i Radar Plot with Reference\nReporting Area:", ra$reporting_area))
+  legend("topright", legend = c("Reference (Penn Cove)", paste("Reporting Area", ra$reporting_area)),
+         col = c("gray40", "darkorange"), lty = 1, lwd = 2, bty = "n")
+  dev.off()
+}
+
+```
+
+
 # Stats
 PERMANOVA
 ```{r}
