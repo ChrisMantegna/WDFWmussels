@@ -423,6 +423,14 @@ for (i in 1:nrow(reporting_means)) {
 
 ```
 
+# Separate the IBRs and run the same things
+# Run PCAs/ NMDSs/ Permanova/ Correlations + Heatmaps/ Kendall's Tau
+```{r}
+
+
+
+```
+
 
 # Stats
 PERMANOVA
