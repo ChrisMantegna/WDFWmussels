@@ -421,6 +421,8 @@ for (i in 1:nrow(reporting_means)) {
   dev.off()
 }
 
+getwd()
+write.csv(df,"/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/all_with_ibr_ibrv2i.csv")
 ```
 
 # Separate the IBRs and run the same things
@@ -439,6 +441,112 @@ PERMANOVA
 ```
 
 # Visualization
+## Poster viz
+```{r}
+
+#map
+library(sf)
+library(readr)
+library(patchwork)
+library(viridis)
+library(rnaturalearth)
+library(ggsignif)
+
+df$reporting_area <- as.factor(df$reporting_area)
+
+# Convert to spatial
+sites_sf <- st_as_sf(df, coords = c("longitude", "latitude"), crs = 4326)
+
+coast <- ne_states(country = "united states of america", returnclass = "sf") %>%
+  filter(name == "Washington")
+
+# Major city coordinates for labels
+cities <- data.frame(
+  city = c("Seattle", "Tacoma", "Olympia", "Bellingham", "Port Angeles", "Hama Hama"),
+  lon = c(-122.33, -122.45, -122.90, -122.48, -123.43, -123.16),
+  lat = c(47.61, 47.25, 47.00, 48.73, 48.08, 47.63)
+)
+
+# Define color palette
+area_colors <- viridis::viridis(length(levels(df$reporting_area)), option = "turbo")
+
+# Map
+map_plot <- ggplot() +
+  geom_sf(data = coast, fill = "gray90", color = "white") +
+  geom_sf(data = sites_sf, aes(color = reporting_area), size = 3, alpha = 0.9) +
+  geom_text(data = cities, aes(x = lon, y = lat, label = city),
+            color = "black", fontface = "bold", size = 4) +
+  scale_color_manual(values = area_colors, name = "Reporting Area") + 
+  coord_sf(xlim = c(-124, -121), ylim = c(46.5, 49.0)) +
+  theme_void() +
+  labs(title = "Sampled Sites by Reporting Area")
+
+# Filter data for IBRv2i < 5
+df_filtered <- df %>% filter(IBRv2i < 5)
+df_filtered <- df_filtered %>%
+  mutate(is_reference = ifelse(site_name == "Penn Cove Reference", "Reference", "Other"))
+
+# Boxplot
+box_plot <- ggplot(df_filtered, aes(x = reporting_area, y = IBRv2i, fill = reporting_area)) +
+  geom_boxplot(alpha = 0.8, outlier.shape = NA) +
+  geom_jitter(width = 0.2, color = "black", size = 1.5) +
+  scale_fill_manual(values = area_colors, guide = "none") + 
+  coord_cartesian(ylim = c(-3, 5.5)) +
+  geom_signif(comparisons = list(
+      c("11", "7"),
+      c("13", "7"),
+      c("6", "7"),
+      c("10", "13")
+    ),
+    annotations = c("p = 0.0093", "p = 0.0013", "p = 0.0487", "p = 0.0199"),
+    y_position = c(5.2, 4.8, 4.5, 4.2),
+    tip_length = 0.02,
+    textsize = 4.5
+  ) +
+  theme_minimal(base_size = 13) + 
+  theme(
+    axis.line = element_line(size = 1.2, color = "black"),
+    axis.text = element_text(size= 25, face = "bold"),
+    axis.title = element_text(size= 30, face = "bold"),
+    plot.title = element_text(hjust = 0.5, face = "bold")
+  ) +
+  labs(x = "Reporting Area", y = "IBRv2i Score")
+  
+# Combine
+combo_plot <- map_plot + box_plot +
+  plot_layout(ncol = 2, widths = c(1.3, 1)) +
+  plot_annotation(title = "Integrated Biomarker Response Overview")
+
+# Display
+print(map_plot)
+print(box_plot)
+
+# Export 
+ggsave("/Users/cmantegna/Documents/GitHub/WDFWmussels/output/poster_map.png", map_plot, width = 14, height = 8, dpi = 300)
+
+ggsave("/Users/cmantegna/Documents/GitHub/WDFWmussels/output/poster_box.png", box_plot, width = 14, height = 8, dpi = 300)
+
+
+```
+## KW for plotting
+```{r}
+
+# Make sure reporting_area is a factor
+df$reporting_area <- as.factor(df$reporting_area)
+
+# Run Kruskal-Wallis test
+kruskal_result <- kruskal.test(IBRv2i ~ reporting_area, data = df)
+print(kruskal_result)
+
+# Run Dunn's post hoc test
+dunn_result <- dunnTest(IBRv2i ~ reporting_area, data = df, method = "holm")
+print(dunn_result)
+
+
+```
+
+
+
 PCA/ NMDS
 Correlation heatmaps
 ```{r}
