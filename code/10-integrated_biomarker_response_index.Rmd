@@ -241,7 +241,7 @@ z_scores <- as.data.frame(z_scores)
 
 # Add back identifying columns
 z_scores <- bind_cols(
-  df %>% select(latitude, longitude, site_name, sample_id, reporting_area),
+  df %>% select(latitude, longitude, site_number, site_name, sample_id, reporting_area),
   z_scores
 )
 
@@ -399,9 +399,6 @@ for (i in 1:nrow(site_means)) {
 # Plotting Sites by Reporting Areas w/ Reference, IBRv2i
 ```{r}
 
-library(dplyr)
-library(fmsb)
-
 # Prep: site-level means and reporting area info
 site_means <- z_scores %>%
   group_by(site_name, reporting_area) %>%
@@ -464,7 +461,114 @@ for (area in reporting_areas) {
 # Run PCAs/ NMDSs/ Permanova/ Correlations + Heatmaps/ Kendall's Tau
 ```{r}
 
+# 1. Define reference samples
+ref_df <- z_scores %>% filter(site_number == 3)  # assuming site 3 is Penn Cove
 
+# 2. Extract biomarker and morphometric columns
+biomarkers <- c("p450", "sod")
+morphometrics <- c("weight_initial_g", "weight_change_g", "weight_final_g",
+                   "shell", "length_mm", "height_mm", "width_mm")
+
+# 3. Reference means and SDs
+ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE)
+ref_bio_sds <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE)
+
+ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE)
+ref_morph_sds <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE)
+
+# 4. Z-scores relative to reference
+bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-")
+bio_z <- sweep(bio_z, 2, ref_bio_sds, "/")
+
+morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
+morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
+
+# 5. Calculate IBRv2i for each category
+df$IBRv2i_biomarkers <- rowMeans(bio_z, na.rm = TRUE)
+df$IBRv2i_morphometrics <- rowMeans(morph_z, na.rm = TRUE)
+
+# 1. Select identifying columns
+identifiers <- df %>%
+  select(site_number, site_name, sample_id, latitude, longitude, reporting_area)
+
+# 2. Bind identifiers with new z-score indices
+ibrv2i_df <- bind_cols(
+  identifiers,
+  bio_z,
+  morph_z,
+  IBRv2i_biomarkers = rowMeans(bio_z, na.rm = TRUE),
+  IBRv2i_morphometrics = rowMeans(morph_z, na.rm = TRUE)
+)
+
+ibrv2i_df <- ibrv2i_df %>%
+  mutate(IBRv2i_overall = rowMeans(select(., IBRv2i_biomarkers, IBRv2i_morphometrics), na.rm = TRUE))
+
+```
+
+## Plotting Separate Inidices per Site by Reporting Areas w/ Reference, IBRv2i
+```{r}
+
+# Step 1: Create site-level means for the 3 IBRv2i indices
+site_means_simple <- ibrv2i_df %>%
+  group_by(site_name, reporting_area) %>%
+  summarise(
+    IBRv2i_biomarkers = mean(IBRv2i_biomarkers, na.rm = TRUE),
+    IBRv2i_morphometrics = mean(IBRv2i_morphometrics, na.rm = TRUE),
+    IBRv2i_overall = mean(IBRv2i_overall, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Step 2: Create reference profile from Penn Cove samples (site_number == 3)
+reference_profile <- ibrv2i_df %>%
+  filter(site_name == "Penn Cove Reference") %>%
+  summarise(
+    IBRv2i_biomarkers = mean(IBRv2i_biomarkers, na.rm = TRUE),
+    IBRv2i_morphometrics = mean(IBRv2i_morphometrics, na.rm = TRUE),
+    IBRv2i_overall = mean(IBRv2i_overall, na.rm = TRUE)
+  )
+
+# Step 3: Set global min/max for consistent radar axis scale
+global_max <- apply(site_means_simple[, 3:5], 2, max, na.rm = TRUE)
+global_min <- apply(site_means_simple[, 3:5], 2, min, na.rm = TRUE)
+
+# Step 4: Loop by reporting area
+reporting_areas <- unique(site_means_simple$reporting_area)
+
+for (area in reporting_areas) {
+  area_sites <- site_means_simple %>% filter(reporting_area == area)
+  n_sites <- nrow(area_sites)
+  n_pages <- ceiling(n_sites / 6)
+
+  for (page in 1:n_pages) {
+    start_i <- (page - 1) * 6 + 1
+    end_i <- min(start_i + 5, n_sites)
+    sites_subset <- area_sites[start_i:end_i, ]
+
+    filename <- paste0("radar_IBRv2i_", gsub(" ", "_", area), "_page_", page, ".png")
+    png(filename, width = 1200, height = 800)
+    par(mfrow = c(2, 3), mar = c(2, 2, 4, 2))  # layout: 2 rows x 3 cols
+
+    for (i in 1:nrow(sites_subset)) {
+      site_data <- sites_subset[i, 3:5]
+
+      # Combine max, min, reference, and site profile
+      chart_data <- rbind(global_max, global_min, reference_profile, site_data)
+      rownames(chart_data) <- c("Max", "Min", "Reference", as.character(sites_subset$site_name[i]))
+
+      radarchart(chart_data,
+                 axistype = 1,
+                 pcol = c("gray40", "steelblue"),
+                 pfcol = c(rgb(0.4, 0.4, 0.4, 0.3), rgb(0.2, 0.5, 0.8, 0.4)),
+                 plwd = 2,
+                 plty = 1,
+                 cglcol = "grey80",
+                 title = sites_subset$site_name[i])
+    }
+
+    mtext(paste("Reporting Area:", area), side = 3, line = -2, outer = TRUE, cex = 1.5)
+    dev.off()
+  }
+}
 
 ```
 
@@ -476,7 +580,7 @@ PERMANOVA
 ```
 
 # Visualization
-## Poster viz
+## NWS Poster viz
 ```{r}
 
 #map
