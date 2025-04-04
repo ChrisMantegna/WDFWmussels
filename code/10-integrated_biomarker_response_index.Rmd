@@ -17,23 +17,23 @@ output:
 ```{r, setup, eval=TRUE, include=TRUE}
 
 # libraries
-library(knitr)
-library(tidyr)
-library(tidyverse)
-library(dplyr)
-library(vegan)
-library(cluster)
-library(pgirmess)
-library(ggplot2)
-library(factoextra)
-library(FactoMineR)
-library(FSA)           
-library(rstatix)       
-library(car)
-library(RVAideMemoire)
-library(rcompanion)
-library(scales)
-library(fmsb)
+library(knitr) # output
+library(tidyr) # data wrangling
+library(tidyverse) # data wrangling
+library(dplyr) # data wrangling
+library(vegan) # ecological stats + permanova
+library(cluster) # grouping of metrics
+library(pgirmess) # stats - KW
+library(ggplot2) # plots
+library(factoextra) #p ca/ nmds/ tweaking radars
+library(FactoMineR) # pca/ nmds/ tweaking radars
+library(FSA) # post hoc tests  - KW only I think         
+library(rstatix) # VERIFY what this is for      
+library(car) # VERIFY what this is for  
+library(RVAideMemoire) # post hoc tests 
+library(rcompanion) # scaling data for IBR
+library(scales) # scaling data for IBR
+library(fmsb) # calculations for the radars
 
 knitr::opts_chunk$set(
   root.dir = here::here(),
@@ -458,127 +458,191 @@ for (area in reporting_areas) {
 
 
 # Separate the IBRs and run the same things
-# Run PCAs/ NMDSs/ Permanova/ Correlations + Heatmaps/ Kendall's Tau
 ```{r}
 
-# 1. Define reference samples
-ref_df <- z_scores %>% filter(site_number == 3)  # assuming site 3 is Penn Cove
-
-# 2. Extract biomarker and morphometric columns
+# Define variable groups
 biomarkers <- c("p450", "sod")
 morphometrics <- c("weight_initial_g", "weight_change_g", "weight_final_g",
                    "shell", "length_mm", "height_mm", "width_mm")
 
-# 3. Reference means and SDs
+# Filter reference site data (Penn Cove)
+ref_df <- df %>% filter(site_name == "Penn Cove Reference")
+
+# Get reference means & SDs
 ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE)
-ref_bio_sds <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE)
+ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE)
 
 ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE)
-ref_morph_sds <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE)
+ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE)
 
-# 4. Z-scores relative to reference
+# Z-scores relative to reference site (preserving sign)
 bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-")
 bio_z <- sweep(bio_z, 2, ref_bio_sds, "/")
 
 morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
 morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
 
-# 5. Calculate IBRv2i for each category
-df$IBRv2i_biomarkers <- rowMeans(bio_z, na.rm = TRUE)
-df$IBRv2i_morphometrics <- rowMeans(morph_z, na.rm = TRUE)
-
-# 1. Select identifying columns
-identifiers <- df %>%
-  select(site_number, site_name, sample_id, latitude, longitude, reporting_area)
-
-# 2. Bind identifiers with new z-score indices
-ibrv2i_df <- bind_cols(
-  identifiers,
-  bio_z,
-  morph_z,
-  IBRv2i_biomarkers = rowMeans(bio_z, na.rm = TRUE),
-  IBRv2i_morphometrics = rowMeans(morph_z, na.rm = TRUE)
-)
-
-ibrv2i_df <- ibrv2i_df %>%
-  mutate(IBRv2i_overall = rowMeans(select(., IBRv2i_biomarkers, IBRv2i_morphometrics), na.rm = TRUE))
+# Combine into final df with signed values
+ibrv2i_df <- df %>%
+  select(site_number, site_name, sample_id, latitude, longitude, reporting_area) %>%
+  bind_cols(bio_z, morph_z) %>%
+  mutate(
+    IBRv2i_biomarkers = rowMeans(bio_z, na.rm = TRUE),
+    IBRv2i_morphometrics = rowMeans(morph_z, na.rm = TRUE),
+    IBRv2i_overall = rowMeans(cbind(IBRv2i_biomarkers, IBRv2i_morphometrics), na.rm = TRUE)
+  )
 
 ```
 
-## Plotting Separate Inidices per Site by Reporting Areas w/ Reference, IBRv2i
+## Plotting Separate Indices per Site
 ```{r}
 
-# Step 1: Create site-level means for the 3 IBRv2i indices
-site_means_simple <- ibrv2i_df %>%
-  group_by(site_name, reporting_area) %>%
-  summarise(
-    IBRv2i_biomarkers = mean(IBRv2i_biomarkers, na.rm = TRUE),
-    IBRv2i_morphometrics = mean(IBRv2i_morphometrics, na.rm = TRUE),
-    IBRv2i_overall = mean(IBRv2i_overall, na.rm = TRUE),
-    .groups = "drop"
-  )
+# Pivot only the IBRv2i index columns
+ibr_long <- ibrv2i_df %>%
+  pivot_longer(cols = c(IBRv2i_biomarkers, IBRv2i_morphometrics, IBRv2i_overall),
+               names_to = "index_type",
+               values_to = "index_value") %>%
+  mutate(index_type = case_when(
+    index_type == "IBRv2i_biomarkers" ~ "Biomarkers",
+    index_type == "IBRv2i_morphometrics" ~ "Morphometrics",
+    index_type == "IBRv2i_overall" ~ "Overall",
+    TRUE ~ index_type  # fallback in case of unexpected names
+  ))
 
-# Step 2: Create reference profile from Penn Cove samples (site_number == 3)
-reference_profile <- ibrv2i_df %>%
-  filter(site_name == "Penn Cove Reference") %>%
-  summarise(
-    IBRv2i_biomarkers = mean(IBRv2i_biomarkers, na.rm = TRUE),
-    IBRv2i_morphometrics = mean(IBRv2i_morphometrics, na.rm = TRUE),
-    IBRv2i_overall = mean(IBRv2i_overall, na.rm = TRUE)
-  )
 
-# Step 3: Set global min/max for consistent radar axis scale
-global_max <- apply(site_means_simple[, 3:5], 2, max, na.rm = TRUE)
-global_min <- apply(site_means_simple[, 3:5], 2, min, na.rm = TRUE)
+all_index<- ggplot(ibr_long, aes(x = site_name, y = index_value,
+                     color = site_name == "Penn Cove Reference")) +
+  geom_jitter(width = 0.2, alpha = 0.7) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.2) +
+  facet_wrap(~ index_type, ncol = 1, scales = "free_y") +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),legend.position = "none") +
+  labs(title = "IBRv2i Indices by Site",
+       x = "Site", y = "IBRv2i Value")
 
-# Step 4: Loop by reporting area
-reporting_areas <- unique(site_means_simple$reporting_area)
+# save and view
+ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibrv2i_box_all_index_reference_indicated.png", plot= all_index, width = 16, height = 14, dpi = 300)
 
-for (area in reporting_areas) {
-  area_sites <- site_means_simple %>% filter(reporting_area == area)
-  n_sites <- nrow(area_sites)
-  n_pages <- ceiling(n_sites / 6)
-
-  for (page in 1:n_pages) {
-    start_i <- (page - 1) * 6 + 1
-    end_i <- min(start_i + 5, n_sites)
-    sites_subset <- area_sites[start_i:end_i, ]
-
-    filename <- paste0("radar_IBRv2i_", gsub(" ", "_", area), "_page_", page, ".png")
-    png(filename, width = 1200, height = 800)
-    par(mfrow = c(2, 3), mar = c(2, 2, 4, 2))  # layout: 2 rows x 3 cols
-
-    for (i in 1:nrow(sites_subset)) {
-      site_data <- sites_subset[i, 3:5]
-
-      # Combine max, min, reference, and site profile
-      chart_data <- rbind(global_max, global_min, reference_profile, site_data)
-      rownames(chart_data) <- c("Max", "Min", "Reference", as.character(sites_subset$site_name[i]))
-
-      radarchart(chart_data,
-                 axistype = 1,
-                 pcol = c("gray40", "steelblue"),
-                 pfcol = c(rgb(0.4, 0.4, 0.4, 0.3), rgb(0.2, 0.5, 0.8, 0.4)),
-                 plwd = 2,
-                 plty = 1,
-                 cglcol = "grey80",
-                 title = sites_subset$site_name[i])
-    }
-
-    mtext(paste("Reporting Area:", area), side = 3, line = -2, outer = TRUE, cex = 1.5)
-    dev.off()
-  }
-}
-
+print(all_index)
 ```
 
 
 # Stats
-PERMANOVA
+## Double check normality
 ```{r}
+
+shapiro.test(ibrv2i_df$IBRv2i_biomarkers) # Not Normal
+shapiro.test(ibrv2i_df$IBRv2i_morphometrics) # Not Normal
+shapiro.test(ibrv2i_df$IBRv2i_overall) # Not Normal
 
 ```
 
+## PERMANOVA
+### add condition indices back, scale and move forward to recreate and add the biomarker driven clusters
+```{r}
+
+# Reference site stats
+ref_df <- df %>% filter(site_name == "Penn Cove Reference")
+
+ref_ci_means <- colMeans(ref_df[, c("ci1", "ci2", "ci3")], na.rm = TRUE)
+ref_ci_sds <- apply(ref_df[, c("ci1", "ci2", "ci3")], 2, sd, na.rm = TRUE)
+# Calculate Z-scores for condition indices (preserving sign)
+ci_z <- sweep(df[, c("ci1", "ci2", "ci3")], 2, ref_ci_means, "-")
+ci_z <- sweep(ci_z, 2, ref_ci_sds, "/")
+ibrv2i_df <- bind_cols(ibrv2i_df, ci_z)
+
+# saving ibrv2i df
+write.csv(ibrv2i_df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/ibrv2i_all_scaled_all_indices.csv", row.names = FALSE)
+```
+
+```{r}
+
+# Use only rows with non-missing biomarker data
+bio_clust_df <- ibrv2i_df %>%
+  filter(!is.na(p450)) %>%
+  select(sample_id, p450, sod)
+
+# Scale biomarkers (if not already Z-scored relative to reference site)
+scaled_biomarkers <- scale(bio_clust_df[, c("p450", "sod")])
+
+wss <- vector()
+
+# Try values of k from 1 to 10
+for (k in 1:10) {
+  set.seed(42)
+  wss[k] <- kmeans(scaled_biomarkers, centers = k, nstart = 25)$tot.withinss
+}
+
+# Plot the elbow
+plot(1:10, wss, type = "b",
+     pch = 19, frame = FALSE,
+     xlab = "Number of clusters (k)",
+     ylab = "Total within-cluster sum of squares",
+     main = "Elbow Method for Choosing k")
+
+set.seed(42)
+k_opt <- 3  # or whatever you choose based on the elbow plot
+
+kmeans_result <- kmeans(scaled_biomarkers, centers = k_opt, nstart = 25)
+
+# Add cluster assignment to your working df
+bio_clust_df$bio_cluster <- as.factor(kmeans_result$cluster)
+
+ibrv2i_df <- ibrv2i_df %>%
+  left_join(bio_clust_df[, c("sample_id", "bio_cluster")], by = "sample_id")
+
+# saving ibrv2i df
+write.csv(ibrv2i_df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/ibrv2i_all_scaled_indices_groups.csv", row.names = FALSE)
+
+```
+
+## check clusters
+```{r}
+
+# Define variables for PCA
+pca_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3")
+
+# Remove rows with any NA in the selected variables
+pca_df <- ibrv2i_df %>%
+  filter(if_all(all_of(pca_vars), ~ !is.na(.))) %>%
+  select(sample_id, bio_cluster, all_of(pca_vars))
+
+# Keep only the scaled numeric matrix for PCA
+pca_matrix <- pca_df %>%
+  select(all_of(pca_vars)) %>%
+  as.matrix()
+
+pca_res <- prcomp(pca_matrix, center = TRUE, scale. = FALSE)  # already scaled relative to reference
+
+# Create a scores dataframe
+scores_df <- as.data.frame(pca_res$x)
+scores_df$sample_id <- pca_df$sample_id
+scores_df$bio_cluster <- pca_df$bio_cluster
+
+# Plot the first two PCs
+ggplot(scores_df, aes(x = PC1, y = PC2, color = bio_cluster)) +
+  geom_point(size = 3, alpha = 0.8) +
+  labs(title = "PCA of Scaled Biomarkers + Morphometrics",
+       x = paste0("PC1 (", round(summary(pca_res)$importance[2, 1] * 100, 1), "% variance)"),
+       y = paste0("PC2 (", round(summary(pca_res)$importance[2, 2] * 100, 1), "% variance)"),
+       color = "Cluster") +
+  theme_minimal() +
+  theme(legend.position = "right")
+
+
+```
+
+```{r}
+
+# troubleshooting the pca
+summary(ibrv2i_df[, c("p450", "sod", "shell", "ci1", "ci2", "ci3")])
+
+
+```
+
+
+# Run PCAs/ NMDSs/ Permanova/ Correlations + Heatmaps/ Kendall's Tau
 # Visualization
 ## NWS Poster viz
 ```{r}
