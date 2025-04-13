@@ -368,25 +368,32 @@ ibr_df <- ibr_df %>%
     ci3_3 = condition_z$ci3,)
 
 # save it
-write.csv(ibr_df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/complete_cleaned_ibr.csv", row.names = FALSE)
+#write.csv(ibr_df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/complete_cleaned_ibr.csv", row.names = FALSE)
 
 ```
 
 
+# Plotting
+Plot overall for each and take a look - left off here on 4.12.25
 ```{r}
 
-
-#plot
-ibrv2i_box<- ggplot(df, aes(x = site_name, y = IBRv2i)) +
-  geom_boxplot() +
-  theme_minimal() +
-  labs(title = "IBRv2i by Site", y = "IBRv2i Index", x = "Site") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+df<- read.csv("../data/cleaned/complete_cleaned_ibr.csv")
 
 # plot with Penn Cove indicated
 df$highlight <- ifelse(df$site_name == "Penn Cove Reference", "Penn Cove Reference", "Other")
 
-ibrv2i_box2 <- ggplot(df, aes(x = site_name, y = IBRv2i, fill = highlight)) +
+ibr1_box <- ggplot(df, aes(x = site_name, y = ibr, fill = highlight)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("Penn Cove Reference" = "red", "Other" = "white")) +
+  theme_minimal() +
+  labs(title = "IBR_1 by Site", y = "IBRv2i Index", x = "Site") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none")  # hides legend if not needed
+
+# plot with Penn Cove indicated
+df$highlight <- ifelse(df$site_name == "Penn Cove Reference", "Penn Cove Reference", "Other")
+
+ibr2_box <- ggplot(df, aes(x = site_name, y = IBRv2i, fill = highlight)) +
   geom_boxplot() +
   scale_fill_manual(values = c("Penn Cove Reference" = "red", "Other" = "white")) +
   theme_minimal() +
@@ -394,6 +401,16 @@ ibrv2i_box2 <- ggplot(df, aes(x = site_name, y = IBRv2i, fill = highlight)) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
         legend.position = "none")  # hides legend if not needed
 
+# plot with Penn Cove indicated
+df$highlight <- ifelse(df$site_name == "Penn Cove Reference", "Penn Cove Reference", "Other")
+
+ibr3_box <- ggplot(df, aes(x = site_name, y = IBRv2i, fill = highlight)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("Penn Cove Reference" = "red", "Other" = "white")) +
+  theme_minimal() +
+  labs(title = "IBRv2i by Site", y = "IBRv2i Index", x = "Site") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none")  # hides legend if not needed
 
 # save and view
 #ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibrv2i_box_reference_indicated.png", plot= ibrv2i_box2, width = 16, height = 14, dpi = 300)
@@ -596,13 +613,6 @@ for (area in reporting_areas) {
 
 ```
 
-
-# Separate the IBRs into biomarker, morphometric and overall
-```{r}
-
-
-
-```
 
 ## Plotting Separate Indices per Site, box plot
 ```{r}
