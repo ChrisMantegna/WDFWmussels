@@ -195,7 +195,6 @@ for (i in 1:nrow(site_means)) {
 ```
 
 # Creating IBRv2i Index with biomarkers and raw morphometrics (no condition indices)
-## prepare df for the function to create the ibr scores
 ```{r}
 
 # make categorical columns factors
@@ -304,33 +303,75 @@ ibr_df <- ibr_df %>%
 
 ```
 
+## adding condition indices back to df
 ```{r}
 
-# ID reference site/samples
-ref_df <- df %>% filter(site_number == 3)
-ref_vars <- ref_df %>%
-  select(p450, sod, ci1, ci2, ci3, weight_initial_g, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm)
+# Define variable groups
+condition <- c("ci1", "ci2", "ci3")
 
-# Calculate reference means and SDs
-ref_means <- colMeans(ref_vars, na.rm = TRUE)
-ref_sds <- apply(ref_vars, 2, sd, na.rm = TRUE)
+# Filter reference site data (Penn Cove)
+ref_df <- df %>% filter(site_name == "Penn Cove Reference")
 
-# Z-score relative to reference site
-z_scores <- sweep(ibr_vars, 2, ref_means, FUN = "-")
-z_scores <- sweep(z_scores, 2, ref_sds, FUN = "/")
-z_scores <- as.data.frame(z_scores)
+# Get reference means & SDs
+ref_ci_means <- colMeans(ref_df[, condition], na.rm = TRUE)
+ref_ci_sds   <- apply(ref_df[, condition], 2, sd, na.rm = TRUE)
 
-# Add back identifying columns
-z_scores <- bind_cols(
-  df %>% select(latitude, longitude, site_number, site_name, sample_id, reporting_area),
-  z_scores
-)
+# Z-scores relative to reference site (preserving sign)
+condition_z <- sweep(df[, condition], 2, ref_ci_means, "-")
+condition_z <- sweep(condition_z, 2, ref_ci_sds, "/")
 
-# IBRv2i = mean of reference-based Z-scores (preserving sign)
-z_scores$IBRv2i <- rowMeans(z_scores %>% select(p450:width_mm, -ci1, -ci2, -ci3), na.rm = TRUE)
+# Combine into final df with signed values
+ibr_df <- bind_cols(ibr_df, condition_z)
+ibr_df <- ibr_df %>%
+ mutate(
+    ci1_1 = condition_z$ci1,
+    ci2_1 = condition_z$ci2,
+    ci3_1 = condition_z$ci3,)
 
-# Optional: also store in the original df
-df$IBRv2i <- z_scores$IBRv2i
+
+#### Filter reference site data (HC Sites only)
+ref_df <- df %>% filter(site_number %in% c(29, 30))
+
+# Get reference means & SDs
+ref_ci_means <- colMeans(ref_df[, condition], na.rm = TRUE)
+ref_ci_sds   <- apply(ref_df[, condition], 2, sd, na.rm = TRUE)
+
+# Z-scores relative to reference site (preserving sign)
+condition_z <- sweep(df[, condition], 2, ref_ci_means, "-")
+condition_z <- sweep(condition_z, 2, ref_ci_sds, "/")
+
+# Combine into final df with signed values
+ibr_df <- bind_cols(ibr_df, condition_z)
+ibr_df <- ibr_df %>%
+ mutate(
+    ci1_2 = condition_z$ci1,
+    ci2_2 = condition_z$ci2,
+    ci3_2 = condition_z$ci3,)
+
+#### Filter reference site data (All three references)
+ref_df <- df %>% filter(site_number %in% c(3, 29, 30))
+
+# Get reference means & SDs
+ref_ci_means <- colMeans(ref_df[, condition], na.rm = TRUE)
+ref_ci_sds   <- apply(ref_df[, condition], 2, sd, na.rm = TRUE)
+
+# Z-scores relative to reference site (preserving sign)
+condition_z <- sweep(df[, condition], 2, ref_ci_means, "-")
+condition_z <- sweep(condition_z, 2, ref_ci_sds, "/")
+
+# Combine into final df with signed values
+ibr_df <- bind_cols(ibr_df, condition_z)
+ibr_df <- ibr_df %>%
+ mutate(
+    ci1_3 = condition_z$ci1,
+    ci2_3 = condition_z$ci2,
+    ci3_3 = condition_z$ci3,)
+
+
+```
+
+
+```{r}
 
 
 #plot
@@ -557,37 +598,7 @@ for (area in reporting_areas) {
 # Separate the IBRs into biomarker, morphometric and overall
 ```{r}
 
-# Define variable groups
-biomarkers <- c("p450", "sod")
-morphometrics <- c("weight_initial_g", "weight_change_g", "weight_final_g",
-                   "shell", "length_mm", "height_mm", "width_mm")
 
-# Filter reference site data (Penn Cove)
-ref_df <- df %>% filter(site_name == "Penn Cove Reference")
-
-# Get reference means & SDs
-ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE)
-ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE)
-
-ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE)
-ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE)
-
-# Z-scores relative to reference site (preserving sign)
-bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-")
-bio_z <- sweep(bio_z, 2, ref_bio_sds, "/")
-
-morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
-morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
-
-# Combine into final df with signed values
-ibrv2i_df <- df %>%
-  select(latitude, longitude, sample_id,site_number, site_name, reporting_area) %>%
-  bind_cols(bio_z, morph_z) %>%
-  mutate(
-    IBRv2i_biomarkers = rowMeans(bio_z, na.rm = TRUE),
-    IBRv2i_morphometrics = rowMeans(morph_z, na.rm = TRUE),
-    IBRv2i_overall = rowMeans(cbind(IBRv2i_biomarkers, IBRv2i_morphometrics), na.rm = TRUE)
-  )
 
 ```
 
@@ -672,20 +683,6 @@ shapiro.test(ibrv2i_df$ci3) # Not Normal
 summary(ibrv2i_df)
 ```
 
-## Remove Port Angeles from the analyses since the condition indices are completely screwing up the analysis
-```{r}
-
-ibrv2i_df <- ibrv2i_df %>%
-  filter(site_number != 1)
-
-ibr_long <- ibr_long %>%
-  filter(site_number != 1)
-
-summary(ibrv2i_df)
-
-# that didn't seem to clear up my ci1 and ci3 issue - i will move forward with this analysis and just not use them. I removed them in lines 549 - 574.
-
-```
 
 ## Create biomarker- driven grouping
 ```{r}
