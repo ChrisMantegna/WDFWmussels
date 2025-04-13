@@ -203,19 +203,13 @@ df$site_number <- as.factor(df$site_number)
 df$sample_id <- as.factor(df$sample_id)
 df$reporting_area <- as.factor(df$reporting_area)
 
-# Select and scale biomarkers and morphometrics - including condition indices so I don't have to scale them separately later
-#ibr_vars <- df %>%
-#  select(p450, sod, ci1, ci2, ci3, weight_initial_g, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm)
-
-
 ```
 
 ```{r}
 
 # define variables
 biomarkers<- c("p450", "sod")
-morphometrics<- c("weight_initial_g", "weight_change_g", "weight_final_g",
-                   "shell", "length_mm", "height_mm", "width_mm", "ci1", "ci2", "ci3")
+morphometrics<- c("shell", "weight_initial_g", "weight_change_g", "weight_final_g", "length_mm", "height_mm", "width_mm")
 
 # define the reference groups
 # penn cove= site 3, using in index 1 and 2
@@ -227,7 +221,7 @@ morphometrics<- c("weight_initial_g", "weight_change_g", "weight_final_g",
 #### Penn Cover only reference site
 ref_df <- df %>% filter(site_number == 3)
 ref_vars <- ref_df %>%
-  select(p450, sod, ci1, ci2, ci3, weight_initial_g, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm)
+  select(p450, sod, shell, weight_initial_g, weight_change_g, weight_final_g, length_mm, height_mm, width_mm)
 
 # get reference means & SDs
 ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE)
@@ -256,7 +250,7 @@ ibr_df <- df %>%
 #### All three reference sites
 ref_df <- df %>% filter(site_number %in% c(3, 29, 30))
 ref_vars <- ref_df %>%
-  select(p450, sod, ci1, ci2, ci3, weight_initial_g, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm)
+  select(p450, sod, shell, weight_initial_g, weight_change_g, weight_final_g, length_mm, height_mm, width_mm)
 
 # get reference means & SDs
 ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE)
@@ -278,13 +272,12 @@ ibr_df <- ibr_df %>%
  mutate(
     ibr3_biomarkers = rowMeans(bio_z, na.rm = TRUE),
     ibr3_morphometrics = rowMeans(morph_z, na.rm = TRUE),
-    ibr3_overall = rowMeans(cbind(ibr2_biomarkers, ibr2_morphometrics), na.rm = TRUE)
-  )
+    ibr3_overall = rowMeans(cbind(ibr3_biomarkers, ibr3_morphometrics), na.rm = TRUE))
 
 #### HC reference sites only
 ref_df <- df %>% filter(site_number %in% c(29, 30))
 ref_vars <- ref_df %>%
-  select(p450, sod, ci1, ci2, ci3, weight_initial_g, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm)
+  select(p450, sod, shell, weight_initial_g, weight_change_g, weight_final_g, length_mm, height_mm, width_mm)
 
 # get reference means & SDs
 ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE)
@@ -301,14 +294,12 @@ morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
 morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
 
 # combine into final df with signed values
-ibr_df <- df %>%
-  select(latitude, longitude, sample_id,site_number, site_name, reporting_area) %>%
-  bind_cols(bio_z, morph_z) %>%
-  mutate(
-    ibr3_biomarkers = rowMeans(bio_z, na.rm = TRUE),
-    ibr3_morphometrics = rowMeans(morph_z, na.rm = TRUE),
-    ibr3_overall = rowMeans(cbind(ibr2_biomarkers, ibr2_morphometrics), na.rm = TRUE)
-  )
+ibr_df <- bind_cols(ibr_df, bio_z, morph_z)
+ibr_df <- ibr_df %>%
+ mutate(
+    ibr2_biomarkers = rowMeans(bio_z, na.rm = TRUE),
+    ibr2_morphometrics = rowMeans(morph_z, na.rm = TRUE),
+    ibr2_overall = rowMeans(cbind(ibr2_biomarkers, ibr2_morphometrics), na.rm = TRUE))
 
 
 ```
