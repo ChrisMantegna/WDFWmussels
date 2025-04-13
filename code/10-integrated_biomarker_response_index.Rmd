@@ -14,7 +14,7 @@ output:
 
 # Directory and doc rules
 
-```{r, setup, eval=TRUE, include=TRUE}
+```{r, setup, eval=TRUE, include=TRUE, echo=FALSE}
 
 # libraries
 library(knitr) # output
@@ -54,7 +54,7 @@ knitr::opts_chunk$set(
 getwd()
 #setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels")
 # load data
-df<- read.csv("../data/cleaned/all_with_imputation_weights_site_ra.csv")
+df<- read.csv("../data/all_with_imputation_weights_site_ra.csv")
 
 # check it out
 str(df) # checking df structure
@@ -73,17 +73,7 @@ summary(df)
 ```
 
 # Creating the Beliaeff and Burgeot IBR Index with biomarkers and morphometrics
-## Normalizing the data
 ### DO NOT RUN Again except for comparison purposes
-
-Step 1 - Normalize biomarker values. Use z-scores/ min-max scaling per site or sample to put them on a comparable scale.
-Step 2 -Transform morphometrics to reduce scale variability.
-Step 3 - Check for outliers. Extreme values may skew integrated scores.
-## Optional 
-Step 0 - Separate IBRs: IBR biomarkers, IBR morphometrics, IBR both (do this after step 3)
-Step 1 - Score biomarkers and morphometrics. Use grand mean or the reference site - Penn Cove Ref Site.
-Step 2 - Find deviation from the reference. A positive deviation is more stressed and a negative deviation is less stress.
-Step 3 - Plot it. Radar plots and polygon area plots will support calculations.
 ```{r}
 
 # select and scale biomarkers and raw morphometrics
@@ -204,18 +194,8 @@ for (i in 1:nrow(site_means)) {
 
 ```
 
-
-# Process for creating the Mattos IBRv2i Index with biomarkers and morphometrics
-## Step 0: Identify reference site (Penn Cove Ref)
-## Step 1 - Normalize biomarker and morphometric values. Use z-scores/ min-max scaling per site or sample to put them on a comparable scale and retain the directionality of responses based on ref site.
-
-### Optional Extra IBRv2i breakdown:
-#### Step 0 - Separate IBRs: IBR biomarkers, IBR morphometrics, IBR both (do this after step 3)
-#### Step 1 - Score biomarkers and morphometrics. Use grand mean or the reference site - Penn Cove Ref Site.
-#### Step 2 - Find deviation from the reference. A positive deviation is more stressed and a negative deviation is less stress.
-#### Step 3 - Plot it. Radar plots and polygon area plots will support calculations.
-
 # Creating IBRv2i Index with biomarkers and raw morphometrics (no condition indices)
+## prepare df for the function to create the ibr scores
 ```{r}
 
 # make categorical columns factors
@@ -223,9 +203,117 @@ df$site_number <- as.factor(df$site_number)
 df$sample_id <- as.factor(df$sample_id)
 df$reporting_area <- as.factor(df$reporting_area)
 
-# Select and scale biomarkers and raw morphometrics
-ibr_vars <- df %>%
+# Select and scale biomarkers and morphometrics - including condition indices so I don't have to scale them separately later
+#ibr_vars <- df %>%
+#  select(p450, sod, ci1, ci2, ci3, weight_initial_g, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm)
+
+
+```
+
+```{r}
+
+# define variables
+biomarkers<- c("p450", "sod")
+morphometrics<- c("weight_initial_g", "weight_change_g", "weight_final_g",
+                   "shell", "length_mm", "height_mm", "width_mm", "ci1", "ci2", "ci3")
+
+# define the reference groups
+# penn cove= site 3, using in index 1 and 2
+# hc holly = site 29, using in index 2 and 3
+# broad spit = site 30, using in index 2 and 3
+#ref_df <- df %>% filter(site_number %in% c(3, 29, 30))
+
+
+#### Penn Cover only reference site
+ref_df <- df %>% filter(site_number == 3)
+ref_vars <- ref_df %>%
   select(p450, sod, ci1, ci2, ci3, weight_initial_g, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm)
+
+# get reference means & SDs
+ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE)
+ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE)
+
+ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE)
+ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE)
+
+# z-scores relative to reference site (preserving sign)
+bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-")
+bio_z <- sweep(bio_z, 2, ref_bio_sds, "/")
+
+morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
+morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
+
+# combine into final df with signed values
+ibr_df <- df %>%
+  select(latitude, longitude, sample_id,site_number, site_name, reporting_area) %>%
+  bind_cols(bio_z, morph_z) %>%
+  mutate(
+    ibr1_biomarkers = rowMeans(bio_z, na.rm = TRUE),
+    ibr1_morphometrics = rowMeans(morph_z, na.rm = TRUE),
+    ibr1_overall = rowMeans(cbind(ibr1_biomarkers, ibr1_morphometrics), na.rm = TRUE))
+
+
+#### All three reference sites
+ref_df <- df %>% filter(site_number %in% c(3, 29, 30))
+ref_vars <- ref_df %>%
+  select(p450, sod, ci1, ci2, ci3, weight_initial_g, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm)
+
+# get reference means & SDs
+ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE)
+ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE)
+
+ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE)
+ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE)
+
+# z-scores relative to reference site (preserving sign)
+bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-")
+bio_z <- sweep(bio_z, 2, ref_bio_sds, "/")
+
+morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
+morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
+
+# combine into final df with signed values
+ibr_df <- bind_cols(ibr_df, bio_z, morph_z)
+ibr_df <- ibr_df %>%
+ mutate(
+    ibr3_biomarkers = rowMeans(bio_z, na.rm = TRUE),
+    ibr3_morphometrics = rowMeans(morph_z, na.rm = TRUE),
+    ibr3_overall = rowMeans(cbind(ibr2_biomarkers, ibr2_morphometrics), na.rm = TRUE)
+  )
+
+#### HC reference sites only
+ref_df <- df %>% filter(site_number %in% c(29, 30))
+ref_vars <- ref_df %>%
+  select(p450, sod, ci1, ci2, ci3, weight_initial_g, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm)
+
+# get reference means & SDs
+ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE)
+ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE)
+
+ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE)
+ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE)
+
+# z-scores relative to reference site (preserving sign)
+bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-")
+bio_z <- sweep(bio_z, 2, ref_bio_sds, "/")
+
+morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
+morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
+
+# combine into final df with signed values
+ibr_df <- df %>%
+  select(latitude, longitude, sample_id,site_number, site_name, reporting_area) %>%
+  bind_cols(bio_z, morph_z) %>%
+  mutate(
+    ibr3_biomarkers = rowMeans(bio_z, na.rm = TRUE),
+    ibr3_morphometrics = rowMeans(morph_z, na.rm = TRUE),
+    ibr3_overall = rowMeans(cbind(ibr2_biomarkers, ibr2_morphometrics), na.rm = TRUE)
+  )
+
+
+```
+
+```{r}
 
 # ID reference site/samples
 ref_df <- df %>% filter(site_number == 3)
@@ -279,7 +367,9 @@ ibrv2i_box2 <- ggplot(df, aes(x = site_name, y = IBRv2i, fill = highlight)) +
 print(ibrv2i_box)
 print(ibrv2i_box2)
 
+
 ```
+
 
 # Plotting - Only moving forward with IBRv2i indices
 ## All Sites, Do Not Run
