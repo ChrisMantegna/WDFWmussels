@@ -1,5 +1,6 @@
 ---
 title: "06- Interactiion assessment of contaminants and geographic groups of measured metrics, n=312"
+subtitle: "Move to code file 10, this is no longer applicable"
 output:
   pdf_document: 
     fig_width: 20
