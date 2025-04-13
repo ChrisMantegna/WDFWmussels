@@ -17,12 +17,12 @@ output:
 ```{r, setup, eval=TRUE, include=TRUE, echo=FALSE}
 
 # libraries
-library(knitr) # output
+library(knitr) # output fotmatting
 library(tidyr) # data wrangling
 library(tidyverse) # data wrangling
 library(dplyr) # data wrangling
-library(vegan) # ecological stats + permanova
-library(cluster) # grouping of metrics
+library(vegan) # ecological stats 
+library(cluster) # grouping metrics - VERIFY still needed
 library(pgirmess) # stats - KW
 library(ggplot2) # plots
 library(factoextra) # pca/ nmds/ tweaking radars
@@ -32,18 +32,18 @@ library(rstatix) # VERIFY what this is for
 library(car) # VERIFY what this is for  
 library(RVAideMemoire) # post hoc test for permanova
 library(rcompanion) # KW testing
-library(scales) # scaling data for IBR
-library(fmsb) # calculations for the radars
+library(scales) # scaling data for IBR - works with data wrangling packages
+library(fmsb) # polygon calculations for the radars
 
 knitr::opts_chunk$set(
   root.dir = here::here(),
-  echo = TRUE,         # Display code chunks
-  eval = TRUE,         # Evaluate code chunks
-  warning = FALSE,     # Hide warnings
-  message = FALSE,     # Hide messages
-  #fig.width = 15,       # Set plot width in inches
-  #fig.height = 9,      # Set plot height in inches
-  fig.align = "center" # Align plots to the center
+  echo = TRUE,         # show code chunks
+  eval = TRUE,         # evaluate code chunks
+  warning = FALSE,     # hide warnings
+  message = FALSE,     # hide messages
+  #fig.width = 15,       # set plot width in inches
+  #fig.height = 9,      # set plot height in inches
+  fig.align = "center" # slign plots to the center in output doc/ slide/ whatever
 )
 
 ```
@@ -52,145 +52,20 @@ knitr::opts_chunk$set(
 ```{r}
 
 getwd()
-#setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels")
-# load data
-df<- read.csv("../data/all_with_imputation_weights_site_ra.csv")
+#setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels") # something here isn't working right - check out why
 
-# check it out
-str(df) # checking df structure
-summary(df) #checking df contents
+df<- read.csv("../data/all_with_imputation_weights_site_ra.csv") # load data
+
+str(df) # checking df structure (classes of each column of data)
+summary(df) #checking df contents (quick stats for each column)
 
 ```
 
 ```{r }
 
-# replace any values below LOQ with imputed LOQ (.5 x LOD), LOD= 0.05
-df$sod[df$sod <= 0] <- 0.0025
+df$sod[df$sod <= 0] <- 0.0025 # replace any values below LOQ with imputed LOQ (.5 x LOD), LOD= 0.05
 
-# check
-summary(df)
-
-```
-
-# Creating the Beliaeff and Burgeot IBR Index with biomarkers and morphometrics
-### DO NOT RUN Again except for comparison purposes
-```{r}
-
-# select and scale biomarkers and raw morphometrics
-ibr_vars <- df %>%
-  select(p450, sod, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm)
-
-ibr_scaled <- scale(ibr_vars) # standardize (Z-score)
-
-ibr_scores <- abs(as.data.frame(ibr_scaled)) # convert to absolute Z-scores (deviation) 
-
-df$IBR <- rowSums(ibr_scores) # calculate IBR Index (sum of absolute scores)
-
-# plot
-ibr_box<- ggplot(df, aes(x = site_name, y = IBR)) +
-  geom_boxplot() +
-  theme_minimal() +
-  labs(title = "Integrated Biomarker Response (IBR) by Site",
-       y = "IBR Index", x = "Site") +
-  theme(axis.text.x= element_text(angle= 45, hjust= 1))
-
-#save and view
-ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibr_box.png", plot= ibr_box, width = 16, height = 14, dpi = 300)
-
-print(ibr_box)
-
-```
-# Radar Plots
-## Test sample
-```{r}
-
-#install.packages("fmsb")
-library("fmsb")
-
-# Select and scale
-ibr_vars <- df %>%
-  select(p450, sod, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm, ci1, ci2, ci3)
-
-scaled_df <- scale(ibr_vars)
-abs_scores <- abs(as.data.frame(scaled_df))
-
-# Add sample/site identifiers back
-abs_scores$site_name <- df$site_name
-abs_scores$sample_id <- df$sample_id
-
-# Choose one sample (e.g., row 1)
-sample <- abs_scores[1, 1:11]  # only the numeric variables
-max_min <- rbind(apply(abs_scores[ ,1:11], 2, max),
-                 apply(abs_scores[ ,1:11], 2, min))
-radar_data <- rbind(max_min, sample)
-
-radarchart(radar_data,
-           axistype = 1,
-           pcol = "darkblue", pfcol = rgb(0.2, 0.4, 0.8, 0.4),
-           plwd = 2,
-           title = paste("IBR Radar Plot for Sample", abs_scores$sample_id[1]))
-
-```
-
-## All individual samples
-```{r}
-
-library(fmsb)
-
-# Prepare absolute z-score data
-ibr_vars <- df %>%
-  select(p450, sod, weight_change_g, weight_final_g, shell, length_mm, height_mm, width_mm, ci1, ci2, ci3)
-
-scaled <- scale(ibr_vars)
-abs_scores <- abs(as.data.frame(scaled))
-
-# Add ID columns back
-abs_scores$sample_id <- df$sample_id
-abs_scores$site_name <- df$site_name
-
-# Loop through each sample and create radar plots
-for (i in 1:nrow(abs_scores)) {
-  sample_data <- abs_scores[i, 1:11]
-  max_min <- rbind(apply(abs_scores[ ,1:11], 2, max),
-                   apply(abs_scores[ ,1:11], 2, min))
-  radar_data <- rbind(max_min, sample_data)
-  
-  # Save to file
-  png(paste0("radar_sample_", abs_scores$sample_id[i], ".png"), width = 600, height = 600)
-  radarchart(radar_data,
-             axistype = 1,
-             pcol = "darkblue", pfcol = rgb(0.2, 0.8, 0.4, 0.4),
-             plwd = 2,
-             title = paste("Sample", abs_scores$sample_id[i], "\nSite:", abs_scores$site_name[i]))
-  dev.off()
-}
-
-```
-
-## Site plots
-```{r}
-
-# Calculate site-level mean absolute Z-scores
-site_means <- abs_scores %>%
-  group_by(site_name) %>%
-  summarise(across(1:11, mean, na.rm = TRUE))
-
-# Loop through each site
-for (i in 1:nrow(site_means)) {
-  site_data <- site_means[i, 2:12]  # skip site_name column
-  max_min <- rbind(apply(site_means[ ,2:12], 2, max),
-                   apply(site_means[ ,2:12], 2, min))
-  radar_data <- rbind(max_min, site_data)
-  
-  # Save to file
-  png(paste0("radar_site_", gsub(" ", "_", site_means$site_name[i]), ".png"), width = 600, height = 600)
-  radarchart(radar_data,
-             axistype = 1,
-             pcol = "darkblue", pfcol = rgb(0.2, 0.4, 0.9, 0.4),
-             plwd = 2,
-             title = paste("Mean IBR Profile\nSite:", site_means$site_name[i]))
-  dev.off()
-}
+summary(df) # check
 
 ```
 
@@ -206,37 +81,31 @@ df$reporting_area <- as.factor(df$reporting_area)
 
 ```{r}
 
-# define variables
+# define variables used in building the ibr - 2 biomarkers and 7 morphometric values, CI left out because it is derived from raw measurements that are included in the ibr
+
 biomarkers<- c("p450", "sod")
 morphometrics<- c("shell", "weight_initial_g", "weight_change_g", "weight_final_g", "length_mm", "height_mm", "width_mm")
 
 # define the reference groups
-# penn cove= site 3, using in index 1 and 2
-# hc holly = site 29, using in index 2 and 3
-# broad spit = site 30, using in index 2 and 3
-#ref_df <- df %>% filter(site_number %in% c(3, 29, 30))
+# penn cove= site 3, using in index 1 and 3, hc holly = site 29, using in index 2 and 3, broad spit = site 30, using in index 2 and 3
 
+#### Penn Cove Only 
+ref_df <- df %>% filter(site_number == 3) # define reference site
 
-#### Penn Cove Only reference site
-ref_df <- df %>% filter(site_number == 3)
-ref_vars <- ref_df %>%
-  select(p450, sod, shell, weight_initial_g, weight_change_g, weight_final_g, length_mm, height_mm, width_mm)
+# not using since I'm separating biomarkers from morphometrics to balance their weight in the index
+#ref_vars <- ref_df %>%
+#  select(p450, sod, shell, weight_initial_g, weight_change_g, weight_final_g, length_mm, height_mm, width_mm) 
 
-# get reference means & SDs
-ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE)
-ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE)
+ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE) # reference site means - biomarkers
+ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE) # reference site sds - biomarkers
+ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE) # same as above - morphometrics
+ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE)  # same as above - morphometrics
 
-ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE)
-ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE)
-
-# z-scores relative to reference site (preserving sign)
-bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-")
-bio_z <- sweep(bio_z, 2, ref_bio_sds, "/")
-
+bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-") # z-scores, maintaining sign - biomarkers
+bio_z <- sweep(bio_z, 2, ref_bio_sds, "/") # z-scores- actual conversion from the centered values calculated above
 morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
 morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
-
-# combine into final df with signed values
+# add to OG df or create a new one and name the columns correctly
 ibr_df <- df %>%
   select(latitude, longitude, sample_id,site_number, site_name, reporting_area) %>%
   bind_cols(bio_z, morph_z) %>%
@@ -245,27 +114,21 @@ ibr_df <- df %>%
     ibr1_morphometrics = rowMeans(morph_z, na.rm = TRUE),
     ibr1_overall = rowMeans(cbind(ibr1_biomarkers, ibr1_morphometrics), na.rm = TRUE))
 
-
-#### All three reference sites
-ref_df <- df %>% filter(site_number %in% c(3, 29, 30))
+#### Penn Cove & HC Sites 
+ref_df <- df %>% filter(site_number %in% c(3, 29, 30)) # define reference sites
 ref_vars <- ref_df %>%
   select(p450, sod, shell, weight_initial_g, weight_change_g, weight_final_g, length_mm, height_mm, width_mm)
 
-# get reference means & SDs
-ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE)
-ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE)
+ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE) # reference site means - bio
+ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE) # reference site sds - bio
+ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE) 
+ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE) 
 
-ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE)
-ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE)
-
-# z-scores relative to reference site (preserving sign)
-bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-")
-bio_z <- sweep(bio_z, 2, ref_bio_sds, "/")
-
+bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-") # z-scores prep
+bio_z <- sweep(bio_z, 2, ref_bio_sds, "/") # z-score completion
 morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
 morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
-
-# combine into final df with signed values
+# add to df
 ibr_df <- bind_cols(ibr_df, bio_z, morph_z)
 ibr_df <- ibr_df %>%
  mutate(
@@ -273,25 +136,20 @@ ibr_df <- ibr_df %>%
     ibr3_morphometrics = rowMeans(morph_z, na.rm = TRUE),
     ibr3_overall = rowMeans(cbind(ibr3_biomarkers, ibr3_morphometrics), na.rm = TRUE))
 
-#### HC reference sites only
-ref_df <- df %>% filter(site_number %in% c(29, 30))
+#### HC Sites Only
+ref_df <- df %>% filter(site_number %in% c(29, 30)) # define reference sites
 ref_vars <- ref_df %>%
   select(p450, sod, shell, weight_initial_g, weight_change_g, weight_final_g, length_mm, height_mm, width_mm)
 
-# get reference means & SDs
-ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE)
-ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE)
-
+ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE) # refernce site means
+ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE) # reference site sds
 ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE)
 ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE)
 
-# z-scores relative to reference site (preserving sign)
-bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-")
+bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-") # z-scores
 bio_z <- sweep(bio_z, 2, ref_bio_sds, "/")
-
 morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
 morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
-
 # combine into final df with signed values
 ibr_df <- bind_cols(ibr_df, bio_z, morph_z)
 ibr_df <- ibr_df %>%
@@ -300,67 +158,49 @@ ibr_df <- ibr_df %>%
     ibr2_morphometrics = rowMeans(morph_z, na.rm = TRUE),
     ibr2_overall = rowMeans(cbind(ibr2_biomarkers, ibr2_morphometrics), na.rm = TRUE))
 
+# saved the complete df in the next block after adding the condition indices back to the df
 
 ```
 
 ## adding condition indices back to df
 ```{r}
 
-# Define variable groups
+# define variables
 condition <- c("ci1", "ci2", "ci3")
 
-#### Reference site data (Penn Cove)
-ref_df <- df %>% filter(site_name == "Penn Cove Reference")
-
-# Get reference means & SDs
-ref_ci_means <- colMeans(ref_df[, condition], na.rm = TRUE)
-ref_ci_sds   <- apply(ref_df[, condition], 2, sd, na.rm = TRUE)
-
-# Z-scores relative to reference site (preserving sign)
-condition_z <- sweep(df[, condition], 2, ref_ci_means, "-")
-condition_z <- sweep(condition_z, 2, ref_ci_sds, "/")
-
-# Combine into final df with signed values
-ibr_df <- bind_cols(ibr_df, condition_z)
+#### Penn Cove Only
+ref_df <- df %>% filter(site_name == "Penn Cove Reference") # define reference site
+ref_ci_means <- colMeans(ref_df[, condition], na.rm = TRUE) # reference means
+ref_ci_sds   <- apply(ref_df[, condition], 2, sd, na.rm = TRUE) # reference sds
+condition_z <- sweep(df[, condition], 2, ref_ci_means, "-") # z-scores relative to reference site - preserving sign
+condition_z <- sweep(condition_z, 2, ref_ci_sds, "/") # z-scores
+ibr_df <- bind_cols(ibr_df, condition_z) # add the new columns to the df
 ibr_df <- ibr_df %>%
  mutate(
     ci1_1 = condition_z$ci1,
     ci2_1 = condition_z$ci2,
     ci3_1 = condition_z$ci3,)
 
-
-#### Reference site data (HC Sites only)
-ref_df <- df %>% filter(site_number %in% c(29, 30))
-
-# Get reference means & SDs
-ref_ci_means <- colMeans(ref_df[, condition], na.rm = TRUE)
-ref_ci_sds   <- apply(ref_df[, condition], 2, sd, na.rm = TRUE)
-
-# Z-scores relative to reference site (preserving sign)
-condition_z <- sweep(df[, condition], 2, ref_ci_means, "-")
-condition_z <- sweep(condition_z, 2, ref_ci_sds, "/")
-
-# Combine into final df with signed values
-ibr_df <- bind_cols(ibr_df, condition_z)
+#### HC Sites Only
+ref_df <- df %>% filter(site_number %in% c(29, 30)) # define reference sites, switched to the site numbers instead of names to catch them all - one of the broad spit samples keeps getting dropped - the name may be typed different
+ref_ci_means <- colMeans(ref_df[, condition], na.rm = TRUE) # reference means
+ref_ci_sds   <- apply(ref_df[, condition], 2, sd, na.rm = TRUE) # reference sds
+condition_z <- sweep(df[, condition], 2, ref_ci_means, "-") # z-score prep relative to reference site
+condition_z <- sweep(condition_z, 2, ref_ci_sds, "/") # z-scores completion
+ibr_df <- bind_cols(ibr_df, condition_z) # add the new columns to the df
 ibr_df <- ibr_df %>%
  mutate(
     ci1_2 = condition_z$ci1,
     ci2_2 = condition_z$ci2,
     ci3_2 = condition_z$ci3,)
 
-#### Reference site data (All three references)
-ref_df <- df %>% filter(site_number %in% c(3, 29, 30))
-
-# Get reference means & SDs
-ref_ci_means <- colMeans(ref_df[, condition], na.rm = TRUE)
-ref_ci_sds   <- apply(ref_df[, condition], 2, sd, na.rm = TRUE)
-
-# Z-scores relative to reference site (preserving sign)
-condition_z <- sweep(df[, condition], 2, ref_ci_means, "-")
-condition_z <- sweep(condition_z, 2, ref_ci_sds, "/")
-
-# Combine into final df with signed values
-ibr_df <- bind_cols(ibr_df, condition_z)
+#### Penn Cove & HC Sites
+ref_df <- df %>% filter(site_number %in% c(3, 29, 30)) # define reference sites
+ref_ci_means <- colMeans(ref_df[, condition], na.rm = TRUE) # reference means
+ref_ci_sds   <- apply(ref_df[, condition], 2, sd, na.rm = TRUE) # reference sds
+condition_z <- sweep(df[, condition], 2, ref_ci_means, "-") # z-scores prep
+condition_z <- sweep(condition_z, 2, ref_ci_sds, "/") # z-score completion
+ibr_df <- bind_cols(ibr_df, condition_z) # add the new columns to the full df
 ibr_df <- ibr_df %>%
  mutate(
     ci1_3 = condition_z$ci1,
@@ -371,7 +211,6 @@ ibr_df <- ibr_df %>%
 #write.csv(ibr_df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/complete_cleaned_ibr.csv", row.names = FALSE)
 
 ```
-
 
 # Plotting
 Plot overall for each and take a look - left off here on 4.12.25
