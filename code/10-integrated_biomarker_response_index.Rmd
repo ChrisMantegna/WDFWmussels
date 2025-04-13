@@ -217,7 +217,7 @@ morphometrics<- c("shell", "weight_initial_g", "weight_change_g", "weight_final_
 #ref_df <- df %>% filter(site_number %in% c(3, 29, 30))
 
 
-#### Penn Cover only reference site
+#### Penn Cove Only reference site
 ref_df <- df %>% filter(site_number == 3)
 ref_vars <- ref_df %>%
   select(p450, sod, shell, weight_initial_g, weight_change_g, weight_final_g, length_mm, height_mm, width_mm)
@@ -309,7 +309,7 @@ ibr_df <- ibr_df %>%
 # Define variable groups
 condition <- c("ci1", "ci2", "ci3")
 
-# Filter reference site data (Penn Cove)
+#### Reference site data (Penn Cove)
 ref_df <- df %>% filter(site_name == "Penn Cove Reference")
 
 # Get reference means & SDs
@@ -329,7 +329,7 @@ ibr_df <- ibr_df %>%
     ci3_1 = condition_z$ci3,)
 
 
-#### Filter reference site data (HC Sites only)
+#### Reference site data (HC Sites only)
 ref_df <- df %>% filter(site_number %in% c(29, 30))
 
 # Get reference means & SDs
@@ -348,7 +348,7 @@ ibr_df <- ibr_df %>%
     ci2_2 = condition_z$ci2,
     ci3_2 = condition_z$ci3,)
 
-#### Filter reference site data (All three references)
+#### Reference site data (All three references)
 ref_df <- df %>% filter(site_number %in% c(3, 29, 30))
 
 # Get reference means & SDs
@@ -367,6 +367,8 @@ ibr_df <- ibr_df %>%
     ci2_3 = condition_z$ci2,
     ci3_3 = condition_z$ci3,)
 
+# save it
+write.csv(ibr_df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/complete_cleaned_ibr.csv", row.names = FALSE)
 
 ```
 
