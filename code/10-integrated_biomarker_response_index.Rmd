@@ -73,9 +73,9 @@ summary(df) # check
 ```{r}
 
 # make categorical columns factors
-df$site_number <- as.factor(df$site_number)
-df$sample_id <- as.factor(df$sample_id)
-df$reporting_area <- as.factor(df$reporting_area)
+df3$site_number <- as.factor(df3$site_number)
+df3$sample_id <- as.factor(df3$sample_id)
+df3$reporting_area <- as.factor(df3$reporting_area)
 
 ```
 
@@ -285,10 +285,6 @@ print(all_index3)
 
 ```
 ## Radars, reference overlay
-
-
-
-# Plotting - Only moving forward with IBRv2i indices
 ## All Sites, Do Not Run
 ```{r}
 
@@ -356,40 +352,33 @@ for (i in 1:nrow(z_scores)) {
 ## All sites w/ reference site overlay
 ```{r}
 
-df1<- read.csv("../data/cleaned/complete_cleaned_ibr.csv")
-df2
-df3
-
+#### IBR_1
 # Variables to include in radar plots
-vars_to_use <- c("p450", "sod", "weight_initial_g", "weight_change_g", 
-                 "weight_final_g", "shell", "length_mm", "height_mm", "width_mm")
+vars_to_use <- c("p450_ibr1", "sod_ibr1", "shell_ibr1", "weight_initial_g_ibr1", "weight_final_g_ibr1", "weight_change_g_ibr1", "length_mm_ibr1", "height_mm_ibr1", "width_mm_ibr1")
 
-# Step 1: Create the reference profile from Penn Cove samples (e.g., sample_id 41:44)
+# create the reference profile from Penn Cove 
 reference_profile <- z_scores %>%
   filter(sample_id %in% 41:44) %>%
   select(all_of(vars_to_use)) %>%
   summarise(across(everything(), mean, na.rm = TRUE))
 
-# Step 2: Create site-level means for the same variables
+# create site-level means 
 site_means <- z_scores %>%
   group_by(site_name) %>%
   summarise(across(all_of(vars_to_use), mean, na.rm = TRUE)) %>%
   ungroup()
 
-# Step 3: Define radar axis limits (same across all sites)
+# define radar axis limits (same across all sites)
 max_vals <- apply(site_means[, vars_to_use], 2, max, na.rm = TRUE)
 min_vals <- apply(site_means[, vars_to_use], 2, min, na.rm = TRUE)
 
-# Convert reference profile to a named numeric vector
+# convert reference profile to a named numeric vector
 ref_vec <- unlist(reference_profile[1, ], use.names = TRUE)
 
-# Step 4: Loop through each site to create radar plots
+# loop through each site to create radar plots
 for (i in 1:nrow(site_means)) {
   site <- site_means[i, ]
   site_profile <- unlist(site[, vars_to_use], use.names = TRUE)
-  
-  # Skip if site profile matches reference exactly
-  if (isTRUE(all.equal(site_profile, ref_vec))) next
   
   # Combine into radar data
   radar_data <- as.data.frame(rbind(max_vals, min_vals, ref_vec, site_profile))
@@ -419,49 +408,45 @@ for (i in 1:nrow(site_means)) {
 ## Sites by Reporting Areas w/ Reference
 ```{r}
 
-# Define variables to include (excluding condition indices)
-vars_to_use <- c("p450", "sod", "weight_initial_g", "weight_change_g", 
-                 "weight_final_g", "shell", "length_mm", "height_mm", "width_mm")
+# manually adjusting for each ibr
+# Define variables to include (excluding condition indices and weight final)
+vars_to_use <- c("p450_ibr3", "sod_ibr3", "shell_ibr3", "weight_initial_g_ibr3", "weight_change_g_ibr3", "length_mm_ibr3", "height_mm_ibr3", "width_mm_ibr3")
 
-# Prep: site-level means and reporting area info
-site_means <- z_scores %>%
+# Site-level means (if you have multiple entries per site)
+site_means <- df3 %>%
   group_by(site_name, reporting_area) %>%
   summarise(across(all_of(vars_to_use), mean, na.rm = TRUE), .groups = "drop")
 
-# Global min/max across all sites
+# Global min/max for radar chart scaling
 global_max <- apply(site_means[, vars_to_use], 2, max, na.rm = TRUE)
 global_min <- apply(site_means[, vars_to_use], 2, min, na.rm = TRUE)
 
-# Reference profile from Penn Cove samples
-reference_profile <- z_scores %>%
-  filter(sample_id %in% 41:44) %>%
+# Reference profile from one or more reference sites
+reference_sites <- c( "Penn Cove Reference", "Hood Canal Holly", "Broad Spit (Fisherman's Point)")  # or use site_number
+reference_profile <- df3 %>%
+  filter(site_name %in% reference_sites) %>%
   summarise(across(all_of(vars_to_use), mean, na.rm = TRUE), .groups = "drop") %>%
   unlist(use.names = TRUE)
 
-# Unique reporting areas
+# Proceed with the rest of the radar chart code
 reporting_areas <- unique(site_means$reporting_area)
 
-# Loop over each reporting area
 for (area in reporting_areas) {
   area_sites <- site_means %>% filter(reporting_area == area)
   n_sites <- nrow(area_sites)
   n_pages <- ceiling(n_sites / 6)
 
   for (page in 1:n_pages) {
-    # Subset to group of up to 6 sites
     start_i <- (page - 1) * 6 + 1
     end_i <- min(start_i + 5, n_sites)
     sites_subset <- area_sites[start_i:end_i, ]
 
-    # Set output
     filename <- paste0("radar_group_", gsub(" ", "_", area), "_page_", page, ".png")
     png(filename, width = 1200, height = 800)
-    par(mfrow = c(2, 3), mar = c(2, 2, 4, 2), oma = c(0, 0, 4, 0))  # 2x3 layout
+    par(mfrow = c(2, 3), mar = c(2, 2, 4, 2), oma = c(0, 0, 4, 0))
 
     for (i in 1:nrow(sites_subset)) {
       site_data <- unlist(sites_subset[i, vars_to_use], use.names = TRUE)
-      
-      # Assemble radar data as data frame
       chart_data <- as.data.frame(rbind(global_max, global_min, reference_profile, site_data))
       rownames(chart_data) <- c("Max", "Min", "Reference", as.character(sites_subset$site_name[i]))
 
@@ -475,8 +460,7 @@ for (area in reporting_areas) {
                  title = sites_subset$site_name[i])
     }
 
-    # Add group label at the top
-    mtext(paste("Reporting Area:", area), side = 3, line = 1, outer = TRUE, cex = 1.5)
+    mtext(paste("Reporting Area:", area), side = 3, line = 1, outer = TRUE, cex = 1.0)
     dev.off()
   }
 }
