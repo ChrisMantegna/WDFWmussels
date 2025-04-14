@@ -213,10 +213,48 @@ ibr_df <- ibr_df %>%
 ```
 
 # Plotting
-Visual verification of the indices
+Separate Indices per Site, box plot
 ```{r}
 
-df<- read.csv("../data/cleaned/complete_cleaned_ibr.csv")
+df1<- read.csv("../data/cleaned/ibr_1.csv")
+df2<- read.csv("../data/cleaned/ibr_2.csv")
+df3<- read.csv("../data/cleaned/ibr_3.csv")
+
+# pivot only the index columns
+ibr_long <- ibrv2i_df %>%
+  pivot_longer(cols = c(IBRv2i_biomarkers, IBRv2i_morphometrics, IBRv2i_overall),
+               names_to = "index_type",
+               values_to = "index_value") %>%
+  mutate(index_type = case_when(
+    index_type == "IBRv2i_biomarkers" ~ "Biomarkers",
+    index_type == "IBRv2i_morphometrics" ~ "Morphometrics",
+    index_type == "IBRv2i_overall" ~ "Overall",
+    TRUE ~ index_type  # fallback in case of unexpected names
+  ))
+
+
+all_index<- ggplot(ibr_long, aes(x = site_name, y = index_value,
+                     color = site_name == "Penn Cove Reference")) +
+  geom_jitter(width = 0.2, alpha = 0.7) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.2) +
+  facet_wrap(~ index_type, ncol = 1, scales = "free_y") +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),legend.position = "none") +
+  labs(title = "IBRv2i Indices by Site",
+       x = "Site", y = "IBRv2i Value")
+
+# save and view
+#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibrv2i_box_all_index_reference_indicated.png", plot= all_index, width = 16, height = 14, dpi = 300)
+
+print(all_index)
+
+```
+
+```{r}
+
+
+
 
 # plot with Penn Cove indicated
 df$highlight <- ifelse(df$site_name == "Penn Cove Reference", "Penn Cove Reference", "Other")
@@ -328,6 +366,10 @@ for (i in 1:nrow(z_scores)) {
 
 ## All sites w/ reference site overlay
 ```{r}
+
+df1<- read.csv("../data/cleaned/complete_cleaned_ibr.csv")
+df2
+df3
 
 # Variables to include in radar plots
 vars_to_use <- c("p450", "sod", "weight_initial_g", "weight_change_g", 
@@ -453,39 +495,6 @@ for (area in reporting_areas) {
 ```
 
 
-## Plotting Separate Indices per Site, box plot
-```{r}
-
-# Pivot only the IBRv2i index columns
-ibr_long <- ibrv2i_df %>%
-  pivot_longer(cols = c(IBRv2i_biomarkers, IBRv2i_morphometrics, IBRv2i_overall),
-               names_to = "index_type",
-               values_to = "index_value") %>%
-  mutate(index_type = case_when(
-    index_type == "IBRv2i_biomarkers" ~ "Biomarkers",
-    index_type == "IBRv2i_morphometrics" ~ "Morphometrics",
-    index_type == "IBRv2i_overall" ~ "Overall",
-    TRUE ~ index_type  # fallback in case of unexpected names
-  ))
-
-
-all_index<- ggplot(ibr_long, aes(x = site_name, y = index_value,
-                     color = site_name == "Penn Cove Reference")) +
-  geom_jitter(width = 0.2, alpha = 0.7) +
-  geom_boxplot(outlier.shape = NA, alpha = 0.2) +
-  facet_wrap(~ index_type, ncol = 1, scales = "free_y") +
-  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),legend.position = "none") +
-  labs(title = "IBRv2i Indices by Site",
-       x = "Site", y = "IBRv2i Value")
-
-# save and view
-#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibrv2i_box_all_index_reference_indicated.png", plot= all_index, width = 16, height = 14, dpi = 300)
-
-print(all_index)
-
-```
 
 
 

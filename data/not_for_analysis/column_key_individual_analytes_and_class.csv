@@ -1,7 +1,7 @@
 ﻿DO NOT SORT,a79 removed (lipids),
 og column name,column identifier,class
 alpha_chlordane,a1,chlordane
-alpha_hexachlorocyclohexane,a2,HCH
+alpha_hexachlorocyclohexane,a2,hch
 aldrin,a3,pesticide
 beta_chlordane,a4,chlordane
 BDE100,a5,PBDE
@@ -15,7 +15,7 @@ BDE049,a12,PBDE
 BDE066,a13,PBDE
 BDE085,a14,PBDE
 BDE099,a15,PBDE
-beta_hexachlorocyclohexane,a16,HCH
+beta_hexachlorocyclohexane,a16,hch
 Br5DE04,a17,PBDE Congener
 Br5DE05,a18,PBDE Congener
 Br6DE01,a19,PBDE Congener
@@ -68,7 +68,7 @@ Endosulfan_1,a65,pesticide
 hexachlorobenzene,a66,pesticide
 heptachlor,a67,chlordane
 heptachlor_epoxide,a68,chlordane
-gamma_hexachlorocyclohexane,a69,HCH
+gamma_hexachlorocyclohexane,a69,hch
 mirex,a70,pesticide
 nonachlor3,a71,chlordane
 opDDD,a72,DDT
