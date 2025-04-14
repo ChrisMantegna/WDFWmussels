@@ -120,3 +120,46 @@ for (i in 1:nrow(site_means)) {
 }
 
 ```
+```{r}
+
+# plot with Penn Cove indicated
+df$highlight <- ifelse(df$site_name == "Penn Cove Reference", "Penn Cove Reference", "Other")
+
+ibr1_box <- ggplot(df, aes(x = site_name, y = ibr, fill = highlight)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("Penn Cove Reference" = "red", "Other" = "white")) +
+  theme_minimal() +
+  labs(title = "IBR_1 by Site", y = "IBRv2i Index", x = "Site") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none")  # hides legend if not needed
+
+# plot with Penn Cove indicated
+df$highlight <- ifelse(df$site_name == "Penn Cove Reference", "Penn Cove Reference", "Other")
+
+ibr2_box <- ggplot(df, aes(x = site_name, y = IBRv2i, fill = highlight)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("Penn Cove Reference" = "red", "Other" = "white")) +
+  theme_minimal() +
+  labs(title = "IBRv2i by Site", y = "IBRv2i Index", x = "Site") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none")  # hides legend if not needed
+
+# plot with Penn Cove indicated
+df$highlight <- ifelse(df$site_name == "Penn Cove Reference", "Penn Cove Reference", "Other")
+
+ibr3_box <- ggplot(df, aes(x = site_name, y = IBRv2i, fill = highlight)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("Penn Cove Reference" = "red", "Other" = "white")) +
+  theme_minimal() +
+  labs(title = "IBRv2i by Site", y = "IBRv2i Index", x = "Site") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none")  # hides legend if not needed
+
+# save and view
+#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibrv2i_box_reference_indicated.png", plot= ibrv2i_box2, width = 16, height = 14, dpi = 300)
+
+print(ibrv2i_box)
+print(ibrv2i_box2)
+
+
+```

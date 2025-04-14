@@ -213,27 +213,26 @@ ibr_df <- ibr_df %>%
 ```
 
 # Plotting
-Separate Indices per Site, box plot
+## Box plots, Separate Indices per Site
 ```{r}
 
 df1<- read.csv("../data/cleaned/ibr_1.csv")
 df2<- read.csv("../data/cleaned/ibr_2.csv")
 df3<- read.csv("../data/cleaned/ibr_3.csv")
 
-# pivot only the index columns
-ibr_long <- ibrv2i_df %>%
-  pivot_longer(cols = c(IBRv2i_biomarkers, IBRv2i_morphometrics, IBRv2i_overall),
+# pivot only the index columns - adjusted for each df
+ibr3_long <- df3 %>%
+  pivot_longer(cols = c(ibr3_biomarkers, ibr3_morphometrics, ibr3_overall),
                names_to = "index_type",
                values_to = "index_value") %>%
   mutate(index_type = case_when(
-    index_type == "IBRv2i_biomarkers" ~ "Biomarkers",
-    index_type == "IBRv2i_morphometrics" ~ "Morphometrics",
-    index_type == "IBRv2i_overall" ~ "Overall",
-    TRUE ~ index_type  # fallback in case of unexpected names
-  ))
+    index_type == "ibr3_biomarkers" ~ "Biomarkers",
+    index_type == "ibr3_morphometrics" ~ "Morphometrics",
+    index_type == "ibr3_overall" ~ "Overall",
+    TRUE ~ index_type))  # fallback in case of unexpected names
 
-
-all_index<- ggplot(ibr_long, aes(x = site_name, y = index_value,
+#### plotting ibr1 with Penn Cove reference site
+all_index<- ggplot(ibr1_long, aes(x = site_name, y = index_value,
                      color = site_name == "Penn Cove Reference")) +
   geom_jitter(width = 0.2, alpha = 0.7) +
   geom_boxplot(outlier.shape = NA, alpha = 0.2) +
@@ -245,58 +244,48 @@ all_index<- ggplot(ibr_long, aes(x = site_name, y = index_value,
        x = "Site", y = "IBRv2i Value")
 
 # save and view
-#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibrv2i_box_all_index_reference_indicated.png", plot= all_index, width = 16, height = 14, dpi = 300)
+#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibr1_all_indices.png", plot= all_index, width = 16, height = 14, dpi = 300)
 
 print(all_index)
 
-```
-
-```{r}
-
-
-
-
-# plot with Penn Cove indicated
-df$highlight <- ifelse(df$site_name == "Penn Cove Reference", "Penn Cove Reference", "Other")
-
-ibr1_box <- ggplot(df, aes(x = site_name, y = ibr, fill = highlight)) +
-  geom_boxplot() +
-  scale_fill_manual(values = c("Penn Cove Reference" = "red", "Other" = "white")) +
+#### plotting ibr2 with HC reference sites
+all_index2<- ggplot(ibr2_long, aes(x = site_name, y = index_value,
+                     color = site_name %in% c("Hood Canal Holly", "Broad Spit (Fisherman's Point)"))) +
+  geom_jitter(width = 0.2, alpha = 0.7) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.2) +
+  facet_wrap(~ index_type, ncol = 1, scales = "free_y") +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
   theme_minimal() +
-  labs(title = "IBR_1 by Site", y = "IBRv2i Index", x = "Site") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        legend.position = "none")  # hides legend if not needed
-
-# plot with Penn Cove indicated
-df$highlight <- ifelse(df$site_name == "Penn Cove Reference", "Penn Cove Reference", "Other")
-
-ibr2_box <- ggplot(df, aes(x = site_name, y = IBRv2i, fill = highlight)) +
-  geom_boxplot() +
-  scale_fill_manual(values = c("Penn Cove Reference" = "red", "Other" = "white")) +
-  theme_minimal() +
-  labs(title = "IBRv2i by Site", y = "IBRv2i Index", x = "Site") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        legend.position = "none")  # hides legend if not needed
-
-# plot with Penn Cove indicated
-df$highlight <- ifelse(df$site_name == "Penn Cove Reference", "Penn Cove Reference", "Other")
-
-ibr3_box <- ggplot(df, aes(x = site_name, y = IBRv2i, fill = highlight)) +
-  geom_boxplot() +
-  scale_fill_manual(values = c("Penn Cove Reference" = "red", "Other" = "white")) +
-  theme_minimal() +
-  labs(title = "IBRv2i by Site", y = "IBRv2i Index", x = "Site") +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        legend.position = "none")  # hides legend if not needed
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),legend.position = "none") +
+  labs(title = "IBRv2i Indices by Site",
+       x = "Site", y = "IBRv2i Value")
 
 # save and view
-#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibrv2i_box_reference_indicated.png", plot= ibrv2i_box2, width = 16, height = 14, dpi = 300)
+#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibr2_all_indices.png", plot= all_index2, width = 16, height = 14, dpi = 300)
 
-print(ibrv2i_box)
-print(ibrv2i_box2)
+print(all_index2)
 
+
+#### plotting ibr3 with Penn Cove + HC reference sites
+all_index3<- ggplot(ibr3_long, aes(x = site_name, y = index_value,
+                     color = site_name %in% c("Penn Cove Reference", "Hood Canal Holly", "Broad Spit (Fisherman's Point)"))) +
+  geom_jitter(width = 0.2, alpha = 0.7) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.2) +
+  facet_wrap(~ index_type, ncol = 1, scales = "free_y") +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),legend.position = "none") +
+  labs(title = "IBRv2i Indices by Site",
+       x = "Site", y = "IBRv2i Value")
+
+# save and view
+#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibr3_all_indices.png", plot= all_index3, width = 16, height = 14, dpi = 300)
+
+print(all_index3)
 
 ```
+## Radars, reference overlay
+
 
 
 # Plotting - Only moving forward with IBRv2i indices
