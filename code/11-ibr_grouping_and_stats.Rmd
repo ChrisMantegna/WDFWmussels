@@ -72,17 +72,14 @@ df1$reporting_area <- as.factor(df1$reporting_area)
 
 # Normality - Shapiro-Wilkes
 ```{r}
-# fix names
+
 shapiro.test(df1$p450_ibr1) # Not Normal
 shapiro.test(df1$sod_ibr1) # Not Normal
-shapiro.test(df1$shell_ibr1)
-shapiro.test(df1$ci1_ibr1)
-shapiro.test(df1$ci2_ibr1)
-shapiro.test(df1$ci3_ibr1)
+shapiro.test(df1$shell_ibr1) # Normal - ANOVA for this one
+shapiro.test(df1$ci1_1)
+shapiro.test(df1$ci2_1)
+shapiro.test(df1$ci3_1)
 
-
-# checking the condition indices since they are throwing off the downstream process
-summary(ibrv2i_df)
 ```
 
 # Add groups to match WDFW reporting style
