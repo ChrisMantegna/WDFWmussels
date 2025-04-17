@@ -58,6 +58,8 @@ getwd()
 df1<- read.csv("../data/cleaned/ibr_1.csv") # penn cove reference site only
 df2<- read.csv("../data/cleaned/ibr_2.csv")
 #df3<- read.csv("../data/cleaned/ibr_3.csv")
+df4<- read.csv("../data/cleaned/analytes_long.csv")
+df5<- read.csv("../data/cleaned/metals_long.csv")
 
 # clean up names if needed
 #df1 <- df1 %>%
@@ -632,10 +634,145 @@ write.csv(tukey_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/o
 
 ```
 
+# NMDS - not useful at all
+```{r}
+
+df_metrics <- df1 %>%
+  select(p450, sod, shell, ci1, ci2, ci3) %>%
+  scale()
+
+nmds <- metaMDS(df_metrics_all[, 1:6], distance = "euclidean", k = 2, trymax = 100)
+fit <- envfit(nmds, df_metrics_all[, 1:6], permutations = 999)
+plot(nmds)
+plot(fit, col = "blue")
+
+nmds$stress #w/o condition indices the stress= 0.1122892, w/ condition the stress= 0.1467835
+
+# trying to scale again
+df_metrics_all <- df1 %>%
+  select(p450, sod, shell, ci1, ci2, ci3) %>%
+  scale() %>%
+  as.data.frame()
+
+# Add IDs or sites for reference
+df_metrics_all$site_name <- df1$site_name
+
+# Look for rows with extreme values
+apply(df_metrics_all, 2, function(x) range(x, na.rm = TRUE))
+
+summary(df_metrics_all)
+
+# Identify rows with extreme scaled values
+which(apply(df_metrics_all[, 1:6], 1, function(x) any(abs(x) > 5)))
+df_filtered <- df_metrics_all %>%
+  filter(apply(select(., -site_name), 1, function(x) all(abs(x) < 5)))
+
+pca <- prcomp(df_metrics_all[, 1:6], center = TRUE, scale. = FALSE)
+biplot(pca)
+
+
+```
+
+# Heatmap - equally unuseful
+```{r}
+
+library(pheatmap)
+
+# Make sure data is numeric and scaled
+heat_data <- df1 %>%
+  select(p450, sod, shell, ci1, ci2, ci3) %>%
+  scale()
+
+rownames(heat_data) <- df1$site_name  # optional: use site names as row labels
+
+pheatmap(heat_data,
+         clustering_distance_rows = "euclidean",
+         clustering_distance_cols = "euclidean",
+         clustering_method = "average",
+         scale = "none",
+         show_rownames = FALSE)
+
+```
+
+# Correlations
+## data prep
+```{r}
+
+# averaging by site
+df_sites <- df1 %>%
+  group_by(site_name, reporting_area) %>% 
+  summarise(
+    latitude= first(latitude),
+    longitude= first(longitude),
+    p450 = mean(p450, na.rm = TRUE),
+    sod = mean(sod, na.rm = TRUE),
+    shell = mean(shell, na.rm = TRUE),
+    ci1 = mean(ci1, na.rm = TRUE),
+    ci2 = mean(ci2, na.rm = TRUE),
+    ci3 = mean(ci3, na.rm = TRUE),
+    ibr1bio = mean(ibr1bio, na.rm = TRUE),  # or whatever your IBR column is called
+    ibr1morph = mean(ibr1morph, na.rm = TRUE),
+    ibr1overall = mean(ibr1overall, na.rm = TRUE),
+    n_samples = n()
+  ) %>%
+  ungroup()
+
+head(df_sites)
+write.csv(df_sites, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/avg_ibr1.csv", row.names = FALSE)
+
+# pivoting analyte and metal table to match the format of the biomarker table
+###### Fix the analytes df before pivoting and joining
+
+analytes <- df4 %>%
+  select(site_name, latitude, longitude, analyte, dry_value) %>%
+  pivot_wider(
+    names_from = analyte,
+    values_from = dry_value
+  )
+
+# worked fine
+metals <- df5 %>%
+  select(site_name, latitude, longitude, analyte, dry_value) %>%
+  pivot_wider(
+    names_from = analyte,
+    values_from = dry_value
+  )
+
+# join to df1
+df1_metal <- df_sites %>%
+  left_join(metals, by = c("site_name"))
+
+write.csv(df1_metal, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/avg_ibr1_metals.csv", row.names = FALSE)
+
+```
+
+## metals
+```{r}
+
+# Choose variables of interest
+metrics_vars <- df1_metals %>%
+  select(p450, sod, shell, ci1, ci2, ci3,
+         ibr1bio, ibr1morph, ibr1overall)
+
+analyte_vars <- df_combined %>%
+  select(starts_with("analyte"))  # adjust this selector if needed
+
+# Spearman correlation
+spearman_corr <- cor(metrics_vars, analyte_vars, method = "spearman", use = "pairwise.complete.obs")
+
+# Kendall's tau
+kendall_corr <- cor(metrics_vars, analyte_vars, method = "kendall", use = "pairwise.complete.obs")
+
+
+```
+
+# Run  Correlations +  Kendall's Tau - correlate ibroverall with metrics too
+```{r}
 
 
 
-# Run PCAs/ NMDSs/ Permanova/ Correlations + Heatmaps/ Kendall's Tau
+```
+
 # Visualization
 ## NWS Poster viz
 ```{r}
