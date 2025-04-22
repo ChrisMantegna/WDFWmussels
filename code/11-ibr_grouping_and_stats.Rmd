@@ -826,7 +826,18 @@ corr_full <- corr_full %>%
   )
 
 View(corr_full)
-write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_analytes.csv", row.names = FALSE)
+#write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_analytes.csv", row.names = FALSE)
+
+# adding the chemical class to the correlation table
+df4$analyte <- tolower(df4$analyte)
+corr_full$analyte <- tolower(corr_full$Analyte) 
+
+# merge
+corr_full <- merge(corr_full, df4[, c("analyte", "class")], 
+                   by = "analyte", all.x = TRUE)
+
+# save again
+#write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_analytes.csv", row.names = FALSE)
 
 ```
 
