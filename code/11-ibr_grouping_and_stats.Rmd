@@ -59,7 +59,8 @@ df1<- read.csv("../data/cleaned/ibr_1.csv") # penn cove reference site only
 df2<- read.csv("../data/cleaned/ibr_2.csv")
 #df3<- read.csv("../data/cleaned/ibr_3.csv")
 df4<- read.csv("../data/cleaned/analytes_long.csv")
-df5<- read.csv("../data/cleaned/metals_long.csv")
+#df5<- read.csv("../data/cleaned/metals_long.csv")
+df6<- read.csv("../data/cleaned/avg_ibr1_metals.csv")
 
 # clean up names if needed
 #df1 <- df1 %>%
@@ -698,7 +699,11 @@ pheatmap(heat_data,
 ## data prep
 ```{r}
 
-# averaging by site
+# cleaning up site names and then averaging by site for new df
+df1$site_name <- trimws(df1$site_name)
+df1 <- df1 %>%
+  filter(!is.na(site_name), site_name != "")
+
 df_sites <- df1 %>%
   group_by(site_name, reporting_area) %>% 
   summarise(
@@ -718,19 +723,27 @@ df_sites <- df1 %>%
   ungroup()
 
 head(df_sites)
-write.csv(df_sites, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/avg_ibr1.csv", row.names = FALSE)
+#write.csv(df_sites, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/avg_ibr1.csv", row.names = FALSE)
 
 # pivoting analyte and metal table to match the format of the biomarker table
-###### Fix the analytes df before pivoting and joining
+# remove trailing white spaces from the site names before pivoting
+df4$analyte <- as.character(df4$analyte)
+df4$analyte <- trimws(df4$analyte)
+df4 <- df4 %>%
+  filter(!is.na(analyte), analyte != "")
 
 analytes <- df4 %>%
-  select(site_name, latitude, longitude, analyte, dry_value) %>%
+  select(site_name, analyte, dry_value) %>%
   pivot_wider(
     names_from = analyte,
     values_from = dry_value
   )
 
-# worked fine
+# join to df1
+df1_analytes <- df_sites %>%
+  left_join(analytes, by = c("site_name"))
+
+# metals
 metals <- df5 %>%
   select(site_name, latitude, longitude, analyte, dry_value) %>%
   pivot_wider(
@@ -742,7 +755,78 @@ metals <- df5 %>%
 df1_metal <- df_sites %>%
   left_join(metals, by = c("site_name"))
 
-write.csv(df1_metal, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/avg_ibr1_metals.csv", row.names = FALSE)
+#write.csv(df1_analytes, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/avg_ibr1_analytess.csv", row.names = FALSE)
+
+```
+
+## metals
+```{r}
+
+#df1_metal<- read.csv("../data/cleaned/avg_ibr1_metals.csv")
+
+metrics_vars <- df1_analytes %>%
+  select(p450, sod, shell, ci1, ci2, ci3,
+         ibr1bio, ibr1morph, ibr1overall)
+
+analyte_vars <- df1_analytes[, 14:ncol(df1_analytes)]
+
+# Create empty list to store results
+results_list <- list()
+
+# Loop through all metric–analyte pairs
+for (metric in colnames(metrics_vars)) {
+  for (analyte in colnames(analyte_vars)) {
+    
+    # Extract the vectors
+    x <- metrics_vars[[metric]]
+    y <- analyte_vars[[analyte]]
+    
+    # Drop NA pairs
+    valid_idx <- complete.cases(x, y)
+    x_valid <- x[valid_idx]
+    y_valid <- y[valid_idx]
+    
+    # Run Spearman
+    spearman <- cor.test(x_valid, y_valid, method = "spearman")
+    
+    # Run Kendall
+    kendall <- cor.test(x_valid, y_valid, method = "kendall")
+    
+    # Store results
+    results_list[[paste(metric, analyte, sep = "_")]] <- data.frame(
+      Metric = metric,
+      Analyte = analyte,
+      Spearman_r = spearman$estimate,
+      Spearman_p = spearman$p.value,
+      Kendall_tau = kendall$estimate,
+      Kendall_p = kendall$p.value
+    )
+  }
+}
+
+library(dplyr)
+
+corr_full <- bind_rows(results_list)
+
+# Optional: Add significance stars
+corr_full <- corr_full %>%
+  mutate(
+    Spearman_sig = case_when(
+      Spearman_p <= 0.001 ~ "***",
+      Spearman_p <= 0.01  ~ "**",
+      Spearman_p <= 0.05  ~ "*",
+      TRUE ~ ""
+    ),
+    Kendall_sig = case_when(
+      Kendall_p <= 0.001 ~ "***",
+      Kendall_p <= 0.01  ~ "**",
+      Kendall_p <= 0.05  ~ "*",
+      TRUE ~ ""
+    )
+  )
+
+View(corr_full)
+write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_analytes.csv", row.names = FALSE)
 
 ```
 
