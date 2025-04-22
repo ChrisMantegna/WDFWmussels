@@ -762,7 +762,7 @@ df1_metal <- df_sites %>%
 ## metals
 ```{r}
 
-#df1_metal<- read.csv("../data/cleaned/avg_ibr1_metals.csv")
+#df1_analytes<- read.csv("../data/cleaned/avg_ibr1_analytess.csv")
 
 metrics_vars <- df1_analytes %>%
   select(p450, sod, shell, ci1, ci2, ci3,
