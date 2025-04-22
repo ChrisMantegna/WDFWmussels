@@ -1172,13 +1172,3 @@ view(moran_metals_df)
 write.csv(moran_results_df, "/Users/cmantegna/Documents/Github/WDFWmussels/output/moran_metal.csv", row.names = FALSE)
 
 ```
-
-# Regression
-```{r}
-
-model_lm <- lm(ibr1overall ~ zinc + cadmium+ lead + latitude + longitude, data = df6)
-summary(model_lm)
-
-
-```
-

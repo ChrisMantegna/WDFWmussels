@@ -57,12 +57,13 @@ knitr::opts_chunk$set(
 getwd()
 #setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels") # something here isn't working right - check out why
 
-df1<- read.csv("../data/cleaned/ibr_1.csv") # penn cove reference site only
-df2<- read.csv("../data/cleaned/ibr_2.csv")
-#df3<- read.csv("../data/cleaned/ibr_3.csv")
-df4<- read.csv("../data/cleaned/analytes_long.csv")
-#df5<- read.csv("../data/cleaned/metals_long.csv")
-df6<- read.csv("../data/cleaned/avg_ibr1_metals.csv")
+ibr_avg<- read.csv("../data/cleaned/avg_ibr1.csv") # penn cove reference site only
+ibr_analyte<- read.csv("../data/cleaned/avg_ibr1_analytess.csv")
+ibr_metal<- read.csv("../data/cleaned/avg_ibr1_metals.csv")
+moran_analyte<- read.csv("../output/tables/moran_analyte.csv")
+moran_metal<- read.csv("../output/tables/moran_metal.csv")
+spatial_analyte<- read.csv("../output/tables/spatial_correlation_biomrkers_analytes.csv")
+#spatial_metal<- read.csv("../output/tables/moran_analyte.csv")
 
 # clean up names if needed
 #df1 <- df1 %>%
