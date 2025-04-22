@@ -850,13 +850,11 @@ write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/corre
 ## metals
 ```{r}
 
-#df1_metal<- read.csv("../data/cleaned/avg_ibr1_metals.csv")
-
-metrics_vars <- df1_metal %>%
+metrics_vars <- df6 %>%
   select(p450, sod, shell, ci1, ci2, ci3,
          ibr1bio, ibr1morph, ibr1overall)
 
-analyte_vars <- df1_metal[, 14:ncol(df1_metal)]
+analyte_vars <- df6[, 14:ncol(df6)]
 
 # Create empty list to store results
 results_list <- list()
@@ -874,29 +872,30 @@ for (metric in colnames(metrics_vars)) {
     x_valid <- x[valid_idx]
     y_valid <- y[valid_idx]
     
-    # Run Spearman
+    # Run correlations
     spearman <- cor.test(x_valid, y_valid, method = "spearman")
-    
-    # Run Kendall
     kendall <- cor.test(x_valid, y_valid, method = "kendall")
     
-    # Store results
-    results_list[[paste(metric, analyte, sep = "_")]] <- data.frame(
-      Metric = metric,
-      Analyte = analyte,
-      Spearman_r = spearman$estimate,
-      Spearman_p = spearman$p.value,
-      Kendall_tau = kendall$estimate,
-      Kendall_p = kendall$p.value
-    )
+    # create dataframe of significant results that includes site names
+    if (spearman$p.value <= alpha | kendall$p.value <= alpha) {
+      temp_df <- data.frame(
+        Site = unique(sites_valid),  # Or collapse if multiple
+        Metric = metric,
+        Analyte = analyte,
+        Spearman_r = spearman$estimate,
+        Spearman_p = spearman$p.value,
+        Kendall_tau = kendall$estimate,
+        Kendall_p = kendall$p.value
+      )
+      results_list[[paste(metric, analyte, sep = "_")]] <- temp_df
+    }
   }
 }
 
-library(dplyr)
 
 corr_full <- bind_rows(results_list)
 
-# Optional: Add significance stars
+# add significance stars
 corr_full <- corr_full %>%
   mutate(
     Spearman_sig = case_when(
