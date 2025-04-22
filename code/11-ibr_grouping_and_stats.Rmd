@@ -759,10 +759,13 @@ df1_metal <- df_sites %>%
 
 ```
 
-## metals
+## analytes
 ```{r}
 
 #df1_analytes<- read.csv("../data/cleaned/avg_ibr1_analytess.csv")
+
+# define variables
+site<- df1_analytes$site_name
 
 metrics_vars <- df1_analytes %>%
   select(p450, sod, shell, ci1, ci2, ci3,
@@ -770,45 +773,45 @@ metrics_vars <- df1_analytes %>%
 
 analyte_vars <- df1_analytes[, 14:ncol(df1_analytes)]
 
-# Create empty list to store results
+# set p-value & initialize empty list
+alpha <- 0.05
 results_list <- list()
 
-# Loop through all metric–analyte pairs
 for (metric in colnames(metrics_vars)) {
   for (analyte in colnames(analyte_vars)) {
     
-    # Extract the vectors
     x <- metrics_vars[[metric]]
     y <- analyte_vars[[analyte]]
     
-    # Drop NA pairs
     valid_idx <- complete.cases(x, y)
     x_valid <- x[valid_idx]
     y_valid <- y[valid_idx]
+    sites_valid <- site[valid_idx]
     
-    # Run Spearman
+    # Run correlations
     spearman <- cor.test(x_valid, y_valid, method = "spearman")
-    
-    # Run Kendall
     kendall <- cor.test(x_valid, y_valid, method = "kendall")
     
-    # Store results
-    results_list[[paste(metric, analyte, sep = "_")]] <- data.frame(
-      Metric = metric,
-      Analyte = analyte,
-      Spearman_r = spearman$estimate,
-      Spearman_p = spearman$p.value,
-      Kendall_tau = kendall$estimate,
-      Kendall_p = kendall$p.value
-    )
+    # create dataframe of significant results that includes site names
+    if (spearman$p.value <= alpha | kendall$p.value <= alpha) {
+      temp_df <- data.frame(
+        Site = unique(sites_valid),  # Or collapse if multiple
+        Metric = metric,
+        Analyte = analyte,
+        Spearman_r = spearman$estimate,
+        Spearman_p = spearman$p.value,
+        Kendall_tau = kendall$estimate,
+        Kendall_p = kendall$p.value
+      )
+      results_list[[paste(metric, analyte, sep = "_")]] <- temp_df
+    }
   }
 }
 
-library(dplyr)
 
 corr_full <- bind_rows(results_list)
 
-# Optional: Add significance stars
+# add significance stars
 corr_full <- corr_full %>%
   mutate(
     Spearman_sig = case_when(
@@ -832,12 +835,15 @@ View(corr_full)
 df4$analyte <- tolower(df4$analyte)
 corr_full$analyte <- tolower(corr_full$Analyte) 
 
-# merge
-corr_full <- merge(corr_full, df4[, c("analyte", "class")], 
+# find unique analytes & merge
+df4_clean <- df4 %>%
+  distinct(analyte, .keep_all = TRUE)  # Keep only one row per analyte
+
+corr_full <- merge(corr_full, df4_clean[, c("analyte", "class")],
                    by = "analyte", all.x = TRUE)
 
 # save again
-#write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_analytes.csv", row.names = FALSE)
+write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_analytes.csv", row.names = FALSE)
 
 ```
 
