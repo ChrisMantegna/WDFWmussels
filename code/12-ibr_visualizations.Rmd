@@ -1,0 +1,81 @@
+---
+title: "12- Creating Visualzations of Stats Results"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE, echo=FALSE}
+
+# libraries
+library(knitr) # output fotmatting
+library(tidyr) # data wrangling
+library(tidyverse) # data wrangling
+library(dplyr) # data wrangling
+library(vegan) # ecological stats 
+library(cluster) # grouping metrics - VERIFY still needed
+library(pgirmess) # stats - KW
+library(ggplot2) # plots
+library(factoextra) # pca/ nmds/ tweaking radars
+library(FactoMineR) # pca/ nmds/ tweaking radars
+library(FSA) # post hoc test - Dunn's Test       
+library(rstatix) # VERIFY what this is for      
+library(car) # VERIFY what this is for  
+library(RVAideMemoire) # post hoc test for permanova
+library(rcompanion) # for annotation of permanova
+library(scales) # scaling data for IBR - works with data wrangling packages
+library(fmsb) # polygon calculations for the radars
+library(sf) # spatial plotting
+library(spdep) # spatial plotting
+library(tmap) # making maps
+
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # show code chunks
+  eval = TRUE,         # evaluate code chunks
+  warning = FALSE,     # hide warnings
+  message = FALSE,     # hide messages
+  #fig.width = 15,       # set plot width in inches
+  #fig.height = 9,      # set plot height in inches
+  fig.align = "center" # slign plots to the center in output doc/ slide/ whatever
+)
+
+```
+
+# Load & Check Data
+```{r}
+
+getwd()
+#setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels") # something here isn't working right - check out why
+
+df1<- read.csv("../data/cleaned/ibr_1.csv") # penn cove reference site only
+df2<- read.csv("../data/cleaned/ibr_2.csv")
+#df3<- read.csv("../data/cleaned/ibr_3.csv")
+df4<- read.csv("../data/cleaned/analytes_long.csv")
+#df5<- read.csv("../data/cleaned/metals_long.csv")
+df6<- read.csv("../data/cleaned/avg_ibr1_metals.csv")
+
+# clean up names if needed
+#df1 <- df1 %>%
+#  mutate(across(where(is.character), trimws))
+
+
+```
+
+```{r}
+
+# make categorical columns factors
+df1$site_number <- as.factor(df1$site_number)
+df1$sample_id <- as.factor(df1$sample_id)
+df1$reporting_area <- as.factor(df1$reporting_area)
+
+```
