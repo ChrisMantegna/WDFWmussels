@@ -37,6 +37,10 @@ library(fmsb) # polygon calculations for the radars
 library(sf) # spatial plotting
 library(spdep) # spatial plotting
 library(tmap) # making maps
+library(patchwork) # making pretty grids of plots
+library(viridis) # colors for plotting
+library(rnaturalearth) # to pull the map
+library(ggsignif) # adding significance indicators to plots
 
 knitr::opts_chunk$set(
   root.dir = here::here(),
@@ -58,11 +62,13 @@ getwd()
 #setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels") # something here isn't working right - check out why
 
 ibr_avg<- read.csv("../data/cleaned/avg_ibr1.csv") # penn cove reference site only
+analyte_long<- read.csv("../data/cleaned/analytes_long.csv")
+metal_long<- read.csv("../data/cleaned/metals_long.csv")
 ibr_analyte<- read.csv("../data/cleaned/avg_ibr1_analytess.csv")
 ibr_metal<- read.csv("../data/cleaned/avg_ibr1_metals.csv")
 moran_analyte<- read.csv("../output/tables/moran_analyte.csv")
 moran_metal<- read.csv("../output/tables/moran_metal.csv")
-spatial_analyte<- read.csv("../output/tables/spatial_correlation_biomrkers_analytes.csv")
+spatial_analyte<- read.csv("../output/tables/spatial_correlation_biomarkers_analytes.csv")
 #spatial_metal<- read.csv("../output/tables/moran_analyte.csv")
 
 # clean up names if needed
@@ -72,11 +78,389 @@ spatial_analyte<- read.csv("../output/tables/spatial_correlation_biomrkers_analy
 
 ```
 
+# Moran's Plots
+## data prep
 ```{r}
 
-# make categorical columns factors
-df1$site_number <- as.factor(df1$site_number)
-df1$sample_id <- as.factor(df1$sample_id)
-df1$reporting_area <- as.factor(df1$reporting_area)
+# add significance flag
+moran_analyte <- moran_analyte %>%
+  mutate(significant = ifelse(p_value < 0.05, "Significant", "Not Significant"))
+
+spatial_analyte <- spatial_analyte %>%
+  mutate(significant = ifelse(p_value < 0.05, "Significant", "Not Significant"))
+
 
 ```
+
+## contaminant class, bar plot 
+```{r}
+
+ggplot(moran_analyte, aes(x = reorder(class, moran_i), y = moran_i, fill = significant)) +
+  geom_col() +
+  coord_flip() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  scale_fill_manual(values = c("Significant" = "darkred", "Not Significant" = "gray")) +
+  labs(title = "Moran's I for Contaminant Classes",
+       x = "Contaminant Class",
+       y = "Moran's I",
+       fill = "Significance") +
+  theme_minimal()
+
+```
+
+## biomarkers + morphometrics, bar plot
+```{r}
+
+ggplot(spatial_analyte, aes(x = reorder(metric, moran_i), y = moran_i, fill = significant)) +
+  geom_col() +
+  coord_flip() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  scale_fill_manual(values = c("Significant" = "darkblue", "Not Significant" = "gray")) +
+  labs(title = "Moran's I for Biomarkers and Morphometrics",
+       x = "Metric",
+       y = "Moran's I",
+       fill = "Significance") +
+  theme_minimal()
+
+```
+
+## combined comparison plot
+```{r}
+
+# Combine and format both datasets
+combined_df <- bind_rows(
+  moran_analyte %>%
+    rename(name = class) %>%
+    mutate(group = "Analyte"),
+  spatial_analyte %>%
+    rename(name = metric) %>%
+    mutate(group = "Biomarker/Morphometric")
+)
+
+ggplot(combined_df, aes(x = reorder(name, moran_i), y = moran_i, fill = group)) +
+  geom_col() +
+  coord_flip() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  labs(title = "Comparison of Moran's I: Analytes vs Biomarkers/Morphometrics",
+       x = "Variable",
+       y = "Moran's I",
+       fill = "Group") +
+  theme_minimal()
+
+```
+
+## LISA map of Moran's results
+### data prep
+```{r}
+
+# appending chemical class to the analyte names so that I can group classes for plotting & converting to spatial data
+
+analyte_long <- analyte_long %>%
+  mutate(analyte_class = paste0(analyte, "_", class))
+
+analyte_wide <- analyte_long %>%
+  select(site_name, latitude, longitude, analyte_class, dry_value) %>%
+  pivot_wider(names_from = analyte_class, values_from = dry_value)
+
+```
+
+### creating WA basemap
+```{r}
+
+# convert to spatial
+analyte_sf <- st_as_sf(analyte_wide, coords = c("longitude", "latitude"), crs = 4326)
+
+coast <- ne_states(country = "united states of america", returnclass = "sf") %>%
+  filter(name == "Washington")
+
+# major city coordinates for labels
+cities <- data.frame(
+  city = c("Seattle", "Tacoma", "Olympia", "Bellingham", "Port Angeles", "Hama Hama"),
+  lon = c(-122.33, -122.45, -122.90, -122.48, -123.43, -123.16),
+  lat = c(47.61, 47.25, 47.00, 48.73, 48.08, 47.63)
+)
+
+```
+
+## maps for each analyte class
+```{r}
+
+# Set spatial weights 
+#coords <- st_coordinates(analyte_sf)
+#nb <- dnearneigh(coords, d1 = 0, d2 = 50000)  # adjust d2 as needed
+#lw <- nb2listw(nb, style = "W", zero.policy = TRUE)
+
+# Extract all analyte_class column names
+analyte_columns <- colnames(analyte_sf)[!(colnames(analyte_sf) %in% c("site_name", "geometry"))]
+
+# Filter analyte columns to avoid empty or non-numeric ones
+analyte_columns_filtered <- analyte_columns %>%
+  keep(~ is.numeric(analyte_sf[[.x]]) && sum(!is.na(analyte_sf[[.x]])) >= 4)
+
+###### troubleshooting the LISA setup for the map
+#table(card(nb))  # This will show how many sites have 0, 1, 2... neighbors
+#sd(analyte_sf$acenaphthene_lmw, na.rm = TRUE)
+#all(st_is_valid(analyte_sf))
+#nrow(analyte_sf) == nrow(st_coordinates(analyte_sf))
+#colnames(analyte_sf) <- make.names(colnames(analyte_sf))
+####### the names that start with numbers may have been throwing this whole thing off
+
+base_map<- coast
+
+make_lisa_plot <- function(data_full, analyte_name, base_map, save_path = "/Users/cmantegna/Documents/GitHub/WDFWmussels/output") {
+  # Subset data to non-NA values for the current analyte
+  data <- data_full %>% filter(!is.na(.data[[analyte_name]]))
+  
+  if (nrow(data) < 4) {
+    message("Skipping ", analyte_name, ": too few valid rows.")
+    return(NULL)
+  }
+  
+  # Recalculate spatial weights
+  coords <- st_coordinates(data)
+  nb <- dnearneigh(coords, d1 = 0, d2 = 50000)
+  if (any(card(nb) == 0)) {
+    message("Skipping ", analyte_name, ": some points have no neighbors.")
+    return(NULL)
+  }
+  lw <- nb2listw(nb, style = "W", zero.policy = TRUE)
+  
+  # Run local Moran's I
+  result <- tryCatch({
+    localmoran(data[[analyte_name]], lw, zero.policy = TRUE)
+  }, error = function(e) {
+    message("Error running localmoran for ", analyte_name, ": ", e$message)
+    return(NULL)
+  })
+  
+  if (is.null(result) || !"Pr(z > 0)" %in% colnames(result)) {
+    message("No valid output from localmoran for: ", analyte_name)
+    return(NULL)
+  }
+  
+  # Add results
+  data$Ii <- result[, "Ii"]
+  data$p_value <- result[, "Pr(z > 0)"]
+  
+  # Extract analyte and class from the name
+  parts <- str_split(analyte_name, "_", simplify = TRUE)
+  analyte <- parts[1]
+  chem_class <- parts[ncol(parts)]  # assumes class is at the end
+  
+  # Classify clusters
+  data <- data %>%
+    mutate(cluster = case_when(
+      .data[[analyte_name]] > mean(.data[[analyte_name]], na.rm = TRUE) & Ii > 0 & p_value < 0.05 ~ "High-High",
+      .data[[analyte_name]] < mean(.data[[analyte_name]], na.rm = TRUE) & Ii > 0 & p_value < 0.05 ~ "Low-Low",
+      .data[[analyte_name]] > mean(.data[[analyte_name]], na.rm = TRUE) & Ii < 0 & p_value < 0.05 ~ "High-Low",
+      .data[[analyte_name]] < mean(.data[[analyte_name]], na.rm = TRUE) & Ii < 0 & p_value < 0.05 ~ "Low-High",
+      TRUE ~ "Not Significant"
+    ))
+  
+  # Plot
+  p <- ggplot() +
+    geom_sf(data = base_map, fill = "white", color = "black") +
+    geom_sf(data = data, aes(color = cluster), size = 3) +
+    scale_color_manual(values = c(
+      "High-High" = "red",
+      "Low-Low" = "blue",
+      "High-Low" = "orange",
+      "Low-High" = "lightblue",
+      "Not Significant" = "gray"
+    )) +
+    labs(
+      title = paste("LISA Cluster Map for", analyte, "| Class:", chem_class),
+      color = "Cluster"
+    ) +
+    theme_minimal()
+  
+  print(p)
+  
+  save_path<- "/Users/cmantegna/Documents/GitHub/WDFWmussels/code"
+  # Save if save_path is provided
+  if (!is.null(save_path)) {
+    filename <- paste0("lisa_", analyte_name, ".png")
+    ggsave(filename = file.path(save_path, filename), plot = p, width = 8, height = 6)
+  }
+}
+
+# Create output folder
+output_folder <- "LISA_Plots"
+dir.create(output_folder, showWarnings = FALSE)
+
+# Loop through all analyte columns
+for (analyte in analyte_columns_filtered) {
+  message("Running: ", analyte)
+  make_lisa_plot(analyte_sf, analyte, base_map = coast, save_path = output_folder)
+}
+
+```
+
+## maps for the metals
+### data prep
+```{r}
+
+metal_long <- metal_long %>%
+  mutate(analyte = make.names(analyte))
+
+# Pivot to wide format
+metals_wide <- metal_long %>%
+  select(site_name, latitude, longitude, analyte, dry_value) %>%
+  pivot_wider(names_from = analyte, values_from = dry_value) %>%
+  distinct()
+
+# Check column names
+colnames(metals_wide)
+
+```
+
+```{r}
+
+#metals_sf <- st_as_sf(metals_wide, coords = c("longitude", "latitude"), crs = 4326)
+#coords <- st_coordinates(metals_sf)
+#nb <- dnearneigh(coords, d1 = 0, d2 = 50000)  # Adjust d2 as needed
+#table(card(nb))  # Confirm no 0s
+
+#lw <- nb2listw(nb, style = "W", zero.policy = TRUE)
+
+# Get list of all analyte columns
+analyte_cols <- colnames(metals_sf)[!(colnames(metals_sf) %in% c("site_name", "geometry"))]
+
+# Create output folder
+output_folder <- "Metals_LISA_Plots"
+dir.create(output_folder, showWarnings = FALSE)
+
+# Loop over each analyte
+for (analyte in analyte_cols) {
+  message("Running LISA for: ", analyte)
+
+  x <- metals_sf[[analyte]]
+
+  if (sum(!is.na(x)) < 4 || sd(x, na.rm = TRUE) == 0) {
+    message("Skipping ", analyte, ": too few values or no variation.")
+    next
+  }
+
+  result <- tryCatch({
+    localmoran(x, lw, zero.policy = TRUE)
+  }, error = function(e) {
+    message("Error running localmoran for ", analyte, ": ", e$message)
+    return(NULL)
+  })
+
+  # Stop here if localmoran failed or malformed
+  if (is.null(result) || !"Pr(z > 0)" %in% colnames(result)) {
+    message("Skipping ", analyte, ": LISA output missing expected columns.")
+    next
+  }
+
+  # Safe to proceed
+  metals_sf$Ii <- result[, "Ii"]
+  metals_sf$p_value <- result[, "Pr(z > 0)"]
+
+  metals_sf <- metals_sf %>%
+    mutate(cluster = case_when(
+      .data[[analyte]] > mean(.data[[analyte]], na.rm = TRUE) & Ii > 0 & p_value < 0.05 ~ "High-High",
+      .data[[analyte]] < mean(.data[[analyte]], na.rm = TRUE) & Ii > 0 & p_value < 0.05 ~ "Low-Low",
+      .data[[analyte]] > mean(.data[[analyte]], na.rm = TRUE) & Ii < 0 & p_value < 0.05 ~ "High-Low",
+      .data[[analyte]] < mean(.data[[analyte]], na.rm = TRUE) & Ii < 0 & p_value < 0.05 ~ "Low-High",
+      TRUE ~ "Not Significant"
+    ))
+
+  p <- ggplot() +
+    geom_sf(data = coast, fill = "white", color = "black") +
+    geom_sf(data = metals_sf, aes(color = cluster), size = 3) +
+    scale_color_manual(values = c(
+      "High-High" = "red",
+      "Low-Low" = "blue",
+      "High-Low" = "orange",
+      "Low-High" = "lightblue",
+      "Not Significant" = "gray"
+    )) +
+    labs(
+      title = paste("LISA Cluster Map for", analyte),
+      color = "Cluster"
+    ) +
+    theme_minimal()
+
+  ggsave(
+    filename = file.path(output_folder, paste0("lisa_", analyte, ".png")),
+    plot = p, width = 8, height = 6
+  )
+}
+
+```
+
+### troubleshooting metals
+```{r}
+
+#using zinc since i know it was a significant moran's result
+summary(metals_sf$zinc)
+sd(metals_sf$zinc, na.rm = TRUE)
+
+z <- metals_sf$zinc
+result <- localmoran(z, lw, zero.policy = TRUE)
+print(result)
+colnames(result)
+
+unique(metals_sf$zinc)
+summary(metals_sf$zinc)
+sd(metals_sf$zinc, na.rm = TRUE)
+
+
+```
+
+### new metals LISA
+```{r}
+
+# Recalculate neighbors and weights
+coords <- st_coordinates(metals_sf)
+nb <- dnearneigh(coords, d1 = 0, d2 = 25000)  # try a shorter radius like 25 km
+table(card(nb))
+
+# Binary style weights
+lw_bin <- nb2listw(nb, style = "B", zero.policy = TRUE)
+
+# Try again for zinc
+z <- metals_sf$zinc
+z_result <- localmoran(z, lw_bin, zero.policy = TRUE)
+
+# Inspect result
+head(z_result)
+summary(z_result)
+str(z_result)
+
+
+```
+
+```{r}
+
+metals_sf$Ii <- z_result[, "Ii"]
+metals_sf$p_value <- z_result[, "Pr(z > 0)"]
+
+metals_sf <- metals_sf %>%
+  mutate(cluster = case_when(
+    zinc > mean(zinc, na.rm = TRUE) & Ii > 0 & p_value < 0.05 ~ "High-High",
+    zinc < mean(zinc, na.rm = TRUE) & Ii > 0 & p_value < 0.05 ~ "Low-Low",
+    zinc > mean(zinc, na.rm = TRUE) & Ii < 0 & p_value < 0.05 ~ "High-Low",
+    zinc < mean(zinc, na.rm = TRUE) & Ii < 0 & p_value < 0.05 ~ "Low-High",
+    TRUE ~ "Not Significant"
+  ))
+
+ggplot() +
+  geom_sf(data = coast, fill = "white", color = "black") +
+  geom_sf(data = metals_sf, aes(color = cluster), size = 3) +
+  scale_color_manual(values = c(
+    "High-High" = "red", "Low-Low" = "blue",
+    "High-Low" = "orange", "Low-High" = "lightblue",
+    "Not Significant" = "gray"
+  )) +
+  labs(title = "Zinc LISA with Binary Weights (25 km)", color = "Cluster") +
+  theme_minimal()
+
+
+```
+
+
+
+
