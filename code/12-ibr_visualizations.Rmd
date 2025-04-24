@@ -182,7 +182,7 @@ cities <- data.frame(
 
 ```
 
-## maps for each analyte class
+## maps for each analyte class - this is not working correctly yet
 ```{r}
 
 # Set spatial weights 
@@ -391,7 +391,7 @@ for (analyte in analyte_cols) {
 
 ```
 
-### troubleshooting metals
+### troubleshooting metals - same problems as the analytes results above
 ```{r}
 
 #using zinc since i know it was a significant moran's result
