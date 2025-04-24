@@ -77,6 +77,8 @@ df1$site_number <- as.factor(df1$site_number)
 df1$sample_id <- as.factor(df1$sample_id)
 df1$reporting_area <- as.factor(df1$reporting_area)
 
+df1<- ibr_analyte #only did this for validation, remove when cleaning up the code
+
 ```
 
 # Normality - Shapiro-Wilkes
