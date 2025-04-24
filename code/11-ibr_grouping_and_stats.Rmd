@@ -61,6 +61,7 @@ df2<- read.csv("../data/cleaned/ibr_2.csv")
 df4<- read.csv("../data/cleaned/analytes_long.csv")
 #df5<- read.csv("../data/cleaned/metals_long.csv")
 df6<- read.csv("../data/cleaned/avg_ibr1_metals.csv")
+ibr_analyte<- read.csv("../data/cleaned/avg_ibr1_analytess.csv")
 
 # clean up names if needed
 #df1 <- df1 %>%
@@ -371,6 +372,45 @@ kruskal.test(ibr1overall ~ site_name, data = df1) # p-value = 0.0134
 kruskal.test(ibr1overall ~ reporting_area, data = df1) # p-value = 0.001949
 
 ```
+
+## KW for geo groups
+```{r}
+
+kruskal.test(p450 ~ geo_cluster_2, data = data) # p-value = 0.2814
+kruskal.test(p450 ~ geo_cluster_6, data = data) # p-value = 3.835e-05
+kruskal.test(p450 ~ geo_cluster_9, data = data) # p-value = 6.706e-05
+
+kruskal.test(sod ~ geo_cluster_2, data = data) # p-value = 0.5036
+kruskal.test(sod ~ geo_cluster_6, data = data) # p-value = 0.03536
+kruskal.test(sod ~ geo_cluster_9, data = data) # p-value = 0.2201
+
+kruskal.test(ci1 ~ geo_cluster_2, data = data) # p-value = 0.564
+kruskal.test(ci1 ~ geo_cluster_6, data = data) # p-value = 0.9201
+kruskal.test(ci1 ~ geo_cluster_9, data = data) # p-value = 0.7431
+
+kruskal.test(ci2 ~ geo_cluster_2, data = data) # p-value = 0.298
+kruskal.test(ci2 ~ geo_cluster_6, data = data) # p-value = 0.2699
+kruskal.test(ci2 ~ geo_cluster_9, data = data) # p-value = 0.216
+
+kruskal.test(ci3 ~ geo_cluster_2, data = data) # p-value = 0.604
+kruskal.test(ci3 ~ geo_cluster_6, data = data) # p-value = 0.004109
+kruskal.test(ci3 ~ geo_cluster_9, data = data) # p-value = 0.0002141
+
+kruskal.test(ibr1bio ~ geo_cluster_2, data = data) # p-value = 0.1652
+kruskal.test(ibr1bio ~ geo_cluster_6, data = data) # p-value = 0.001753
+kruskal.test(ibr1bio ~ geo_cluster_9, data = data) # p-value = 0.0002042
+
+kruskal.test(ibr1morph ~ geo_cluster_2, data = data) # p-value = 0.01938
+kruskal.test(ibr1morph ~ geo_cluster_6, data = data) # p-value = 0.008425
+kruskal.test(ibr1morph ~ geo_cluster_9, data = data) # p-value = 0.02912
+
+kruskal.test(ibr1overall ~ geo_cluster_2, data = data) # p-value = 0.008378
+kruskal.test(ibr1overall ~ geo_cluster_6, data = data) # p-value = 0.002645
+kruskal.test(ibr1overall ~ geo_cluster_9, data = data) # p-value = 0.003296
+
+```
+
+
 ## p450
 ```{r}
 
@@ -386,7 +426,7 @@ dunn_table <- dunn_df %>%
   dplyr::arrange(P.adj)
 
 print(dunn_table) # view
-write.csv(dunn_table, "/Users/cmantegna/Documents/Github/WDFWmussels/output/p450site.csv", row.names = FALSE) # write it out
+#write.csv(dunn_table, "/Users/cmantegna/Documents/Github/WDFWmussels/output/p450site.csv", row.names = FALSE) # write it out
 
 #p450 - reporting area is significant
 dunn_result <- dunnTest(p450 ~ reporting_area, data = df1, method = "bh") 
@@ -428,6 +468,90 @@ dunn_table_with_cld <- dunn_table %>%
   left_join(cld_df, by = c("Group2" = "Group")) %>%
   rename(Group2_CLD = CLD)
 
+#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/p450ra.csv", row.names = FALSE) # write it out
+
+#p450 - geo_6 is significant
+dunn_result <- dunnTest(p450 ~ geo_cluster_6, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+library(multcompView)
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2))
+
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/p450geo6.csv", row.names = FALSE) # write it out
+
+#p450 - geo_9 is significant
+dunn_result <- dunnTest(p450 ~ geo_cluster_9, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2))
+
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/p450geo9.csv", row.names = FALSE) # write it out
 ```
 
 ## sod
@@ -446,6 +570,21 @@ dunn_table <- dunn_df %>%
 
 print(dunn_table) # view
 #write.csv(dunn_table, "/Users/cmantegna/Documents/Github/WDFWmussels/output/sodsite.csv", row.names = FALSE) # write it out
+
+#sod - geo6 is not significant
+dunn_result <- dunnTest(sod ~ geo_cluster_6, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+
+
 
 ```
 
@@ -545,9 +684,92 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 #write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/ci3ra.csv", row.names = FALSE) # write it out
+
+#ci3 - geo6 is significant
+dunn_result <- dunnTest(ci3 ~ geo_cluster_6, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/ci3geo6.csv", row.names = FALSE) # write it out
+
+#ci3 - geo9 is significant
+dunn_result <- dunnTest(ci3 ~ geo_cluster_9, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/ci3geo9.csv", row.names = FALSE) # write it out
+
 ```
 
-## ibr_bio both
+## ibr_bio
 ```{r}
 
 #ibrbio - site is not significant
@@ -605,13 +827,8 @@ dunn_table_with_cld <- dunn_table %>%
 
 #write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/ibr1biora.csv", row.names = FALSE) # write it out
 
-```
-
-## ibr_morph reporting area
-```{r}
-
-#ibrmorph - reporting area
-dunn_result <- dunnTest(ibr1morph ~ reporting_area, data = df1, method = "bh") 
+#ibrbio - geo6 is significant
+dunn_result <- dunnTest(ibr1bio ~ geo_cluster_6, data = data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
   tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
@@ -649,15 +866,227 @@ dunn_table_with_cld <- dunn_table %>%
   left_join(cld_df, by = c("Group2" = "Group")) %>%
   rename(Group2_CLD = CLD)
 
-write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/morphra.csv", row.names = FALSE) # write it out
+#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/ibr1biogeo6.csv", row.names = FALSE) # write it out
+
+#ibrbio - geo9 is significant
+dunn_result <- dunnTest(ibr1bio ~ geo_cluster_9, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letters
+
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/ibr1biogeo9.csv", row.names = FALSE) # write it out
 
 ```
 
-## ibr_overall both
+## ibr_morph 
+```{r}
+
+data$reporting_area <- as.factor(data$reporting_area)
+
+#ibrmorph - reporting area is significant
+dunn_result <- dunnTest(ibr1morph ~ reporting_area, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letters
+
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/morphra.csv", row.names = FALSE) # write it out
+
+#ibrmorph - geo2 will not run
+dunn_result <- dunnTest(ibr1morph ~ geo_cluster, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letters
+
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/morphgeo2.csv", row.names = FALSE) # write it out
+
+#ibrmorph - geo6 is significant
+dunn_result <- dunnTest(ibr1morph ~ geo_cluster_6, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letters
+
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/morphgeo6.csv", row.names = FALSE) # write it out
+
+#ibrmorph - geo9 is not significant
+dunn_result <- dunnTest(ibr1morph ~ geo_cluster_9, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letters
+
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/morphgeo9.csv", row.names = FALSE) # write it out
+
+```
+
+## ibr_overall
 ```{r}
 
 #ibroverall - site
-dunn_result <- dunnTest(ibr1overall ~ site_name, data = df1, method = "bh") 
+dunn_result <- dunnTest(ibr1overall ~ site_name, data = data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
   tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
@@ -670,7 +1099,8 @@ dunn_table <- dunn_df %>%
 print(dunn_table) # view
 #write.csv(dunn_table, "/Users/cmantegna/Documents/Github/WDFWmussels/output/sodsite.csv", row.names = FALSE) # write it out
 
-dunn_result <- dunnTest(ibr1overall ~ reporting_area, data = df1, method = "bh") 
+#ibrall - reporting area is significant
+dunn_result <- dunnTest(ibr1overall ~ reporting_area, data = data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
   tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
@@ -710,6 +1140,88 @@ dunn_table_with_cld <- dunn_table %>%
 
 #write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/ibroverallra.csv", row.names = FALSE) # write it out
 
+#ibrall - geo6
+dunn_result <- dunnTest(ibr1overall ~ geo_cluster_6, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letters
+
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/ibroverallgeo6.csv", row.names = FALSE) # write it out
+
+#ibrall - geo9
+dunn_result <- dunnTest(ibr1overall ~ geo_cluster_9, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letters
+
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/ibroverallgeo9.csv", row.names = FALSE) # write it out
+
 ```
 
 # ANOVA + post hoc
@@ -718,8 +1230,12 @@ dunn_table_with_cld <- dunn_table %>%
 
 anova_site <- aov(shell ~ site_name, data = df1) # p=5.84e-16 ***
 anova_ra <- aov(shell ~ reporting_area, data = df1) # p= 1.09e-06 ***
+anova_6 <- aov(shell ~ geo_cluster_6, data = data) # p= 1.19e-06 ***
+anova_9 <- aov(shell ~ geo_cluster_9, data = data) # p= 3.08e-06 ***
 summary(anova_site)
 summary(anova_ra)
+summary(anova_6)
+summary(anova_9)
 
 #post - site is significant
 tukey_site <- TukeyHSD(anova_site, "site_name")
@@ -801,65 +1317,85 @@ tukey_table_with_cld <- tukey_df %>%
 view(tukey_table_with_cld) #view
 write.csv(tukey_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/shellra.csv", row.names = FALSE) #save
 
-```
+#post - geo6
+tukey_6 <- TukeyHSD(anova_6, "geo_cluster_6")
+tukey_df <- as.data.frame(tukey_6$geo_cluster_6)
 
-# NMDS - not useful at all
-```{r}
+tukey_df <- tukey_df %>%
+  tibble::rownames_to_column("Comparison") %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = "-") %>%
+  rename(Diff = diff, Lower = lwr, Upper = upr, P.adj = `p adj`) %>%
+  mutate(across(everything(), ~trimws(as.character(.)))) %>%  
+  mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
 
-df_metrics <- df1 %>%
-  select(p450, sod, shell, ci1, ci2, ci3) %>%
-  scale()
+groups <- unique(c(tukey_df$Group1, tukey_df$Group2))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
 
-nmds <- metaMDS(df_metrics_all[, 1:6], distance = "euclidean", k = 2, trymax = 100)
-fit <- envfit(nmds, df_metrics_all[, 1:6], permutations = 999)
-plot(nmds)
-plot(fit, col = "blue")
+for (i in 1:nrow(tukey_df)) {
+  g1 <- tukey_df$Group1[i]
+  g2 <- tukey_df$Group2[i]
+  pval <- as.numeric(tukey_df$P.adj[i])
+  pval_matrix[g1, g2] <- pval
+  pval_matrix[g2, g1] <- pval
+}
 
-nmds$stress #w/o condition indices the stress= 0.1122892, w/ condition the stress= 0.1467835
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
 
-# trying to scale again
-df_metrics_all <- df1 %>%
-  select(p450, sod, shell, ci1, ci2, ci3) %>%
-  scale() %>%
-  as.data.frame()
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
 
-# Add IDs or sites for reference
-df_metrics_all$site_name <- df1$site_name
+tukey_table_with_cld <- tukey_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
 
-# Look for rows with extreme values
-apply(df_metrics_all, 2, function(x) range(x, na.rm = TRUE))
+view(tukey_table_with_cld) #view
+write.csv(tukey_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/shellgeo6.csv", row.names = FALSE) #save
 
-summary(df_metrics_all)
+#post - geo9
+tukey_9 <- TukeyHSD(anova_9, "geo_cluster_9")
+tukey_df <- as.data.frame(tukey_9$geo_cluster_9)
 
-# Identify rows with extreme scaled values
-which(apply(df_metrics_all[, 1:6], 1, function(x) any(abs(x) > 5)))
-df_filtered <- df_metrics_all %>%
-  filter(apply(select(., -site_name), 1, function(x) all(abs(x) < 5)))
+tukey_df <- tukey_df %>%
+  tibble::rownames_to_column("Comparison") %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = "-") %>%
+  rename(Diff = diff, Lower = lwr, Upper = upr, P.adj = `p adj`) %>%
+  mutate(across(everything(), ~trimws(as.character(.)))) %>%  
+  mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
 
-pca <- prcomp(df_metrics_all[, 1:6], center = TRUE, scale. = FALSE)
-biplot(pca)
+groups <- unique(c(tukey_df$Group1, tukey_df$Group2))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
 
+for (i in 1:nrow(tukey_df)) {
+  g1 <- tukey_df$Group1[i]
+  g2 <- tukey_df$Group2[i]
+  pval <- as.numeric(tukey_df$P.adj[i])
+  pval_matrix[g1, g2] <- pval
+  pval_matrix[g2, g1] <- pval
+}
 
-```
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
 
-# Heatmap - equally unuseful
-```{r}
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
 
-library(pheatmap)
+tukey_table_with_cld <- tukey_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
 
-# Make sure data is numeric and scaled
-heat_data <- df1 %>%
-  select(p450, sod, shell, ci1, ci2, ci3) %>%
-  scale()
-
-rownames(heat_data) <- df1$site_name  # optional: use site names as row labels
-
-pheatmap(heat_data,
-         clustering_distance_rows = "euclidean",
-         clustering_distance_cols = "euclidean",
-         clustering_method = "average",
-         scale = "none",
-         show_rownames = FALSE)
+view(tukey_table_with_cld) #view
+write.csv(tukey_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/shellgeo9.csv", row.names = FALSE) #save
 
 ```
 
@@ -868,15 +1404,17 @@ pheatmap(heat_data,
 ```{r}
 
 # cleaning up site names and then averaging by site for new df
-df1$site_name <- trimws(df1$site_name)
-df1 <- df1 %>%
+data$site_name <- trimws(data$site_name)
+data <- data %>%
   filter(!is.na(site_name), site_name != "")
 
-df_sites <- df1 %>%
+df_sites <- data %>%
   group_by(site_name, reporting_area) %>% 
   summarise(
     latitude= first(latitude),
     longitude= first(longitude),
+    geo_cluster_6= first(geo_cluster_6),
+    geo_cluster_9= first(geo_cluster_9),
     p450 = mean(p450, na.rm = TRUE),
     sod = mean(sod, na.rm = TRUE),
     shell = mean(shell, na.rm = TRUE),
@@ -891,7 +1429,7 @@ df_sites <- df1 %>%
   ungroup()
 
 head(df_sites)
-#write.csv(df_sites, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/avg_ibr1.csv", row.names = FALSE)
+write.csv(df_sites, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/avg_ibr1_geo_groups.csv", row.names = FALSE)
 
 # pivoting analyte and metal table to match the format of the biomarker table
 # remove trailing white spaces from the site names before pivoting
@@ -926,6 +1464,77 @@ df1_metal <- df_sites %>%
 #write.csv(df1_analytes, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/avg_ibr1_analytess.csv", row.names = FALSE)
 
 ```
+
+## metrics + ibr
+```{r}
+
+# Define your variable sets
+metrics_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3")
+
+# List any ID columns to exclude here
+id_columns <- c("site_name", "reporting_area", "latitude", "longitude", "n_samples")
+
+# Build analyte_vars by excluding both metrics and IDs
+analyte_vars <- c("ibr1bio", "ibr1morph", "ibr1overall")
+
+# set p-value & initialize empty list
+alpha <- 0.05
+results_list <- list()
+
+# Loop over metric–analyte pairs across sites
+for (metric in metrics_vars) {
+  for (analyte in analyte_vars) {
+    
+    x <- df_sites[[metric]]
+    y <- df_sites[[analyte]]
+    
+    valid_idx <- complete.cases(x, y)
+    x_valid <- x[valid_idx]
+    y_valid <- y[valid_idx]
+    
+    if (length(x_valid) < 4) next  # Skip if too few values
+    
+    spearman <- cor.test(x_valid, y_valid, method = "spearman")
+    kendall <- cor.test(x_valid, y_valid, method = "kendall")
+    
+    results_list[[paste(metric, analyte, sep = "_")]] <- data.frame(
+      Metric = metric,
+      Analyte = analyte,
+      Spearman_r = as.numeric(spearman$estimate),
+      Spearman_p = as.numeric(spearman$p.value),
+      Kendall_tau = as.numeric(kendall$estimate),
+      Kendall_p = as.numeric(kendall$p.value)
+    )
+  }
+}
+
+# Combine results
+corr_full <- bind_rows(results_list)
+
+# Add significance stars
+corr_full <- corr_full %>%
+  mutate(
+    Spearman_sig = case_when(
+      Spearman_p <= 0.001 ~ "***",
+      Spearman_p <= 0.01  ~ "**",
+      Spearman_p <= 0.05  ~ "*",
+      TRUE ~ ""
+    ),
+    Kendall_sig = case_when(
+      Kendall_p <= 0.001 ~ "***",
+      Kendall_p <= 0.01  ~ "**",
+      Kendall_p <= 0.05  ~ "*",
+      TRUE ~ ""
+    )
+  )
+
+
+View(corr_full)
+write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_ibr_biomarkers.csv", row.names = FALSE)
+
+
+```
+
 
 ## analytes
 ```{r}
@@ -1076,6 +1685,15 @@ corr_full <- corr_full %>%
 view(corr_full)
 
 #write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_metals.csv", row.names = FALSE)
+
+```
+
+
+# Interaction Assessment
+## test name
+```{r}
+
+
 
 ```
 
