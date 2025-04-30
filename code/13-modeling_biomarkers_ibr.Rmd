@@ -1,0 +1,79 @@
+---
+title: "13- Modeling Biomarker and IBR Relationships for plotting"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE, echo=FALSE}
+
+# libraries
+library(knitr) # output fotmatting
+library(tidyr) # data wrangling
+library(tidyverse) # data wrangling
+library(dplyr) # data wrangling
+library(vegan) # ecological stats 
+library(cluster) # grouping metrics - VERIFY still needed
+library(pgirmess) # stats - KW
+library(ggplot2) # plots
+library(factoextra) # pca/ nmds/ tweaking radars
+library(FactoMineR) # pca/ nmds/ tweaking radars
+library(FSA) # post hoc test - Dunn's Test       
+library(rstatix) # VERIFY what this is for      
+library(car) # VERIFY what this is for  
+library(RVAideMemoire) # post hoc test for permanova
+library(rcompanion) # for annotation of permanova
+library(scales) # scaling data for IBR - works with data wrangling packages
+library(fmsb) # polygon calculations for the radars
+library(sf) # spatial plotting
+library(spdep) # spatial plotting
+library(tmap) # making maps
+library(patchwork) # making pretty grids of plots
+library(viridis) # colors for plotting
+library(rnaturalearth) # to pull the map
+library(ggsignif) # adding significance indicators to plots
+
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # show code chunks
+  eval = TRUE,         # evaluate code chunks
+  warning = FALSE,     # hide warnings
+  message = FALSE,     # hide messages
+  #fig.width = 15,       # set plot width in inches
+  #fig.height = 9,      # set plot height in inches
+  fig.align = "center" # slign plots to the center in output doc/ slide/ whatever
+)
+
+```
+
+# Load & Check Data
+```{r}
+
+getwd()
+#setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels") # something here isn't working right - check out why
+
+ibr_avg<- read.csv("../data/cleaned/avg_ibr1.csv") # penn cove reference site only
+analyte_long<- read.csv("../data/cleaned/analytes_long.csv")
+metal_long<- read.csv("../data/cleaned/metals_long.csv")
+ibr_analyte<- read.csv("../data/cleaned/avg_ibr1_analytess.csv")
+ibr_metal<- read.csv("../data/cleaned/avg_ibr1_metals.csv")
+#moran_analyte<- read.csv("../output/tables/moran_analyte.csv")
+#moran_metal<- read.csv("../output/tables/moran_metal.csv")
+#spatial_analyte<- read.csv("../output/tables/spatial_correlation_biomarkers_analytes.csv")
+#spatial_metal<- read.csv("../output/tables/moran_analyte.csv")
+
+# clean up names if needed
+#df1 <- df1 %>%
+#  mutate(across(where(is.character), trimws))
+
+
+```

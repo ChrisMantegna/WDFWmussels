@@ -66,9 +66,9 @@ analyte_long<- read.csv("../data/cleaned/analytes_long.csv")
 metal_long<- read.csv("../data/cleaned/metals_long.csv")
 ibr_analyte<- read.csv("../data/cleaned/avg_ibr1_analytess.csv")
 ibr_metal<- read.csv("../data/cleaned/avg_ibr1_metals.csv")
-moran_analyte<- read.csv("../output/tables/moran_analyte.csv")
-moran_metal<- read.csv("../output/tables/moran_metal.csv")
-spatial_analyte<- read.csv("../output/tables/spatial_correlation_biomarkers_analytes.csv")
+#moran_analyte<- read.csv("../output/tables/moran_analyte.csv")
+#moran_metal<- read.csv("../output/tables/moran_metal.csv")
+#spatial_analyte<- read.csv("../output/tables/spatial_correlation_biomarkers_analytes.csv")
 #spatial_metal<- read.csv("../output/tables/moran_analyte.csv")
 
 # clean up names if needed
