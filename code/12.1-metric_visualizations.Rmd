@@ -1,0 +1,403 @@
+---
+title: "12.1- Creating Visualzations of Metrics"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE, echo=FALSE}
+
+# libraries
+library(knitr) # output formatting
+library(tidyr) # data wrangling
+library(tidyverse) # data wrangling
+library(dplyr) # data wrangling
+library(vegan) # ecological stats 
+library(cluster) # grouping metrics - VERIFY still needed
+library(pgirmess) # stats - KW
+library(ggplot2) # plots
+library(factoextra) # pca/ nmds/ tweaking radars
+library(FactoMineR) # pca/ nmds/ tweaking radars
+library(FSA) # post hoc test - Dunn's Test       
+library(rstatix) # VERIFY what this is for      
+library(car) # VERIFY what this is for  
+library(RVAideMemoire) # post hoc test for permanova
+library(rcompanion) # for annotation of permanova
+library(scales) # scaling data for IBR - works with data wrangling packages
+library(fmsb) # polygon calculations for the radars
+library(sf) # spatial plotting
+library(spdep) # spatial plotting
+library(tmap) # making maps
+library(patchwork) # making pretty grids of plots
+library(viridis) # colors for plotting
+library(rnaturalearth) # to pull the map
+library(ggsignif) # adding significance indicators to plots
+
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # show code chunks
+  eval = TRUE,         # evaluate code chunks
+  warning = FALSE,     # hide warnings
+  message = FALSE,     # hide messages
+  #fig.width = 15,       # set plot width in inches
+  #fig.height = 9,      # set plot height in inches
+  fig.align = "center" # slign plots to the center in output doc/ slide/ whatever
+)
+
+```
+
+# Load & Check Data
+```{r}
+
+getwd()
+#setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels") # something here isn't working right - check out why
+
+df<- read.csv("../data/cleaned/ibr_1.csv") # penn cove reference site only
+#analyte_long<- read.csv("../data/cleaned/analytes_long.csv")
+#metal_long<- read.csv("../data/cleaned/metals_long.csv")
+#ibr_analyte<- read.csv("../data/cleaned/avg_ibr1_analytess.csv")
+#ibr_metal<- read.csv("../data/cleaned/avg_ibr1_metals.csv")
+#moran_analyte<- read.csv("../output/tables/moran_analyte.csv")
+#moran_metal<- read.csv("../output/tables/moran_metal.csv")
+#spatial_analyte<- read.csv("../output/tables/spatial_correlation_biomarkers_analytes.csv")
+#spatial_metal<- read.csv("../output/tables/moran_analyte.csv")
+
+# clean up names if needed
+#df1 <- df1 %>%
+#  mutate(across(where(is.character), trimws))
+
+
+```
+
+# Box plot, facet wrapped by reporting area
+## Metrics and IBRs grouped by reporting area
+```{r}
+
+# prep
+df$reporting_area <- as.factor(df$reporting_area)
+df <- df %>%
+  mutate(across(where(is.character), str_trim))
+
+
+# ========== Functional Biomarkers & IBR (bio) ==========
+bio_df <- df %>%
+  select(site_name, reporting_area, p450, sod, ibr1bio, ibr1overall) %>%
+  pivot_longer(cols = -c(site_name, reporting_area), 
+               names_to = "metric", 
+               values_to = "value") %>%
+  mutate(site_name = factor(site_name, levels = sort(unique(site_name))))
+
+facet_bio<- ggplot(bio_df, aes(x = site_name, y = value, fill = metric)) +
+  geom_boxplot(position = position_dodge(width = 0.8)) +
+  facet_wrap(~ reporting_area, scales = "free_x") +
+  labs(title = "Biomarkers and IBRs", 
+       x = "Site", y = "Value") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "right")
+
+ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/bio_metrics_facet_boxplot.png", plot= facet_bio, width = 16, height = 14, dpi = 300)
+
+print(facet_bio)
+
+# ========== Morphometrics & IBR (morph) ==========
+morph_df <- df %>%
+  select(site_name, reporting_area, shell, ci1, ibr1morph, ibr1overall) %>%
+  pivot_longer(cols = -c(site_name, reporting_area), 
+               names_to = "metric", 
+               values_to = "value") %>%
+  mutate(site_name = factor(site_name, levels = sort(unique(site_name))))
+
+facet_morph<- ggplot(morph_df, aes(x = site_name, y = value, fill = metric)) +
+  geom_boxplot(position = position_dodge(width = 0.8)) +
+  facet_wrap(~ reporting_area, scales = "free_x") +
+  labs(title = "Morphometrics and IBRs", 
+       x = "Site", y = "Value") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "right")
+
+ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/morph_metrics_facet_boxplot.png", plot= facet_morph, width = 16, height = 14, dpi = 300)
+
+print(facet_morph)
+
+```
+
+# Box plots, standalone by reporting area
+# all metrics and IBRs by reporting area
+```{r}
+
+df <- df %>%
+  mutate(across(where(is.character), str_trim))
+
+# ---------- Set 1: Functional Biomarkers ----------
+bio_df <- df %>%
+  select(site_name, reporting_area, p450, sod, ibr1bio, ibr1overall) %>%
+  pivot_longer(cols = -c(site_name, reporting_area),
+               names_to = "metric",
+               values_to = "value") %>%
+  mutate(site_name = factor(site_name, levels = sort(unique(site_name))))
+
+# Loop through reporting areas
+unique(bio_df$reporting_area) %>% walk(function(area) {
+  plot_data <- filter(bio_df, reporting_area == area)
+  
+  p <- ggplot(plot_data, aes(x = site_name, y = value, fill = metric)) +
+    geom_boxplot(position = position_dodge(width = 0.8)) +
+    labs(title = paste("Biomarkers - Reporting Area", area),
+         x = "Site", y = "Value") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1),
+          legend.position = "right")
+
+  ggsave(filename = paste0("functional_RA", area, ".png"),
+         plot = p, width = 10, height = 6, dpi = 300)
+})
+
+
+# ---------- Set 2: Morphometrics ----------
+morph_df <- df %>%
+  select(site_name, reporting_area, shell, ci1, ibr1morph, ibr1overall) %>%
+  pivot_longer(cols = -c(site_name, reporting_area),
+               names_to = "metric",
+               values_to = "value") %>%
+  mutate(site_name = factor(site_name, levels = sort(unique(site_name))))
+
+# Loop through reporting areas
+unique(morph_df$reporting_area) %>% walk(function(area) {
+  plot_data <- filter(morph_df, reporting_area == area)
+  
+  p <- ggplot(plot_data, aes(x = site_name, y = value, fill = metric)) +
+    geom_boxplot(position = position_dodge(width = 0.8)) +
+    labs(title = paste("Morphometrics - Reporting Area", area),
+         x = "Site", y = "Value") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1),
+          legend.position = "right")
+
+  ggsave(filename = paste0("morph_RA", area, ".png"),
+         plot = p, width = 10, height = 6, dpi = 300)
+})
+
+
+```
+
+# Box plots, single metrics by site and reporting area
+## P450 with PC reference site indicated
+```{r}
+
+reference_site <- "Penn Cove Reference"  # Change to match the exact name
+
+plot_df <- df %>%
+  select(site_name, reporting_area, p450) %>%
+  rename(value = p450) %>%
+  mutate(metric = "p450",
+         site_type = if_else(site_name == reference_site, "reference", "other")) %>%
+  arrange(reporting_area, site_name) %>%
+  mutate(site_name = factor(site_name, levels = unique(site_name)))
+
+
+ggplot(plot_df, aes(x = site_name, y = value, fill = site_type)) +
+  geom_col() +
+  scale_fill_manual(values = c("reference" = "red", "other" = "steelblue")) +
+  theme_bw() +
+  labs(title = "P450 by Site with Reference Site Indicated",
+       x = "Site", y = "Value") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.title = element_blank()) +
+  geom_vline(data = plot_df %>%
+               group_by(reporting_area) %>%
+               summarize(last_site = last(site_name), .groups = "drop"),
+             aes(xintercept = as.numeric(factor(last_site)) + 0.5),
+             color = "grey40", linetype = "dashed")
+
+
+
+```
+
+### fixing the plot above
+```{r}
+
+install.packages("ggtext")
+library("ggtext") # for on-plot labeling
+
+# Define the reference site
+reference_site <- "Penn Cove Reference"
+
+# Prep data
+plot_df <- df %>%
+  select(site_name, reporting_area, p450) %>%
+  rename(value = p450) %>%
+  mutate(site_type = if_else(site_name == reference_site, "reference", "other")) %>%
+  arrange(reporting_area, site_name) %>%
+  mutate(site_name = factor(site_name, levels = unique(site_name)))
+
+# Midpoint labels for reporting areas
+area_labels <- plot_df %>%
+  group_by(reporting_area) %>%
+  summarise(xpos = mean(as.numeric(site_name)), .groups = "drop")
+
+# Boxplot with custom colors and horizontal reporting area labels
+ggplot(plot_df, aes(x = site_name, y = value, fill = site_type)) +
+  geom_boxplot(outlier.shape = NA, width = 0.6) +  
+  scale_fill_manual(values = c("reference" = "red"), drop = FALSE) +
+  geom_text(data = area_labels, aes(x = xpos, y = max(plot_df$value, na.rm = TRUE) * 1.05,
+                                    label = paste("RA", reporting_area)),
+            inherit.aes = FALSE, size = 3, fontface = "bold") +
+  labs(title = "P450 by Site with Reference Site Highlighted",
+       x = "Site", y = "Value") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.title = element_blank(),
+    legend.position = "right",
+    plot.margin = margin(10, 10, 40, 10)
+  )
+
+
+```
+
+### trying again
+```{r}
+
+library(tidyverse)
+library(RColorBrewer)
+
+reference_site <- "Penn Cove Reference"
+
+# Step 1: Prepare the main data with 'reporting_area'
+plot_df <- df %>%
+  select(site_name, reporting_area, p450) %>%
+  rename(value = p450) %>%
+  mutate(
+    site_type = if_else(site_name == reference_site, "reference", "other"),
+    site_name = factor(site_name, levels = unique(site_name))
+  ) %>%
+  arrange(reporting_area, site_name)
+
+# Step 2: Add tile position just below the boxplots
+tile_df <- plot_df %>%
+  mutate(y_tile = min(plot_df$value, na.rm = TRUE) - 0.3)
+
+# Step 3: Get middle site of each reporting_area for labeling
+label_df <- plot_df %>%
+  group_by(reporting_area) %>%
+  summarise(
+    xpos = site_name[ceiling(n()/2)],
+    ypos = min(plot_df$value, na.rm = TRUE) - 0.6,
+    .groups = "drop"
+  )
+
+# Step 4: Plot
+ggplot(plot_df, aes(x = site_name, y = value)) +
+  # Bottom color bars
+  geom_tile(data = tile_df,
+            aes(x = site_name, y = y_tile, fill = factor(reporting_area)),
+            width = 1, height = 0.15,
+            inherit.aes = FALSE, alpha = 0.6, show.legend = FALSE) +
+
+  # Reporting area labels below bars
+  geom_text(data = label_df,
+            aes(x = xpos, y = ypos, label = paste("RA", reporting_area)),
+            inherit.aes = FALSE, size = 3, fontface = "bold") +
+
+  # Main boxplots
+  geom_boxplot(aes(fill = site_type), outlier.shape = NA, width = 0.6) +
+
+  # Color only the reference site
+  scale_fill_manual(
+    values = c("reference" = "red"),
+    breaks = "reference"
+  ) +
+
+  labs(title = "P450 by Site and Reporting Area",
+       x = "Site", y = "Value") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.title = element_blank(),
+    legend.position = "right",
+    plot.margin = margin(40, 20, 60, 20)
+  )
+
+```
+
+### and another one...
+```{r}
+
+library(tidyverse)
+library(RColorBrewer)
+
+reference_site <- "Penn Cove Reference"
+
+# Step 1: Convert reporting_area to numeric if it's not already
+df <- df %>%
+  mutate(reporting_area = as.numeric(as.character(reporting_area)))
+
+# Step 2: Prepare main plot data with correct ordering
+plot_df <- df %>%
+  select(site_name, reporting_area, p450) %>%
+  rename(value = p450) %>%
+  mutate(
+    site_type = if_else(site_name == reference_site, "reference", "other")
+  ) %>%
+  arrange(reporting_area, site_name) %>%
+  mutate(site_name = factor(site_name, levels = unique(site_name)))
+
+# Step 3: Tile positions below boxplots
+tile_df <- plot_df %>%
+  mutate(y_tile = min(plot_df$value, na.rm = TRUE) - 0.3)
+
+# Step 4: One label per reporting area, positioned below
+label_df <- plot_df %>%
+  group_by(reporting_area) %>%
+  summarise(
+    xpos = site_name[ceiling(n()/2)],
+    ypos = min(plot_df$value, na.rm = TRUE) - 0.6,
+    .groups = "drop"
+  )
+
+# Step 5: Plot
+ggplot(plot_df, aes(x = site_name, y = value)) +
+  # Colored tiles (bars) below x-axis by reporting_area
+  geom_tile(data = tile_df,
+            aes(x = site_name, y = y_tile, fill = factor(reporting_area)),
+            width = 1, height = 0.15,
+            inherit.aes = FALSE, alpha = 0.6, show.legend = FALSE) +
+
+  # Add reporting area labels below those bars
+  geom_text(data = label_df,
+            aes(x = xpos, y = ypos, label = paste("RA", reporting_area)),
+            inherit.aes = FALSE, size = 3, fontface = "bold") +
+
+  # Main boxplots
+  geom_boxplot(aes(fill = site_type), outlier.shape = NA, width = 0.6) +
+
+  # Reference site in red only
+  scale_fill_manual(
+    values = c("reference" = "red"),
+    breaks = "reference"
+  ) +
+
+  labs(title = "P450 by Site and Reporting Area",
+       x = "Site", y = "Value") +
+  theme_bw() +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    legend.title = element_blank(),
+    legend.position = "right",
+    plot.margin = margin(40, 20, 60, 20)
+  )
+
+
+```
+
