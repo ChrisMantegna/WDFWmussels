@@ -1,0 +1,443 @@
+﻿latitude,longitude,site_name,analyte,wet_value,qualifier,units
+48.6793778,-122.6300583,Aiston Preserve,mercuryTotal,0.00552,D,mg/Kg
+48.6793778,-122.6300583,Aiston Preserve,arsenic,1.21,D,mg/Kg
+48.6793778,-122.6300583,Aiston Preserve,cadmium,0.276,D,mg/Kg
+48.6793778,-122.6300583,Aiston Preserve,copper,0.825,D,mg/Kg
+48.6793778,-122.6300583,Aiston Preserve,lead,0.0296,D,mg/Kg
+48.6793778,-122.6300583,Aiston Preserve,Zinc,12.9,D,mg/Kg
+47.50159,-122.38577,Arroyo Beach,mercuryTotal,0.00612,D,mg/Kg
+47.50159,-122.38577,Arroyo Beach,arsenic,1.64,D,mg/Kg
+47.50159,-122.38577,Arroyo Beach,cadmium,0.332,D,mg/Kg
+47.50159,-122.38577,Arroyo Beach,copper,0.956,D,mg/Kg
+47.50159,-122.38577,Arroyo Beach,lead,0.0412,D,mg/Kg
+47.50159,-122.38577,Arroyo Beach,Zinc,17.7,D,mg/Kg
+47.2758,-122.4174,Blair Waterway,mercuryTotal,0.00561,D,mg/Kg
+47.2758,-122.4174,Blair Waterway,arsenic,1.42,D,mg/Kg
+47.2758,-122.4174,Blair Waterway,cadmium,0.284,D,mg/Kg
+47.2758,-122.4174,Blair Waterway,copper,1.02,D,mg/Kg
+47.2758,-122.4174,Blair Waterway,lead,0.0447,D,mg/Kg
+47.2758,-122.4174,Blair Waterway,Zinc,17.3,D,mg/Kg
+47.2632,-122.3856,Blair Waterway #2,arsenic,1.39,D,mg/Kg
+47.2632,-122.3856,Blair Waterway #2,cadmium,0.283,D,mg/Kg
+47.2632,-122.3856,Blair Waterway #2,copper,1.35,D,mg/Kg
+47.2632,-122.3856,Blair Waterway #2,lead,0.0307,D,mg/Kg
+47.2632,-122.3856,Blair Waterway #2,Zinc,14.2,D,mg/Kg
+47.68203,-122.50668,Brackenwood Ln,mercuryTotal,0.00633,D,mg/Kg
+47.68203,-122.50668,Brackenwood Ln,arsenic,1.47,D,mg/Kg
+47.68203,-122.50668,Brackenwood Ln,cadmium,0.314,D,mg/Kg
+47.68203,-122.50668,Brackenwood Ln,copper,1.05,D,mg/Kg
+47.68203,-122.50668,Brackenwood Ln,lead,0.0372,D,mg/Kg
+47.68203,-122.50668,Brackenwood Ln,Zinc,15.3,D,mg/Kg
+47.80934,-122.81556,Broad Spit,arsenic,1.18,D,mg/Kg
+47.80934,-122.81556,Broad Spit,cadmium,0.315,D,mg/Kg
+47.80934,-122.81556,Broad Spit,copper,0.774,D,mg/Kg
+47.80934,-122.81556,Broad Spit,lead,0.0107,D,mg/Kg
+47.80934,-122.81556,Broad Spit,Zinc,10.4,D,mg/Kg
+47.304906,-122.44427,Browns Point Lighthouse,mercuryTotal,0.0058,D,mg/Kg
+47.304906,-122.44427,Browns Point Lighthouse,arsenic,1.49,D,mg/Kg
+47.304906,-122.44427,Browns Point Lighthouse,cadmium,0.301,D,mg/Kg
+47.304906,-122.44427,Browns Point Lighthouse,copper,1.22,D,mg/Kg
+47.304906,-122.44427,Browns Point Lighthouse,lead,0.0459,D,mg/Kg
+47.304906,-122.44427,Browns Point Lighthouse,Zinc,15.9,D,mg/Kg
+48.52093,-122.600725,Cap Sante,mercuryTotal,0.00486,D,mg/Kg
+48.52093,-122.600725,Cap Sante,arsenic,1.27,D,mg/Kg
+48.52093,-122.600725,Cap Sante,cadmium,0.312,D,mg/Kg
+48.52093,-122.600725,Cap Sante,copper,0.869,D,mg/Kg
+48.52093,-122.600725,Cap Sante,lead,0.0295,D,mg/Kg
+48.52093,-122.600725,Cap Sante,Zinc,13.3,D,mg/Kg
+47.2009,-122.58342,Chambers Bay Park,mercuryTotal,0.00503,D,mg/Kg
+47.2009,-122.58342,Chambers Bay Park,arsenic,1.39,D,mg/Kg
+47.2009,-122.58342,Chambers Bay Park,cadmium,0.308,D,mg/Kg
+47.2009,-122.58342,Chambers Bay Park,copper,0.924,D,mg/Kg
+47.2009,-122.58342,Chambers Bay Park,lead,0.0394,D,mg/Kg
+47.2009,-122.58342,Chambers Bay Park,Zinc,14.4,D,mg/Kg
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",mercuryTotal,0.00575,D,mg/Kg
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",arsenic,1.38,D,mg/Kg
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",cadmium,0.331,D,mg/Kg
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",copper,0.923,D,mg/Kg
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",lead,0.0335,D,mg/Kg
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",Zinc,12.8,D,mg/Kg
+48.04887,-122.7711,Chimacum Creek delta,mercuryTotal,0.00555,D,mg/Kg
+48.04887,-122.7711,Chimacum Creek delta,arsenic,1.42,D,mg/Kg
+48.04887,-122.7711,Chimacum Creek delta,cadmium,0.312,D,mg/Kg
+48.04887,-122.7711,Chimacum Creek delta,copper,5.18,D,mg/Kg
+48.04887,-122.7711,Chimacum Creek delta,lead,0.0496,D,mg/Kg
+48.04887,-122.7711,Chimacum Creek delta,Zinc,16.1,D,mg/Kg
+48.691084,-122.504012,"Chuckanut, Clark's Point",mercuryTotal,0.00636,D,mg/Kg
+48.691084,-122.504012,"Chuckanut, Clark's Point",arsenic,1.36,D,mg/Kg
+48.691084,-122.504012,"Chuckanut, Clark's Point",cadmium,0.29,D,mg/Kg
+48.691084,-122.504012,"Chuckanut, Clark's Point",copper,1.79,D,mg/Kg
+48.691084,-122.504012,"Chuckanut, Clark's Point",lead,0.0431,D,mg/Kg
+48.691084,-122.504012,"Chuckanut, Clark's Point",Zinc,15.8,D,mg/Kg
+47.28915,-122.4096,Comm Bay Skookum,mercuryTotal,0.00523,D,mg/Kg
+47.28915,-122.4096,Comm Bay Skookum,arsenic,1.3,D,mg/Kg
+47.28915,-122.4096,Comm Bay Skookum,cadmium,0.304,D,mg/Kg
+47.28915,-122.4096,Comm Bay Skookum,copper,1.03,D,mg/Kg
+47.28915,-122.4096,Comm Bay Skookum,lead,0.0451,D,mg/Kg
+47.28915,-122.4096,Comm Bay Skookum,Zinc,14.2,D,mg/Kg
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",mercuryTotal,0.00545,D,mg/Kg
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",arsenic,1.22,D,mg/Kg
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",cadmium,0.267,D,mg/Kg
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",copper,0.975,D,mg/Kg
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",lead,0.0451,D,mg/Kg
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",Zinc,12.6,D,mg/Kg
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",mercuryTotal,0.00554,D,mg/Kg
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",arsenic,1.27,D,mg/Kg
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",cadmium,0.264,D,mg/Kg
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",copper,1.66,D,mg/Kg
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",lead,0.0389,D,mg/Kg
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",Zinc,12.3,D,mg/Kg
+47.402778,-122.331667,Des Moines Marina,mercuryTotal,0.0067,D,mg/Kg
+47.402778,-122.331667,Des Moines Marina,arsenic,1.4,D,mg/Kg
+47.402778,-122.331667,Des Moines Marina,cadmium,0.323,D,mg/Kg
+47.402778,-122.331667,Des Moines Marina,copper,1.06,D,mg/Kg
+47.402778,-122.331667,Des Moines Marina,lead,0.0457,D,mg/Kg
+47.402778,-122.331667,Des Moines Marina,Zinc,15.4,D,mg/Kg
+48.064974,-122.857218,Discovery Bay,mercuryTotal,0.00596,D,mg/Kg
+48.064974,-122.857218,Discovery Bay,arsenic,1.56,D,mg/Kg
+48.064974,-122.857218,Discovery Bay,cadmium,0.353,D,mg/Kg
+48.064974,-122.857218,Discovery Bay,copper,1.03,D,mg/Kg
+48.064974,-122.857218,Discovery Bay,lead,0.0384,D,mg/Kg
+48.064974,-122.857218,Discovery Bay,Zinc,16.9,D,mg/Kg
+47.337909,-122.59023,Donkey Creek Delta,mercuryTotal,0.00502,D,mg/Kg
+47.337909,-122.59023,Donkey Creek Delta,arsenic,1.48,D,mg/Kg
+47.337909,-122.59023,Donkey Creek Delta,cadmium,0.321,D,mg/Kg
+47.337909,-122.59023,Donkey Creek Delta,copper,1.22,D,mg/Kg
+47.337909,-122.59023,Donkey Creek Delta,lead,0.147,D,mg/Kg
+47.337909,-122.59023,Donkey Creek Delta,Zinc,15.4,D,mg/Kg
+47.618875,-122.527234,Eagle Harbor Dr,mercuryTotal,0.00754,D,mg/Kg
+47.618875,-122.527234,Eagle Harbor Dr,arsenic,1.4,D,mg/Kg
+47.618875,-122.527234,Eagle Harbor Dr,cadmium,0.317,D,mg/Kg
+47.618875,-122.527234,Eagle Harbor Dr,copper,1.39,D,mg/Kg
+47.618875,-122.527234,Eagle Harbor Dr,lead,0.103,D,mg/Kg
+47.618875,-122.527234,Eagle Harbor Dr,Zinc,13,D,mg/Kg
+48.69395,-122.909933,"Eastsound, Fishing Bay",mercuryTotal,0.00555,D,mg/Kg
+48.69395,-122.909933,"Eastsound, Fishing Bay",arsenic,1.67,D,mg/Kg
+48.69395,-122.909933,"Eastsound, Fishing Bay",cadmium,0.32,D,mg/Kg
+48.69395,-122.909933,"Eastsound, Fishing Bay",copper,1.11,D,mg/Kg
+48.69395,-122.909933,"Eastsound, Fishing Bay",lead,0.0382,D,mg/Kg
+48.69395,-122.909933,"Eastsound, Fishing Bay",Zinc,16.8,D,mg/Kg
+47.8142069,-122.3822018,Edmonds Ferry,mercuryTotal,0.00645,D,mg/Kg
+47.8142069,-122.3822018,Edmonds Ferry,arsenic,1.47,D,mg/Kg
+47.8142069,-122.3822018,Edmonds Ferry,cadmium,0.305,D,mg/Kg
+47.8142069,-122.3822018,Edmonds Ferry,copper,1.23,D,mg/Kg
+47.8142069,-122.3822018,Edmonds Ferry,lead,0.0575,D,mg/Kg
+47.8142069,-122.3822018,Edmonds Ferry,Zinc,15.7,D,mg/Kg
+47.81094,-122.387955,Edmonds Marina,mercuryTotal,0.00904,D,mg/Kg
+47.81094,-122.387955,Edmonds Marina,arsenic,1.44,D,mg/Kg
+47.81094,-122.387955,Edmonds Marina,cadmium,0.304,D,mg/Kg
+47.81094,-122.387955,Edmonds Marina,copper,1.49,D,mg/Kg
+47.81094,-122.387955,Edmonds Marina,lead,0.0576,D,mg/Kg
+47.81094,-122.387955,Edmonds Marina,Zinc,14.2,D,mg/Kg
+47.0769,-123.0034725,Eld Inlet,mercuryTotal,0.00497,D,mg/Kg
+47.0769,-123.0034725,Eld Inlet,arsenic,1.54,D,mg/Kg
+47.0769,-123.0034725,Eld Inlet,cadmium,0.298,D,mg/Kg
+47.0769,-123.0034725,Eld Inlet,copper,1.08,D,mg/Kg
+47.0769,-123.0034725,Eld Inlet,lead,0.0436,D,mg/Kg
+47.0769,-123.0034725,Eld Inlet,Zinc,16,D,mg/Kg
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,mercuryTotal,0.00645,D,mg/Kg
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,arsenic,1.34,D,mg/Kg
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,cadmium,0.295,D,mg/Kg
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,copper,1.05,D,mg/Kg
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,lead,0.0467,D,mg/Kg
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,Zinc,14.6,D,mg/Kg
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",mercuryTotal,0.00581,D,mg/Kg
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",arsenic,1.39,D,mg/Kg
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",cadmium,0.316,D,mg/Kg
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",copper,1.58,D,mg/Kg
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",lead,0.0486,D,mg/Kg
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",Zinc,16.5,D,mg/Kg
+47.97252,-122.22982,Everett Harbor,mercuryTotal,0.00653,D,mg/Kg
+47.97252,-122.22982,Everett Harbor,arsenic,1.32,D,mg/Kg
+47.97252,-122.22982,Everett Harbor,cadmium,0.269,D,mg/Kg
+47.97252,-122.22982,Everett Harbor,copper,1.02,D,mg/Kg
+47.97252,-122.22982,Everett Harbor,lead,0.0577,D,mg/Kg
+47.97252,-122.22982,Everett Harbor,Zinc,11.5,D,mg/Kg
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",mercuryTotal,0.0066,D,mg/Kg
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",arsenic,1.41,D,mg/Kg
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",cadmium,0.29,D,mg/Kg
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",copper,1.54,D,mg/Kg
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",lead,0.0397,D,mg/Kg
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",Zinc,13.6,D,mg/Kg
+47.19483,-122.748665,Filucy Bay,mercuryTotal,0.0072,D,mg/Kg
+47.19483,-122.748665,Filucy Bay,arsenic,1.38,D,mg/Kg
+47.19483,-122.748665,Filucy Bay,cadmium,0.296,D,mg/Kg
+47.19483,-122.748665,Filucy Bay,copper,0.977,D,mg/Kg
+47.19483,-122.748665,Filucy Bay,lead,0.0389,D,mg/Kg
+47.19483,-122.748665,Filucy Bay,Zinc,13.2,D,mg/Kg
+48.5069444,-123.0194444,Friday Harbor,mercuryTotal,0.006,D,mg/Kg
+48.5069444,-123.0194444,Friday Harbor,arsenic,1.69,D,mg/Kg
+48.5069444,-123.0194444,Friday Harbor,cadmium,0.32,D,mg/Kg
+48.5069444,-123.0194444,Friday Harbor,copper,1.26,D,mg/Kg
+48.5069444,-123.0194444,Friday Harbor,lead,0.0331,D,mg/Kg
+48.5069444,-123.0194444,Friday Harbor,Zinc,16.8,D,mg/Kg
+47.3372,-122.58284,Gig Harbor Boat Launch,mercuryTotal,0.00599,D,mg/Kg
+47.3372,-122.58284,Gig Harbor Boat Launch,arsenic,1.36,D,mg/Kg
+47.3372,-122.58284,Gig Harbor Boat Launch,cadmium,0.31,D,mg/Kg
+47.3372,-122.58284,Gig Harbor Boat Launch,copper,1.08,D,mg/Kg
+47.3372,-122.58284,Gig Harbor Boat Launch,lead,0.0755,D,mg/Kg
+47.3372,-122.58284,Gig Harbor Boat Launch,Zinc,13.8,D,mg/Kg
+47.570193,-122.971775,Hood Canal Holly,mercuryTotal,0.00444,D,mg/Kg
+47.570193,-122.971775,Hood Canal Holly,arsenic,1.43,D,mg/Kg
+47.570193,-122.971775,Hood Canal Holly,cadmium,0.356,D,mg/Kg
+47.570193,-122.971775,Hood Canal Holly,copper,1.04,D,mg/Kg
+47.570193,-122.971775,Hood Canal Holly,lead,0.0131,D,mg/Kg
+47.570193,-122.971775,Hood Canal Holly,Zinc,12.7,D,mg/Kg
+48.027069,-122.999191,Jamestown,mercuryTotal,0.005,D,mg/Kg
+48.027069,-122.999191,Jamestown,arsenic,1.38,D,mg/Kg
+48.027069,-122.999191,Jamestown,cadmium,0.294,D,mg/Kg
+48.027069,-122.999191,Jamestown,copper,1.16,D,mg/Kg
+48.027069,-122.999191,Jamestown,lead,0.0275,D,mg/Kg
+48.027069,-122.999191,Jamestown,Zinc,12.4,D,mg/Kg
+47.7947,-122.5003,Kingston Marina,mercuryTotal,0.00727,D,mg/Kg
+47.7947,-122.5003,Kingston Marina,arsenic,1.23,D,mg/Kg
+47.7947,-122.5003,Kingston Marina,cadmium,0.292,D,mg/Kg
+47.7947,-122.5003,Kingston Marina,copper,0.853,D,mg/Kg
+47.7947,-122.5003,Kingston Marina,lead,0.0331,D,mg/Kg
+47.7947,-122.5003,Kingston Marina,Zinc,12.5,D,mg/Kg
+47.541533,-122.640383,Kitsap St Boat Launch,mercuryTotal,0.00616,D,mg/Kg
+47.541533,-122.640383,Kitsap St Boat Launch,arsenic,1.59,D,mg/Kg
+47.541533,-122.640383,Kitsap St Boat Launch,cadmium,0.302,D,mg/Kg
+47.541533,-122.640383,Kitsap St Boat Launch,copper,1.62,D,mg/Kg
+47.541533,-122.640383,Kitsap St Boat Launch,lead,0.0994,D,mg/Kg
+47.541533,-122.640383,Kitsap St Boat Launch,Zinc,17,D,mg/Kg
+47.3115,-122.68725,Kopachuck State Park,mercuryTotal,0.00613,D,mg/Kg
+47.3115,-122.68725,Kopachuck State Park,arsenic,1.28,D,mg/Kg
+47.3115,-122.68725,Kopachuck State Park,cadmium,0.318,D,mg/Kg
+47.3115,-122.68725,Kopachuck State Park,copper,0.837,D,mg/Kg
+47.3115,-122.68725,Kopachuck State Park,lead,0.0266,D,mg/Kg
+47.3115,-122.68725,Kopachuck State Park,Zinc,12.9,D,mg/Kg
+47.583016,-122.64217,Lions Park,mercuryTotal,0.00584,D,mg/Kg
+47.583016,-122.64217,Lions Park,arsenic,1.37,D,mg/Kg
+47.583016,-122.64217,Lions Park,cadmium,0.308,D,mg/Kg
+47.583016,-122.64217,Lions Park,copper,0.987,D,mg/Kg
+47.583016,-122.64217,Lions Park,lead,0.0558,D,mg/Kg
+47.583016,-122.64217,Lions Park,Zinc,15.1,D,mg/Kg
+48.76652,-122.5395,Locust Beach,mercuryTotal,0.00513,D,mg/Kg
+48.76652,-122.5395,Locust Beach,arsenic,1.47,D,mg/Kg
+48.76652,-122.5395,Locust Beach,cadmium,0.291,D,mg/Kg
+48.76652,-122.5395,Locust Beach,copper,1.12,D,mg/Kg
+48.76652,-122.5395,Locust Beach,lead,0.041,D,mg/Kg
+48.76652,-122.5395,Locust Beach,Zinc,13.6,D,mg/Kg
+47.579985,-122.67853,Madrona Pont,mercuryTotal,0.00538,D,mg/Kg
+47.579985,-122.67853,Madrona Pont,arsenic,1.54,D,mg/Kg
+47.579985,-122.67853,Madrona Pont,cadmium,0.303,D,mg/Kg
+47.579985,-122.67853,Madrona Pont,copper,0.998,D,mg/Kg
+47.579985,-122.67853,Madrona Pont,lead,0.09,D,mg/Kg
+47.579985,-122.67853,Madrona Pont,Zinc,15,D,mg/Kg
+47.556111,-122.542778,"Manchester, Stormwater Outfall",mercuryTotal,0.00471,D,mg/Kg
+47.556111,-122.542778,"Manchester, Stormwater Outfall",arsenic,1.29,D,mg/Kg
+47.556111,-122.542778,"Manchester, Stormwater Outfall",cadmium,0.305,D,mg/Kg
+47.556111,-122.542778,"Manchester, Stormwater Outfall",copper,0.808,D,mg/Kg
+47.556111,-122.542778,"Manchester, Stormwater Outfall",lead,0.0427,D,mg/Kg
+47.556111,-122.542778,"Manchester, Stormwater Outfall",Zinc,13.2,D,mg/Kg
+47.29954,-122.74554,Maple Hollow Park,mercuryTotal,0.00619,D,mg/Kg
+47.29954,-122.74554,Maple Hollow Park,arsenic,1.51,D,mg/Kg
+47.29954,-122.74554,Maple Hollow Park,cadmium,0.349,D,mg/Kg
+47.29954,-122.74554,Maple Hollow Park,copper,0.889,D,mg/Kg
+47.29954,-122.74554,Maple Hollow Park,lead,0.0249,D,mg/Kg
+47.29954,-122.74554,Maple Hollow Park,Zinc,14,D,mg/Kg
+48.018181,-122.699838,Maristone Island Bridge,mercuryTotal,0.00464,D,mg/Kg
+48.018181,-122.699838,Maristone Island Bridge,arsenic,1.3,D,mg/Kg
+48.018181,-122.699838,Maristone Island Bridge,cadmium,0.309,D,mg/Kg
+48.018181,-122.699838,Maristone Island Bridge,copper,0.869,D,mg/Kg
+48.018181,-122.699838,Maristone Island Bridge,lead,0.0249,D,mg/Kg
+48.018181,-122.699838,Maristone Island Bridge,Zinc,12,D,mg/Kg
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,mercuryTotal,0.00527,D,mg/Kg
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,arsenic,1.17,D,mg/Kg
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,cadmium,0.298,D,mg/Kg
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,copper,0.866,D,mg/Kg
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,lead,0.0307,D,mg/Kg
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,Zinc,11.3,D,mg/Kg
+47.443611,-122.361944,Miller Creek,mercuryTotal,0.00678,D,mg/Kg
+47.443611,-122.361944,Miller Creek,arsenic,1.42,D,mg/Kg
+47.443611,-122.361944,Miller Creek,cadmium,0.321,D,mg/Kg
+47.443611,-122.361944,Miller Creek,copper,0.873,D,mg/Kg
+47.443611,-122.361944,Miller Creek,lead,0.0384,D,mg/Kg
+47.443611,-122.361944,Miller Creek,Zinc,14.3,D,mg/Kg
+47.35399,-122.69176,Minter Bay,mercuryTotal,0.00578,D,mg/Kg
+47.35399,-122.69176,Minter Bay,arsenic,1.48,D,mg/Kg
+47.35399,-122.69176,Minter Bay,cadmium,0.352,D,mg/Kg
+47.35399,-122.69176,Minter Bay,copper,1.31,D,mg/Kg
+47.35399,-122.69176,Minter Bay,lead,0.0412,D,mg/Kg
+47.35399,-122.69176,Minter Bay,Zinc,15.6,D,mg/Kg
+47.949831,-122.301703,Mukilteo,mercuryTotal,0.00785,D,mg/Kg
+47.949831,-122.301703,Mukilteo,arsenic,1.26,D,mg/Kg
+47.949831,-122.301703,Mukilteo,cadmium,0.288,D,mg/Kg
+47.949831,-122.301703,Mukilteo,copper,1.12,D,mg/Kg
+47.949831,-122.301703,Mukilteo,lead,0.0412,D,mg/Kg
+47.949831,-122.301703,Mukilteo,Zinc,11,D,mg/Kg
+48.52108,-122.61531,N Avenue Park,mercuryTotal,0.00641,D,mg/Kg
+48.52108,-122.61531,N Avenue Park,arsenic,1.81,D,mg/Kg
+48.52108,-122.61531,N Avenue Park,cadmium,0.339,D,mg/Kg
+48.52108,-122.61531,N Avenue Park,copper,1.02,D,mg/Kg
+48.52108,-122.61531,N Avenue Park,lead,0.0787,D,mg/Kg
+48.52108,-122.61531,N Avenue Park,Zinc,16.7,D,mg/Kg
+48.25523,-122.50817,North Camano,mercuryTotal,0.00784,D,mg/Kg
+48.25523,-122.50817,North Camano,arsenic,1.56,D,mg/Kg
+48.25523,-122.50817,North Camano,cadmium,0.304,D,mg/Kg
+48.25523,-122.50817,North Camano,copper,1.15,D,mg/Kg
+48.25523,-122.50817,North Camano,lead,0.0457,D,mg/Kg
+48.25523,-122.50817,North Camano,Zinc,12.9,D,mg/Kg
+48.022466,-122.728123,Oak Bay County Park,mercuryTotal,0.00594,D,mg/Kg
+48.022466,-122.728123,Oak Bay County Park,arsenic,1.34,D,mg/Kg
+48.022466,-122.728123,Oak Bay County Park,cadmium,0.312,D,mg/Kg
+48.022466,-122.728123,Oak Bay County Park,copper,0.912,D,mg/Kg
+48.022466,-122.728123,Oak Bay County Park,lead,0.0302,D,mg/Kg
+48.022466,-122.728123,Oak Bay County Park,Zinc,12.2,D,mg/Kg
+48.214071,-122.719097,Penn Cove Reference,mercuryTotal,0.00667,D,mg/Kg
+48.214071,-122.719097,Penn Cove Reference,arsenic,1.44,D,mg/Kg
+48.214071,-122.719097,Penn Cove Reference,cadmium,0.325,D,mg/Kg
+48.214071,-122.719097,Penn Cove Reference,copper,0.972,D,mg/Kg
+48.214071,-122.719097,Penn Cove Reference,lead,0.0336,D,mg/Kg
+48.214071,-122.719097,Penn Cove Reference,Zinc,12.7,D,mg/Kg
+47.2609094,-122.7447771,Penrose Point State Park,mercuryTotal,0.00588,D,mg/Kg
+47.2609094,-122.7447771,Penrose Point State Park,arsenic,1.39,D,mg/Kg
+47.2609094,-122.7447771,Penrose Point State Park,cadmium,0.311,D,mg/Kg
+47.2609094,-122.7447771,Penrose Point State Park,copper,0.956,D,mg/Kg
+47.2609094,-122.7447771,Penrose Point State Park,lead,0.0254,D,mg/Kg
+47.2609094,-122.7447771,Penrose Point State Park,Zinc,14,D,mg/Kg
+47.3061098,-122.514771,Point Defiance Ferry,mercuryTotal,0.00501,D,mg/Kg
+47.3061098,-122.514771,Point Defiance Ferry,arsenic,1.48,D,mg/Kg
+47.3061098,-122.514771,Point Defiance Ferry,cadmium,0.283,D,mg/Kg
+47.3061098,-122.514771,Point Defiance Ferry,copper,1.27,D,mg/Kg
+47.3061098,-122.514771,Point Defiance Ferry,lead,0.0727,D,mg/Kg
+47.3061098,-122.514771,Point Defiance Ferry,Zinc,17,D,mg/Kg
+48.128267,-123.457133,Port Angeles Yacht Club,mercuryTotal,0.00481,D,mg/Kg
+48.128267,-123.457133,Port Angeles Yacht Club,arsenic,1.47,D,mg/Kg
+48.128267,-123.457133,Port Angeles Yacht Club,cadmium,0.305,D,mg/Kg
+48.128267,-123.457133,Port Angeles Yacht Club,copper,1.22,D,mg/Kg
+48.128267,-123.457133,Port Angeles Yacht Club,lead,0.044,D,mg/Kg
+48.128267,-123.457133,Port Angeles Yacht Club,Zinc,15.7,D,mg/Kg
+47.385334,-122.628902,Purdy - Dexters,mercuryTotal,0.00669,D,mg/Kg
+47.385334,-122.628902,Purdy - Dexters,arsenic,1.57,D,mg/Kg
+47.385334,-122.628902,Purdy - Dexters,cadmium,0.331,D,mg/Kg
+47.385334,-122.628902,Purdy - Dexters,copper,1.01,D,mg/Kg
+47.385334,-122.628902,Purdy - Dexters,lead,0.0339,D,mg/Kg
+47.385334,-122.628902,Purdy - Dexters,Zinc,15,D,mg/Kg
+47.387021,-122.6367,"Purdy, Burley Lagoon",mercuryTotal,0.00614,D,mg/Kg
+47.387021,-122.6367,"Purdy, Burley Lagoon",arsenic,1.54,D,mg/Kg
+47.387021,-122.6367,"Purdy, Burley Lagoon",cadmium,0.315,D,mg/Kg
+47.387021,-122.6367,"Purdy, Burley Lagoon",copper,1.12,D,mg/Kg
+47.387021,-122.6367,"Purdy, Burley Lagoon",lead,0.0422,D,mg/Kg
+47.387021,-122.6367,"Purdy, Burley Lagoon",Zinc,15.5,D,mg/Kg
+47.32622,-122.66715,Raft Island Park,mercuryTotal,0.00525,D,mg/Kg
+47.32622,-122.66715,Raft Island Park,arsenic,1.19,D,mg/Kg
+47.32622,-122.66715,Raft Island Park,cadmium,0.311,D,mg/Kg
+47.32622,-122.66715,Raft Island Park,copper,1.14,D,mg/Kg
+47.32622,-122.66715,Raft Island Park,lead,0.0321,D,mg/Kg
+47.32622,-122.66715,Raft Island Park,Zinc,11.9,D,mg/Kg
+47.346817,-122.822363,Reach Island,mercuryTotal,0.00417,D,mg/Kg
+47.346817,-122.822363,Reach Island,arsenic,1.56,D,mg/Kg
+47.346817,-122.822363,Reach Island,cadmium,0.341,D,mg/Kg
+47.346817,-122.822363,Reach Island,copper,1.51,D,mg/Kg
+47.346817,-122.822363,Reach Island,lead,0.0265,D,mg/Kg
+47.346817,-122.822363,Reach Island,Zinc,17.7,D,mg/Kg
+47.578117,-122.524833,Rich Passage,mercuryTotal,0.00581,D,mg/Kg
+47.578117,-122.524833,Rich Passage,arsenic,1.49,D,mg/Kg
+47.578117,-122.524833,Rich Passage,cadmium,0.301,D,mg/Kg
+47.578117,-122.524833,Rich Passage,copper,1.25,D,mg/Kg
+47.578117,-122.524833,Rich Passage,lead,0.0534,D,mg/Kg
+47.578117,-122.524833,Rich Passage,Zinc,15.7,D,mg/Kg
+47.60253,-122.66991,Rocky Point,mercuryTotal,0.00575,D,mg/Kg
+47.60253,-122.66991,Rocky Point,arsenic,1.46,D,mg/Kg
+47.60253,-122.66991,Rocky Point,cadmium,0.336,D,mg/Kg
+47.60253,-122.66991,Rocky Point,copper,1.03,D,mg/Kg
+47.60253,-122.66991,Rocky Point,lead,0.0692,D,mg/Kg
+47.60253,-122.66991,Rocky Point,Zinc,17,D,mg/Kg
+48.02655,-122.75089,S of Skunk Island,mercuryTotal,0.00502,D,mg/Kg
+48.02655,-122.75089,S of Skunk Island,arsenic,1.4,D,mg/Kg
+48.02655,-122.75089,S of Skunk Island,cadmium,0.306,D,mg/Kg
+48.02655,-122.75089,S of Skunk Island,copper,0.998,D,mg/Kg
+48.02655,-122.75089,S of Skunk Island,lead,0.0809,D,mg/Kg
+48.02655,-122.75089,S of Skunk Island,Zinc,13.3,D,mg/Kg
+47.666244,-122.401894,"Salmon Bay, Commodore Park",mercuryTotal,0.00533,D,mg/Kg
+47.666244,-122.401894,"Salmon Bay, Commodore Park",arsenic,1.04,D,mg/Kg
+47.666244,-122.401894,"Salmon Bay, Commodore Park",cadmium,0.264,D,mg/Kg
+47.666244,-122.401894,"Salmon Bay, Commodore Park",copper,1.02,D,mg/Kg
+47.666244,-122.401894,"Salmon Bay, Commodore Park",lead,0.0751,D,mg/Kg
+47.666244,-122.401894,"Salmon Bay, Commodore Park",Zinc,10.9,D,mg/Kg
+47.294692,-122.530504,Salmon Beach,mercuryTotal,0.00426,D,mg/Kg
+47.294692,-122.530504,Salmon Beach,arsenic,1.41,D,mg/Kg
+47.294692,-122.530504,Salmon Beach,cadmium,0.328,D,mg/Kg
+47.294692,-122.530504,Salmon Beach,copper,0.854,D,mg/Kg
+47.294692,-122.530504,Salmon Beach,lead,0.0335,D,mg/Kg
+47.294692,-122.530504,Salmon Beach,Zinc,14.2,D,mg/Kg
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",mercuryTotal,0.00632,D,mg/Kg
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",arsenic,1.42,D,mg/Kg
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",cadmium,0.319,D,mg/Kg
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",copper,1.25,D,mg/Kg
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",lead,0.0673,D,mg/Kg
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",Zinc,13.7,D,mg/Kg
+47.6707,-122.40605,Shilshole Bay,mercuryTotal,0.00618,D,mg/Kg
+47.6707,-122.40605,Shilshole Bay,arsenic,1.18,D,mg/Kg
+47.6707,-122.40605,Shilshole Bay,cadmium,0.226,D,mg/Kg
+47.6707,-122.40605,Shilshole Bay,copper,1.17,D,mg/Kg
+47.6707,-122.40605,Shilshole Bay,lead,0.0608,D,mg/Kg
+47.6707,-122.40605,Shilshole Bay,Zinc,11.3,D,mg/Kg
+47.6428,-122.6967,"Silverdale, Dyes Inlet",mercuryTotal,0.00624,D,mg/Kg
+47.6428,-122.6967,"Silverdale, Dyes Inlet",arsenic,1.51,D,mg/Kg
+47.6428,-122.6967,"Silverdale, Dyes Inlet",cadmium,0.296,D,mg/Kg
+47.6428,-122.6967,"Silverdale, Dyes Inlet",copper,1.25,D,mg/Kg
+47.6428,-122.6967,"Silverdale, Dyes Inlet",lead,0.0745,D,mg/Kg
+47.6428,-122.6967,"Silverdale, Dyes Inlet",Zinc,13.1,D,mg/Kg
+47.6614139,-122.498892,Skiff Point,mercuryTotal,0.007,D,mg/Kg
+47.6614139,-122.498892,Skiff Point,arsenic,1.57,D,mg/Kg
+47.6614139,-122.498892,Skiff Point,cadmium,0.337,D,mg/Kg
+47.6614139,-122.498892,Skiff Point,copper,1.11,D,mg/Kg
+47.6614139,-122.498892,Skiff Point,lead,0.0396,D,mg/Kg
+47.6614139,-122.498892,Skiff Point,Zinc,16.5,D,mg/Kg
+47.6325,-122.3786,"Smith Cove, Terminal 91",mercuryTotal,0.00548,D,mg/Kg
+47.6325,-122.3786,"Smith Cove, Terminal 91",arsenic,1.43,D,mg/Kg
+47.6325,-122.3786,"Smith Cove, Terminal 91",cadmium,0.296,D,mg/Kg
+47.6325,-122.3786,"Smith Cove, Terminal 91",copper,1.29,D,mg/Kg
+47.6325,-122.3786,"Smith Cove, Terminal 91",lead,0.0931,D,mg/Kg
+47.6325,-122.3786,"Smith Cove, Terminal 91",Zinc,18.5,D,mg/Kg
+47.176735,-122.905337,Squaxin Island,mercuryTotal,0.00508,D,mg/Kg
+47.176735,-122.905337,Squaxin Island,arsenic,1.29,D,mg/Kg
+47.176735,-122.905337,Squaxin Island,cadmium,0.359,D,mg/Kg
+47.176735,-122.905337,Squaxin Island,copper,1,D,mg/Kg
+47.176735,-122.905337,Squaxin Island,lead,0.0285,D,mg/Kg
+47.176735,-122.905337,Squaxin Island,Zinc,14,D,mg/Kg
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",mercuryTotal,0.00543,D,mg/Kg
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",arsenic,1.44,D,mg/Kg
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",cadmium,0.314,D,mg/Kg
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",copper,1.06,D,mg/Kg
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",lead,0.0346,D,mg/Kg
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",Zinc,13.7,D,mg/Kg
+47.25934,-122.43479,Thea Foss Waterway,mercuryTotal,0.0041,D,mg/Kg
+47.25934,-122.43479,Thea Foss Waterway,arsenic,1.21,D,mg/Kg
+47.25934,-122.43479,Thea Foss Waterway,cadmium,0.31,D,mg/Kg
+47.25934,-122.43479,Thea Foss Waterway,copper,1.47,D,mg/Kg
+47.25934,-122.43479,Thea Foss Waterway,lead,0.0743,D,mg/Kg
+47.25934,-122.43479,Thea Foss Waterway,Zinc,14,D,mg/Kg
+47.4485721,-122.3723967,Three Tree Point,mercuryTotal,0.0051,D,mg/Kg
+47.4485721,-122.3723967,Three Tree Point,arsenic,1.47,D,mg/Kg
+47.4485721,-122.3723967,Three Tree Point,cadmium,0.303,D,mg/Kg
+47.4485721,-122.3723967,Three Tree Point,copper,1.05,D,mg/Kg
+47.4485721,-122.3723967,Three Tree Point,lead,0.0325,D,mg/Kg
+47.4485721,-122.3723967,Three Tree Point,Zinc,15,D,mg/Kg
+48.0616613,-122.293939,Tulalip Bay,mercuryTotal,0.00661,D,mg/Kg
+48.0616613,-122.293939,Tulalip Bay,arsenic,1.41,D,mg/Kg
+48.0616613,-122.293939,Tulalip Bay,cadmium,0.315,D,mg/Kg
+48.0616613,-122.293939,Tulalip Bay,copper,1.2,D,mg/Kg
+48.0616613,-122.293939,Tulalip Bay,lead,0.0421,D,mg/Kg
+48.0616613,-122.293939,Tulalip Bay,Zinc,11.1,D,mg/Kg
+48.069978,-122.300216,Tulalip Reservation,mercuryTotal,0.0051,D,mg/Kg
+48.069978,-122.300216,Tulalip Reservation,arsenic,1.27,D,mg/Kg
+48.069978,-122.300216,Tulalip Reservation,cadmium,0.301,D,mg/Kg
+48.069978,-122.300216,Tulalip Reservation,copper,0.96,D,mg/Kg
+48.069978,-122.300216,Tulalip Reservation,lead,0.033,D,mg/Kg
+48.069978,-122.300216,Tulalip Reservation,Zinc,11.2,D,mg/Kg
+47.052373,-122.9101963,West Bay Park,mercuryTotal,0.00494,D,mg/Kg
+47.052373,-122.9101963,West Bay Park,arsenic,1.28,D,mg/Kg
+47.052373,-122.9101963,West Bay Park,cadmium,0.289,D,mg/Kg
+47.052373,-122.9101963,West Bay Park,copper,1.03,D,mg/Kg
+47.052373,-122.9101963,West Bay Park,lead,0.0316,D,mg/Kg
+47.052373,-122.9101963,West Bay Park,Zinc,12.2,D,mg/Kg
+47.6609,-122.5668,Williams Olson Park,mercuryTotal,0.00539,D,mg/Kg
+47.6609,-122.5668,Williams Olson Park,arsenic,1.5,D,mg/Kg
+47.6609,-122.5668,Williams Olson Park,cadmium,0.291,D,mg/Kg
+47.6609,-122.5668,Williams Olson Park,copper,1.78,D,mg/Kg
+47.6609,-122.5668,Williams Olson Park,lead,0.0611,D,mg/Kg
+47.6609,-122.5668,Williams Olson Park,Zinc,15.2,D,mg/Kg
