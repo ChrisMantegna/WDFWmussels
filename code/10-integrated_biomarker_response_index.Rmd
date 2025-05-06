@@ -90,70 +90,70 @@ df1$reporting_area <- as.factor(df1$reporting_area)
 ## fixing site names & trimming white space
 ```{r}
 
-chlordane$site[chlordane$site == "Blair Waterway #2"] <- "Blair Waterway Two"
-chlordane$site[chlordane$site == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
-chlordane$site[chlordane$site == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
-chlordane$site[chlordane$site == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
-chlordane$site[chlordane$site == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
-chlordane$site[chlordane$site == "Purdy - Dexters"] <- "Purdy, Dexters"
-chlordane$site[chlordane$site == "S of Skunk Island"] <- "South of Skunk Island"
-chlordane$site[chlordane$site == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+chlordane$site_name[chlordane$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+chlordane$site_name[chlordane$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+chlordane$site_name[chlordane$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+chlordane$site_name[chlordane$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+chlordane$site_name[chlordane$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+chlordane$site_name[chlordane$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+chlordane$site_name[chlordane$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+chlordane$site_name[chlordane$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
 
-ddt$site[ddt$site == "Blair Waterway #2"] <- "Blair Waterway Two"
-ddt$site[ddt$site == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
-ddt$site[ddt$site == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
-ddt$site[ddt$site == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
-ddt$site[ddt$site == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
-ddt$site[ddt$site == "Purdy - Dexters"] <- "Purdy, Dexters"
-ddt$site[ddt$site == "S of Skunk Island"] <- "South of Skunk Island"
-ddt$site[ddt$site == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+ddt$site_name[ddt$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+ddt$site_name[ddt$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+ddt$site_name[ddt$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+ddt$site_name[ddt$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+ddt$site_name[ddt$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+ddt$site_name[ddt$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+ddt$site_name[ddt$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+ddt$site_name[ddt$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
 
-hch$site[hch$site == "Blair Waterway #2"] <- "Blair Waterway Two"
-hch$site[hch$site == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
-hch$site[hch$site == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
-hch$site[hch$site == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
-hch$site[hch$site == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
-hch$site[hch$site == "Purdy - Dexters"] <- "Purdy, Dexters"
-hch$site[hch$site == "S of Skunk Island"] <- "South of Skunk Island"
-hch$site[hch$site == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+hch$site_name[hch$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+hch$site_name[hch$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+hch$site_name[hch$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+hch$site_name[hch$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+hch$site_name[hch$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+hch$site_name[hch$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+hch$site_name[hch$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+hch$site_name[hch$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
 
-metal$site[metal$site == "Blair Waterway #2"] <- "Blair Waterway Two"
-metal$site[metal$site == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
-metal$site[metal$site == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
-metal$site[metal$site == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
-metal$site[metal$site == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
-metal$site[metal$site == "Purdy - Dexters"] <- "Purdy, Dexters"
-metal$site[metal$site == "S of Skunk Island"] <- "South of Skunk Island"
-metal$site[metal$site == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+metal$site_name[metal$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+metal$site_name[metal$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+metal$site_name[metal$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+metal$site_name[metal$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+metal$site_name[metal$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+metal$site_name[metal$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+metal$site_name[metal$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+metal$site_name[metal$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
 metal$analyte[metal$analyte == "mercuryTotal"] <- "mercury"
 metal$analyte[metal$analyte == "Zinc"] <- "zinc"
 
-pbde$site[pbde$site == "Blair Waterway #2"] <- "Blair Waterway Two"
-pbde$site[pbde$site == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
-pbde$site[pbde$site == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
-pbde$site[pbde$site == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
-pbde$site[pbde$site == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
-pbde$site[pbde$site == "Purdy - Dexters"] <- "Purdy, Dexters"
-pbde$site[pbde$site == "S of Skunk Island"] <- "South of Skunk Island"
-pbde$site[pbde$site == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+pbde$site_name[pbde$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+pbde$site_name[pbde$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+pbde$site_name[pbde$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+pbde$site_name[pbde$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+pbde$site_name[pbde$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+pbde$site_name[pbde$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+pbde$site_name[pbde$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+pbde$site_name[pbde$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
 
-pcb$site[pcb$site == "Blair Waterway #2"] <- "Blair Waterway Two"
-pcb$site[pcb$site == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
-pcb$site[pcb$site == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
-pcb$site[pcb$site == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
-pcb$site[pcb$site == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
-pcb$site[pcb$site == "Purdy - Dexters"] <- "Purdy, Dexters"
-pcb$site[pcb$site == "S of Skunk Island"] <- "South of Skunk Island"
-pcb$site[pcb$site == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+pcb$site_name[pcb$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+pcb$site_name[pcb$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+pcb$site_name[pcb$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+pcb$site_name[pcb$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+pcb$site_name[pcb$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+pcb$site_name[pcb$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+pcb$site_name[pcb$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+pcb$site_name[pcb$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
 
-pesticide$site[pesticide$site == "Blair Waterway #2"] <- "Blair Waterway Two"
-pesticide$site[pesticide$site == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
-pesticide$site[pesticide$site == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
-pesticide$site[pesticide$site == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
-pesticide$site[pesticide$site == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
-pesticide$site[pesticide$site == "Purdy - Dexters"] <- "Purdy, Dexters"
-pesticide$site[pesticide$site == "S of Skunk Island"] <- "South of Skunk Island"
-pesticide$site[pesticide$site == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+pesticide$site_name[pesticide$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+pesticide$site_name[pesticide$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+pesticide$site_name[pesticide$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+pesticide$site_name[pesticide$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+pesticide$site_name[pesticide$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+pesticide$site_name[pesticide$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+pesticide$site_name[pesticide$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+pesticide$site_name[pesticide$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
 
 df1 <- df1 %>%
   mutate(across(where(is.character), str_trim))
@@ -194,6 +194,7 @@ df1 <- df1 %>%
   summarise(
     latitude= first(latitude),
     longitude= first(longitude),
+    site_number= first(site_number),
     p450 = mean(p450, na.rm = TRUE),
     sod = mean(sod, na.rm = TRUE),
     shell = mean(shell, na.rm = TRUE),
@@ -210,7 +211,7 @@ df1 <- df1 %>%
   ungroup()
 
 head(df1)
-#write.csv(df1, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/avg_site_level.csv", row.names = FALSE)
+write.csv(df1, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/avg_site_level.csv", row.names = FALSE)
 
 ```
 
@@ -255,43 +256,49 @@ chlordane_wide <- chlordane %>%
     names_from = analyte,      # this becomes the new column names
     values_from = wet_value    # this fills the values
   )
+write.csv(chlordane_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/chlordane_wide.csv", row.names = FALSE)
 
 ddt_wide <- ddt %>%
   pivot_wider(
     names_from = analyte,      # this becomes the new column names
     values_from = wet_value    # this fills the values
   )
+write.csv(ddt_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/ddt_wide.csv", row.names = FALSE)
 
 hch_wide <- hch %>%
   pivot_wider(
     names_from = analyte,      # this becomes the new column names
     values_from = wet_value    # this fills the values
   )
+write.csv(hch_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/hch_wide.csv", row.names = FALSE)
 
-metal_wide <- metal_df %>%
+metal_wide <- metal %>%
   pivot_wider(
     names_from = analyte,      # this becomes the new column names
     values_from = wet_value    # this fills the values
   )
+write.csv(metal_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/metal_wide.csv", row.names = FALSE)
 
 pbde_wide <- pbde %>%
   pivot_wider(
     names_from = analyte,      # this becomes the new column names
     values_from = wet_value    # this fills the values
   )
+write.csv(pbde_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/pbde_wide.csv", row.names = FALSE)
 
 pcb_wide <- pcb %>%
   pivot_wider(
     names_from = analyte,      # this becomes the new column names
     values_from = wet_value    # this fills the values
   )
+write.csv(pcb_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/pcb_wide.csv", row.names = FALSE)
 
 pesticide_wide <- pesticide %>%
   pivot_wider(
     names_from = analyte,      # this becomes the new column names
     values_from = wet_value    # this fills the values
   )
-
+write.csv(pesticide_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/pesticide_wide.csv", row.names = FALSE)
 
 ```
 
