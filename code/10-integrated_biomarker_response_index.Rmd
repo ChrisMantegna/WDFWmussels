@@ -54,7 +54,7 @@ knitr::opts_chunk$set(
 getwd()
 #setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels") # something here isn't working right - check out why
 
-df<- read.csv("../data/all_with_imputation_weights_site_ra.csv") # load data
+df<- read.csv("../data/all_with_imputations_and_identifiers.csv") # load data
 
 str(df) # checking df structure (classes of each column of data)
 summary(df) #checking df contents (quick stats for each column)
@@ -73,11 +73,34 @@ summary(df) # check
 ```{r}
 
 # make categorical columns factors
-df3$site_number <- as.factor(df3$site_number)
-df3$sample_id <- as.factor(df3$sample_id)
-df3$reporting_area <- as.factor(df3$reporting_area)
+df$site_number <- as.factor(df$site_number)
+df$sample_id <- as.factor(df$sample_id)
+df$reporting_area <- as.factor(df$reporting_area)
 
 ```
+
+
+# Fixing site names & trimming white space
+```{r}
+
+df$site[df$site == "Blair Waterway #2"] <- "Blair Waterway Two"
+df$site[df$site == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+df$site[df$site == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+df$site[df$site == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+df$site[df$site == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+df$site[df$site == "Purdy - Dexters"] <- "Purdy, Dexters"
+df$site[df$site == "S of Skunk Island"] <- "South of Skunk Island"
+df$site[df$site == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+df$analyte[df$analyte == "mercuryTotal"] <- "mercury"
+df$analyte[df$analyte == "Zinc"] <- "zinc"
+
+df <- df %>%
+  mutate(across(where(is.character), str_trim))
+
+#save the new df's if need be
+
+```
+
 
 ```{r}
 
@@ -86,7 +109,7 @@ df3$reporting_area <- as.factor(df3$reporting_area)
 biomarkers<- c("p450", "sod")
 morphometrics<- c("shell", "weight_initial_g", "weight_change_g", "weight_final_g", "length_mm", "height_mm", "width_mm")
 
-# define the reference groups
+# define the reference groups - only using Penn Cove
 # penn cove= site 3, using in index 1 and 3, hc holly = site 29, using in index 2 and 3, broad spit = site 30, using in index 2 and 3
 
 #### Penn Cove Only 
@@ -114,51 +137,7 @@ ibr_df <- df %>%
     ibr1_morphometrics = rowMeans(morph_z, na.rm = TRUE),
     ibr1_overall = rowMeans(cbind(ibr1_biomarkers, ibr1_morphometrics), na.rm = TRUE))
 
-#### Penn Cove & HC Sites 
-ref_df <- df %>% filter(site_number %in% c(3, 29, 30)) # define reference sites
-ref_vars <- ref_df %>%
-  select(p450, sod, shell, weight_initial_g, weight_change_g, weight_final_g, length_mm, height_mm, width_mm)
 
-ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE) # reference site means - bio
-ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE) # reference site sds - bio
-ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE) 
-ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE) 
-
-bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-") # z-scores prep
-bio_z <- sweep(bio_z, 2, ref_bio_sds, "/") # z-score completion
-morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
-morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
-# add to df
-ibr_df <- bind_cols(ibr_df, bio_z, morph_z)
-ibr_df <- ibr_df %>%
- mutate(
-    ibr3_biomarkers = rowMeans(bio_z, na.rm = TRUE),
-    ibr3_morphometrics = rowMeans(morph_z, na.rm = TRUE),
-    ibr3_overall = rowMeans(cbind(ibr3_biomarkers, ibr3_morphometrics), na.rm = TRUE))
-
-#### HC Sites Only
-ref_df <- df %>% filter(site_number %in% c(29, 30)) # define reference sites
-ref_vars <- ref_df %>%
-  select(p450, sod, shell, weight_initial_g, weight_change_g, weight_final_g, length_mm, height_mm, width_mm)
-
-ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE) # refernce site means
-ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE) # reference site sds
-ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE)
-ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE)
-
-bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-") # z-scores
-bio_z <- sweep(bio_z, 2, ref_bio_sds, "/")
-morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
-morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
-# combine into final df with signed values
-ibr_df <- bind_cols(ibr_df, bio_z, morph_z)
-ibr_df <- ibr_df %>%
- mutate(
-    ibr2_biomarkers = rowMeans(bio_z, na.rm = TRUE),
-    ibr2_morphometrics = rowMeans(morph_z, na.rm = TRUE),
-    ibr2_overall = rowMeans(cbind(ibr2_biomarkers, ibr2_morphometrics), na.rm = TRUE))
-
-# saved the complete df in the next block after adding the condition indices back to the df
 
 ```
 
@@ -181,31 +160,6 @@ ibr_df <- ibr_df %>%
     ci2_1 = condition_z$ci2,
     ci3_1 = condition_z$ci3,)
 
-#### HC Sites Only
-ref_df <- df %>% filter(site_number %in% c(29, 30)) # define reference sites, switched to the site numbers instead of names to catch them all - one of the broad spit samples keeps getting dropped - the name may be typed different
-ref_ci_means <- colMeans(ref_df[, condition], na.rm = TRUE) # reference means
-ref_ci_sds   <- apply(ref_df[, condition], 2, sd, na.rm = TRUE) # reference sds
-condition_z <- sweep(df[, condition], 2, ref_ci_means, "-") # z-score prep relative to reference site
-condition_z <- sweep(condition_z, 2, ref_ci_sds, "/") # z-scores completion
-ibr_df <- bind_cols(ibr_df, condition_z) # add the new columns to the df
-ibr_df <- ibr_df %>%
- mutate(
-    ci1_2 = condition_z$ci1,
-    ci2_2 = condition_z$ci2,
-    ci3_2 = condition_z$ci3,)
-
-#### Penn Cove & HC Sites
-ref_df <- df %>% filter(site_number %in% c(3, 29, 30)) # define reference sites
-ref_ci_means <- colMeans(ref_df[, condition], na.rm = TRUE) # reference means
-ref_ci_sds   <- apply(ref_df[, condition], 2, sd, na.rm = TRUE) # reference sds
-condition_z <- sweep(df[, condition], 2, ref_ci_means, "-") # z-scores prep
-condition_z <- sweep(condition_z, 2, ref_ci_sds, "/") # z-score completion
-ibr_df <- bind_cols(ibr_df, condition_z) # add the new columns to the full df
-ibr_df <- ibr_df %>%
- mutate(
-    ci1_3 = condition_z$ci1,
-    ci2_3 = condition_z$ci2,
-    ci3_3 = condition_z$ci3,)
 
 # save it
 #write.csv(ibr_df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/complete_cleaned_ibr.csv", row.names = FALSE)
@@ -217,8 +171,7 @@ ibr_df <- ibr_df %>%
 ```{r}
 
 df1<- read.csv("../data/cleaned/ibr_1.csv")
-df2<- read.csv("../data/cleaned/ibr_2.csv")
-df3<- read.csv("../data/cleaned/ibr_3.csv")
+
 
 # pivot only the index columns - adjusted for each df
 ibr3_long <- df3 %>%
@@ -248,40 +201,7 @@ all_index<- ggplot(ibr1_long, aes(x = site_name, y = index_value,
 
 print(all_index)
 
-#### plotting ibr2 with HC reference sites
-all_index2<- ggplot(ibr2_long, aes(x = site_name, y = index_value,
-                     color = site_name %in% c("Hood Canal Holly", "Broad Spit (Fisherman's Point)"))) +
-  geom_jitter(width = 0.2, alpha = 0.7) +
-  geom_boxplot(outlier.shape = NA, alpha = 0.2) +
-  facet_wrap(~ index_type, ncol = 1, scales = "free_y") +
-  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),legend.position = "none") +
-  labs(title = "IBRv2i Indices by Site",
-       x = "Site", y = "IBRv2i Value")
 
-# save and view
-#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibr2_all_indices.png", plot= all_index2, width = 16, height = 14, dpi = 300)
-
-print(all_index2)
-
-
-#### plotting ibr3 with Penn Cove + HC reference sites
-all_index3<- ggplot(ibr3_long, aes(x = site_name, y = index_value,
-                     color = site_name %in% c("Penn Cove Reference", "Hood Canal Holly", "Broad Spit (Fisherman's Point)"))) +
-  geom_jitter(width = 0.2, alpha = 0.7) +
-  geom_boxplot(outlier.shape = NA, alpha = 0.2) +
-  facet_wrap(~ index_type, ncol = 1, scales = "free_y") +
-  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1),legend.position = "none") +
-  labs(title = "IBRv2i Indices by Site",
-       x = "Site", y = "IBRv2i Value")
-
-# save and view
-#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibr3_all_indices.png", plot= all_index3, width = 16, height = 14, dpi = 300)
-
-print(all_index3)
 
 ```
 ## Radars, reference overlay

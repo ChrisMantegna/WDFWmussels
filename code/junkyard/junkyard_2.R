@@ -269,5 +269,109 @@ print(dunn_result)
 
 ```
 
+#### Penn Cove & HC Sites 
+ref_df <- df %>% filter(site_number %in% c(3, 29, 30)) # define reference sites
+ref_vars <- ref_df %>%
+  select(p450, sod, shell, weight_initial_g, weight_change_g, weight_final_g, length_mm, height_mm, width_mm)
 
+ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE) # reference site means - bio
+ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE) # reference site sds - bio
+ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE) 
+ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE) 
+
+bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-") # z-scores prep
+bio_z <- sweep(bio_z, 2, ref_bio_sds, "/") # z-score completion
+morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
+morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
+# add to df
+ibr_df <- bind_cols(ibr_df, bio_z, morph_z)
+ibr_df <- ibr_df %>%
+  mutate(
+    ibr3_biomarkers = rowMeans(bio_z, na.rm = TRUE),
+    ibr3_morphometrics = rowMeans(morph_z, na.rm = TRUE),
+    ibr3_overall = rowMeans(cbind(ibr3_biomarkers, ibr3_morphometrics), na.rm = TRUE))
+
+#### HC Sites Only
+ref_df <- df %>% filter(site_number %in% c(29, 30)) # define reference sites
+ref_vars <- ref_df %>%
+  select(p450, sod, shell, weight_initial_g, weight_change_g, weight_final_g, length_mm, height_mm, width_mm)
+
+ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE) # refernce site means
+ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE) # reference site sds
+ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE)
+ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE)
+
+bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-") # z-scores
+bio_z <- sweep(bio_z, 2, ref_bio_sds, "/")
+morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
+morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
+# combine into final df with signed values
+ibr_df <- bind_cols(ibr_df, bio_z, morph_z)
+ibr_df <- ibr_df %>%
+  mutate(
+    ibr2_biomarkers = rowMeans(bio_z, na.rm = TRUE),
+    ibr2_morphometrics = rowMeans(morph_z, na.rm = TRUE),
+    ibr2_overall = rowMeans(cbind(ibr2_biomarkers, ibr2_morphometrics), na.rm = TRUE))
+
+# saved the complete df in the next block after adding the condition indices back to the df
+
+#### HC Sites Only
+ref_df <- df %>% filter(site_number %in% c(29, 30)) # define reference sites, switched to the site numbers instead of names to catch them all - one of the broad spit samples keeps getting dropped - the name may be typed different
+ref_ci_means <- colMeans(ref_df[, condition], na.rm = TRUE) # reference means
+ref_ci_sds   <- apply(ref_df[, condition], 2, sd, na.rm = TRUE) # reference sds
+condition_z <- sweep(df[, condition], 2, ref_ci_means, "-") # z-score prep relative to reference site
+condition_z <- sweep(condition_z, 2, ref_ci_sds, "/") # z-scores completion
+ibr_df <- bind_cols(ibr_df, condition_z) # add the new columns to the df
+ibr_df <- ibr_df %>%
+  mutate(
+    ci1_2 = condition_z$ci1,
+    ci2_2 = condition_z$ci2,
+    ci3_2 = condition_z$ci3,)
+
+#### Penn Cove & HC Sites
+ref_df <- df %>% filter(site_number %in% c(3, 29, 30)) # define reference sites
+ref_ci_means <- colMeans(ref_df[, condition], na.rm = TRUE) # reference means
+ref_ci_sds   <- apply(ref_df[, condition], 2, sd, na.rm = TRUE) # reference sds
+condition_z <- sweep(df[, condition], 2, ref_ci_means, "-") # z-scores prep
+condition_z <- sweep(condition_z, 2, ref_ci_sds, "/") # z-score completion
+ibr_df <- bind_cols(ibr_df, condition_z) # add the new columns to the full df
+ibr_df <- ibr_df %>%
+  mutate(
+    ci1_3 = condition_z$ci1,
+    ci2_3 = condition_z$ci2,
+    ci3_3 = condition_z$ci3,)
+#### plotting ibr2 with HC reference sites
+all_index2<- ggplot(ibr2_long, aes(x = site_name, y = index_value,
+                                   color = site_name %in% c("Hood Canal Holly", "Broad Spit (Fisherman's Point)"))) +
+  geom_jitter(width = 0.2, alpha = 0.7) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.2) +
+  facet_wrap(~ index_type, ncol = 1, scales = "free_y") +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),legend.position = "none") +
+  labs(title = "IBRv2i Indices by Site",
+       x = "Site", y = "IBRv2i Value")
+
+# save and view
+#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibr2_all_indices.png", plot= all_index2, width = 16, height = 14, dpi = 300)
+
+print(all_index2)
+
+
+#### plotting ibr3 with Penn Cove + HC reference sites
+all_index3<- ggplot(ibr3_long, aes(x = site_name, y = index_value,
+                                   color = site_name %in% c("Penn Cove Reference", "Hood Canal Holly", "Broad Spit (Fisherman's Point)"))) +
+  geom_jitter(width = 0.2, alpha = 0.7) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.2) +
+  facet_wrap(~ index_type, ncol = 1, scales = "free_y") +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),legend.position = "none") +
+  labs(title = "IBRv2i Indices by Site",
+       x = "Site", y = "IBRv2i Value")
+
+# save and view
+#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibr3_all_indices.png", plot= all_index3, width = 16, height = 14, dpi = 300)
+
+print(all_index3)
 
