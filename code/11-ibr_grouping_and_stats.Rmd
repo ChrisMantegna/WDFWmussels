@@ -346,6 +346,7 @@ write.csv(data, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/full
 ```
 
 # KW + post hoc
+## individual sample - level
 ```{r}
 
 #KW
@@ -1227,6 +1228,7 @@ write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/ou
 ```
 
 # ANOVA + post hoc
+## individual sample - level
 ## shell
 ```{r}
 
@@ -1402,6 +1404,7 @@ write.csv(tukey_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/o
 ```
 
 # Correlations, Spearman & Kendalls
+## site-level
 ## data prep
 ```{r}
 

@@ -55,13 +55,13 @@ getwd()
 #setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels") # something here isn't working right - check out why
 
 df1<- read.csv("../data/all_with_imputations_and_identifiers.csv")
-chlordane<- read.csv("../data/test_chlordane.csv")
-ddt<- read.csv("../data/test_ddt.csv")
-hch<- read.csv("../data/test_hch.csv")
-metal<- read.csv("../data/test_metal.csv")
-pbde<- read.csv("../data/test_pbde.csv")
-pcb<- read.csv("../data/test_pcb.csv")
-pesticide<- read.csv("../data/test_pesticide.csv")
+chlordane<- read.csv("../data/indices/test_chlordane.csv")
+ddt<- read.csv("../data/indices/test_ddt.csv")
+hch<- read.csv("../data/indices/test_hch.csv")
+metal<- read.csv("../data/indices/test_metal.csv")
+pbde<- read.csv("../data/indices/test_pbde.csv")
+pcb<- read.csv("../data/indices/test_pcb.csv")
+pesticide<- read.csv("../data/indices/test_pesticide.csv")
 
 str(df1) # checking df structure (classes of each column of data)
 summary(df1) #checking df contents (quick stats for each column)
@@ -181,6 +181,121 @@ pesticide <- pesticide %>%
 
 ```
 
+## Reducing all sample df to site-level
+```{r}
+
+# cleaning up site names and then averaging by site for new df
+#data$site_name <- trimws(data$site_name)
+#data <- data %>%
+#  filter(!is.na(site_name), site_name != "")
+
+df1 <- df1 %>%
+  group_by(site_name, reporting_area) %>% 
+  summarise(
+    latitude= first(latitude),
+    longitude= first(longitude),
+    p450 = mean(p450, na.rm = TRUE),
+    sod = mean(sod, na.rm = TRUE),
+    shell = mean(shell, na.rm = TRUE),
+    weight_initial = mean(weight_initial_g, na.rm = TRUE),
+    weight_change = mean(weight_change_g, na.rm = TRUE),
+    weight_final = mean(weight_final_g, na.rm = TRUE),
+    length = mean(length_mm, na.rm = TRUE),
+    height = mean(height_mm, na.rm = TRUE),
+    width = mean(width_mm, na.rm = TRUE),
+    ci1 = mean(ci1, na.rm = TRUE),
+    ci2 = mean(ci2, na.rm = TRUE),
+    ci3 = mean(ci3, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+head(df1)
+#write.csv(df1, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/avg_site_level.csv", row.names = FALSE)
+
+```
+
+## replace undetected analyte values 
+```{r}
+
+chlordane<- chlordane %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
+
+ddt<- ddt %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
+
+hch<- hch %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
+
+metal<- metal %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
+
+pbde<- pbde %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
+
+pcb<- pcb %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
+
+pesticide<- pesticide %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
+
+```
+
+## pivoting analytes
+```{r}
+
+chlordane_wide <- chlordane %>%
+  pivot_wider(
+    names_from = analyte,      # this becomes the new column names
+    values_from = wet_value    # this fills the values
+  )
+
+ddt_wide <- ddt %>%
+  pivot_wider(
+    names_from = analyte,      # this becomes the new column names
+    values_from = wet_value    # this fills the values
+  )
+
+hch_wide <- hch %>%
+  pivot_wider(
+    names_from = analyte,      # this becomes the new column names
+    values_from = wet_value    # this fills the values
+  )
+
+metal_wide <- metal_df %>%
+  pivot_wider(
+    names_from = analyte,      # this becomes the new column names
+    values_from = wet_value    # this fills the values
+  )
+
+pbde_wide <- pbde %>%
+  pivot_wider(
+    names_from = analyte,      # this becomes the new column names
+    values_from = wet_value    # this fills the values
+  )
+
+pcb_wide <- pcb %>%
+  pivot_wider(
+    names_from = analyte,      # this becomes the new column names
+    values_from = wet_value    # this fills the values
+  )
+
+pesticide_wide <- pesticide %>%
+  pivot_wider(
+    names_from = analyte,      # this becomes the new column names
+    values_from = wet_value    # this fills the values
+  )
+
+
+```
+
+
 ## IBR - biomarker, morphometric, combined
 ```{r}
 
@@ -193,7 +308,7 @@ morphometrics<- c("shell", "weight_initial_g", "weight_change_g", "weight_final_
 # penn cove= site 3, using in index 1 and 3, hc holly = site 29, using in index 2 and 3, broad spit = site 30, using in index 2 and 3
 
 #### Penn Cove Only 
-ref_df <- df %>% filter(site_number == 3) # define reference site
+ref_df <- df1 %>% filter(site_name == "Penn Cove Reference") # define reference site
 
 # not using since I'm separating biomarkers from morphometrics to balance their weight in the index
 #ref_vars <- ref_df %>%
@@ -210,12 +325,12 @@ morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
 morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
 # add to OG df or create a new one and name the columns correctly
 ibr_df <- df %>%
-  select(latitude, longitude, sample_id,site_number, site_name, reporting_area) %>%
+  select(latitude, longitude, site_name, reporting_area) %>%
   bind_cols(bio_z, morph_z) %>%
   mutate(
-    ibr1_biomarkers = rowMeans(bio_z, na.rm = TRUE),
-    ibr1_morphometrics = rowMeans(morph_z, na.rm = TRUE),
-    ibr1_overall = rowMeans(cbind(ibr1_biomarkers, ibr1_morphometrics), na.rm = TRUE))
+    ibr_biomarker = rowMeans(bio_z, na.rm = TRUE),
+    ibr_morphometric = rowMeans(morph_z, na.rm = TRUE),
+    ibr_combined = rowMeans(cbind(ibr_biomarker, ibr_morphometric), na.rm = TRUE))
 
 
 
@@ -260,7 +375,7 @@ ibr_df <- ibr_df %>%
 ## Box plots, Separate Indices per Site
 ```{r}
 
-df1<- read.csv("../data/cleaned/ibr_1.csv")
+#df1<- read.csv("../data/cleaned/ibr_1.csv")
 
 
 # pivot only the index columns - adjusted for each df
