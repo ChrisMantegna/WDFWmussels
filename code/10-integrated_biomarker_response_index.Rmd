@@ -54,14 +54,16 @@ knitr::opts_chunk$set(
 getwd()
 #setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels") # something here isn't working right - check out why
 
+# double check the df's - i updated once i built my new ones
+
 df1<- read.csv("../data/all_with_imputations_and_identifiers.csv")
-chlordane<- read.csv("../data/indices/test_chlordane.csv")
-ddt<- read.csv("../data/indices/test_ddt.csv")
-hch<- read.csv("../data/indices/test_hch.csv")
-metal<- read.csv("../data/indices/test_metal.csv")
-pbde<- read.csv("../data/indices/test_pbde.csv")
-pcb<- read.csv("../data/indices/test_pcb.csv")
-pesticide<- read.csv("../data/indices/test_pesticide.csv")
+chlordane<- read.csv("../data/indices/chlordane_wide.csv")
+ddt<- read.csv("../data/indices/ddt_wide.csv")
+hch<- read.csv("../data/indices/hch_wide.csv")
+metal<- read.csv("../data/indices/metal_wide.csv")
+pbde<- read.csv("../data/indices/pbde_wide.csv")
+pcb<- read.csv("../data/indices/pcb_wide.csv")
+pesticide<- read.csv("../data/indices/pesticide_wide.csv")
 
 str(df1) # checking df structure (classes of each column of data)
 summary(df1) #checking df contents (quick stats for each column)
@@ -211,7 +213,7 @@ df1 <- df1 %>%
   ungroup()
 
 head(df1)
-write.csv(df1, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/avg_site_level.csv", row.names = FALSE)
+#write.csv(df1, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/avg_site_level.csv", row.names = FALSE)
 
 ```
 
@@ -251,65 +253,82 @@ pesticide<- pesticide %>%
 ## pivoting analytes
 ```{r}
 
+chlordane <- chlordane %>%
+  select(site_name, latitude, longitude, analyte, wet_value)  # keep only what's needed
 chlordane_wide <- chlordane %>%
   pivot_wider(
-    names_from = analyte,      # this becomes the new column names
-    values_from = wet_value    # this fills the values
+    names_from = analyte,
+    values_from = wet_value
   )
-write.csv(chlordane_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/chlordane_wide.csv", row.names = FALSE)
 
+# Save the cleaned wide-format table
+write.csv(chlordane_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/chlordane_wide.csv", row.names = FALSE)
+
+ddt <- ddt %>%
+  select(site_name, latitude, longitude, analyte, wet_value) 
 ddt_wide <- ddt %>%
   pivot_wider(
-    names_from = analyte,      # this becomes the new column names
-    values_from = wet_value    # this fills the values
+    names_from = analyte,      
+    values_from = wet_value    
   )
-write.csv(ddt_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/ddt_wide.csv", row.names = FALSE)
+write.csv(ddt_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/ddt_wide.csv", row.names = FALSE)
 
+hch <- hch %>%
+  select(site_name, latitude, longitude, analyte, wet_value)  
 hch_wide <- hch %>%
   pivot_wider(
-    names_from = analyte,      # this becomes the new column names
-    values_from = wet_value    # this fills the values
+    names_from = analyte,      
+    values_from = wet_value    
   )
-write.csv(hch_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/hch_wide.csv", row.names = FALSE)
+write.csv(hch_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/hch_wide.csv", row.names = FALSE)
 
+metal <- metal %>%
+  select(site_name, latitude, longitude, analyte, wet_value)  
 metal_wide <- metal %>%
   pivot_wider(
-    names_from = analyte,      # this becomes the new column names
-    values_from = wet_value    # this fills the values
+    names_from = analyte,      
+    values_from = wet_value    
   )
-write.csv(metal_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/metal_wide.csv", row.names = FALSE)
+write.csv(metal_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/metal_wide.csv", row.names = FALSE)
 
+pbde <- pbde %>%
+  select(site_name, latitude, longitude, analyte, wet_value)  
 pbde_wide <- pbde %>%
   pivot_wider(
-    names_from = analyte,      # this becomes the new column names
-    values_from = wet_value    # this fills the values
+    names_from = analyte,      
+    values_from = wet_value   
   )
-write.csv(pbde_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/pbde_wide.csv", row.names = FALSE)
+write.csv(pbde_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pbde_wide.csv", row.names = FALSE)
 
+pcb <- pcb %>%
+  select(site_name, latitude, longitude, analyte, wet_value)  
 pcb_wide <- pcb %>%
   pivot_wider(
-    names_from = analyte,      # this becomes the new column names
-    values_from = wet_value    # this fills the values
+    names_from = analyte,      
+    values_from = wet_value    
   )
-write.csv(pcb_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/pcb_wide.csv", row.names = FALSE)
+write.csv(pcb_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pcb_wide.csv", row.names = FALSE)
 
+pesticide <- pesticide %>%
+  select(site_name, latitude, longitude, analyte, wet_value)  # keep only what's needed
 pesticide_wide <- pesticide %>%
   pivot_wider(
     names_from = analyte,      # this becomes the new column names
     values_from = wet_value    # this fills the values
   )
-write.csv(pesticide_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/pesticide_wide.csv", row.names = FALSE)
+write.csv(pesticide_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pesticide_wide.csv", row.names = FALSE)
 
 ```
-
 
 ## IBR - biomarker, morphometric, combined
 ```{r}
 
 # define variables used in building the ibr - 2 biomarkers and 7 morphometric values, CI left out because it is derived from raw measurements that are included in the ibr
 
+#df1<- read.csv("/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/avg_site_level.csv")
+
 biomarkers<- c("p450", "sod")
-morphometrics<- c("shell", "weight_initial_g", "weight_change_g", "weight_final_g", "length_mm", "height_mm", "width_mm")
+morphometrics<- c("shell", "weight_initial", "weight_change", "weight_final", "length", "height", "width")
 
 # define the reference groups - only using Penn Cove
 # penn cove= site 3, using in index 1 and 3, hc holly = site 29, using in index 2 and 3, broad spit = site 30, using in index 2 and 3
@@ -331,15 +350,15 @@ bio_z <- sweep(bio_z, 2, ref_bio_sds, "/") # z-scores- actual conversion from th
 morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
 morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
 # add to OG df or create a new one and name the columns correctly
-ibr_df <- df %>%
-  select(latitude, longitude, site_name, reporting_area) %>%
+ibr_df <- df1 %>%
+  select(latitude, longitude, site_number, site_name, reporting_area) %>%
   bind_cols(bio_z, morph_z) %>%
   mutate(
     ibr_biomarker = rowMeans(bio_z, na.rm = TRUE),
     ibr_morphometric = rowMeans(morph_z, na.rm = TRUE),
     ibr_combined = rowMeans(cbind(ibr_biomarker, ibr_morphometric), na.rm = TRUE))
 
-
+class(df)
 
 ```
 
