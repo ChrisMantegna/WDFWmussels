@@ -1,0 +1,386 @@
+﻿latitude,longitude,site_name,analyte,wet_value,qualifier
+48.6793778,-122.6300583,Aiston Preserve,aldrin,-0.16,U
+48.6793778,-122.6300583,Aiston Preserve,dieldrin,-0.14,U
+48.6793778,-122.6300583,Aiston Preserve,Endosulfan_1,-0.16,U
+48.6793778,-122.6300583,Aiston Preserve,hexachlorobenzene,-0.18,U
+48.6793778,-122.6300583,Aiston Preserve,mirex,-0.18,U
+47.50159,-122.38577,Arroyo Beach,aldrin,-0.2,U
+47.50159,-122.38577,Arroyo Beach,dieldrin,-0.18,U
+47.50159,-122.38577,Arroyo Beach,Endosulfan_1,-0.2,U
+47.50159,-122.38577,Arroyo Beach,hexachlorobenzene,-0.23,U
+47.50159,-122.38577,Arroyo Beach,mirex,-0.23,U
+47.2758,-122.4174,Blair Waterway,aldrin,-0.21,U
+47.2758,-122.4174,Blair Waterway,dieldrin,-0.19,U
+47.2758,-122.4174,Blair Waterway,Endosulfan_1,-0.21,U
+47.2758,-122.4174,Blair Waterway,hexachlorobenzene,-0.24,U
+47.2758,-122.4174,Blair Waterway,mirex,-0.24,U
+47.2632,-122.3856,Blair Waterway #2,aldrin,-0.25,U
+47.2632,-122.3856,Blair Waterway #2,dieldrin,0.41,D
+47.2632,-122.3856,Blair Waterway #2,Endosulfan_1,-0.25,U
+47.2632,-122.3856,Blair Waterway #2,hexachlorobenzene,-0.28,U
+47.2632,-122.3856,Blair Waterway #2,mirex,-0.28,U
+47.68203,-122.50668,Brackenwood Ln,aldrin,-0.23,U
+47.68203,-122.50668,Brackenwood Ln,dieldrin,-0.21,U
+47.68203,-122.50668,Brackenwood Ln,Endosulfan_1,-0.23,U
+47.68203,-122.50668,Brackenwood Ln,hexachlorobenzene,-0.26,U
+47.68203,-122.50668,Brackenwood Ln,mirex,-0.27,U
+47.80934,-122.81556,Broad Spit,aldrin,-0.16,U
+47.80934,-122.81556,Broad Spit,dieldrin,-0.15,U
+47.80934,-122.81556,Broad Spit,Endosulfan_1,-0.16,U
+47.80934,-122.81556,Broad Spit,hexachlorobenzene,-0.18,U
+47.80934,-122.81556,Broad Spit,mirex,-0.19,U
+47.304906,-122.44427,Browns Point Lighthouse,aldrin,-0.16,U
+47.304906,-122.44427,Browns Point Lighthouse,dieldrin,0.18,D
+47.304906,-122.44427,Browns Point Lighthouse,Endosulfan_1,-0.16,U
+47.304906,-122.44427,Browns Point Lighthouse,hexachlorobenzene,-0.18,U
+47.304906,-122.44427,Browns Point Lighthouse,mirex,-0.19,U
+48.52093,-122.600725,Cap Sante,aldrin,-0.19,U
+48.52093,-122.600725,Cap Sante,dieldrin,-0.17,U
+48.52093,-122.600725,Cap Sante,Endosulfan_1,-0.19,U
+48.52093,-122.600725,Cap Sante,hexachlorobenzene,-0.21,U
+48.52093,-122.600725,Cap Sante,mirex,-0.21,U
+47.2009,-122.58342,Chambers Bay Park,aldrin,-0.12,U
+47.2009,-122.58342,Chambers Bay Park,dieldrin,0.12,"D,LOQ"
+47.2009,-122.58342,Chambers Bay Park,Endosulfan_1,-0.12,U
+47.2009,-122.58342,Chambers Bay Park,hexachlorobenzene,-0.14,U
+47.2009,-122.58342,Chambers Bay Park,mirex,-0.14,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",aldrin,-0.15,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",dieldrin,-0.13,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",Endosulfan_1,-0.15,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",hexachlorobenzene,-0.17,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",mirex,-0.17,U
+48.04887,-122.7711,Chimacum Creek delta,aldrin,-0.22,U
+48.04887,-122.7711,Chimacum Creek delta,dieldrin,-0.2,U
+48.04887,-122.7711,Chimacum Creek delta,Endosulfan_1,-0.22,U
+48.04887,-122.7711,Chimacum Creek delta,hexachlorobenzene,-0.25,U
+48.04887,-122.7711,Chimacum Creek delta,mirex,-0.25,U
+48.691084,-122.504012,"Chuckanut, Clark's Point",aldrin,-0.2,U
+48.691084,-122.504012,"Chuckanut, Clark's Point",dieldrin,-0.18,U
+48.691084,-122.504012,"Chuckanut, Clark's Point",Endosulfan_1,-0.2,U
+48.691084,-122.504012,"Chuckanut, Clark's Point",hexachlorobenzene,-0.23,U
+48.691084,-122.504012,"Chuckanut, Clark's Point",mirex,-0.23,U
+47.28915,-122.4096,Comm Bay Skookum,aldrin,-0.22,U
+47.28915,-122.4096,Comm Bay Skookum,dieldrin,0.25,D
+47.28915,-122.4096,Comm Bay Skookum,Endosulfan_1,-0.22,U
+47.28915,-122.4096,Comm Bay Skookum,hexachlorobenzene,-0.24,U
+47.28915,-122.4096,Comm Bay Skookum,mirex,-0.25,U
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",aldrin,-0.16,U
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",dieldrin,0.19,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",Endosulfan_1,-0.16,U
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",hexachlorobenzene,-0.18,U
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",mirex,-0.18,U
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",aldrin,-0.16,U
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",dieldrin,-0.15,U
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",Endosulfan_1,-0.17,U
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",hexachlorobenzene,-0.19,U
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",mirex,-0.19,U
+47.402778,-122.331667,Des Moines Marina,aldrin,-0.18,U
+47.402778,-122.331667,Des Moines Marina,dieldrin,0.18,D
+47.402778,-122.331667,Des Moines Marina,Endosulfan_1,-0.18,U
+47.402778,-122.331667,Des Moines Marina,hexachlorobenzene,-0.21,U
+47.402778,-122.331667,Des Moines Marina,mirex,-0.21,U
+48.064974,-122.857218,Discovery Bay,aldrin,-0.17,U
+48.064974,-122.857218,Discovery Bay,dieldrin,-0.15,U
+48.064974,-122.857218,Discovery Bay,Endosulfan_1,-0.17,U
+48.064974,-122.857218,Discovery Bay,hexachlorobenzene,-0.19,U
+48.064974,-122.857218,Discovery Bay,mirex,-0.19,U
+47.337909,-122.59023,Donkey Creek Delta,aldrin,-0.14,U
+47.337909,-122.59023,Donkey Creek Delta,dieldrin,-0.12,U
+47.337909,-122.59023,Donkey Creek Delta,Endosulfan_1,-0.14,U
+47.337909,-122.59023,Donkey Creek Delta,hexachlorobenzene,-0.16,U
+47.337909,-122.59023,Donkey Creek Delta,mirex,-0.16,U
+47.618875,-122.527234,Eagle Harbor Dr,aldrin,-0.19,U
+47.618875,-122.527234,Eagle Harbor Dr,dieldrin,-0.17,U
+47.618875,-122.527234,Eagle Harbor Dr,Endosulfan_1,-0.19,U
+47.618875,-122.527234,Eagle Harbor Dr,hexachlorobenzene,-0.21,U
+47.618875,-122.527234,Eagle Harbor Dr,mirex,-0.21,U
+48.69395,-122.909933,"Eastsound, Fishing Bay",aldrin,-0.21,U
+48.69395,-122.909933,"Eastsound, Fishing Bay",dieldrin,-0.19,U
+48.69395,-122.909933,"Eastsound, Fishing Bay",Endosulfan_1,-0.21,U
+48.69395,-122.909933,"Eastsound, Fishing Bay",hexachlorobenzene,-0.24,U
+48.69395,-122.909933,"Eastsound, Fishing Bay",mirex,-0.24,U
+47.8142069,-122.3822018,Edmonds Ferry,aldrin,-0.18,U
+47.8142069,-122.3822018,Edmonds Ferry,dieldrin,-0.16,U
+47.8142069,-122.3822018,Edmonds Ferry,Endosulfan_1,-0.18,U
+47.8142069,-122.3822018,Edmonds Ferry,hexachlorobenzene,-0.2,U
+47.8142069,-122.3822018,Edmonds Ferry,mirex,-0.21,U
+47.81094,-122.387955,Edmonds Marina,aldrin,-0.14,U
+47.81094,-122.387955,Edmonds Marina,dieldrin,-0.13,U
+47.81094,-122.387955,Edmonds Marina,Endosulfan_1,-0.14,U
+47.81094,-122.387955,Edmonds Marina,hexachlorobenzene,-0.16,U
+47.81094,-122.387955,Edmonds Marina,mirex,-0.16,U
+47.0769,-123.0034725,Eld Inlet,aldrin,-0.2,U
+47.0769,-123.0034725,Eld Inlet,dieldrin,-0.18,U
+47.0769,-123.0034725,Eld Inlet,Endosulfan_1,-0.2,U
+47.0769,-123.0034725,Eld Inlet,hexachlorobenzene,-0.22,U
+47.0769,-123.0034725,Eld Inlet,mirex,-0.23,U
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,aldrin,-0.18,U
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,dieldrin,0.19,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,Endosulfan_1,-0.18,U
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,hexachlorobenzene,-0.21,U
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,mirex,-0.21,U
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",aldrin,-0.21,U
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",dieldrin,0.22,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",Endosulfan_1,-0.21,U
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",hexachlorobenzene,-0.24,U
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",mirex,-0.24,U
+47.97252,-122.22982,Everett Harbor,aldrin,-0.19,U
+47.97252,-122.22982,Everett Harbor,dieldrin,-0.17,U
+47.97252,-122.22982,Everett Harbor,Endosulfan_1,-0.19,U
+47.97252,-122.22982,Everett Harbor,hexachlorobenzene,-0.22,U
+47.97252,-122.22982,Everett Harbor,mirex,-0.22,U
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",aldrin,-0.28,U
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",dieldrin,-0.25,U
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",Endosulfan_1,-0.28,U
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",hexachlorobenzene,-0.32,U
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",mirex,-0.32,U
+47.19483,-122.748665,Filucy Bay,aldrin,-0.16,U
+47.19483,-122.748665,Filucy Bay,dieldrin,-0.15,U
+47.19483,-122.748665,Filucy Bay,Endosulfan_1,-0.16,U
+47.19483,-122.748665,Filucy Bay,hexachlorobenzene,-0.19,U
+47.19483,-122.748665,Filucy Bay,mirex,-0.19,U
+48.5069444,-123.0194444,Friday Harbor,aldrin,-0.19,U
+48.5069444,-123.0194444,Friday Harbor,dieldrin,-0.17,U
+48.5069444,-123.0194444,Friday Harbor,Endosulfan_1,-0.19,U
+48.5069444,-123.0194444,Friday Harbor,hexachlorobenzene,-0.22,U
+48.5069444,-123.0194444,Friday Harbor,mirex,-0.22,U
+47.3372,-122.58284,Gig Harbor Boat Launch,aldrin,-0.18,U
+47.3372,-122.58284,Gig Harbor Boat Launch,dieldrin,-0.16,U
+47.3372,-122.58284,Gig Harbor Boat Launch,Endosulfan_1,-0.18,U
+47.3372,-122.58284,Gig Harbor Boat Launch,hexachlorobenzene,-0.2,U
+47.3372,-122.58284,Gig Harbor Boat Launch,mirex,-0.2,U
+47.570193,-122.971775,Hood Canal Holly,aldrin,-0.2,U
+47.570193,-122.971775,Hood Canal Holly,dieldrin,-0.18,U
+47.570193,-122.971775,Hood Canal Holly,Endosulfan_1,-0.2,U
+47.570193,-122.971775,Hood Canal Holly,hexachlorobenzene,-0.23,U
+47.570193,-122.971775,Hood Canal Holly,mirex,-0.23,U
+48.027069,-122.999191,Jamestown,aldrin,-0.18,U
+48.027069,-122.999191,Jamestown,dieldrin,-0.16,U
+48.027069,-122.999191,Jamestown,Endosulfan_1,-0.18,U
+48.027069,-122.999191,Jamestown,hexachlorobenzene,-0.21,U
+48.027069,-122.999191,Jamestown,mirex,-0.21,U
+47.7947,-122.5003,Kingston Marina,aldrin,-0.17,U
+47.7947,-122.5003,Kingston Marina,dieldrin,-0.15,U
+47.7947,-122.5003,Kingston Marina,Endosulfan_1,-0.17,U
+47.7947,-122.5003,Kingston Marina,hexachlorobenzene,-0.19,U
+47.7947,-122.5003,Kingston Marina,mirex,-0.19,U
+47.541533,-122.640383,Kitsap St Boat Launch,aldrin,-0.2,U
+47.541533,-122.640383,Kitsap St Boat Launch,dieldrin,-0.18,U
+47.541533,-122.640383,Kitsap St Boat Launch,Endosulfan_1,-0.2,U
+47.541533,-122.640383,Kitsap St Boat Launch,hexachlorobenzene,-0.23,U
+47.541533,-122.640383,Kitsap St Boat Launch,mirex,-0.23,U
+47.3115,-122.68725,Kopachuck State Park,aldrin,-0.14,U
+47.3115,-122.68725,Kopachuck State Park,dieldrin,-0.12,U
+47.3115,-122.68725,Kopachuck State Park,Endosulfan_1,-0.14,U
+47.3115,-122.68725,Kopachuck State Park,hexachlorobenzene,-0.16,U
+47.3115,-122.68725,Kopachuck State Park,mirex,-0.16,U
+47.583016,-122.64217,Lions Park,aldrin,-0.21,U
+47.583016,-122.64217,Lions Park,dieldrin,-0.18,U
+47.583016,-122.64217,Lions Park,Endosulfan_1,-0.21,U
+47.583016,-122.64217,Lions Park,hexachlorobenzene,-0.23,U
+47.583016,-122.64217,Lions Park,mirex,-0.23,U
+48.76652,-122.5395,Locust Beach,aldrin,-0.2,U
+48.76652,-122.5395,Locust Beach,dieldrin,0.22,D
+48.76652,-122.5395,Locust Beach,Endosulfan_1,-0.2,U
+48.76652,-122.5395,Locust Beach,hexachlorobenzene,-0.22,U
+48.76652,-122.5395,Locust Beach,mirex,-0.22,U
+47.579985,-122.67853,Madrona Pont,aldrin,-0.18,U
+47.579985,-122.67853,Madrona Pont,dieldrin,-0.16,U
+47.579985,-122.67853,Madrona Pont,Endosulfan_1,-0.18,U
+47.579985,-122.67853,Madrona Pont,hexachlorobenzene,-0.2,U
+47.579985,-122.67853,Madrona Pont,mirex,-0.2,U
+47.556111,-122.542778,"Manchester, Stormwater Outfall",aldrin,-0.18,U
+47.556111,-122.542778,"Manchester, Stormwater Outfall",dieldrin,-0.16,U
+47.556111,-122.542778,"Manchester, Stormwater Outfall",Endosulfan_1,-0.18,U
+47.556111,-122.542778,"Manchester, Stormwater Outfall",hexachlorobenzene,-0.2,U
+47.556111,-122.542778,"Manchester, Stormwater Outfall",mirex,-0.2,U
+47.29954,-122.74554,Maple Hollow Park,aldrin,-0.15,U
+47.29954,-122.74554,Maple Hollow Park,dieldrin,-0.14,U
+47.29954,-122.74554,Maple Hollow Park,Endosulfan_1,-0.15,U
+47.29954,-122.74554,Maple Hollow Park,hexachlorobenzene,-0.17,U
+47.29954,-122.74554,Maple Hollow Park,mirex,-0.18,U
+48.018181,-122.699838,Maristone Island,aldrin,-0.18,U
+48.018181,-122.699838,Maristone Island,dieldrin,-0.16,U
+48.018181,-122.699838,Maristone Island,Endosulfan_1,-0.18,U
+48.018181,-122.699838,Maristone Island,hexachlorobenzene,-0.2,U
+48.018181,-122.699838,Maristone Island,mirex,-0.2,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,aldrin,-0.15,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,dieldrin,-0.14,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,Endosulfan_1,-0.15,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,hexachlorobenzene,-0.18,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,mirex,-0.18,U
+47.443611,-122.361944,Miller Creek,aldrin,-0.16,U
+47.443611,-122.361944,Miller Creek,dieldrin,0.17,"D,LOQ"
+47.443611,-122.361944,Miller Creek,Endosulfan_1,-0.16,U
+47.443611,-122.361944,Miller Creek,hexachlorobenzene,-0.19,U
+47.443611,-122.361944,Miller Creek,mirex,-0.19,U
+47.35399,-122.69176,Minter Bay,aldrin,-0.16,U
+47.35399,-122.69176,Minter Bay,dieldrin,-0.15,U
+47.35399,-122.69176,Minter Bay,Endosulfan_1,-0.16,U
+47.35399,-122.69176,Minter Bay,hexachlorobenzene,-0.19,U
+47.35399,-122.69176,Minter Bay,mirex,-0.19,U
+47.949831,-122.301703,Mukilteo,aldrin,-0.17,U
+47.949831,-122.301703,Mukilteo,dieldrin,-0.15,U
+47.949831,-122.301703,Mukilteo,Endosulfan_1,-0.17,U
+47.949831,-122.301703,Mukilteo,hexachlorobenzene,-0.19,U
+47.949831,-122.301703,Mukilteo,mirex,-0.19,U
+48.52108,-122.61531,N Avenue Park,aldrin,-0.2,U
+48.52108,-122.61531,N Avenue Park,dieldrin,-0.18,U
+48.52108,-122.61531,N Avenue Park,Endosulfan_1,-0.2,U
+48.52108,-122.61531,N Avenue Park,hexachlorobenzene,-0.23,U
+48.52108,-122.61531,N Avenue Park,mirex,-0.23,U
+48.25523,-122.50817,North Camano,aldrin,-0.21,U
+48.25523,-122.50817,North Camano,dieldrin,-0.19,U
+48.25523,-122.50817,North Camano,Endosulfan_1,-0.21,U
+48.25523,-122.50817,North Camano,hexachlorobenzene,-0.24,U
+48.25523,-122.50817,North Camano,mirex,-0.24,U
+48.022466,-122.728123,Oak Bay County Park,aldrin,-0.18,U
+48.022466,-122.728123,Oak Bay County Park,dieldrin,-0.16,U
+48.022466,-122.728123,Oak Bay County Park,Endosulfan_1,-0.18,U
+48.022466,-122.728123,Oak Bay County Park,hexachlorobenzene,-0.2,U
+48.022466,-122.728123,Oak Bay County Park,mirex,-0.2,U
+48.214071,-122.719097,Penn Cove Reference,aldrin,-0.16,U
+48.214071,-122.719097,Penn Cove Reference,dieldrin,-0.14,U
+48.214071,-122.719097,Penn Cove Reference,Endosulfan_1,-0.16,U
+48.214071,-122.719097,Penn Cove Reference,hexachlorobenzene,-0.18,U
+48.214071,-122.719097,Penn Cove Reference,mirex,-0.18,U
+47.2609094,-122.7447771,Penrose Point State Park,aldrin,-0.15,U
+47.2609094,-122.7447771,Penrose Point State Park,dieldrin,-0.13,U
+47.2609094,-122.7447771,Penrose Point State Park,Endosulfan_1,-0.15,U
+47.2609094,-122.7447771,Penrose Point State Park,hexachlorobenzene,-0.17,U
+47.2609094,-122.7447771,Penrose Point State Park,mirex,-0.17,U
+47.3061098,-122.514771,Point Defiance Ferry,aldrin,-0.17,U
+47.3061098,-122.514771,Point Defiance Ferry,dieldrin,-0.16,U
+47.3061098,-122.514771,Point Defiance Ferry,Endosulfan_1,-0.18,U
+47.3061098,-122.514771,Point Defiance Ferry,hexachlorobenzene,-0.2,U
+47.3061098,-122.514771,Point Defiance Ferry,mirex,-0.2,U
+48.128267,-123.457133,Port Angeles Yacht Club,aldrin,-0.2,U
+48.128267,-123.457133,Port Angeles Yacht Club,dieldrin,-0.18,U
+48.128267,-123.457133,Port Angeles Yacht Club,Endosulfan_1,-0.2,U
+48.128267,-123.457133,Port Angeles Yacht Club,hexachlorobenzene,-0.23,U
+48.128267,-123.457133,Port Angeles Yacht Club,mirex,-0.23,U
+47.385334,-122.628902,Purdy - Dexters,aldrin,-0.17,U
+47.385334,-122.628902,Purdy - Dexters,dieldrin,-0.15,U
+47.385334,-122.628902,Purdy - Dexters,Endosulfan_1,-0.17,U
+47.385334,-122.628902,Purdy - Dexters,hexachlorobenzene,-0.19,U
+47.385334,-122.628902,Purdy - Dexters,mirex,-0.19,U
+47.387021,-122.6367,"Purdy, Burley Lagoon",aldrin,-0.15,U
+47.387021,-122.6367,"Purdy, Burley Lagoon",dieldrin,0.19,D
+47.387021,-122.6367,"Purdy, Burley Lagoon",Endosulfan_1,-0.15,U
+47.387021,-122.6367,"Purdy, Burley Lagoon",hexachlorobenzene,-0.17,U
+47.387021,-122.6367,"Purdy, Burley Lagoon",mirex,-0.17,U
+47.32622,-122.66715,Raft Island Park,aldrin,-0.16,U
+47.32622,-122.66715,Raft Island Park,dieldrin,-0.14,U
+47.32622,-122.66715,Raft Island Park,Endosulfan_1,-0.16,U
+47.32622,-122.66715,Raft Island Park,hexachlorobenzene,-0.18,U
+47.32622,-122.66715,Raft Island Park,mirex,-0.18,U
+47.346817,-122.822363,Reach Island,aldrin,-0.22,U
+47.346817,-122.822363,Reach Island,dieldrin,-0.19,U
+47.346817,-122.822363,Reach Island,Endosulfan_1,-0.22,U
+47.346817,-122.822363,Reach Island,hexachlorobenzene,-0.25,U
+47.346817,-122.822363,Reach Island,mirex,-0.25,U
+47.578117,-122.524833,Rich Passage,aldrin,-0.13,U
+47.578117,-122.524833,Rich Passage,dieldrin,-0.12,U
+47.578117,-122.524833,Rich Passage,Endosulfan_1,-0.13,U
+47.578117,-122.524833,Rich Passage,hexachlorobenzene,-0.15,U
+47.578117,-122.524833,Rich Passage,mirex,-0.15,U
+47.60253,-122.66991,Rocky Point,aldrin,-0.18,U
+47.60253,-122.66991,Rocky Point,dieldrin,-0.16,U
+47.60253,-122.66991,Rocky Point,Endosulfan_1,-0.18,U
+47.60253,-122.66991,Rocky Point,hexachlorobenzene,-0.2,U
+47.60253,-122.66991,Rocky Point,mirex,-0.2,U
+48.02655,-122.75089,S of Skunk Island,aldrin,-0.23,U
+48.02655,-122.75089,S of Skunk Island,dieldrin,-0.2,U
+48.02655,-122.75089,S of Skunk Island,Endosulfan_1,-0.23,U
+48.02655,-122.75089,S of Skunk Island,hexachlorobenzene,-0.26,U
+48.02655,-122.75089,S of Skunk Island,mirex,-0.26,U
+47.666244,-122.401894,"Salmon Bay, Commodore Park",aldrin,-0.18,U
+47.666244,-122.401894,"Salmon Bay, Commodore Park",dieldrin,0.35,D
+47.666244,-122.401894,"Salmon Bay, Commodore Park",Endosulfan_1,-0.18,U
+47.666244,-122.401894,"Salmon Bay, Commodore Park",hexachlorobenzene,-0.21,U
+47.666244,-122.401894,"Salmon Bay, Commodore Park",mirex,-0.21,U
+47.294692,-122.530504,Salmon Beach,aldrin,-0.22,U
+47.294692,-122.530504,Salmon Beach,dieldrin,-0.2,U
+47.294692,-122.530504,Salmon Beach,Endosulfan_1,-0.22,U
+47.294692,-122.530504,Salmon Beach,hexachlorobenzene,-0.25,U
+47.294692,-122.530504,Salmon Beach,mirex,-0.26,U
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",aldrin,-0.16,U
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",dieldrin,0.15,"D,LOQ"
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",Endosulfan_1,-0.16,U
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",hexachlorobenzene,-0.18,U
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",mirex,-0.18,U
+47.6707,-122.40605,Shilshole Bay,aldrin,-0.19,U
+47.6707,-122.40605,Shilshole Bay,dieldrin,0.33,D
+47.6707,-122.40605,Shilshole Bay,Endosulfan_1,-0.19,U
+47.6707,-122.40605,Shilshole Bay,hexachlorobenzene,-0.21,U
+47.6707,-122.40605,Shilshole Bay,mirex,-0.21,U
+47.6428,-122.6967,"Silverdale, Dyes Inlet",aldrin,-0.16,U
+47.6428,-122.6967,"Silverdale, Dyes Inlet",dieldrin,0.19,D
+47.6428,-122.6967,"Silverdale, Dyes Inlet",Endosulfan_1,-0.16,U
+47.6428,-122.6967,"Silverdale, Dyes Inlet",hexachlorobenzene,-0.18,U
+47.6428,-122.6967,"Silverdale, Dyes Inlet",mirex,-0.18,U
+47.6614139,-122.498892,Skiff Point,aldrin,-0.32,U
+47.6614139,-122.498892,Skiff Point,dieldrin,-0.29,U
+47.6614139,-122.498892,Skiff Point,Endosulfan_1,-0.32,U
+47.6614139,-122.498892,Skiff Point,hexachlorobenzene,-0.37,U
+47.6614139,-122.498892,Skiff Point,mirex,-0.37,U
+47.6325,-122.3786,"Smith Cove, Terminal 91",aldrin,-0.15,U
+47.6325,-122.3786,"Smith Cove, Terminal 91",dieldrin,0.6,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",Endosulfan_1,-0.15,U
+47.6325,-122.3786,"Smith Cove, Terminal 91",hexachlorobenzene,-0.17,U
+47.6325,-122.3786,"Smith Cove, Terminal 91",mirex,0.23,D
+47.176735,-122.905337,Squaxin Island,aldrin,-0.18,U
+47.176735,-122.905337,Squaxin Island,dieldrin,-0.16,U
+47.176735,-122.905337,Squaxin Island,Endosulfan_1,-0.18,U
+47.176735,-122.905337,Squaxin Island,hexachlorobenzene,-0.2,U
+47.176735,-122.905337,Squaxin Island,mirex,-0.2,U
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",aldrin,-0.12,U
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",dieldrin,-0.11,U
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",Endosulfan_1,-0.12,U
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",hexachlorobenzene,-0.14,U
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",mirex,-0.14,U
+47.25934,-122.43479,Thea Foss Waterway,aldrin,-0.19,U
+47.25934,-122.43479,Thea Foss Waterway,dieldrin,0.19,D
+47.25934,-122.43479,Thea Foss Waterway,Endosulfan_1,-0.19,U
+47.25934,-122.43479,Thea Foss Waterway,hexachlorobenzene,-0.21,U
+47.25934,-122.43479,Thea Foss Waterway,mirex,-0.22,U
+47.4485721,-122.3723967,Three Tree Point,aldrin,-0.2,U
+47.4485721,-122.3723967,Three Tree Point,dieldrin,0.19,D
+47.4485721,-122.3723967,Three Tree Point,Endosulfan_1,-0.2,U
+47.4485721,-122.3723967,Three Tree Point,hexachlorobenzene,-0.22,U
+47.4485721,-122.3723967,Three Tree Point,mirex,-0.23,U
+48.0616613,-122.293939,Tulalip Bay,aldrin,-0.17,U
+48.0616613,-122.293939,Tulalip Bay,dieldrin,0.21,D
+48.0616613,-122.293939,Tulalip Bay,Endosulfan_1,-0.17,U
+48.0616613,-122.293939,Tulalip Bay,hexachlorobenzene,-0.2,U
+48.0616613,-122.293939,Tulalip Bay,mirex,-0.2,U
+48.069978,-122.300216,Tulalip Reservation,aldrin,-0.15,U
+48.069978,-122.300216,Tulalip Reservation,dieldrin,-0.14,U
+48.069978,-122.300216,Tulalip Reservation,Endosulfan_1,-0.15,U
+48.069978,-122.300216,Tulalip Reservation,hexachlorobenzene,-0.17,U
+48.069978,-122.300216,Tulalip Reservation,mirex,-0.17,U
+47.052373,-122.9101963,West Bay Park,aldrin,-0.21,U
+47.052373,-122.9101963,West Bay Park,dieldrin,-0.18,U
+47.052373,-122.9101963,West Bay Park,Endosulfan_1,-0.21,U
+47.052373,-122.9101963,West Bay Park,hexachlorobenzene,-0.23,U
+47.052373,-122.9101963,West Bay Park,mirex,-0.23,U
+47.6609,-122.5668,Williams Olson Park,aldrin,-0.2,U
+47.6609,-122.5668,Williams Olson Park,dieldrin,-0.18,U
+47.6609,-122.5668,Williams Olson Park,Endosulfan_1,-0.2,U
+47.6609,-122.5668,Williams Olson Park,hexachlorobenzene,-0.22,U
+47.6609,-122.5668,Williams Olson Park,mirex,-0.23,U
+48.218047,-122.712359,Penn Cove Baseline 1,aldrin,-0.13,U
+48.218047,-122.712359,Penn Cove Baseline 1,dieldrin,-0.11,U
+48.218047,-122.712359,Penn Cove Baseline 1,Endosulfan_1,-0.13,U
+48.218047,-122.712359,Penn Cove Baseline 1,hexachlorobenzene,-0.14,U
+48.218047,-122.712359,Penn Cove Baseline 1,mirex,-0.14,U
+48.218047,-122.712359,Penn Cove Baseline 2,aldrin,-0.16,U
+48.218047,-122.712359,Penn Cove Baseline 2,dieldrin,-0.14,U
+48.218047,-122.712359,Penn Cove Baseline 2,Endosulfan_1,-0.16,U
+48.218047,-122.712359,Penn Cove Baseline 2,hexachlorobenzene,-0.18,U
+48.218047,-122.712359,Penn Cove Baseline 2,mirex,-0.18,U
+48.218047,-122.712359,Penn Cove Baseline 3,aldrin,-0.1,U
+48.218047,-122.712359,Penn Cove Baseline 3,dieldrin,-0.09,U
+48.218047,-122.712359,Penn Cove Baseline 3,Endosulfan_1,-0.1,U
+48.218047,-122.712359,Penn Cove Baseline 3,hexachlorobenzene,-0.11,U
+48.218047,-122.712359,Penn Cove Baseline 3,mirex,-0.11,U
