@@ -1,5 +1,5 @@
 ---
-title: "08- Visualizations"
+title: "08- Basic Visualizations to Support Manuscript Viz Creation"
 output:
   pdf_document: 
     fig_width: 20
