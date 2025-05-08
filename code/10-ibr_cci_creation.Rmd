@@ -988,7 +988,9 @@ print(pcb_index)
 ## pesticide
 ```{r}
 
-pesticide_df<- pesticide
+pesticide_wide<- read.csv("../data/index_df/pesticide_wide.csv")
+
+pesticide_df<- pesticide_wide
 colnames(pesticide_df)
 
 # define variables
