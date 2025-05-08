@@ -1,0 +1,1576 @@
+﻿latitude,longitude,site_name,analyte,wet_value,qualifier
+48.6793778,-122.6300583,Aiston Preserve,acenaphthene,-0.52,U
+48.6793778,-122.6300583,Aiston Preserve,acenaphthylene,-0.52,U
+48.6793778,-122.6300583,Aiston Preserve,C1-dibenzothiophenes,-0.51,U
+48.6793778,-122.6300583,Aiston Preserve,C1-fluorenes,-0.51,U
+48.6793778,-122.6300583,Aiston Preserve,C1-naphthalenes,-0.51,U
+48.6793778,-122.6300583,Aiston Preserve,C1-phenanthrenes_anthracenes,1.4,D
+48.6793778,-122.6300583,Aiston Preserve,C2-dibenzothiophenes,-0.51,U
+48.6793778,-122.6300583,Aiston Preserve,C2-fluorenes,-0.51,U
+48.6793778,-122.6300583,Aiston Preserve,C2-naphthalenes,1.2,D
+48.6793778,-122.6300583,Aiston Preserve,C2-phenanthrenes_anthracenes,1.6,D
+48.6793778,-122.6300583,Aiston Preserve,C3-dibenzothiophenes,-0.51,U
+48.6793778,-122.6300583,Aiston Preserve,C3-fluorenes,-0.51,U
+48.6793778,-122.6300583,Aiston Preserve,C3-naphthalenes,1.5,"D,B"
+48.6793778,-122.6300583,Aiston Preserve,C3-phenanthrenes_anthracenes,0.92,D
+48.6793778,-122.6300583,Aiston Preserve,C4-dibenzothiophenes,-0.51,U
+48.6793778,-122.6300583,Aiston Preserve,C4-naphthalenes,0.58,"D,LOQ"
+48.6793778,-122.6300583,Aiston Preserve,C4-phenanthrenes_anthracenes,0.99,D
+48.6793778,-122.6300583,Aiston Preserve,dibenzothiophene,-0.51,U
+48.6793778,-122.6300583,Aiston Preserve,fluorene,-0.51,U
+48.6793778,-122.6300583,Aiston Preserve,naphthalene,2.6,"U,B"
+48.6793778,-122.6300583,Aiston Preserve,phenanthrene,2,D
+47.50159,-122.38577,Arroyo Beach,acenaphthene,-0.65,U
+47.50159,-122.38577,Arroyo Beach,acenaphthylene,-0.65,U
+47.50159,-122.38577,Arroyo Beach,C1-dibenzothiophenes,-0.64,U
+47.50159,-122.38577,Arroyo Beach,C1-fluorenes,0.65,D
+47.50159,-122.38577,Arroyo Beach,C1-naphthalenes,-1,U
+47.50159,-122.38577,Arroyo Beach,C1-phenanthrenes_anthracenes,4.3,D
+47.50159,-122.38577,Arroyo Beach,C2-dibenzothiophenes,-0.64,U
+47.50159,-122.38577,Arroyo Beach,C2-fluorenes,0.79,D
+47.50159,-122.38577,Arroyo Beach,C2-naphthalenes,1.7,D
+47.50159,-122.38577,Arroyo Beach,C2-phenanthrenes_anthracenes,6.7,"D,B"
+47.50159,-122.38577,Arroyo Beach,C3-dibenzothiophenes,-0.64,U
+47.50159,-122.38577,Arroyo Beach,C3-fluorenes,0.98,D
+47.50159,-122.38577,Arroyo Beach,C3-naphthalenes,2.3,"D,B"
+47.50159,-122.38577,Arroyo Beach,C3-phenanthrenes_anthracenes,5.8,D
+47.50159,-122.38577,Arroyo Beach,C4-dibenzothiophenes,-0.64,U
+47.50159,-122.38577,Arroyo Beach,C4-naphthalenes,1.5,"D,i"
+47.50159,-122.38577,Arroyo Beach,C4-phenanthrenes_anthracenes,5.1,D
+47.50159,-122.38577,Arroyo Beach,dibenzothiophene,-0.64,U
+47.50159,-122.38577,Arroyo Beach,fluorene,-0.64,U
+47.50159,-122.38577,Arroyo Beach,naphthalene,1.4,"U,B"
+47.50159,-122.38577,Arroyo Beach,phenanthrene,5.1,D
+47.2758,-122.4174,Blair Waterway,acenaphthene,1,D
+47.2758,-122.4174,Blair Waterway,acenaphthylene,-0.53,U
+47.2758,-122.4174,Blair Waterway,C1-dibenzothiophenes,0.71,D
+47.2758,-122.4174,Blair Waterway,C1-fluorenes,0.93,D
+47.2758,-122.4174,Blair Waterway,C1-naphthalenes,-0.66,U
+47.2758,-122.4174,Blair Waterway,C1-phenanthrenes_anthracenes,8.2,D
+47.2758,-122.4174,Blair Waterway,C2-dibenzothiophenes,1.7,D
+47.2758,-122.4174,Blair Waterway,C2-fluorenes,1.8,D
+47.2758,-122.4174,Blair Waterway,C2-naphthalenes,3.17,D
+47.2758,-122.4174,Blair Waterway,C2-phenanthrenes_anthracenes,12,"D,B"
+47.2758,-122.4174,Blair Waterway,C3-dibenzothiophenes,1.9,D
+47.2758,-122.4174,Blair Waterway,C3-fluorenes,3.2,D
+47.2758,-122.4174,Blair Waterway,C3-naphthalenes,6.2,"D,B"
+47.2758,-122.4174,Blair Waterway,C3-phenanthrenes_anthracenes,13,D
+47.2758,-122.4174,Blair Waterway,C4-dibenzothiophenes,2.1,"D,i"
+47.2758,-122.4174,Blair Waterway,C4-naphthalenes,4.8,D
+47.2758,-122.4174,Blair Waterway,C4-phenanthrenes_anthracenes,10,D
+47.2758,-122.4174,Blair Waterway,dibenzothiophene,-0.53,U
+47.2758,-122.4174,Blair Waterway,fluorene,1.1,D
+47.2758,-122.4174,Blair Waterway,naphthalene,1.4,"U,B"
+47.2758,-122.4174,Blair Waterway,phenanthrene,6.9,D
+47.2632,-122.3856,Blair Waterway #2,acenaphthene,1.3,D
+47.2632,-122.3856,Blair Waterway #2,acenaphthylene,-0.81,U
+47.2632,-122.3856,Blair Waterway #2,C1-dibenzothiophenes,-0.8,U
+47.2632,-122.3856,Blair Waterway #2,C1-fluorenes,1,D
+47.2632,-122.3856,Blair Waterway #2,C1-naphthalenes,-0.8,U
+47.2632,-122.3856,Blair Waterway #2,C1-phenanthrenes_anthracenes,7.4,D
+47.2632,-122.3856,Blair Waterway #2,C2-dibenzothiophenes,2.2,D
+47.2632,-122.3856,Blair Waterway #2,C2-fluorenes,2.9,D
+47.2632,-122.3856,Blair Waterway #2,C2-naphthalenes,3,D
+47.2632,-122.3856,Blair Waterway #2,C2-phenanthrenes_anthracenes,17,D
+47.2632,-122.3856,Blair Waterway #2,C3-dibenzothiophenes,3.1,D
+47.2632,-122.3856,Blair Waterway #2,C3-fluorenes,6.7,D
+47.2632,-122.3856,Blair Waterway #2,C3-naphthalenes,5.7,"D,B"
+47.2632,-122.3856,Blair Waterway #2,C3-phenanthrenes_anthracenes,21,D
+47.2632,-122.3856,Blair Waterway #2,C4-dibenzothiophenes,2.6,D
+47.2632,-122.3856,Blair Waterway #2,C4-naphthalenes,5.4,D
+47.2632,-122.3856,Blair Waterway #2,C4-phenanthrenes_anthracenes,14,D
+47.2632,-122.3856,Blair Waterway #2,dibenzothiophene,-0.8,U
+47.2632,-122.3856,Blair Waterway #2,fluorene,1,D
+47.2632,-122.3856,Blair Waterway #2,naphthalene,2.8,"D,B,LOQ"
+47.2632,-122.3856,Blair Waterway #2,phenanthrene,6.4,D
+47.68203,-122.50668,Brackenwood Ln,acenaphthene,-0.61,U
+47.68203,-122.50668,Brackenwood Ln,acenaphthylene,-0.61,U
+47.68203,-122.50668,Brackenwood Ln,C1-dibenzothiophenes,-0.6,U
+47.68203,-122.50668,Brackenwood Ln,C1-fluorenes,-0.6,U
+47.68203,-122.50668,Brackenwood Ln,C1-naphthalenes,-0.9,U
+47.68203,-122.50668,Brackenwood Ln,C1-phenanthrenes_anthracenes,4.6,D
+47.68203,-122.50668,Brackenwood Ln,C2-dibenzothiophenes,-0.6,U
+47.68203,-122.50668,Brackenwood Ln,C2-fluorenes,0.8,D
+47.68203,-122.50668,Brackenwood Ln,C2-naphthalenes,1.7,D
+47.68203,-122.50668,Brackenwood Ln,C2-phenanthrenes_anthracenes,6.5,"D,B"
+47.68203,-122.50668,Brackenwood Ln,C3-dibenzothiophenes,-0.6,U
+47.68203,-122.50668,Brackenwood Ln,C3-fluorenes,1.8,D
+47.68203,-122.50668,Brackenwood Ln,C3-naphthalenes,2.4,"D,B"
+47.68203,-122.50668,Brackenwood Ln,C3-phenanthrenes_anthracenes,5.1,D
+47.68203,-122.50668,Brackenwood Ln,C4-dibenzothiophenes,-0.6,U
+47.68203,-122.50668,Brackenwood Ln,C4-naphthalenes,1.6,"D,i"
+47.68203,-122.50668,Brackenwood Ln,C4-phenanthrenes_anthracenes,3.9,D
+47.68203,-122.50668,Brackenwood Ln,dibenzothiophene,-0.6,U
+47.68203,-122.50668,Brackenwood Ln,fluorene,-0.6,U
+47.68203,-122.50668,Brackenwood Ln,naphthalene,1.4,"U,B"
+47.68203,-122.50668,Brackenwood Ln,phenanthrene,6.3,D
+47.80934,-122.81556,Broad Spit,acenaphthene,-0.66,U
+47.80934,-122.81556,Broad Spit,acenaphthylene,-0.66,U
+47.80934,-122.81556,Broad Spit,C1-dibenzothiophenes,-0.65,U
+47.80934,-122.81556,Broad Spit,C1-fluorenes,-0.65,U
+47.80934,-122.81556,Broad Spit,C1-naphthalenes,-0.87,U
+47.80934,-122.81556,Broad Spit,C1-phenanthrenes_anthracenes,1.5,D
+47.80934,-122.81556,Broad Spit,C2-dibenzothiophenes,-0.65,U
+47.80934,-122.81556,Broad Spit,C2-fluorenes,-0.65,U
+47.80934,-122.81556,Broad Spit,C2-naphthalenes,1.2,"D,B,LOQ"
+47.80934,-122.81556,Broad Spit,C2-phenanthrenes_anthracenes,1.9,D
+47.80934,-122.81556,Broad Spit,C3-dibenzothiophenes,-0.65,U
+47.80934,-122.81556,Broad Spit,C3-fluorenes,-0.65,U
+47.80934,-122.81556,Broad Spit,C3-naphthalenes,1.4,"D,B"
+47.80934,-122.81556,Broad Spit,C3-phenanthrenes_anthracenes,0.84,D
+47.80934,-122.81556,Broad Spit,C4-dibenzothiophenes,-0.65,U
+47.80934,-122.81556,Broad Spit,C4-naphthalenes,-0.65,U
+47.80934,-122.81556,Broad Spit,C4-phenanthrenes_anthracenes,1.1,D
+47.80934,-122.81556,Broad Spit,dibenzothiophene,-0.65,U
+47.80934,-122.81556,Broad Spit,fluorene,-0.65,U
+47.80934,-122.81556,Broad Spit,naphthalene,5.5,"U,B"
+47.80934,-122.81556,Broad Spit,phenanthrene,2.5,D
+47.304906,-122.44427,Browns Point Lighthouse,acenaphthene,0.72,D
+47.304906,-122.44427,Browns Point Lighthouse,acenaphthylene,-0.57,U
+47.304906,-122.44427,Browns Point Lighthouse,C1-dibenzothiophenes,-0.56,U
+47.304906,-122.44427,Browns Point Lighthouse,C1-fluorenes,-0.56,U
+47.304906,-122.44427,Browns Point Lighthouse,C1-naphthalenes,0.61,"D,LOQ"
+47.304906,-122.44427,Browns Point Lighthouse,C1-phenanthrenes_anthracenes,4.7,D
+47.304906,-122.44427,Browns Point Lighthouse,C2-dibenzothiophenes,0.79,D
+47.304906,-122.44427,Browns Point Lighthouse,C2-fluorenes,1,D
+47.304906,-122.44427,Browns Point Lighthouse,C2-naphthalenes,2.1,"D,B"
+47.304906,-122.44427,Browns Point Lighthouse,C2-phenanthrenes_anthracenes,6,D
+47.304906,-122.44427,Browns Point Lighthouse,C3-dibenzothiophenes,0.95,D
+47.304906,-122.44427,Browns Point Lighthouse,C3-fluorenes,1.8,D
+47.304906,-122.44427,Browns Point Lighthouse,C3-naphthalenes,2.8,D
+47.304906,-122.44427,Browns Point Lighthouse,C3-phenanthrenes_anthracenes,5,D
+47.304906,-122.44427,Browns Point Lighthouse,C4-dibenzothiophenes,0.73,D
+47.304906,-122.44427,Browns Point Lighthouse,C4-naphthalenes,1.9,D
+47.304906,-122.44427,Browns Point Lighthouse,C4-phenanthrenes_anthracenes,4.8,D
+47.304906,-122.44427,Browns Point Lighthouse,dibenzothiophene,-0.56,U
+47.304906,-122.44427,Browns Point Lighthouse,fluorene,0.75,D
+47.304906,-122.44427,Browns Point Lighthouse,naphthalene,2.6,"U,B"
+47.304906,-122.44427,Browns Point Lighthouse,phenanthrene,5.5,D
+48.52093,-122.600725,Cap Sante,acenaphthene,-0.75,U
+48.52093,-122.600725,Cap Sante,acenaphthylene,-0.74,U
+48.52093,-122.600725,Cap Sante,C1-dibenzothiophenes,-0.74,U
+48.52093,-122.600725,Cap Sante,C1-fluorenes,-0.74,U
+48.52093,-122.600725,Cap Sante,C1-naphthalenes,-0.76,U
+48.52093,-122.600725,Cap Sante,C1-phenanthrenes_anthracenes,2.9,D
+48.52093,-122.600725,Cap Sante,C2-dibenzothiophenes,0.91,D
+48.52093,-122.600725,Cap Sante,C2-fluorenes,-0.74,U
+48.52093,-122.600725,Cap Sante,C2-naphthalenes,1.4,D
+48.52093,-122.600725,Cap Sante,C2-phenanthrenes_anthracenes,5.9,D
+48.52093,-122.600725,Cap Sante,C3-dibenzothiophenes,2.2,D
+48.52093,-122.600725,Cap Sante,C3-fluorenes,1.3,D
+48.52093,-122.600725,Cap Sante,C3-naphthalenes,2,"D,B"
+48.52093,-122.600725,Cap Sante,C3-phenanthrenes_anthracenes,8,D
+48.52093,-122.600725,Cap Sante,C4-dibenzothiophenes,2.2,D
+48.52093,-122.600725,Cap Sante,C4-naphthalenes,1.7,D
+48.52093,-122.600725,Cap Sante,C4-phenanthrenes_anthracenes,5.8,D
+48.52093,-122.600725,Cap Sante,dibenzothiophene,-0.73,U
+48.52093,-122.600725,Cap Sante,fluorene,-0.73,U
+48.52093,-122.600725,Cap Sante,naphthalene,2.6,"U,B"
+48.52093,-122.600725,Cap Sante,phenanthrene,3,D
+47.2009,-122.58342,Chambers Bay Park,acenaphthene,-0.46,U
+47.2009,-122.58342,Chambers Bay Park,acenaphthylene,-0.46,U
+47.2009,-122.58342,Chambers Bay Park,C1-dibenzothiophenes,-0.46,U
+47.2009,-122.58342,Chambers Bay Park,C1-fluorenes,-0.46,U
+47.2009,-122.58342,Chambers Bay Park,C1-naphthalenes,0.5,"D,LOQ"
+47.2009,-122.58342,Chambers Bay Park,C1-phenanthrenes_anthracenes,2.1,D
+47.2009,-122.58342,Chambers Bay Park,C2-dibenzothiophenes,-0.46,U
+47.2009,-122.58342,Chambers Bay Park,C2-fluorenes,-0.46,U
+47.2009,-122.58342,Chambers Bay Park,C2-naphthalenes,0.99,"D,B,LOQ"
+47.2009,-122.58342,Chambers Bay Park,C2-phenanthrenes_anthracenes,3,D
+47.2009,-122.58342,Chambers Bay Park,C3-dibenzothiophenes,-0.46,U
+47.2009,-122.58342,Chambers Bay Park,C3-fluorenes,0.66,D
+47.2009,-122.58342,Chambers Bay Park,C3-naphthalenes,1.3,D
+47.2009,-122.58342,Chambers Bay Park,C3-phenanthrenes_anthracenes,2,D
+47.2009,-122.58342,Chambers Bay Park,C4-dibenzothiophenes,-0.46,U
+47.2009,-122.58342,Chambers Bay Park,C4-naphthalenes,-0.45,U
+47.2009,-122.58342,Chambers Bay Park,C4-phenanthrenes_anthracenes,2.4,D
+47.2009,-122.58342,Chambers Bay Park,dibenzothiophene,-0.45,U
+47.2009,-122.58342,Chambers Bay Park,fluorene,-0.45,U
+47.2009,-122.58342,Chambers Bay Park,naphthalene,2.4,"U,B"
+47.2009,-122.58342,Chambers Bay Park,phenanthrene,2.6,D
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",acenaphthene,-0.61,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",acenaphthylene,-0.6,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",C1-dibenzothiophenes,-0.6,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",C1-fluorenes,-0.6,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",C1-naphthalenes,-0.58,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",C1-phenanthrenes_anthracenes,3.3,D
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",C2-dibenzothiophenes,-0.6,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",C2-fluorenes,-0.6,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",C2-naphthalenes,1.5,D
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",C2-phenanthrenes_anthracenes,4.2,D
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",C3-dibenzothiophenes,-0.6,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",C3-fluorenes,-0.6,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",C3-naphthalenes,2.4,"D,B"
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",C3-phenanthrenes_anthracenes,3.3,D
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",C4-dibenzothiophenes,-0.6,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",C4-naphthalenes,1.2,D
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",C4-phenanthrenes_anthracenes,3.2,D
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",dibenzothiophene,-0.59,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",fluorene,-0.59,U
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",naphthalene,3.5,"D,B"
+48.820783,-122.710133,"Cherry Point Aquatic Reserve, Conoco Phillips",phenanthrene,5.5,D
+48.04887,-122.7711,Chimacum Creek delta,acenaphthene,-0.62,U
+48.04887,-122.7711,Chimacum Creek delta,acenaphthylene,-0.62,U
+48.04887,-122.7711,Chimacum Creek delta,C1-dibenzothiophenes,-0.62,U
+48.04887,-122.7711,Chimacum Creek delta,C1-fluorenes,-0.62,U
+48.04887,-122.7711,Chimacum Creek delta,C1-naphthalenes,-0.73,U
+48.04887,-122.7711,Chimacum Creek delta,C1-phenanthrenes_anthracenes,2.1,D
+48.04887,-122.7711,Chimacum Creek delta,C2-dibenzothiophenes,-0.62,U
+48.04887,-122.7711,Chimacum Creek delta,C2-fluorenes,-0.62,U
+48.04887,-122.7711,Chimacum Creek delta,C2-naphthalenes,1.3,D
+48.04887,-122.7711,Chimacum Creek delta,C2-phenanthrenes_anthracenes,3.6,"D,B"
+48.04887,-122.7711,Chimacum Creek delta,C3-dibenzothiophenes,-0.62,U
+48.04887,-122.7711,Chimacum Creek delta,C3-fluorenes,-0.62,U
+48.04887,-122.7711,Chimacum Creek delta,C3-naphthalenes,1.8,"D,B"
+48.04887,-122.7711,Chimacum Creek delta,C3-phenanthrenes_anthracenes,2,D
+48.04887,-122.7711,Chimacum Creek delta,C4-dibenzothiophenes,-0.62,U
+48.04887,-122.7711,Chimacum Creek delta,C4-naphthalenes,1.1,"D,i"
+48.04887,-122.7711,Chimacum Creek delta,C4-phenanthrenes_anthracenes,2,D
+48.04887,-122.7711,Chimacum Creek delta,dibenzothiophene,-0.61,U
+48.04887,-122.7711,Chimacum Creek delta,fluorene,-0.61,U
+48.04887,-122.7711,Chimacum Creek delta,naphthalene,1.1,"U,B"
+48.04887,-122.7711,Chimacum Creek delta,phenanthrene,3,D
+48.691084,-122.504012,"Chuckanut, Clark's Point",acenaphthene,-0.55,U
+48.691084,-122.504012,"Chuckanut, Clark's Point",acenaphthylene,-0.54,U
+48.691084,-122.504012,"Chuckanut, Clark's Point",C1-dibenzothiophenes,-0.54,U
+48.691084,-122.504012,"Chuckanut, Clark's Point",C1-fluorenes,-0.54,U
+48.691084,-122.504012,"Chuckanut, Clark's Point",C1-naphthalenes,-0.67,U
+48.691084,-122.504012,"Chuckanut, Clark's Point",C1-phenanthrenes_anthracenes,2.5,D
+48.691084,-122.504012,"Chuckanut, Clark's Point",C2-dibenzothiophenes,-0.54,U
+48.691084,-122.504012,"Chuckanut, Clark's Point",C2-fluorenes,-0.54,U
+48.691084,-122.504012,"Chuckanut, Clark's Point",C2-naphthalenes,1.5,D
+48.691084,-122.504012,"Chuckanut, Clark's Point",C2-phenanthrenes_anthracenes,3.6,"D,B"
+48.691084,-122.504012,"Chuckanut, Clark's Point",C3-dibenzothiophenes,-0.54,U
+48.691084,-122.504012,"Chuckanut, Clark's Point",C3-fluorenes,0.55,"D,LOQ"
+48.691084,-122.504012,"Chuckanut, Clark's Point",C3-naphthalenes,1.9,"D,B"
+48.691084,-122.504012,"Chuckanut, Clark's Point",C3-phenanthrenes_anthracenes,2.3,D
+48.691084,-122.504012,"Chuckanut, Clark's Point",C4-dibenzothiophenes,-0.54,U
+48.691084,-122.504012,"Chuckanut, Clark's Point",C4-naphthalenes,1.2,"D,i"
+48.691084,-122.504012,"Chuckanut, Clark's Point",C4-phenanthrenes_anthracenes,4.2,D
+48.691084,-122.504012,"Chuckanut, Clark's Point",dibenzothiophene,-0.54,U
+48.691084,-122.504012,"Chuckanut, Clark's Point",fluorene,-0.54,U
+48.691084,-122.504012,"Chuckanut, Clark's Point",naphthalene,1.3,"U,B"
+48.691084,-122.504012,"Chuckanut, Clark's Point",phenanthrene,3.9,D
+47.28915,-122.4096,Comm Bay Skookum,acenaphthene,1.2,D
+47.28915,-122.4096,Comm Bay Skookum,acenaphthylene,-0.86,U
+47.28915,-122.4096,Comm Bay Skookum,C1-dibenzothiophenes,-0.85,U
+47.28915,-122.4096,Comm Bay Skookum,C1-fluorenes,0.91,D
+47.28915,-122.4096,Comm Bay Skookum,C1-naphthalenes,-0.84,U
+47.28915,-122.4096,Comm Bay Skookum,C1-phenanthrenes_anthracenes,7.2,D
+47.28915,-122.4096,Comm Bay Skookum,C2-dibenzothiophenes,1.2,D
+47.28915,-122.4096,Comm Bay Skookum,C2-fluorenes,1.4,D
+47.28915,-122.4096,Comm Bay Skookum,C2-naphthalenes,2.8,D
+47.28915,-122.4096,Comm Bay Skookum,C2-phenanthrenes_anthracenes,10,D
+47.28915,-122.4096,Comm Bay Skookum,C3-dibenzothiophenes,1.5,D
+47.28915,-122.4096,Comm Bay Skookum,C3-fluorenes,1.9,D
+47.28915,-122.4096,Comm Bay Skookum,C3-naphthalenes,4.9,"D,B"
+47.28915,-122.4096,Comm Bay Skookum,C3-phenanthrenes_anthracenes,10,D
+47.28915,-122.4096,Comm Bay Skookum,C4-dibenzothiophenes,0.91,D
+47.28915,-122.4096,Comm Bay Skookum,C4-naphthalenes,3.6,D
+47.28915,-122.4096,Comm Bay Skookum,C4-phenanthrenes_anthracenes,7.1,D
+47.28915,-122.4096,Comm Bay Skookum,dibenzothiophene,-0.84,U
+47.28915,-122.4096,Comm Bay Skookum,fluorene,1.1,D
+47.28915,-122.4096,Comm Bay Skookum,naphthalene,3.6,"D,B"
+47.28915,-122.4096,Comm Bay Skookum,phenanthrene,8.7,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",acenaphthene,1.3,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",acenaphthylene,-0.73,U
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",C1-dibenzothiophenes,-0.73,U
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",C1-fluorenes,0.83,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",C1-naphthalenes,1,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",C1-phenanthrenes_anthracenes,6.6,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",C2-dibenzothiophenes,1.2,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",C2-fluorenes,1.5,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",C2-naphthalenes,3.2,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",C2-phenanthrenes_anthracenes,8.2,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",C3-dibenzothiophenes,1.7,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",C3-fluorenes,2.5,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",C3-naphthalenes,4.5,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",C3-phenanthrenes_anthracenes,8.1,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",C4-dibenzothiophenes,1.2,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",C4-naphthalenes,3,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",C4-phenanthrenes_anthracenes,6,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",dibenzothiophene,-0.72,U
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",fluorene,1.3,D
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",naphthalene,5.4,"U,B"
+47.2925,-122.4122,"Comm Bay, Dick Gilmur Launch",phenanthrene,9.2,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",acenaphthene,0.91,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",acenaphthylene,-0.64,U
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",C1-dibenzothiophenes,-0.64,U
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",C1-fluorenes,0.69,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",C1-naphthalenes,0.81,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",C1-phenanthrenes_anthracenes,5.1,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",C2-dibenzothiophenes,1,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",C2-fluorenes,1.2,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",C2-naphthalenes,3.1,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",C2-phenanthrenes_anthracenes,6.9,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",C3-dibenzothiophenes,1.3,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",C3-fluorenes,2.4,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",C3-naphthalenes,4.3,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",C3-phenanthrenes_anthracenes,7.4,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",C4-dibenzothiophenes,1.3,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",C4-naphthalenes,3.2,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",C4-phenanthrenes_anthracenes,6.2,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",dibenzothiophene,-0.63,U
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",fluorene,0.89,D
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",naphthalene,4.4,"U,B"
+47.2694,-122.4243,"Comm Bay, Milwaukee Waterway",phenanthrene,5.8,D
+47.402778,-122.331667,Des Moines Marina,acenaphthene,42,D
+47.402778,-122.331667,Des Moines Marina,acenaphthylene,0.83,D
+47.402778,-122.331667,Des Moines Marina,C1-dibenzothiophenes,14,D
+47.402778,-122.331667,Des Moines Marina,C1-fluorenes,17,D
+47.402778,-122.331667,Des Moines Marina,C1-naphthalenes,10,D
+47.402778,-122.331667,Des Moines Marina,C1-phenanthrenes_anthracenes,150,D
+47.402778,-122.331667,Des Moines Marina,C2-dibenzothiophenes,15,D
+47.402778,-122.331667,Des Moines Marina,C2-fluorenes,16,D
+47.402778,-122.331667,Des Moines Marina,C2-naphthalenes,29.3,"D,B"
+47.402778,-122.331667,Des Moines Marina,C2-phenanthrenes_anthracenes,110,D
+47.402778,-122.331667,Des Moines Marina,C3-dibenzothiophenes,11,D
+47.402778,-122.331667,Des Moines Marina,C3-fluorenes,18,D
+47.402778,-122.331667,Des Moines Marina,C3-naphthalenes,55,D
+47.402778,-122.331667,Des Moines Marina,C3-phenanthrenes_anthracenes,59,D
+47.402778,-122.331667,Des Moines Marina,C4-dibenzothiophenes,5.6,D
+47.402778,-122.331667,Des Moines Marina,C4-naphthalenes,32,D
+47.402778,-122.331667,Des Moines Marina,C4-phenanthrenes_anthracenes,23,D
+47.402778,-122.331667,Des Moines Marina,dibenzothiophene,23,D
+47.402778,-122.331667,Des Moines Marina,fluorene,60,D
+47.402778,-122.331667,Des Moines Marina,naphthalene,4.5,"D,B"
+47.402778,-122.331667,Des Moines Marina,phenanthrene,290,"D,A"
+48.064974,-122.857218,Discovery Bay,acenaphthene,-0.42,U
+48.064974,-122.857218,Discovery Bay,acenaphthylene,-0.41,U
+48.064974,-122.857218,Discovery Bay,C1-dibenzothiophenes,-0.41,U
+48.064974,-122.857218,Discovery Bay,C1-fluorenes,-0.41,U
+48.064974,-122.857218,Discovery Bay,C1-naphthalenes,-0.45,U
+48.064974,-122.857218,Discovery Bay,C1-phenanthrenes_anthracenes,3.7,D
+48.064974,-122.857218,Discovery Bay,C2-dibenzothiophenes,-0.41,U
+48.064974,-122.857218,Discovery Bay,C2-fluorenes,0.43,"D,LOQ"
+48.064974,-122.857218,Discovery Bay,C2-naphthalenes,1.2,D
+48.064974,-122.857218,Discovery Bay,C2-phenanthrenes_anthracenes,5.1,D
+48.064974,-122.857218,Discovery Bay,C3-dibenzothiophenes,-0.41,U
+48.064974,-122.857218,Discovery Bay,C3-fluorenes,0.51,"D,LOQ"
+48.064974,-122.857218,Discovery Bay,C3-naphthalenes,1.6,"D,B"
+48.064974,-122.857218,Discovery Bay,C3-phenanthrenes_anthracenes,3.5,D
+48.064974,-122.857218,Discovery Bay,C4-dibenzothiophenes,-0.41,U
+48.064974,-122.857218,Discovery Bay,C4-naphthalenes,0.93,"D,i"
+48.064974,-122.857218,Discovery Bay,C4-phenanthrenes_anthracenes,2.8,D
+48.064974,-122.857218,Discovery Bay,dibenzothiophene,-0.41,U
+48.064974,-122.857218,Discovery Bay,fluorene,0.47,"D,LOQ"
+48.064974,-122.857218,Discovery Bay,naphthalene,0.58,D
+48.064974,-122.857218,Discovery Bay,phenanthrene,7.2,D
+47.337909,-122.59023,Donkey Creek Delta,acenaphthene,0.65,D
+47.337909,-122.59023,Donkey Creek Delta,acenaphthylene,-0.52,U
+47.337909,-122.59023,Donkey Creek Delta,C1-dibenzothiophenes,-0.52,U
+47.337909,-122.59023,Donkey Creek Delta,C1-fluorenes,-0.52,U
+47.337909,-122.59023,Donkey Creek Delta,C1-naphthalenes,0.62,"D,LOQ"
+47.337909,-122.59023,Donkey Creek Delta,C1-phenanthrenes_anthracenes,3.6,D
+47.337909,-122.59023,Donkey Creek Delta,C2-dibenzothiophenes,-0.52,U
+47.337909,-122.59023,Donkey Creek Delta,C2-fluorenes,0.74,D
+47.337909,-122.59023,Donkey Creek Delta,C2-naphthalenes,1.7,"D,B"
+47.337909,-122.59023,Donkey Creek Delta,C2-phenanthrenes_anthracenes,4.7,D
+47.337909,-122.59023,Donkey Creek Delta,C3-dibenzothiophenes,0.72,D
+47.337909,-122.59023,Donkey Creek Delta,C3-fluorenes,1.4,D
+47.337909,-122.59023,Donkey Creek Delta,C3-naphthalenes,2.2,"D,B"
+47.337909,-122.59023,Donkey Creek Delta,C3-phenanthrenes_anthracenes,4.2,D
+47.337909,-122.59023,Donkey Creek Delta,C4-dibenzothiophenes,0.65,D
+47.337909,-122.59023,Donkey Creek Delta,C4-naphthalenes,1.1,D
+47.337909,-122.59023,Donkey Creek Delta,C4-phenanthrenes_anthracenes,3.3,D
+47.337909,-122.59023,Donkey Creek Delta,dibenzothiophene,-0.52,U
+47.337909,-122.59023,Donkey Creek Delta,fluorene,0.62,"D,LOQ"
+47.337909,-122.59023,Donkey Creek Delta,naphthalene,3.7,"U,B"
+47.337909,-122.59023,Donkey Creek Delta,phenanthrene,5.4,D
+47.618875,-122.527234,Eagle Harbor Dr,acenaphthene,0.93,D
+47.618875,-122.527234,Eagle Harbor Dr,acenaphthylene,-0.63,U
+47.618875,-122.527234,Eagle Harbor Dr,C1-dibenzothiophenes,-0.63,U
+47.618875,-122.527234,Eagle Harbor Dr,C1-fluorenes,-0.63,U
+47.618875,-122.527234,Eagle Harbor Dr,C1-naphthalenes,0.65,"D,LOQ"
+47.618875,-122.527234,Eagle Harbor Dr,C1-phenanthrenes_anthracenes,5.9,D
+47.618875,-122.527234,Eagle Harbor Dr,C2-dibenzothiophenes,1.2,D
+47.618875,-122.527234,Eagle Harbor Dr,C2-fluorenes,1.2,D
+47.618875,-122.527234,Eagle Harbor Dr,C2-naphthalenes,1.7,"D,B"
+47.618875,-122.527234,Eagle Harbor Dr,C2-phenanthrenes_anthracenes,7,D
+47.618875,-122.527234,Eagle Harbor Dr,C3-dibenzothiophenes,1.6,D
+47.618875,-122.527234,Eagle Harbor Dr,C3-fluorenes,2.1,D
+47.618875,-122.527234,Eagle Harbor Dr,C3-naphthalenes,2.5,"D,B"
+47.618875,-122.527234,Eagle Harbor Dr,C3-phenanthrenes_anthracenes,7,D
+47.618875,-122.527234,Eagle Harbor Dr,C4-dibenzothiophenes,1,D
+47.618875,-122.527234,Eagle Harbor Dr,C4-naphthalenes,1.3,D
+47.618875,-122.527234,Eagle Harbor Dr,C4-phenanthrenes_anthracenes,4,D
+47.618875,-122.527234,Eagle Harbor Dr,dibenzothiophene,-0.62,U
+47.618875,-122.527234,Eagle Harbor Dr,fluorene,0.99,D
+47.618875,-122.527234,Eagle Harbor Dr,naphthalene,4.2,"U,B"
+47.618875,-122.527234,Eagle Harbor Dr,phenanthrene,8.4,D
+48.69395,-122.909933,"Eastsound, Fishing Bay",acenaphthene,-0.68,U
+48.69395,-122.909933,"Eastsound, Fishing Bay",acenaphthylene,-0.68,U
+48.69395,-122.909933,"Eastsound, Fishing Bay",C1-dibenzothiophenes,-0.67,U
+48.69395,-122.909933,"Eastsound, Fishing Bay",C1-fluorenes,-0.67,U
+48.69395,-122.909933,"Eastsound, Fishing Bay",C1-naphthalenes,-1.4,U
+48.69395,-122.909933,"Eastsound, Fishing Bay",C1-phenanthrenes_anthracenes,5.4,D
+48.69395,-122.909933,"Eastsound, Fishing Bay",C2-dibenzothiophenes,-0.67,U
+48.69395,-122.909933,"Eastsound, Fishing Bay",C2-fluorenes,-0.67,U
+48.69395,-122.909933,"Eastsound, Fishing Bay",C2-naphthalenes,1.7,D
+48.69395,-122.909933,"Eastsound, Fishing Bay",C2-phenanthrenes_anthracenes,6.9,"D,B"
+48.69395,-122.909933,"Eastsound, Fishing Bay",C3-dibenzothiophenes,0.73,D
+48.69395,-122.909933,"Eastsound, Fishing Bay",C3-fluorenes,0.93,D
+48.69395,-122.909933,"Eastsound, Fishing Bay",C3-naphthalenes,2.2,"D,B"
+48.69395,-122.909933,"Eastsound, Fishing Bay",C3-phenanthrenes_anthracenes,5.5,D
+48.69395,-122.909933,"Eastsound, Fishing Bay",C4-dibenzothiophenes,0.85,"D,i"
+48.69395,-122.909933,"Eastsound, Fishing Bay",C4-naphthalenes,1.4,"D,i"
+48.69395,-122.909933,"Eastsound, Fishing Bay",C4-phenanthrenes_anthracenes,3.9,D
+48.69395,-122.909933,"Eastsound, Fishing Bay",dibenzothiophene,-0.67,U
+48.69395,-122.909933,"Eastsound, Fishing Bay",fluorene,0.69,D
+48.69395,-122.909933,"Eastsound, Fishing Bay",naphthalene,2.2,"U,B"
+48.69395,-122.909933,"Eastsound, Fishing Bay",phenanthrene,11,D
+47.8142069,-122.3822018,Edmonds Ferry,acenaphthene,-0.73,U
+47.8142069,-122.3822018,Edmonds Ferry,acenaphthylene,-0.73,U
+47.8142069,-122.3822018,Edmonds Ferry,C1-dibenzothiophenes,-0.72,U
+47.8142069,-122.3822018,Edmonds Ferry,C1-fluorenes,-0.72,U
+47.8142069,-122.3822018,Edmonds Ferry,C1-naphthalenes,-0.69,U
+47.8142069,-122.3822018,Edmonds Ferry,C1-phenanthrenes_anthracenes,5.2,D
+47.8142069,-122.3822018,Edmonds Ferry,C2-dibenzothiophenes,-0.72,U
+47.8142069,-122.3822018,Edmonds Ferry,C2-fluorenes,0.82,D
+47.8142069,-122.3822018,Edmonds Ferry,C2-naphthalenes,1.9,D
+47.8142069,-122.3822018,Edmonds Ferry,C2-phenanthrenes_anthracenes,6.7,D
+47.8142069,-122.3822018,Edmonds Ferry,C3-dibenzothiophenes,-0.72,U
+47.8142069,-122.3822018,Edmonds Ferry,C3-fluorenes,0.93,D
+47.8142069,-122.3822018,Edmonds Ferry,C3-naphthalenes,3.4,"D,B"
+47.8142069,-122.3822018,Edmonds Ferry,C3-phenanthrenes_anthracenes,4.5,D
+47.8142069,-122.3822018,Edmonds Ferry,C4-dibenzothiophenes,-0.72,U
+47.8142069,-122.3822018,Edmonds Ferry,C4-naphthalenes,2.1,D
+47.8142069,-122.3822018,Edmonds Ferry,C4-phenanthrenes_anthracenes,5.5,D
+47.8142069,-122.3822018,Edmonds Ferry,dibenzothiophene,-0.72,U
+47.8142069,-122.3822018,Edmonds Ferry,fluorene,0.88,D
+47.8142069,-122.3822018,Edmonds Ferry,naphthalene,3.8,"D,B"
+47.8142069,-122.3822018,Edmonds Ferry,phenanthrene,7.4,D
+47.81094,-122.387955,Edmonds Marina,acenaphthene,0.73,D
+47.81094,-122.387955,Edmonds Marina,acenaphthylene,-0.58,U
+47.81094,-122.387955,Edmonds Marina,C1-dibenzothiophenes,-0.58,U
+47.81094,-122.387955,Edmonds Marina,C1-fluorenes,0.71,D
+47.81094,-122.387955,Edmonds Marina,C1-naphthalenes,-0.56,U
+47.81094,-122.387955,Edmonds Marina,C1-phenanthrenes_anthracenes,6.5,D
+47.81094,-122.387955,Edmonds Marina,C2-dibenzothiophenes,0.63,D
+47.81094,-122.387955,Edmonds Marina,C2-fluorenes,1,D
+47.81094,-122.387955,Edmonds Marina,C2-naphthalenes,1.9,D
+47.81094,-122.387955,Edmonds Marina,C2-phenanthrenes_anthracenes,7.2,D
+47.81094,-122.387955,Edmonds Marina,C3-dibenzothiophenes,0.66,D
+47.81094,-122.387955,Edmonds Marina,C3-fluorenes,1,D
+47.81094,-122.387955,Edmonds Marina,C3-naphthalenes,3,"D,B"
+47.81094,-122.387955,Edmonds Marina,C3-phenanthrenes_anthracenes,6,D
+47.81094,-122.387955,Edmonds Marina,C4-dibenzothiophenes,-0.58,U
+47.81094,-122.387955,Edmonds Marina,C4-naphthalenes,1.7,D
+47.81094,-122.387955,Edmonds Marina,C4-phenanthrenes_anthracenes,4.2,D
+47.81094,-122.387955,Edmonds Marina,dibenzothiophene,-0.57,U
+47.81094,-122.387955,Edmonds Marina,fluorene,1.1,D
+47.81094,-122.387955,Edmonds Marina,naphthalene,3.7,"D,B"
+47.81094,-122.387955,Edmonds Marina,phenanthrene,11,D
+47.0769,-123.0034725,Eld Inlet,acenaphthene,-0.42,U
+47.0769,-123.0034725,Eld Inlet,acenaphthylene,-0.42,U
+47.0769,-123.0034725,Eld Inlet,C1-dibenzothiophenes,-0.42,U
+47.0769,-123.0034725,Eld Inlet,C1-fluorenes,-0.42,U
+47.0769,-123.0034725,Eld Inlet,C1-naphthalenes,-0.48,U
+47.0769,-123.0034725,Eld Inlet,C1-phenanthrenes_anthracenes,2.3,D
+47.0769,-123.0034725,Eld Inlet,C2-dibenzothiophenes,-0.42,U
+47.0769,-123.0034725,Eld Inlet,C2-fluorenes,0.46,"D,LOQ"
+47.0769,-123.0034725,Eld Inlet,C2-naphthalenes,1.3,D
+47.0769,-123.0034725,Eld Inlet,C2-phenanthrenes_anthracenes,3.4,D
+47.0769,-123.0034725,Eld Inlet,C3-dibenzothiophenes,-0.42,U
+47.0769,-123.0034725,Eld Inlet,C3-fluorenes,0.52,"D,LOQ"
+47.0769,-123.0034725,Eld Inlet,C3-naphthalenes,1.8,"D,B"
+47.0769,-123.0034725,Eld Inlet,C3-phenanthrenes_anthracenes,2,D
+47.0769,-123.0034725,Eld Inlet,C4-dibenzothiophenes,-0.42,U
+47.0769,-123.0034725,Eld Inlet,C4-naphthalenes,1.1,"D,i"
+47.0769,-123.0034725,Eld Inlet,C4-phenanthrenes_anthracenes,2,D
+47.0769,-123.0034725,Eld Inlet,dibenzothiophene,-0.41,U
+47.0769,-123.0034725,Eld Inlet,fluorene,-0.41,U
+47.0769,-123.0034725,Eld Inlet,naphthalene,0.69,D
+47.0769,-123.0034725,Eld Inlet,phenanthrene,2.4,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,acenaphthene,8.1,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,acenaphthylene,-0.76,U
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,C1-dibenzothiophenes,6.5,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,C1-fluorenes,5.3,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,C1-naphthalenes,3.1,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,C1-phenanthrenes_anthracenes,93,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,C2-dibenzothiophenes,8.9,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,C2-fluorenes,8,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,C2-naphthalenes,5.9,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,C2-phenanthrenes_anthracenes,85,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,C3-dibenzothiophenes,7.7,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,C3-fluorenes,12,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,C3-naphthalenes,12,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,C3-phenanthrenes_anthracenes,51,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,C4-dibenzothiophenes,4.6,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,C4-naphthalenes,9.9,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,C4-phenanthrenes_anthracenes,23,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,dibenzothiophene,5.5,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,fluorene,9.9,D
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,naphthalene,4.9,"U,B"
+47.62052,-122.36373,Elliot Bay Myrtle Edwards,phenanthrene,98,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",acenaphthene,4.3,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",acenaphthylene,-0.63,U
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",C1-dibenzothiophenes,1.8,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",C1-fluorenes,2.3,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",C1-naphthalenes,1.1,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",C1-phenanthrenes_anthracenes,27,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",C2-dibenzothiophenes,2.9,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",C2-fluorenes,3.3,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",C2-naphthalenes,3.26,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",C2-phenanthrenes_anthracenes,31,"D,B"
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",C3-dibenzothiophenes,3.4,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",C3-fluorenes,5.5,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",C3-naphthalenes,6.5,"D,B"
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",C3-phenanthrenes_anthracenes,26,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",C4-dibenzothiophenes,2.9,"D,i"
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",C4-naphthalenes,4.7,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",C4-phenanthrenes_anthracenes,16,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",dibenzothiophene,2,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",fluorene,5.2,D
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",naphthalene,2.1,"U,B"
+47.5876989,-122.3505105,"Elliott Bay, Harbor Island, Pier 17",phenanthrene,35,D
+47.97252,-122.22982,Everett Harbor,acenaphthene,-0.77,U
+47.97252,-122.22982,Everett Harbor,acenaphthylene,-0.77,U
+47.97252,-122.22982,Everett Harbor,C1-dibenzothiophenes,-0.77,U
+47.97252,-122.22982,Everett Harbor,C1-fluorenes,-0.77,U
+47.97252,-122.22982,Everett Harbor,C1-naphthalenes,-0.74,U
+47.97252,-122.22982,Everett Harbor,C1-phenanthrenes_anthracenes,3.8,D
+47.97252,-122.22982,Everett Harbor,C2-dibenzothiophenes,-0.77,U
+47.97252,-122.22982,Everett Harbor,C2-fluorenes,-0.77,U
+47.97252,-122.22982,Everett Harbor,C2-naphthalenes,1.3,D
+47.97252,-122.22982,Everett Harbor,C2-phenanthrenes_anthracenes,4.8,D
+47.97252,-122.22982,Everett Harbor,C3-dibenzothiophenes,-0.77,U
+47.97252,-122.22982,Everett Harbor,C3-fluorenes,-0.77,U
+47.97252,-122.22982,Everett Harbor,C3-naphthalenes,2.5,"D,B"
+47.97252,-122.22982,Everett Harbor,C3-phenanthrenes_anthracenes,3.9,D
+47.97252,-122.22982,Everett Harbor,C4-dibenzothiophenes,-0.77,U
+47.97252,-122.22982,Everett Harbor,C4-naphthalenes,1.2,D
+47.97252,-122.22982,Everett Harbor,C4-phenanthrenes_anthracenes,3.2,D
+47.97252,-122.22982,Everett Harbor,dibenzothiophene,-0.76,U
+47.97252,-122.22982,Everett Harbor,fluorene,-0.76,U
+47.97252,-122.22982,Everett Harbor,naphthalene,3.7,"D,B"
+47.97252,-122.22982,Everett Harbor,phenanthrene,6.3,D
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",acenaphthene,-0.97,U
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",acenaphthylene,-0.96,U
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",C1-dibenzothiophenes,-0.96,U
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",C1-fluorenes,-0.96,U
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",C1-naphthalenes,-0.97,U
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",C1-phenanthrenes_anthracenes,5.3,D
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",C2-dibenzothiophenes,2.1,D
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",C2-fluorenes,1.3,D
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",C2-naphthalenes,2.1,D
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",C2-phenanthrenes_anthracenes,10,D
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",C3-dibenzothiophenes,4.6,D
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",C3-fluorenes,2.7,D
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",C3-naphthalenes,3.4,D
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",C3-phenanthrenes_anthracenes,12,D
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",C4-dibenzothiophenes,3.4,D
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",C4-naphthalenes,2.9,D
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",C4-phenanthrenes_anthracenes,8.6,D
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",dibenzothiophene,-0.95,U
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",fluorene,-0.95,U
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",naphthalene,4.6,"U,B"
+48.48425,-122.58392,"Fidalgo Bay Aq Reserve, Weaverling Spit",phenanthrene,5.8,D
+47.19483,-122.748665,Filucy Bay,acenaphthene,-0.58,U
+47.19483,-122.748665,Filucy Bay,acenaphthylene,-0.57,U
+47.19483,-122.748665,Filucy Bay,C1-dibenzothiophenes,-0.57,U
+47.19483,-122.748665,Filucy Bay,C1-fluorenes,-0.57,U
+47.19483,-122.748665,Filucy Bay,C1-naphthalenes,-0.56,U
+47.19483,-122.748665,Filucy Bay,C1-phenanthrenes_anthracenes,2,D
+47.19483,-122.748665,Filucy Bay,C2-dibenzothiophenes,-0.57,U
+47.19483,-122.748665,Filucy Bay,C2-fluorenes,-0.57,U
+47.19483,-122.748665,Filucy Bay,C2-naphthalenes,1.1,"D,B,LOQ"
+47.19483,-122.748665,Filucy Bay,C2-phenanthrenes_anthracenes,2.6,D
+47.19483,-122.748665,Filucy Bay,C3-dibenzothiophenes,-0.57,U
+47.19483,-122.748665,Filucy Bay,C3-fluorenes,-0.57,U
+47.19483,-122.748665,Filucy Bay,C3-naphthalenes,1.3,D
+47.19483,-122.748665,Filucy Bay,C3-phenanthrenes_anthracenes,1.6,D
+47.19483,-122.748665,Filucy Bay,C4-dibenzothiophenes,-0.57,U
+47.19483,-122.748665,Filucy Bay,C4-naphthalenes,-0.57,U
+47.19483,-122.748665,Filucy Bay,C4-phenanthrenes_anthracenes,1.6,D
+47.19483,-122.748665,Filucy Bay,dibenzothiophene,-0.57,U
+47.19483,-122.748665,Filucy Bay,fluorene,-0.57,U
+47.19483,-122.748665,Filucy Bay,naphthalene,2.3,"U,B"
+47.19483,-122.748665,Filucy Bay,phenanthrene,2.9,D
+48.5069444,-123.0194444,Friday Harbor,acenaphthene,0.56,"D,LOQ"
+48.5069444,-123.0194444,Friday Harbor,acenaphthylene,-0.46,U
+48.5069444,-123.0194444,Friday Harbor,C1-dibenzothiophenes,-0.46,U
+48.5069444,-123.0194444,Friday Harbor,C1-fluorenes,-0.46,U
+48.5069444,-123.0194444,Friday Harbor,C1-naphthalenes,-0.47,U
+48.5069444,-123.0194444,Friday Harbor,C1-phenanthrenes_anthracenes,5.2,D
+48.5069444,-123.0194444,Friday Harbor,C2-dibenzothiophenes,-0.46,U
+48.5069444,-123.0194444,Friday Harbor,C2-fluorenes,0.51,"D,LOQ"
+48.5069444,-123.0194444,Friday Harbor,C2-naphthalenes,1.5,D
+48.5069444,-123.0194444,Friday Harbor,C2-phenanthrenes_anthracenes,5.6,D
+48.5069444,-123.0194444,Friday Harbor,C3-dibenzothiophenes,-0.46,U
+48.5069444,-123.0194444,Friday Harbor,C3-fluorenes,0.6,"D,LOQ"
+48.5069444,-123.0194444,Friday Harbor,C3-naphthalenes,1.9,"D,B"
+48.5069444,-123.0194444,Friday Harbor,C3-phenanthrenes_anthracenes,3.6,D
+48.5069444,-123.0194444,Friday Harbor,C4-dibenzothiophenes,-0.46,U
+48.5069444,-123.0194444,Friday Harbor,C4-naphthalenes,1.1,"D,i"
+48.5069444,-123.0194444,Friday Harbor,C4-phenanthrenes_anthracenes,2.2,D
+48.5069444,-123.0194444,Friday Harbor,dibenzothiophene,-0.45,U
+48.5069444,-123.0194444,Friday Harbor,fluorene,0.56,"D,LOQ"
+48.5069444,-123.0194444,Friday Harbor,naphthalene,0.59,D
+48.5069444,-123.0194444,Friday Harbor,phenanthrene,8.4,D
+47.3372,-122.58284,Gig Harbor Boat Launch,acenaphthene,-0.63,U
+47.3372,-122.58284,Gig Harbor Boat Launch,acenaphthylene,-0.63,U
+47.3372,-122.58284,Gig Harbor Boat Launch,C1-dibenzothiophenes,-0.63,U
+47.3372,-122.58284,Gig Harbor Boat Launch,C1-fluorenes,-0.63,U
+47.3372,-122.58284,Gig Harbor Boat Launch,C1-naphthalenes,-0.61,U
+47.3372,-122.58284,Gig Harbor Boat Launch,C1-phenanthrenes_anthracenes,3.7,D
+47.3372,-122.58284,Gig Harbor Boat Launch,C2-dibenzothiophenes,-0.63,U
+47.3372,-122.58284,Gig Harbor Boat Launch,C2-fluorenes,0.66,D
+47.3372,-122.58284,Gig Harbor Boat Launch,C2-naphthalenes,-0.63,U
+47.3372,-122.58284,Gig Harbor Boat Launch,C2-phenanthrenes_anthracenes,4.5,D
+47.3372,-122.58284,Gig Harbor Boat Launch,C3-dibenzothiophenes,-0.63,U
+47.3372,-122.58284,Gig Harbor Boat Launch,C3-fluorenes,1.2,D
+47.3372,-122.58284,Gig Harbor Boat Launch,C3-naphthalenes,2.2,D
+47.3372,-122.58284,Gig Harbor Boat Launch,C3-phenanthrenes_anthracenes,3.7,D
+47.3372,-122.58284,Gig Harbor Boat Launch,C4-dibenzothiophenes,-0.63,U
+47.3372,-122.58284,Gig Harbor Boat Launch,C4-naphthalenes,0.72,D
+47.3372,-122.58284,Gig Harbor Boat Launch,C4-phenanthrenes_anthracenes,2.6,D
+47.3372,-122.58284,Gig Harbor Boat Launch,dibenzothiophene,-0.62,U
+47.3372,-122.58284,Gig Harbor Boat Launch,fluorene,0.63,"D,LOQ"
+47.3372,-122.58284,Gig Harbor Boat Launch,naphthalene,2.6,"U,B"
+47.3372,-122.58284,Gig Harbor Boat Launch,phenanthrene,5.3,D
+47.570193,-122.971775,Hood Canal Holly,acenaphthene,-0.56,U
+47.570193,-122.971775,Hood Canal Holly,acenaphthylene,-0.56,U
+47.570193,-122.971775,Hood Canal Holly,C1-dibenzothiophenes,-0.56,U
+47.570193,-122.971775,Hood Canal Holly,C1-fluorenes,-0.56,U
+47.570193,-122.971775,Hood Canal Holly,C1-naphthalenes,-0.55,U
+47.570193,-122.971775,Hood Canal Holly,C1-phenanthrenes_anthracenes,0.95,D
+47.570193,-122.971775,Hood Canal Holly,C2-dibenzothiophenes,-0.56,U
+47.570193,-122.971775,Hood Canal Holly,C2-fluorenes,-0.56,U
+47.570193,-122.971775,Hood Canal Holly,C2-naphthalenes,2.1,D
+47.570193,-122.971775,Hood Canal Holly,C2-phenanthrenes_anthracenes,0.67,D
+47.570193,-122.971775,Hood Canal Holly,C3-dibenzothiophenes,-0.56,U
+47.570193,-122.971775,Hood Canal Holly,C3-fluorenes,-0.56,U
+47.570193,-122.971775,Hood Canal Holly,C3-naphthalenes,1.3,"D,B"
+47.570193,-122.971775,Hood Canal Holly,C3-phenanthrenes_anthracenes,-0.56,U
+47.570193,-122.971775,Hood Canal Holly,C4-dibenzothiophenes,-0.56,U
+47.570193,-122.971775,Hood Canal Holly,C4-naphthalenes,0.73,D
+47.570193,-122.971775,Hood Canal Holly,C4-phenanthrenes_anthracenes,0.68,"D,LOQ"
+47.570193,-122.971775,Hood Canal Holly,dibenzothiophene,-0.55,U
+47.570193,-122.971775,Hood Canal Holly,fluorene,-0.55,U
+47.570193,-122.971775,Hood Canal Holly,naphthalene,2.9,"D,B,LOQ"
+47.570193,-122.971775,Hood Canal Holly,phenanthrene,1.9,D
+48.027069,-122.999191,Jamestown,acenaphthene,-0.7,U
+48.027069,-122.999191,Jamestown,acenaphthylene,-0.69,U
+48.027069,-122.999191,Jamestown,C1-dibenzothiophenes,-0.69,U
+48.027069,-122.999191,Jamestown,C1-fluorenes,-0.69,U
+48.027069,-122.999191,Jamestown,C1-naphthalenes,-0.69,U
+48.027069,-122.999191,Jamestown,C1-phenanthrenes_anthracenes,1.4,D
+48.027069,-122.999191,Jamestown,C2-dibenzothiophenes,-0.69,U
+48.027069,-122.999191,Jamestown,C2-fluorenes,-0.69,U
+48.027069,-122.999191,Jamestown,C2-naphthalenes,1.3,D
+48.027069,-122.999191,Jamestown,C2-phenanthrenes_anthracenes,2.2,D
+48.027069,-122.999191,Jamestown,C3-dibenzothiophenes,-0.69,U
+48.027069,-122.999191,Jamestown,C3-fluorenes,-0.69,U
+48.027069,-122.999191,Jamestown,C3-naphthalenes,1.4,D
+48.027069,-122.999191,Jamestown,C3-phenanthrenes_anthracenes,0.96,D
+48.027069,-122.999191,Jamestown,C4-dibenzothiophenes,-0.69,U
+48.027069,-122.999191,Jamestown,C4-naphthalenes,1.1,D
+48.027069,-122.999191,Jamestown,C4-phenanthrenes_anthracenes,0.82,D
+48.027069,-122.999191,Jamestown,dibenzothiophene,-0.68,U
+48.027069,-122.999191,Jamestown,fluorene,-0.69,U
+48.027069,-122.999191,Jamestown,naphthalene,4.6,"U,B"
+48.027069,-122.999191,Jamestown,phenanthrene,2.4,D
+47.7947,-122.5003,Kingston Marina,acenaphthene,-0.53,U
+47.7947,-122.5003,Kingston Marina,acenaphthylene,-0.53,U
+47.7947,-122.5003,Kingston Marina,C1-dibenzothiophenes,-0.52,U
+47.7947,-122.5003,Kingston Marina,C1-fluorenes,-0.52,U
+47.7947,-122.5003,Kingston Marina,C1-naphthalenes,0.52,"D,LOQ"
+47.7947,-122.5003,Kingston Marina,C1-phenanthrenes_anthracenes,2.6,D
+47.7947,-122.5003,Kingston Marina,C2-dibenzothiophenes,-0.52,U
+47.7947,-122.5003,Kingston Marina,C2-fluorenes,0.54,"D,LOQ"
+47.7947,-122.5003,Kingston Marina,C2-naphthalenes,1.4,"D,B"
+47.7947,-122.5003,Kingston Marina,C2-phenanthrenes_anthracenes,3.3,D
+47.7947,-122.5003,Kingston Marina,C3-dibenzothiophenes,-0.52,U
+47.7947,-122.5003,Kingston Marina,C3-fluorenes,0.63,"D,LOQ"
+47.7947,-122.5003,Kingston Marina,C3-naphthalenes,1.7,"D,B"
+47.7947,-122.5003,Kingston Marina,C3-phenanthrenes_anthracenes,2.5,D
+47.7947,-122.5003,Kingston Marina,C4-dibenzothiophenes,-0.52,U
+47.7947,-122.5003,Kingston Marina,C4-naphthalenes,0.78,D
+47.7947,-122.5003,Kingston Marina,C4-phenanthrenes_anthracenes,1.8,D
+47.7947,-122.5003,Kingston Marina,dibenzothiophene,-0.52,U
+47.7947,-122.5003,Kingston Marina,fluorene,-0.52,U
+47.7947,-122.5003,Kingston Marina,naphthalene,3.6,"U,B"
+47.7947,-122.5003,Kingston Marina,phenanthrene,3.9,D
+47.541533,-122.640383,Kitsap St Boat Launch,acenaphthene,0.8,D
+47.541533,-122.640383,Kitsap St Boat Launch,acenaphthylene,-0.53,U
+47.541533,-122.640383,Kitsap St Boat Launch,C1-dibenzothiophenes,0.55,"D,LOQ"
+47.541533,-122.640383,Kitsap St Boat Launch,C1-fluorenes,1,D
+47.541533,-122.640383,Kitsap St Boat Launch,C1-naphthalenes,-0.67,U
+47.541533,-122.640383,Kitsap St Boat Launch,C1-phenanthrenes_anthracenes,7.9,D
+47.541533,-122.640383,Kitsap St Boat Launch,C2-dibenzothiophenes,1.1,D
+47.541533,-122.640383,Kitsap St Boat Launch,C2-fluorenes,2.4,D
+47.541533,-122.640383,Kitsap St Boat Launch,C2-naphthalenes,2.1,D
+47.541533,-122.640383,Kitsap St Boat Launch,C2-phenanthrenes_anthracenes,14,"D,B"
+47.541533,-122.640383,Kitsap St Boat Launch,C3-dibenzothiophenes,1.3,D
+47.541533,-122.640383,Kitsap St Boat Launch,C3-fluorenes,4.7,D
+47.541533,-122.640383,Kitsap St Boat Launch,C3-naphthalenes,4.5,"D,B"
+47.541533,-122.640383,Kitsap St Boat Launch,C3-phenanthrenes_anthracenes,15,D
+47.541533,-122.640383,Kitsap St Boat Launch,C4-dibenzothiophenes,1.1,"D,i"
+47.541533,-122.640383,Kitsap St Boat Launch,C4-naphthalenes,4.2,D
+47.541533,-122.640383,Kitsap St Boat Launch,C4-phenanthrenes_anthracenes,9.9,D
+47.541533,-122.640383,Kitsap St Boat Launch,dibenzothiophene,-0.52,U
+47.541533,-122.640383,Kitsap St Boat Launch,fluorene,1.1,D
+47.541533,-122.640383,Kitsap St Boat Launch,naphthalene,1.4,"U,B"
+47.541533,-122.640383,Kitsap St Boat Launch,phenanthrene,7.5,D
+47.3115,-122.68725,Kopachuck State Park,acenaphthene,-0.48,U
+47.3115,-122.68725,Kopachuck State Park,acenaphthylene,-0.47,U
+47.3115,-122.68725,Kopachuck State Park,C1-dibenzothiophenes,-0.47,U
+47.3115,-122.68725,Kopachuck State Park,C1-fluorenes,-0.47,U
+47.3115,-122.68725,Kopachuck State Park,C1-naphthalenes,-0.46,U
+47.3115,-122.68725,Kopachuck State Park,C1-phenanthrenes_anthracenes,1.7,D
+47.3115,-122.68725,Kopachuck State Park,C2-dibenzothiophenes,-0.47,U
+47.3115,-122.68725,Kopachuck State Park,C2-fluorenes,-0.47,U
+47.3115,-122.68725,Kopachuck State Park,C2-naphthalenes,0.9,"D,B,LOQ"
+47.3115,-122.68725,Kopachuck State Park,C2-phenanthrenes_anthracenes,2.4,"D,i"
+47.3115,-122.68725,Kopachuck State Park,C3-dibenzothiophenes,-0.47,U
+47.3115,-122.68725,Kopachuck State Park,C3-fluorenes,-0.47,U
+47.3115,-122.68725,Kopachuck State Park,C3-naphthalenes,1.1,D
+47.3115,-122.68725,Kopachuck State Park,C3-phenanthrenes_anthracenes,1.3,D
+47.3115,-122.68725,Kopachuck State Park,C4-dibenzothiophenes,-0.47,U
+47.3115,-122.68725,Kopachuck State Park,C4-naphthalenes,-0.47,U
+47.3115,-122.68725,Kopachuck State Park,C4-phenanthrenes_anthracenes,1.3,D
+47.3115,-122.68725,Kopachuck State Park,dibenzothiophene,-0.47,U
+47.3115,-122.68725,Kopachuck State Park,fluorene,-0.47,U
+47.3115,-122.68725,Kopachuck State Park,naphthalene,2.3,"U,B"
+47.3115,-122.68725,Kopachuck State Park,phenanthrene,2.1,D
+47.583016,-122.64217,Lions Park,acenaphthene,-0.69,U
+47.583016,-122.64217,Lions Park,acenaphthylene,-0.69,U
+47.583016,-122.64217,Lions Park,C1-dibenzothiophenes,-0.68,U
+47.583016,-122.64217,Lions Park,C1-fluorenes,-0.68,U
+47.583016,-122.64217,Lions Park,C1-naphthalenes,-0.68,U
+47.583016,-122.64217,Lions Park,C1-phenanthrenes_anthracenes,2.9,D
+47.583016,-122.64217,Lions Park,C2-dibenzothiophenes,-0.68,U
+47.583016,-122.64217,Lions Park,C2-fluorenes,-0.68,U
+47.583016,-122.64217,Lions Park,C2-naphthalenes,1.4,D
+47.583016,-122.64217,Lions Park,C2-phenanthrenes_anthracenes,4.2,D
+47.583016,-122.64217,Lions Park,C3-dibenzothiophenes,-0.68,U
+47.583016,-122.64217,Lions Park,C3-fluorenes,-0.68,U
+47.583016,-122.64217,Lions Park,C3-naphthalenes,2,"D,B"
+47.583016,-122.64217,Lions Park,C3-phenanthrenes_anthracenes,3.9,D
+47.583016,-122.64217,Lions Park,C4-dibenzothiophenes,-0.68,U
+47.583016,-122.64217,Lions Park,C4-naphthalenes,0.86,D
+47.583016,-122.64217,Lions Park,C4-phenanthrenes_anthracenes,2.8,D
+47.583016,-122.64217,Lions Park,dibenzothiophene,-0.68,U
+47.583016,-122.64217,Lions Park,fluorene,-0.68,U
+47.583016,-122.64217,Lions Park,naphthalene,2.9,"D,B,LOQ"
+47.583016,-122.64217,Lions Park,phenanthrene,3.4,D
+48.76652,-122.5395,Locust Beach,acenaphthene,-0.68,U
+48.76652,-122.5395,Locust Beach,acenaphthylene,-0.68,U
+48.76652,-122.5395,Locust Beach,C1-dibenzothiophenes,-0.68,U
+48.76652,-122.5395,Locust Beach,C1-fluorenes,-0.68,U
+48.76652,-122.5395,Locust Beach,C1-naphthalenes,-0.69,U
+48.76652,-122.5395,Locust Beach,C1-phenanthrenes_anthracenes,2,D
+48.76652,-122.5395,Locust Beach,C2-dibenzothiophenes,-0.68,U
+48.76652,-122.5395,Locust Beach,C2-fluorenes,-0.68,U
+48.76652,-122.5395,Locust Beach,C2-naphthalenes,1.6,D
+48.76652,-122.5395,Locust Beach,C2-phenanthrenes_anthracenes,2.7,D
+48.76652,-122.5395,Locust Beach,C3-dibenzothiophenes,-0.68,U
+48.76652,-122.5395,Locust Beach,C3-fluorenes,-0.68,U
+48.76652,-122.5395,Locust Beach,C3-naphthalenes,1.9,"D,B"
+48.76652,-122.5395,Locust Beach,C3-phenanthrenes_anthracenes,1.4,D
+48.76652,-122.5395,Locust Beach,C4-dibenzothiophenes,-0.68,U
+48.76652,-122.5395,Locust Beach,C4-naphthalenes,0.85,D
+48.76652,-122.5395,Locust Beach,C4-phenanthrenes_anthracenes,2.8,D
+48.76652,-122.5395,Locust Beach,dibenzothiophene,-0.67,U
+48.76652,-122.5395,Locust Beach,fluorene,-0.67,U
+48.76652,-122.5395,Locust Beach,naphthalene,2.8,"D,B,LOQ"
+48.76652,-122.5395,Locust Beach,phenanthrene,2.9,D
+47.579985,-122.67853,Madrona Pont,acenaphthene,-0.6,U
+47.579985,-122.67853,Madrona Pont,acenaphthylene,-0.59,U
+47.579985,-122.67853,Madrona Pont,C1-dibenzothiophenes,-0.59,U
+47.579985,-122.67853,Madrona Pont,C1-fluorenes,-0.59,U
+47.579985,-122.67853,Madrona Pont,C1-naphthalenes,-0.59,U
+47.579985,-122.67853,Madrona Pont,C1-phenanthrenes_anthracenes,2.8,D
+47.579985,-122.67853,Madrona Pont,C2-dibenzothiophenes,-0.59,U
+47.579985,-122.67853,Madrona Pont,C2-fluorenes,-0.59,U
+47.579985,-122.67853,Madrona Pont,C2-naphthalenes,1.3,D
+47.579985,-122.67853,Madrona Pont,C2-phenanthrenes_anthracenes,4,D
+47.579985,-122.67853,Madrona Pont,C3-dibenzothiophenes,-0.59,U
+47.579985,-122.67853,Madrona Pont,C3-fluorenes,-0.59,U
+47.579985,-122.67853,Madrona Pont,C3-naphthalenes,1.9,"D,B"
+47.579985,-122.67853,Madrona Pont,C3-phenanthrenes_anthracenes,3.6,D
+47.579985,-122.67853,Madrona Pont,C4-dibenzothiophenes,-0.59,U
+47.579985,-122.67853,Madrona Pont,C4-naphthalenes,0.81,D
+47.579985,-122.67853,Madrona Pont,C4-phenanthrenes_anthracenes,2.5,D
+47.579985,-122.67853,Madrona Pont,dibenzothiophene,-0.58,U
+47.579985,-122.67853,Madrona Pont,fluorene,-0.59,U
+47.579985,-122.67853,Madrona Pont,naphthalene,2.7,"D,B,LOQ"
+47.579985,-122.67853,Madrona Pont,phenanthrene,3.2,D
+47.556111,-122.542778,"Manchester, Stormwater Outfall",acenaphthene,-0.58,U
+47.556111,-122.542778,"Manchester, Stormwater Outfall",acenaphthylene,-0.58,U
+47.556111,-122.542778,"Manchester, Stormwater Outfall",C1-dibenzothiophenes,-0.57,U
+47.556111,-122.542778,"Manchester, Stormwater Outfall",C1-fluorenes,-0.57,U
+47.556111,-122.542778,"Manchester, Stormwater Outfall",C1-naphthalenes,0.6,"D,LOQ"
+47.556111,-122.542778,"Manchester, Stormwater Outfall",C1-phenanthrenes_anthracenes,3.4,D
+47.556111,-122.542778,"Manchester, Stormwater Outfall",C2-dibenzothiophenes,-0.57,U
+47.556111,-122.542778,"Manchester, Stormwater Outfall",C2-fluorenes,0.62,"D,LOQ"
+47.556111,-122.542778,"Manchester, Stormwater Outfall",C2-naphthalenes,1.5,"D,B"
+47.556111,-122.542778,"Manchester, Stormwater Outfall",C2-phenanthrenes_anthracenes,4.3,D
+47.556111,-122.542778,"Manchester, Stormwater Outfall",C3-dibenzothiophenes,-0.57,U
+47.556111,-122.542778,"Manchester, Stormwater Outfall",C3-fluorenes,0.75,D
+47.556111,-122.542778,"Manchester, Stormwater Outfall",C3-naphthalenes,2,"D,B"
+47.556111,-122.542778,"Manchester, Stormwater Outfall",C3-phenanthrenes_anthracenes,3.3,D
+47.556111,-122.542778,"Manchester, Stormwater Outfall",C4-dibenzothiophenes,-0.57,U
+47.556111,-122.542778,"Manchester, Stormwater Outfall",C4-naphthalenes,0.97,D
+47.556111,-122.542778,"Manchester, Stormwater Outfall",C4-phenanthrenes_anthracenes,2.2,D
+47.556111,-122.542778,"Manchester, Stormwater Outfall",dibenzothiophene,-0.57,U
+47.556111,-122.542778,"Manchester, Stormwater Outfall",fluorene,-0.57,U
+47.556111,-122.542778,"Manchester, Stormwater Outfall",naphthalene,3.9,"U,B"
+47.556111,-122.542778,"Manchester, Stormwater Outfall",phenanthrene,4.7,D
+47.29954,-122.74554,Maple Hollow Park,acenaphthene,-0.51,U
+47.29954,-122.74554,Maple Hollow Park,acenaphthylene,-0.5,U
+47.29954,-122.74554,Maple Hollow Park,C1-dibenzothiophenes,-0.5,U
+47.29954,-122.74554,Maple Hollow Park,C1-fluorenes,-0.5,U
+47.29954,-122.74554,Maple Hollow Park,C1-naphthalenes,0.55,"D,LOQ"
+47.29954,-122.74554,Maple Hollow Park,C1-phenanthrenes_anthracenes,2,D
+47.29954,-122.74554,Maple Hollow Park,C2-dibenzothiophenes,-0.5,U
+47.29954,-122.74554,Maple Hollow Park,C2-fluorenes,-0.5,U
+47.29954,-122.74554,Maple Hollow Park,C2-naphthalenes,1.1,"D,B,LOQ"
+47.29954,-122.74554,Maple Hollow Park,C2-phenanthrenes_anthracenes,2.7,"D,i"
+47.29954,-122.74554,Maple Hollow Park,C3-dibenzothiophenes,-0.5,U
+47.29954,-122.74554,Maple Hollow Park,C3-fluorenes,-0.5,U
+47.29954,-122.74554,Maple Hollow Park,C3-naphthalenes,1.3,D
+47.29954,-122.74554,Maple Hollow Park,C3-phenanthrenes_anthracenes,1.5,D
+47.29954,-122.74554,Maple Hollow Park,C4-dibenzothiophenes,-0.5,U
+47.29954,-122.74554,Maple Hollow Park,C4-naphthalenes,0.52,"D,LOQ"
+47.29954,-122.74554,Maple Hollow Park,C4-phenanthrenes_anthracenes,1.9,D
+47.29954,-122.74554,Maple Hollow Park,dibenzothiophene,-0.5,U
+47.29954,-122.74554,Maple Hollow Park,fluorene,-0.5,U
+47.29954,-122.74554,Maple Hollow Park,naphthalene,2.6,"U,B"
+47.29954,-122.74554,Maple Hollow Park,phenanthrene,2.6,D
+48.018181,-122.699838,Maristone Island,acenaphthene,-0.68,U
+48.018181,-122.699838,Maristone Island,acenaphthylene,-0.68,U
+48.018181,-122.699838,Maristone Island,C1-dibenzothiophenes,-0.67,U
+48.018181,-122.699838,Maristone Island,C1-fluorenes,-0.67,U
+48.018181,-122.699838,Maristone Island,C1-naphthalenes,-0.67,U
+48.018181,-122.699838,Maristone Island,C1-phenanthrenes_anthracenes,1.5,D
+48.018181,-122.699838,Maristone Island,C2-dibenzothiophenes,-0.67,U
+48.018181,-122.699838,Maristone Island,C2-fluorenes,-0.67,U
+48.018181,-122.699838,Maristone Island,C2-naphthalenes,1.4,D
+48.018181,-122.699838,Maristone Island,C2-phenanthrenes_anthracenes,1.9,D
+48.018181,-122.699838,Maristone Island,C3-dibenzothiophenes,-0.67,U
+48.018181,-122.699838,Maristone Island,C3-fluorenes,-0.67,U
+48.018181,-122.699838,Maristone Island,C3-naphthalenes,1.5,D
+48.018181,-122.699838,Maristone Island,C3-phenanthrenes_anthracenes,1.1,D
+48.018181,-122.699838,Maristone Island,C4-dibenzothiophenes,-0.67,U
+48.018181,-122.699838,Maristone Island,C4-naphthalenes,1,D
+48.018181,-122.699838,Maristone Island,C4-phenanthrenes_anthracenes,0.84,D
+48.018181,-122.699838,Maristone Island,dibenzothiophene,-0.67,U
+48.018181,-122.699838,Maristone Island,fluorene,-0.67,U
+48.018181,-122.699838,Maristone Island,naphthalene,4.1,"U,B"
+48.018181,-122.699838,Maristone Island,phenanthrene,2.5,D
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,acenaphthene,-0.77,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,acenaphthylene,-0.77,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,C1-dibenzothiophenes,-0.76,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,C1-fluorenes,-0.76,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,C1-naphthalenes,-0.83,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,C1-phenanthrenes_anthracenes,2.1,D
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,C2-dibenzothiophenes,-0.76,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,C2-fluorenes,-0.76,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,C2-naphthalenes,1.6,D
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,C2-phenanthrenes_anthracenes,2.6,D
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,C3-dibenzothiophenes,-0.76,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,C3-fluorenes,-0.76,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,C3-naphthalenes,1.7,D
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,C3-phenanthrenes_anthracenes,1.4,D
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,C4-dibenzothiophenes,-0.76,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,C4-naphthalenes,1,D
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,C4-phenanthrenes_anthracenes,1.2,D
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,dibenzothiophene,-0.75,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,fluorene,-0.76,U
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,naphthalene,5.5,"U,B"
+47.117944,-122.833528,Meyer's Point - Henderson Inlet,phenanthrene,2.6,D
+47.443611,-122.361944,Miller Creek,acenaphthene,-0.57,U
+47.443611,-122.361944,Miller Creek,acenaphthylene,-0.57,U
+47.443611,-122.361944,Miller Creek,C1-dibenzothiophenes,-0.56,U
+47.443611,-122.361944,Miller Creek,C1-fluorenes,-0.56,U
+47.443611,-122.361944,Miller Creek,C1-naphthalenes,0.58,"D,LOQ"
+47.443611,-122.361944,Miller Creek,C1-phenanthrenes_anthracenes,3,D
+47.443611,-122.361944,Miller Creek,C2-dibenzothiophenes,-0.56,U
+47.443611,-122.361944,Miller Creek,C2-fluorenes,0.6,"D,LOQ"
+47.443611,-122.361944,Miller Creek,C2-naphthalenes,1.4,"D,B"
+47.443611,-122.361944,Miller Creek,C2-phenanthrenes_anthracenes,4.3,D
+47.443611,-122.361944,Miller Creek,C3-dibenzothiophenes,-0.56,U
+47.443611,-122.361944,Miller Creek,C3-fluorenes,0.76,D
+47.443611,-122.361944,Miller Creek,C3-naphthalenes,1.8,D
+47.443611,-122.361944,Miller Creek,C3-phenanthrenes_anthracenes,3.2,D
+47.443611,-122.361944,Miller Creek,C4-dibenzothiophenes,-0.56,U
+47.443611,-122.361944,Miller Creek,C4-naphthalenes,0.62,D
+47.443611,-122.361944,Miller Creek,C4-phenanthrenes_anthracenes,3,D
+47.443611,-122.361944,Miller Creek,dibenzothiophene,-0.56,U
+47.443611,-122.361944,Miller Creek,fluorene,-0.56,U
+47.443611,-122.361944,Miller Creek,naphthalene,2.7,"U,B"
+47.443611,-122.361944,Miller Creek,phenanthrene,4.4,D
+47.35399,-122.69176,Minter Bay,acenaphthene,-0.57,U
+47.35399,-122.69176,Minter Bay,acenaphthylene,-0.56,U
+47.35399,-122.69176,Minter Bay,C1-dibenzothiophenes,-0.56,U
+47.35399,-122.69176,Minter Bay,C1-fluorenes,-0.56,U
+47.35399,-122.69176,Minter Bay,C1-naphthalenes,-0.55,U
+47.35399,-122.69176,Minter Bay,C1-phenanthrenes_anthracenes,1.9,D
+47.35399,-122.69176,Minter Bay,C2-dibenzothiophenes,-0.56,U
+47.35399,-122.69176,Minter Bay,C2-fluorenes,-0.56,U
+47.35399,-122.69176,Minter Bay,C2-naphthalenes,0.98,"D,B,LOQ"
+47.35399,-122.69176,Minter Bay,C2-phenanthrenes_anthracenes,2.4,D
+47.35399,-122.69176,Minter Bay,C3-dibenzothiophenes,-0.56,U
+47.35399,-122.69176,Minter Bay,C3-fluorenes,-0.56,U
+47.35399,-122.69176,Minter Bay,C3-naphthalenes,1.2,D
+47.35399,-122.69176,Minter Bay,C3-phenanthrenes_anthracenes,1.3,D
+47.35399,-122.69176,Minter Bay,C4-dibenzothiophenes,-0.56,U
+47.35399,-122.69176,Minter Bay,C4-naphthalenes,-0.56,U
+47.35399,-122.69176,Minter Bay,C4-phenanthrenes_anthracenes,1.5,D
+47.35399,-122.69176,Minter Bay,dibenzothiophene,-0.55,U
+47.35399,-122.69176,Minter Bay,fluorene,-0.56,U
+47.35399,-122.69176,Minter Bay,naphthalene,2.5,"U,B"
+47.35399,-122.69176,Minter Bay,phenanthrene,2.8,D
+47.949831,-122.301703,Mukilteo,acenaphthene,-0.68,U
+47.949831,-122.301703,Mukilteo,acenaphthylene,-0.67,U
+47.949831,-122.301703,Mukilteo,C1-dibenzothiophenes,-0.67,U
+47.949831,-122.301703,Mukilteo,C1-fluorenes,0.68,D
+47.949831,-122.301703,Mukilteo,C1-naphthalenes,-0.64,U
+47.949831,-122.301703,Mukilteo,C1-phenanthrenes_anthracenes,4.7,D
+47.949831,-122.301703,Mukilteo,C2-dibenzothiophenes,-0.67,U
+47.949831,-122.301703,Mukilteo,C2-fluorenes,0.73,D
+47.949831,-122.301703,Mukilteo,C2-naphthalenes,1.7,D
+47.949831,-122.301703,Mukilteo,C2-phenanthrenes_anthracenes,5.2,D
+47.949831,-122.301703,Mukilteo,C3-dibenzothiophenes,-0.67,U
+47.949831,-122.301703,Mukilteo,C3-fluorenes,0.71,D
+47.949831,-122.301703,Mukilteo,C3-naphthalenes,2.8,"D,B"
+47.949831,-122.301703,Mukilteo,C3-phenanthrenes_anthracenes,4.1,D
+47.949831,-122.301703,Mukilteo,C4-dibenzothiophenes,-0.67,U
+47.949831,-122.301703,Mukilteo,C4-naphthalenes,1.6,D
+47.949831,-122.301703,Mukilteo,C4-phenanthrenes_anthracenes,3.3,D
+47.949831,-122.301703,Mukilteo,dibenzothiophene,-0.66,U
+47.949831,-122.301703,Mukilteo,fluorene,0.76,D
+47.949831,-122.301703,Mukilteo,naphthalene,3.7,"D,B"
+47.949831,-122.301703,Mukilteo,phenanthrene,6.6,D
+48.52108,-122.61531,N Avenue Park,acenaphthene,1.6,D
+48.52108,-122.61531,N Avenue Park,acenaphthylene,-0.61,U
+48.52108,-122.61531,N Avenue Park,C1-dibenzothiophenes,1.3,D
+48.52108,-122.61531,N Avenue Park,C1-fluorenes,2.7,D
+48.52108,-122.61531,N Avenue Park,C1-naphthalenes,-0.98,U
+48.52108,-122.61531,N Avenue Park,C1-phenanthrenes_anthracenes,24,D
+48.52108,-122.61531,N Avenue Park,C2-dibenzothiophenes,2.6,D
+48.52108,-122.61531,N Avenue Park,C2-fluorenes,8.5,D
+48.52108,-122.61531,N Avenue Park,C2-naphthalenes,3,D
+48.52108,-122.61531,N Avenue Park,C2-phenanthrenes_anthracenes,42,D
+48.52108,-122.61531,N Avenue Park,C3-dibenzothiophenes,4.2,D
+48.52108,-122.61531,N Avenue Park,C3-fluorenes,15,D
+48.52108,-122.61531,N Avenue Park,C3-naphthalenes,16,"D,B"
+48.52108,-122.61531,N Avenue Park,C3-phenanthrenes_anthracenes,36,D
+48.52108,-122.61531,N Avenue Park,C4-dibenzothiophenes,4.3,"D,i"
+48.52108,-122.61531,N Avenue Park,C4-naphthalenes,18,D
+48.52108,-122.61531,N Avenue Park,C4-phenanthrenes_anthracenes,18,D
+48.52108,-122.61531,N Avenue Park,dibenzothiophene,1.1,D
+48.52108,-122.61531,N Avenue Park,fluorene,2.2,D
+48.52108,-122.61531,N Avenue Park,naphthalene,1,D
+48.52108,-122.61531,N Avenue Park,phenanthrene,21,D
+48.25523,-122.50817,North Camano,acenaphthene,-0.56,U
+48.25523,-122.50817,North Camano,acenaphthylene,-0.55,U
+48.25523,-122.50817,North Camano,C1-dibenzothiophenes,-0.55,U
+48.25523,-122.50817,North Camano,C1-fluorenes,-0.55,U
+48.25523,-122.50817,North Camano,C1-naphthalenes,-0.57,U
+48.25523,-122.50817,North Camano,C1-phenanthrenes_anthracenes,2.3,D
+48.25523,-122.50817,North Camano,C2-dibenzothiophenes,-0.55,U
+48.25523,-122.50817,North Camano,C2-fluorenes,-0.55,U
+48.25523,-122.50817,North Camano,C2-naphthalenes,1.2,D
+48.25523,-122.50817,North Camano,C2-phenanthrenes_anthracenes,3.3,D
+48.25523,-122.50817,North Camano,C3-dibenzothiophenes,-0.55,U
+48.25523,-122.50817,North Camano,C3-fluorenes,-0.55,U
+48.25523,-122.50817,North Camano,C3-naphthalenes,1.5,"D,B"
+48.25523,-122.50817,North Camano,C3-phenanthrenes_anthracenes,1.8,D
+48.25523,-122.50817,North Camano,C4-dibenzothiophenes,-0.55,U
+48.25523,-122.50817,North Camano,C4-naphthalenes,0.92,"D,i"
+48.25523,-122.50817,North Camano,C4-phenanthrenes_anthracenes,2.6,D
+48.25523,-122.50817,North Camano,dibenzothiophene,-0.54,U
+48.25523,-122.50817,North Camano,fluorene,-0.54,U
+48.25523,-122.50817,North Camano,naphthalene,0.57,D
+48.25523,-122.50817,North Camano,phenanthrene,3,D
+48.022466,-122.728123,Oak Bay County Park,acenaphthene,-0.66,U
+48.022466,-122.728123,Oak Bay County Park,acenaphthylene,-0.65,U
+48.022466,-122.728123,Oak Bay County Park,C1-dibenzothiophenes,-0.65,U
+48.022466,-122.728123,Oak Bay County Park,C1-fluorenes,-0.65,U
+48.022466,-122.728123,Oak Bay County Park,C1-naphthalenes,-0.65,U
+48.022466,-122.728123,Oak Bay County Park,C1-phenanthrenes_anthracenes,1.7,D
+48.022466,-122.728123,Oak Bay County Park,C2-dibenzothiophenes,-0.65,U
+48.022466,-122.728123,Oak Bay County Park,C2-fluorenes,-0.65,U
+48.022466,-122.728123,Oak Bay County Park,C2-naphthalenes,1.3,D
+48.022466,-122.728123,Oak Bay County Park,C2-phenanthrenes_anthracenes,2.2,D
+48.022466,-122.728123,Oak Bay County Park,C3-dibenzothiophenes,-0.65,U
+48.022466,-122.728123,Oak Bay County Park,C3-fluorenes,-0.65,U
+48.022466,-122.728123,Oak Bay County Park,C3-naphthalenes,1.4,D
+48.022466,-122.728123,Oak Bay County Park,C3-phenanthrenes_anthracenes,1.5,D
+48.022466,-122.728123,Oak Bay County Park,C4-dibenzothiophenes,-0.65,U
+48.022466,-122.728123,Oak Bay County Park,C4-naphthalenes,0.83,D
+48.022466,-122.728123,Oak Bay County Park,C4-phenanthrenes_anthracenes,1,D
+48.022466,-122.728123,Oak Bay County Park,dibenzothiophene,-0.64,U
+48.022466,-122.728123,Oak Bay County Park,fluorene,-0.64,U
+48.022466,-122.728123,Oak Bay County Park,naphthalene,3.7,"U,B"
+48.022466,-122.728123,Oak Bay County Park,phenanthrene,2.8,D
+48.218047,-122.712359,Penn Cove Baseline,acenaphthene,-0.49,U
+48.218047,-122.712359,Penn Cove Baseline,acenaphthylene,-0.48,U
+48.218047,-122.712359,Penn Cove Baseline,C1-dibenzothiophenes,-0.48,U
+48.218047,-122.712359,Penn Cove Baseline,C1-fluorenes,-0.48,U
+48.218047,-122.712359,Penn Cove Baseline,C1-naphthalenes,0.92,"D,LOQ"
+48.218047,-122.712359,Penn Cove Baseline,C1-phenanthrenes_anthracenes,1.4,D
+48.218047,-122.712359,Penn Cove Baseline,C2-dibenzothiophenes,-0.48,U
+48.218047,-122.712359,Penn Cove Baseline,C2-fluorenes,-0.48,U
+48.218047,-122.712359,Penn Cove Baseline,C2-naphthalenes,1.2,"D,B,LOQ"
+48.218047,-122.712359,Penn Cove Baseline,C2-phenanthrenes_anthracenes,1.7,D
+48.218047,-122.712359,Penn Cove Baseline,C3-dibenzothiophenes,-0.48,U
+48.218047,-122.712359,Penn Cove Baseline,C3-fluorenes,-0.48,U
+48.218047,-122.712359,Penn Cove Baseline,C3-naphthalenes,1.4,"D,B"
+48.218047,-122.712359,Penn Cove Baseline,C3-phenanthrenes_anthracenes,0.82,D
+48.218047,-122.712359,Penn Cove Baseline,C4-dibenzothiophenes,-0.48,U
+48.218047,-122.712359,Penn Cove Baseline,C4-naphthalenes,0.61,D
+48.218047,-122.712359,Penn Cove Baseline,C4-phenanthrenes_anthracenes,0.86,D
+48.218047,-122.712359,Penn Cove Baseline,dibenzothiophene,-0.48,U
+48.218047,-122.712359,Penn Cove Baseline,fluorene,-0.48,U
+48.218047,-122.712359,Penn Cove Baseline,naphthalene,4.3,"U,B"
+48.218047,-122.712359,Penn Cove Baseline,phenanthrene,2.5,D
+48.214071,-122.719097,Penn Cove Reference,acenaphthene,-0.45,U
+48.214071,-122.719097,Penn Cove Reference,acenaphthylene,-0.45,U
+48.214071,-122.719097,Penn Cove Reference,C1-dibenzothiophenes,-0.44,U
+48.214071,-122.719097,Penn Cove Reference,C1-fluorenes,-0.44,U
+48.214071,-122.719097,Penn Cove Reference,C1-naphthalenes,-0.45,U
+48.214071,-122.719097,Penn Cove Reference,C1-phenanthrenes_anthracenes,1.9,D
+48.214071,-122.719097,Penn Cove Reference,C2-dibenzothiophenes,-0.44,U
+48.214071,-122.719097,Penn Cove Reference,C2-fluorenes,-0.44,U
+48.214071,-122.719097,Penn Cove Reference,C2-naphthalenes,1.2,D
+48.214071,-122.719097,Penn Cove Reference,C2-phenanthrenes_anthracenes,1.5,D
+48.214071,-122.719097,Penn Cove Reference,C3-dibenzothiophenes,-0.44,U
+48.214071,-122.719097,Penn Cove Reference,C3-fluorenes,-0.44,U
+48.214071,-122.719097,Penn Cove Reference,C3-naphthalenes,1.4,"D,B"
+48.214071,-122.719097,Penn Cove Reference,C3-phenanthrenes_anthracenes,1.2,D
+48.214071,-122.719097,Penn Cove Reference,C4-dibenzothiophenes,-0.44,U
+48.214071,-122.719097,Penn Cove Reference,C4-naphthalenes,-0.44,U
+48.214071,-122.719097,Penn Cove Reference,C4-phenanthrenes_anthracenes,1.8,D
+48.214071,-122.719097,Penn Cove Reference,dibenzothiophene,-0.44,U
+48.214071,-122.719097,Penn Cove Reference,fluorene,-0.44,U
+48.214071,-122.719097,Penn Cove Reference,naphthalene,2.9,"D,B,LOQ"
+48.214071,-122.719097,Penn Cove Reference,phenanthrene,3.3,D
+47.2609094,-122.7447771,Penrose Point State Park,acenaphthene,-0.58,U
+47.2609094,-122.7447771,Penrose Point State Park,acenaphthylene,-0.57,U
+47.2609094,-122.7447771,Penrose Point State Park,C1-dibenzothiophenes,-0.57,U
+47.2609094,-122.7447771,Penrose Point State Park,C1-fluorenes,-0.57,U
+47.2609094,-122.7447771,Penrose Point State Park,C1-naphthalenes,0.58,"D,LOQ"
+47.2609094,-122.7447771,Penrose Point State Park,C1-phenanthrenes_anthracenes,2.2,D
+47.2609094,-122.7447771,Penrose Point State Park,C2-dibenzothiophenes,-0.57,U
+47.2609094,-122.7447771,Penrose Point State Park,C2-fluorenes,-0.57,U
+47.2609094,-122.7447771,Penrose Point State Park,C2-naphthalenes,-0.57,U
+47.2609094,-122.7447771,Penrose Point State Park,C2-phenanthrenes_anthracenes,3,D
+47.2609094,-122.7447771,Penrose Point State Park,C3-dibenzothiophenes,-0.57,U
+47.2609094,-122.7447771,Penrose Point State Park,C3-fluorenes,-0.57,U
+47.2609094,-122.7447771,Penrose Point State Park,C3-naphthalenes,1.5,D
+47.2609094,-122.7447771,Penrose Point State Park,C3-phenanthrenes_anthracenes,2.2,D
+47.2609094,-122.7447771,Penrose Point State Park,C4-dibenzothiophenes,-0.57,U
+47.2609094,-122.7447771,Penrose Point State Park,C4-naphthalenes,1,D
+47.2609094,-122.7447771,Penrose Point State Park,C4-phenanthrenes_anthracenes,1.6,D
+47.2609094,-122.7447771,Penrose Point State Park,dibenzothiophene,-0.56,U
+47.2609094,-122.7447771,Penrose Point State Park,fluorene,-0.56,U
+47.2609094,-122.7447771,Penrose Point State Park,naphthalene,3.7,"U,B"
+47.2609094,-122.7447771,Penrose Point State Park,phenanthrene,3,D
+47.3061098,-122.514771,Point Defiance Ferry,acenaphthene,0.92,D
+47.3061098,-122.514771,Point Defiance Ferry,acenaphthylene,-0.58,U
+47.3061098,-122.514771,Point Defiance Ferry,C1-dibenzothiophenes,0.6,"D,LOQ"
+47.3061098,-122.514771,Point Defiance Ferry,C1-fluorenes,0.88,D
+47.3061098,-122.514771,Point Defiance Ferry,C1-naphthalenes,0.73,"D,LOQ"
+47.3061098,-122.514771,Point Defiance Ferry,C1-phenanthrenes_anthracenes,7.6,D
+47.3061098,-122.514771,Point Defiance Ferry,C2-dibenzothiophenes,0.82,D
+47.3061098,-122.514771,Point Defiance Ferry,C2-fluorenes,1.3,D
+47.3061098,-122.514771,Point Defiance Ferry,C2-naphthalenes,2.5,"D,B"
+47.3061098,-122.514771,Point Defiance Ferry,C2-phenanthrenes_anthracenes,8.7,D
+47.3061098,-122.514771,Point Defiance Ferry,C3-dibenzothiophenes,1.3,D
+47.3061098,-122.514771,Point Defiance Ferry,C3-fluorenes,2.5,D
+47.3061098,-122.514771,Point Defiance Ferry,C3-naphthalenes,3.5,"D,B"
+47.3061098,-122.514771,Point Defiance Ferry,C3-phenanthrenes_anthracenes,6.6,D
+47.3061098,-122.514771,Point Defiance Ferry,C4-dibenzothiophenes,0.82,D
+47.3061098,-122.514771,Point Defiance Ferry,C4-naphthalenes,2.3,D
+47.3061098,-122.514771,Point Defiance Ferry,C4-phenanthrenes_anthracenes,4.5,D
+47.3061098,-122.514771,Point Defiance Ferry,dibenzothiophene,-0.57,U
+47.3061098,-122.514771,Point Defiance Ferry,fluorene,1.2,D
+47.3061098,-122.514771,Point Defiance Ferry,naphthalene,4.2,"U,B"
+47.3061098,-122.514771,Point Defiance Ferry,phenanthrene,11,D
+48.128267,-123.457133,Port Angeles Yacht Club,acenaphthene,1.8,D
+48.128267,-123.457133,Port Angeles Yacht Club,acenaphthylene,-0.5,U
+48.128267,-123.457133,Port Angeles Yacht Club,C1-dibenzothiophenes,0.89,D
+48.128267,-123.457133,Port Angeles Yacht Club,C1-fluorenes,1.1,D
+48.128267,-123.457133,Port Angeles Yacht Club,C1-naphthalenes,-0.82,U
+48.128267,-123.457133,Port Angeles Yacht Club,C1-phenanthrenes_anthracenes,17,D
+48.128267,-123.457133,Port Angeles Yacht Club,C2-dibenzothiophenes,1.8,D
+48.128267,-123.457133,Port Angeles Yacht Club,C2-fluorenes,1.5,D
+48.128267,-123.457133,Port Angeles Yacht Club,C2-naphthalenes,1.99,D
+48.128267,-123.457133,Port Angeles Yacht Club,C2-phenanthrenes_anthracenes,19,D
+48.128267,-123.457133,Port Angeles Yacht Club,C3-dibenzothiophenes,2.8,D
+48.128267,-123.457133,Port Angeles Yacht Club,C3-fluorenes,3.3,D
+48.128267,-123.457133,Port Angeles Yacht Club,C3-naphthalenes,3.5,"D,B"
+48.128267,-123.457133,Port Angeles Yacht Club,C3-phenanthrenes_anthracenes,20,D
+48.128267,-123.457133,Port Angeles Yacht Club,C4-dibenzothiophenes,2.7,"D,i"
+48.128267,-123.457133,Port Angeles Yacht Club,C4-naphthalenes,2.3,"D,i"
+48.128267,-123.457133,Port Angeles Yacht Club,C4-phenanthrenes_anthracenes,16,D
+48.128267,-123.457133,Port Angeles Yacht Club,dibenzothiophene,0.97,D
+48.128267,-123.457133,Port Angeles Yacht Club,fluorene,2.2,D
+48.128267,-123.457133,Port Angeles Yacht Club,naphthalene,1.2,D
+48.128267,-123.457133,Port Angeles Yacht Club,phenanthrene,24,D
+47.385334,-122.628902,Purdy - Dexters,acenaphthene,-0.59,U
+47.385334,-122.628902,Purdy - Dexters,acenaphthylene,-0.58,U
+47.385334,-122.628902,Purdy - Dexters,C1-dibenzothiophenes,-0.58,U
+47.385334,-122.628902,Purdy - Dexters,C1-fluorenes,-0.58,U
+47.385334,-122.628902,Purdy - Dexters,C1-naphthalenes,-0.57,U
+47.385334,-122.628902,Purdy - Dexters,C1-phenanthrenes_anthracenes,2,D
+47.385334,-122.628902,Purdy - Dexters,C2-dibenzothiophenes,-0.58,U
+47.385334,-122.628902,Purdy - Dexters,C2-fluorenes,-0.58,U
+47.385334,-122.628902,Purdy - Dexters,C2-naphthalenes,1.1,"D,B,LOQ"
+47.385334,-122.628902,Purdy - Dexters,C2-phenanthrenes_anthracenes,2.8,D
+47.385334,-122.628902,Purdy - Dexters,C3-dibenzothiophenes,-0.58,U
+47.385334,-122.628902,Purdy - Dexters,C3-fluorenes,-0.58,U
+47.385334,-122.628902,Purdy - Dexters,C3-naphthalenes,1.2,D
+47.385334,-122.628902,Purdy - Dexters,C3-phenanthrenes_anthracenes,1.6,D
+47.385334,-122.628902,Purdy - Dexters,C4-dibenzothiophenes,-0.58,U
+47.385334,-122.628902,Purdy - Dexters,C4-naphthalenes,-0.58,U
+47.385334,-122.628902,Purdy - Dexters,C4-phenanthrenes_anthracenes,1.7,D
+47.385334,-122.628902,Purdy - Dexters,dibenzothiophene,-0.57,U
+47.385334,-122.628902,Purdy - Dexters,fluorene,-0.58,U
+47.385334,-122.628902,Purdy - Dexters,naphthalene,2.5,"U,B"
+47.385334,-122.628902,Purdy - Dexters,phenanthrene,2.8,D
+47.387021,-122.6367,"Purdy, Burley Lagoon",acenaphthene,-0.67,U
+47.387021,-122.6367,"Purdy, Burley Lagoon",acenaphthylene,-0.66,U
+47.387021,-122.6367,"Purdy, Burley Lagoon",C1-dibenzothiophenes,-0.66,U
+47.387021,-122.6367,"Purdy, Burley Lagoon",C1-fluorenes,-0.66,U
+47.387021,-122.6367,"Purdy, Burley Lagoon",C1-naphthalenes,-0.68,U
+47.387021,-122.6367,"Purdy, Burley Lagoon",C1-phenanthrenes_anthracenes,2.4,D
+47.387021,-122.6367,"Purdy, Burley Lagoon",C2-dibenzothiophenes,-0.66,U
+47.387021,-122.6367,"Purdy, Burley Lagoon",C2-fluorenes,-0.66,U
+47.387021,-122.6367,"Purdy, Burley Lagoon",C2-naphthalenes,1.2,D
+47.387021,-122.6367,"Purdy, Burley Lagoon",C2-phenanthrenes_anthracenes,3.1,D
+47.387021,-122.6367,"Purdy, Burley Lagoon",C3-dibenzothiophenes,-0.66,U
+47.387021,-122.6367,"Purdy, Burley Lagoon",C3-fluorenes,0.67,D
+47.387021,-122.6367,"Purdy, Burley Lagoon",C3-naphthalenes,1.6,D
+47.387021,-122.6367,"Purdy, Burley Lagoon",C3-phenanthrenes_anthracenes,1.9,D
+47.387021,-122.6367,"Purdy, Burley Lagoon",C4-dibenzothiophenes,-0.66,U
+47.387021,-122.6367,"Purdy, Burley Lagoon",C4-naphthalenes,1.1,D
+47.387021,-122.6367,"Purdy, Burley Lagoon",C4-phenanthrenes_anthracenes,2,D
+47.387021,-122.6367,"Purdy, Burley Lagoon",dibenzothiophene,-0.65,U
+47.387021,-122.6367,"Purdy, Burley Lagoon",fluorene,-0.65,U
+47.387021,-122.6367,"Purdy, Burley Lagoon",naphthalene,4.1,"U,B"
+47.387021,-122.6367,"Purdy, Burley Lagoon",phenanthrene,3,D
+47.32622,-122.66715,Raft Island Park,acenaphthene,-0.53,U
+47.32622,-122.66715,Raft Island Park,acenaphthylene,-0.53,U
+47.32622,-122.66715,Raft Island Park,C1-dibenzothiophenes,-0.53,U
+47.32622,-122.66715,Raft Island Park,C1-fluorenes,-0.53,U
+47.32622,-122.66715,Raft Island Park,C1-naphthalenes,-0.51,U
+47.32622,-122.66715,Raft Island Park,C1-phenanthrenes_anthracenes,1.6,D
+47.32622,-122.66715,Raft Island Park,C2-dibenzothiophenes,-0.53,U
+47.32622,-122.66715,Raft Island Park,C2-fluorenes,-0.53,U
+47.32622,-122.66715,Raft Island Park,C2-naphthalenes,0.95,"D,B,LOQ"
+47.32622,-122.66715,Raft Island Park,C2-phenanthrenes_anthracenes,2.2,"D,i"
+47.32622,-122.66715,Raft Island Park,C3-dibenzothiophenes,-0.53,U
+47.32622,-122.66715,Raft Island Park,C3-fluorenes,-0.53,U
+47.32622,-122.66715,Raft Island Park,C3-naphthalenes,1.1,D
+47.32622,-122.66715,Raft Island Park,C3-phenanthrenes_anthracenes,1.1,D
+47.32622,-122.66715,Raft Island Park,C4-dibenzothiophenes,-0.53,U
+47.32622,-122.66715,Raft Island Park,C4-naphthalenes,-0.52,U
+47.32622,-122.66715,Raft Island Park,C4-phenanthrenes_anthracenes,0.93,D
+47.32622,-122.66715,Raft Island Park,dibenzothiophene,-0.52,U
+47.32622,-122.66715,Raft Island Park,fluorene,-0.52,U
+47.32622,-122.66715,Raft Island Park,naphthalene,2.5,"U,B"
+47.32622,-122.66715,Raft Island Park,phenanthrene,2.2,D
+47.346817,-122.822363,Reach Island,acenaphthene,-0.52,U
+47.346817,-122.822363,Reach Island,acenaphthylene,-0.51,U
+47.346817,-122.822363,Reach Island,C1-dibenzothiophenes,-0.51,U
+47.346817,-122.822363,Reach Island,C1-fluorenes,-0.51,U
+47.346817,-122.822363,Reach Island,C1-naphthalenes,-0.57,U
+47.346817,-122.822363,Reach Island,C1-phenanthrenes_anthracenes,2.6,D
+47.346817,-122.822363,Reach Island,C2-dibenzothiophenes,-0.51,U
+47.346817,-122.822363,Reach Island,C2-fluorenes,-0.51,U
+47.346817,-122.822363,Reach Island,C2-naphthalenes,1.4,D
+47.346817,-122.822363,Reach Island,C2-phenanthrenes_anthracenes,4,D
+47.346817,-122.822363,Reach Island,C3-dibenzothiophenes,-0.51,U
+47.346817,-122.822363,Reach Island,C3-fluorenes,-0.51,U
+47.346817,-122.822363,Reach Island,C3-naphthalenes,1.7,"D,B"
+47.346817,-122.822363,Reach Island,C3-phenanthrenes_anthracenes,2.1,D
+47.346817,-122.822363,Reach Island,C4-dibenzothiophenes,-0.51,U
+47.346817,-122.822363,Reach Island,C4-naphthalenes,1.1,"D,i"
+47.346817,-122.822363,Reach Island,C4-phenanthrenes_anthracenes,2.8,D
+47.346817,-122.822363,Reach Island,dibenzothiophene,-0.51,U
+47.346817,-122.822363,Reach Island,fluorene,-0.51,U
+47.346817,-122.822363,Reach Island,naphthalene,0.61,D
+47.346817,-122.822363,Reach Island,phenanthrene,2.6,D
+47.578117,-122.524833,Rich Passage,acenaphthene,-0.61,U
+47.578117,-122.524833,Rich Passage,acenaphthylene,-0.61,U
+47.578117,-122.524833,Rich Passage,C1-dibenzothiophenes,-0.6,U
+47.578117,-122.524833,Rich Passage,C1-fluorenes,-0.6,U
+47.578117,-122.524833,Rich Passage,C1-naphthalenes,0.74,"D,LOQ"
+47.578117,-122.524833,Rich Passage,C1-phenanthrenes_anthracenes,3.8,D
+47.578117,-122.524833,Rich Passage,C2-dibenzothiophenes,-0.6,U
+47.578117,-122.524833,Rich Passage,C2-fluorenes,0.62,"D,LOQ"
+47.578117,-122.524833,Rich Passage,C2-naphthalenes,1.9,D
+47.578117,-122.524833,Rich Passage,C2-phenanthrenes_anthracenes,4.3,D
+47.578117,-122.524833,Rich Passage,C3-dibenzothiophenes,-0.6,U
+47.578117,-122.524833,Rich Passage,C3-fluorenes,0.91,D
+47.578117,-122.524833,Rich Passage,C3-naphthalenes,2.3,D
+47.578117,-122.524833,Rich Passage,C3-phenanthrenes_anthracenes,3.3,D
+47.578117,-122.524833,Rich Passage,C4-dibenzothiophenes,-0.6,U
+47.578117,-122.524833,Rich Passage,C4-naphthalenes,1.3,D
+47.578117,-122.524833,Rich Passage,C4-phenanthrenes_anthracenes,2.3,D
+47.578117,-122.524833,Rich Passage,dibenzothiophene,-0.6,U
+47.578117,-122.524833,Rich Passage,fluorene,0.64,D
+47.578117,-122.524833,Rich Passage,naphthalene,4.5,"U,B"
+47.578117,-122.524833,Rich Passage,phenanthrene,5.6,D
+47.60253,-122.66991,Rocky Point,acenaphthene,-0.49,U
+47.60253,-122.66991,Rocky Point,acenaphthylene,-0.48,U
+47.60253,-122.66991,Rocky Point,C1-dibenzothiophenes,-0.48,U
+47.60253,-122.66991,Rocky Point,C1-fluorenes,-0.48,U
+47.60253,-122.66991,Rocky Point,C1-naphthalenes,-0.68,U
+47.60253,-122.66991,Rocky Point,C1-phenanthrenes_anthracenes,3.4,D
+47.60253,-122.66991,Rocky Point,C2-dibenzothiophenes,-0.48,U
+47.60253,-122.66991,Rocky Point,C2-fluorenes,0.74,D
+47.60253,-122.66991,Rocky Point,C2-naphthalenes,1.2,D
+47.60253,-122.66991,Rocky Point,C2-phenanthrenes_anthracenes,5.6,D
+47.60253,-122.66991,Rocky Point,C3-dibenzothiophenes,0.54,"D,LOQ"
+47.60253,-122.66991,Rocky Point,C3-fluorenes,1,D
+47.60253,-122.66991,Rocky Point,C3-naphthalenes,2,"D,B"
+47.60253,-122.66991,Rocky Point,C3-phenanthrenes_anthracenes,4.9,D
+47.60253,-122.66991,Rocky Point,C4-dibenzothiophenes,0.5,"D,LOQ,i"
+47.60253,-122.66991,Rocky Point,C4-naphthalenes,1.3,"D,i"
+47.60253,-122.66991,Rocky Point,C4-phenanthrenes_anthracenes,3.3,D
+47.60253,-122.66991,Rocky Point,dibenzothiophene,-0.47,U
+47.60253,-122.66991,Rocky Point,fluorene,-0.48,U
+47.60253,-122.66991,Rocky Point,naphthalene,0.79,D
+47.60253,-122.66991,Rocky Point,phenanthrene,3.6,D
+48.02655,-122.75089,S of Skunk Island,acenaphthene,-0.59,U
+48.02655,-122.75089,S of Skunk Island,acenaphthylene,-0.59,U
+48.02655,-122.75089,S of Skunk Island,C1-dibenzothiophenes,-0.59,U
+48.02655,-122.75089,S of Skunk Island,C1-fluorenes,-0.59,U
+48.02655,-122.75089,S of Skunk Island,C1-naphthalenes,-0.92,U
+48.02655,-122.75089,S of Skunk Island,C1-phenanthrenes_anthracenes,3.4,D
+48.02655,-122.75089,S of Skunk Island,C2-dibenzothiophenes,-0.59,U
+48.02655,-122.75089,S of Skunk Island,C2-fluorenes,0.61,"D,LOQ"
+48.02655,-122.75089,S of Skunk Island,C2-naphthalenes,1.6,D
+48.02655,-122.75089,S of Skunk Island,C2-phenanthrenes_anthracenes,4.5,"D,B"
+48.02655,-122.75089,S of Skunk Island,C3-dibenzothiophenes,-0.59,U
+48.02655,-122.75089,S of Skunk Island,C3-fluorenes,0.6,"D,LOQ"
+48.02655,-122.75089,S of Skunk Island,C3-naphthalenes,2.1,"D,B"
+48.02655,-122.75089,S of Skunk Island,C3-phenanthrenes_anthracenes,3.1,D
+48.02655,-122.75089,S of Skunk Island,C4-dibenzothiophenes,-0.59,U
+48.02655,-122.75089,S of Skunk Island,C4-naphthalenes,1.4,"D,i"
+48.02655,-122.75089,S of Skunk Island,C4-phenanthrenes_anthracenes,2.4,D
+48.02655,-122.75089,S of Skunk Island,dibenzothiophene,-0.58,U
+48.02655,-122.75089,S of Skunk Island,fluorene,0.61,"D,LOQ"
+48.02655,-122.75089,S of Skunk Island,naphthalene,1.6,"U,B"
+48.02655,-122.75089,S of Skunk Island,phenanthrene,5.1,D
+47.666244,-122.401894,"Salmon Bay, Commodore Park",acenaphthene,-0.76,U
+47.666244,-122.401894,"Salmon Bay, Commodore Park",acenaphthylene,-0.76,U
+47.666244,-122.401894,"Salmon Bay, Commodore Park",C1-dibenzothiophenes,-0.76,U
+47.666244,-122.401894,"Salmon Bay, Commodore Park",C1-fluorenes,-0.76,U
+47.666244,-122.401894,"Salmon Bay, Commodore Park",C1-naphthalenes,-0.73,U
+47.666244,-122.401894,"Salmon Bay, Commodore Park",C1-phenanthrenes_anthracenes,5,D
+47.666244,-122.401894,"Salmon Bay, Commodore Park",C2-dibenzothiophenes,1.1,D
+47.666244,-122.401894,"Salmon Bay, Commodore Park",C2-fluorenes,1.3,D
+47.666244,-122.401894,"Salmon Bay, Commodore Park",C2-naphthalenes,1.9,D
+47.666244,-122.401894,"Salmon Bay, Commodore Park",C2-phenanthrenes_anthracenes,9.4,D
+47.666244,-122.401894,"Salmon Bay, Commodore Park",C3-dibenzothiophenes,1.7,D
+47.666244,-122.401894,"Salmon Bay, Commodore Park",C3-fluorenes,2.1,D
+47.666244,-122.401894,"Salmon Bay, Commodore Park",C3-naphthalenes,3.4,"D,B"
+47.666244,-122.401894,"Salmon Bay, Commodore Park",C3-phenanthrenes_anthracenes,14,D
+47.666244,-122.401894,"Salmon Bay, Commodore Park",C4-dibenzothiophenes,0.91,D
+47.666244,-122.401894,"Salmon Bay, Commodore Park",C4-naphthalenes,2.6,D
+47.666244,-122.401894,"Salmon Bay, Commodore Park",C4-phenanthrenes_anthracenes,10,D
+47.666244,-122.401894,"Salmon Bay, Commodore Park",dibenzothiophene,-0.75,U
+47.666244,-122.401894,"Salmon Bay, Commodore Park",fluorene,0.88,D
+47.666244,-122.401894,"Salmon Bay, Commodore Park",naphthalene,3.9,"D,B"
+47.666244,-122.401894,"Salmon Bay, Commodore Park",phenanthrene,5.2,D
+47.294692,-122.530504,Salmon Beach,acenaphthene,-0.87,U
+47.294692,-122.530504,Salmon Beach,acenaphthylene,-0.86,U
+47.294692,-122.530504,Salmon Beach,C1-dibenzothiophenes,-0.86,U
+47.294692,-122.530504,Salmon Beach,C1-fluorenes,-0.86,U
+47.294692,-122.530504,Salmon Beach,C1-naphthalenes,-2.1,U
+47.294692,-122.530504,Salmon Beach,C1-phenanthrenes_anthracenes,4.4,D
+47.294692,-122.530504,Salmon Beach,C2-dibenzothiophenes,-0.86,U
+47.294692,-122.530504,Salmon Beach,C2-fluorenes,-0.86,U
+47.294692,-122.530504,Salmon Beach,C2-naphthalenes,1.9,D
+47.294692,-122.530504,Salmon Beach,C2-phenanthrenes_anthracenes,6.3,"D,B"
+47.294692,-122.530504,Salmon Beach,C3-dibenzothiophenes,-0.86,U
+47.294692,-122.530504,Salmon Beach,C3-fluorenes,-0.86,U
+47.294692,-122.530504,Salmon Beach,C3-naphthalenes,2.7,"D,B"
+47.294692,-122.530504,Salmon Beach,C3-phenanthrenes_anthracenes,4.9,D
+47.294692,-122.530504,Salmon Beach,C4-dibenzothiophenes,-0.86,U
+47.294692,-122.530504,Salmon Beach,C4-naphthalenes,1.7,"D,i"
+47.294692,-122.530504,Salmon Beach,C4-phenanthrenes_anthracenes,3.2,D
+47.294692,-122.530504,Salmon Beach,dibenzothiophene,-0.85,U
+47.294692,-122.530504,Salmon Beach,fluorene,-0.85,U
+47.294692,-122.530504,Salmon Beach,naphthalene,2.4,"U,B"
+47.294692,-122.530504,Salmon Beach,phenanthrene,6,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",acenaphthene,2.3,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",acenaphthylene,-0.67,U
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",C1-dibenzothiophenes,1.6,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",C1-fluorenes,2.1,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",C1-naphthalenes,0.7,"D,LOQ"
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",C1-phenanthrenes_anthracenes,25,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",C2-dibenzothiophenes,2.7,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",C2-fluorenes,3.4,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",C2-naphthalenes,2.44,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",C2-phenanthrenes_anthracenes,28,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",C3-dibenzothiophenes,3.3,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",C3-fluorenes,3.8,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",C3-naphthalenes,6.1,"D,B"
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",C3-phenanthrenes_anthracenes,24,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",C4-dibenzothiophenes,2.1,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",C4-naphthalenes,4.3,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",C4-phenanthrenes_anthracenes,14,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",dibenzothiophene,1.5,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",fluorene,3.6,D
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",naphthalene,4.5,"D,B"
+47.607334,-122.344055,"Seattle Aquarium, Pier 59",phenanthrene,29,D
+47.6707,-122.40605,Shilshole Bay,acenaphthene,1.6,D
+47.6707,-122.40605,Shilshole Bay,acenaphthylene,-0.7,U
+47.6707,-122.40605,Shilshole Bay,C1-dibenzothiophenes,0.72,D
+47.6707,-122.40605,Shilshole Bay,C1-fluorenes,1,D
+47.6707,-122.40605,Shilshole Bay,C1-naphthalenes,0.86,D
+47.6707,-122.40605,Shilshole Bay,C1-phenanthrenes_anthracenes,10,D
+47.6707,-122.40605,Shilshole Bay,C2-dibenzothiophenes,1.5,D
+47.6707,-122.40605,Shilshole Bay,C2-fluorenes,1.8,D
+47.6707,-122.40605,Shilshole Bay,C2-naphthalenes,2.6,D
+47.6707,-122.40605,Shilshole Bay,C2-phenanthrenes_anthracenes,13,D
+47.6707,-122.40605,Shilshole Bay,C3-dibenzothiophenes,1.8,D
+47.6707,-122.40605,Shilshole Bay,C3-fluorenes,3.8,D
+47.6707,-122.40605,Shilshole Bay,C3-naphthalenes,3.5,D
+47.6707,-122.40605,Shilshole Bay,C3-phenanthrenes_anthracenes,14,D
+47.6707,-122.40605,Shilshole Bay,C4-dibenzothiophenes,2,D
+47.6707,-122.40605,Shilshole Bay,C4-naphthalenes,2.9,D
+47.6707,-122.40605,Shilshole Bay,C4-phenanthrenes_anthracenes,10,D
+47.6707,-122.40605,Shilshole Bay,dibenzothiophene,0.8,D
+47.6707,-122.40605,Shilshole Bay,fluorene,1.8,D
+47.6707,-122.40605,Shilshole Bay,naphthalene,4.9,"U,B"
+47.6707,-122.40605,Shilshole Bay,phenanthrene,14,D
+47.6428,-122.6967,"Silverdale, Dyes Inlet",acenaphthene,-0.52,U
+47.6428,-122.6967,"Silverdale, Dyes Inlet",acenaphthylene,-0.52,U
+47.6428,-122.6967,"Silverdale, Dyes Inlet",C1-dibenzothiophenes,-0.52,U
+47.6428,-122.6967,"Silverdale, Dyes Inlet",C1-fluorenes,-0.52,U
+47.6428,-122.6967,"Silverdale, Dyes Inlet",C1-naphthalenes,0.59,"D,LOQ"
+47.6428,-122.6967,"Silverdale, Dyes Inlet",C1-phenanthrenes_anthracenes,3,D
+47.6428,-122.6967,"Silverdale, Dyes Inlet",C2-dibenzothiophenes,-0.52,U
+47.6428,-122.6967,"Silverdale, Dyes Inlet",C2-fluorenes,0.71,D
+47.6428,-122.6967,"Silverdale, Dyes Inlet",C2-naphthalenes,1.4,"D,B"
+47.6428,-122.6967,"Silverdale, Dyes Inlet",C2-phenanthrenes_anthracenes,4.5,D
+47.6428,-122.6967,"Silverdale, Dyes Inlet",C3-dibenzothiophenes,0.79,D
+47.6428,-122.6967,"Silverdale, Dyes Inlet",C3-fluorenes,1.1,D
+47.6428,-122.6967,"Silverdale, Dyes Inlet",C3-naphthalenes,2,"D,B"
+47.6428,-122.6967,"Silverdale, Dyes Inlet",C3-phenanthrenes_anthracenes,4.6,D
+47.6428,-122.6967,"Silverdale, Dyes Inlet",C4-dibenzothiophenes,0.79,D
+47.6428,-122.6967,"Silverdale, Dyes Inlet",C4-naphthalenes,0.97,D
+47.6428,-122.6967,"Silverdale, Dyes Inlet",C4-phenanthrenes_anthracenes,3.2,D
+47.6428,-122.6967,"Silverdale, Dyes Inlet",dibenzothiophene,-0.51,U
+47.6428,-122.6967,"Silverdale, Dyes Inlet",fluorene,-0.51,U
+47.6428,-122.6967,"Silverdale, Dyes Inlet",naphthalene,3.9,"U,B"
+47.6428,-122.6967,"Silverdale, Dyes Inlet",phenanthrene,3.8,D
+47.6614139,-122.498892,Skiff Point,acenaphthene,-0.96,U
+47.6614139,-122.498892,Skiff Point,acenaphthylene,-0.96,U
+47.6614139,-122.498892,Skiff Point,C1-dibenzothiophenes,-0.95,U
+47.6614139,-122.498892,Skiff Point,C1-fluorenes,-0.95,U
+47.6614139,-122.498892,Skiff Point,C1-naphthalenes,-1.5,U
+47.6614139,-122.498892,Skiff Point,C1-phenanthrenes_anthracenes,5.3,D
+47.6614139,-122.498892,Skiff Point,C2-dibenzothiophenes,-0.95,U
+47.6614139,-122.498892,Skiff Point,C2-fluorenes,1,D
+47.6614139,-122.498892,Skiff Point,C2-naphthalenes,1.9,D
+47.6614139,-122.498892,Skiff Point,C2-phenanthrenes_anthracenes,7.4,"D,B"
+47.6614139,-122.498892,Skiff Point,C3-dibenzothiophenes,-0.95,U
+47.6614139,-122.498892,Skiff Point,C3-fluorenes,1.2,D
+47.6614139,-122.498892,Skiff Point,C3-naphthalenes,2.7,"D,B"
+47.6614139,-122.498892,Skiff Point,C3-phenanthrenes_anthracenes,5.5,D
+47.6614139,-122.498892,Skiff Point,C4-dibenzothiophenes,-0.95,U
+47.6614139,-122.498892,Skiff Point,C4-naphthalenes,1.6,"D,i"
+47.6614139,-122.498892,Skiff Point,C4-phenanthrenes_anthracenes,4.1,D
+47.6614139,-122.498892,Skiff Point,dibenzothiophene,-0.94,U
+47.6614139,-122.498892,Skiff Point,fluorene,-0.94,U
+47.6614139,-122.498892,Skiff Point,naphthalene,1.5,"U,B"
+47.6614139,-122.498892,Skiff Point,phenanthrene,7.5,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",acenaphthene,11,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",acenaphthylene,0.54,"D,LOQ"
+47.6325,-122.3786,"Smith Cove, Terminal 91",C1-dibenzothiophenes,3.4,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",C1-fluorenes,4.6,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",C1-naphthalenes,2.6,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",C1-phenanthrenes_anthracenes,50,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",C2-dibenzothiophenes,5.2,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",C2-fluorenes,6.5,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",C2-naphthalenes,5.4,"D,B"
+47.6325,-122.3786,"Smith Cove, Terminal 91",C2-phenanthrenes_anthracenes,50,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",C3-dibenzothiophenes,5.9,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",C3-fluorenes,10,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",C3-naphthalenes,12,"D,B"
+47.6325,-122.3786,"Smith Cove, Terminal 91",C3-phenanthrenes_anthracenes,40,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",C4-dibenzothiophenes,5.5,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",C4-naphthalenes,9.2,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",C4-phenanthrenes_anthracenes,21,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",dibenzothiophene,3.4,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",fluorene,8.9,D
+47.6325,-122.3786,"Smith Cove, Terminal 91",naphthalene,4.4,"U,B"
+47.6325,-122.3786,"Smith Cove, Terminal 91",phenanthrene,60,D
+47.176735,-122.905337,Squaxin Island,acenaphthene,-0.4,U
+47.176735,-122.905337,Squaxin Island,acenaphthylene,-0.4,U
+47.176735,-122.905337,Squaxin Island,C1-dibenzothiophenes,-0.4,U
+47.176735,-122.905337,Squaxin Island,C1-fluorenes,-0.4,U
+47.176735,-122.905337,Squaxin Island,C1-naphthalenes,-0.53,U
+47.176735,-122.905337,Squaxin Island,C1-phenanthrenes_anthracenes,2,D
+47.176735,-122.905337,Squaxin Island,C2-dibenzothiophenes,-0.4,U
+47.176735,-122.905337,Squaxin Island,C2-fluorenes,-0.4,U
+47.176735,-122.905337,Squaxin Island,C2-naphthalenes,1.1,D
+47.176735,-122.905337,Squaxin Island,C2-phenanthrenes_anthracenes,3.3,D
+47.176735,-122.905337,Squaxin Island,C3-dibenzothiophenes,-0.4,U
+47.176735,-122.905337,Squaxin Island,C3-fluorenes,-0.4,U
+47.176735,-122.905337,Squaxin Island,C3-naphthalenes,1.5,"D,B"
+47.176735,-122.905337,Squaxin Island,C3-phenanthrenes_anthracenes,1.9,D
+47.176735,-122.905337,Squaxin Island,C4-dibenzothiophenes,-0.4,U
+47.176735,-122.905337,Squaxin Island,C4-naphthalenes,0.69,"D,i"
+47.176735,-122.905337,Squaxin Island,C4-phenanthrenes_anthracenes,1.9,D
+47.176735,-122.905337,Squaxin Island,dibenzothiophene,-0.39,U
+47.176735,-122.905337,Squaxin Island,fluorene,-0.39,U
+47.176735,-122.905337,Squaxin Island,naphthalene,0.68,D
+47.176735,-122.905337,Squaxin Island,phenanthrene,2.1,D
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",acenaphthene,0.44,"D,LOQ"
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",acenaphthylene,-0.42,U
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",C1-dibenzothiophenes,-0.42,U
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",C1-fluorenes,-0.42,U
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",C1-naphthalenes,1.2,D
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",C1-phenanthrenes_anthracenes,3.9,D
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",C2-dibenzothiophenes,0.43,"D,LOQ"
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",C2-fluorenes,0.74,D
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",C2-naphthalenes,1.6,"D,B"
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",C2-phenanthrenes_anthracenes,4.4,D
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",C3-dibenzothiophenes,0.73,D
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",C3-fluorenes,0.85,D
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",C3-naphthalenes,1.9,"D,B"
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",C3-phenanthrenes_anthracenes,3.5,D
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",C4-dibenzothiophenes,0.49,"D,LOQ"
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",C4-naphthalenes,1.2,D
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",C4-phenanthrenes_anthracenes,2.3,D
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",dibenzothiophene,-0.41,U
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",fluorene,0.62,"D,LOQ"
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",naphthalene,4.1,"U,B"
+47.729875,-122.550882,"Suquamish, Stormwater Outfall",phenanthrene,6.6,D
+47.25934,-122.43479,Thea Foss Waterway,acenaphthene,2,D
+47.25934,-122.43479,Thea Foss Waterway,acenaphthylene,-0.78,U
+47.25934,-122.43479,Thea Foss Waterway,C1-dibenzothiophenes,-0.78,U
+47.25934,-122.43479,Thea Foss Waterway,C1-fluorenes,1.1,D
+47.25934,-122.43479,Thea Foss Waterway,C1-naphthalenes,-0.76,U
+47.25934,-122.43479,Thea Foss Waterway,C1-phenanthrenes_anthracenes,8.2,D
+47.25934,-122.43479,Thea Foss Waterway,C2-dibenzothiophenes,1.4,D
+47.25934,-122.43479,Thea Foss Waterway,C2-fluorenes,1.9,D
+47.25934,-122.43479,Thea Foss Waterway,C2-naphthalenes,3.2,D
+47.25934,-122.43479,Thea Foss Waterway,C2-phenanthrenes_anthracenes,13,D
+47.25934,-122.43479,Thea Foss Waterway,C3-dibenzothiophenes,2.3,D
+47.25934,-122.43479,Thea Foss Waterway,C3-fluorenes,2.6,D
+47.25934,-122.43479,Thea Foss Waterway,C3-naphthalenes,4.8,"D,B"
+47.25934,-122.43479,Thea Foss Waterway,C3-phenanthrenes_anthracenes,16,D
+47.25934,-122.43479,Thea Foss Waterway,C4-dibenzothiophenes,1.5,D
+47.25934,-122.43479,Thea Foss Waterway,C4-naphthalenes,3.5,D
+47.25934,-122.43479,Thea Foss Waterway,C4-phenanthrenes_anthracenes,11,D
+47.25934,-122.43479,Thea Foss Waterway,dibenzothiophene,-0.77,U
+47.25934,-122.43479,Thea Foss Waterway,fluorene,1.8,D
+47.25934,-122.43479,Thea Foss Waterway,naphthalene,3.9,"D,B"
+47.25934,-122.43479,Thea Foss Waterway,phenanthrene,9.4,D
+47.4485721,-122.3723967,Three Tree Point,acenaphthene,-0.7,U
+47.4485721,-122.3723967,Three Tree Point,acenaphthylene,-0.7,U
+47.4485721,-122.3723967,Three Tree Point,C1-dibenzothiophenes,-0.69,U
+47.4485721,-122.3723967,Three Tree Point,C1-fluorenes,-0.69,U
+47.4485721,-122.3723967,Three Tree Point,C1-naphthalenes,-0.72,U
+47.4485721,-122.3723967,Three Tree Point,C1-phenanthrenes_anthracenes,3.6,D
+47.4485721,-122.3723967,Three Tree Point,C2-dibenzothiophenes,-0.69,U
+47.4485721,-122.3723967,Three Tree Point,C2-fluorenes,-0.69,U
+47.4485721,-122.3723967,Three Tree Point,C2-naphthalenes,1.5,D
+47.4485721,-122.3723967,Three Tree Point,C2-phenanthrenes_anthracenes,5.1,D
+47.4485721,-122.3723967,Three Tree Point,C3-dibenzothiophenes,-0.69,U
+47.4485721,-122.3723967,Three Tree Point,C3-fluorenes,0.98,D
+47.4485721,-122.3723967,Three Tree Point,C3-naphthalenes,2,"D,B"
+47.4485721,-122.3723967,Three Tree Point,C3-phenanthrenes_anthracenes,4.4,D
+47.4485721,-122.3723967,Three Tree Point,C4-dibenzothiophenes,-0.69,U
+47.4485721,-122.3723967,Three Tree Point,C4-naphthalenes,1.1,D
+47.4485721,-122.3723967,Three Tree Point,C4-phenanthrenes_anthracenes,3.4,D
+47.4485721,-122.3723967,Three Tree Point,dibenzothiophene,-0.69,U
+47.4485721,-122.3723967,Three Tree Point,fluorene,-0.69,U
+47.4485721,-122.3723967,Three Tree Point,naphthalene,2.7,"D,B,LOQ"
+47.4485721,-122.3723967,Three Tree Point,phenanthrene,4.9,D
+48.0616613,-122.293939,Tulalip Bay,acenaphthene,-0.69,U
+48.0616613,-122.293939,Tulalip Bay,acenaphthylene,-0.68,U
+48.0616613,-122.293939,Tulalip Bay,C1-dibenzothiophenes,-0.68,U
+48.0616613,-122.293939,Tulalip Bay,C1-fluorenes,-0.68,U
+48.0616613,-122.293939,Tulalip Bay,C1-naphthalenes,-0.66,U
+48.0616613,-122.293939,Tulalip Bay,C1-phenanthrenes_anthracenes,4.1,D
+48.0616613,-122.293939,Tulalip Bay,C2-dibenzothiophenes,-0.68,U
+48.0616613,-122.293939,Tulalip Bay,C2-fluorenes,-0.68,U
+48.0616613,-122.293939,Tulalip Bay,C2-naphthalenes,1.6,D
+48.0616613,-122.293939,Tulalip Bay,C2-phenanthrenes_anthracenes,4.9,D
+48.0616613,-122.293939,Tulalip Bay,C3-dibenzothiophenes,-0.68,U
+48.0616613,-122.293939,Tulalip Bay,C3-fluorenes,-0.68,U
+48.0616613,-122.293939,Tulalip Bay,C3-naphthalenes,2.7,"D,B"
+48.0616613,-122.293939,Tulalip Bay,C3-phenanthrenes_anthracenes,3.3,D
+48.0616613,-122.293939,Tulalip Bay,C4-dibenzothiophenes,-0.68,U
+48.0616613,-122.293939,Tulalip Bay,C4-naphthalenes,1.4,D
+48.0616613,-122.293939,Tulalip Bay,C4-phenanthrenes_anthracenes,-0.68,U
+48.0616613,-122.293939,Tulalip Bay,dibenzothiophene,-0.67,U
+48.0616613,-122.293939,Tulalip Bay,fluorene,0.75,D
+48.0616613,-122.293939,Tulalip Bay,naphthalene,4,"D,B"
+48.0616613,-122.293939,Tulalip Bay,phenanthrene,6.3,D
+48.069978,-122.300216,Tulalip Reservation,acenaphthene,-0.63,U
+48.069978,-122.300216,Tulalip Reservation,acenaphthylene,-0.62,U
+48.069978,-122.300216,Tulalip Reservation,C1-dibenzothiophenes,-0.62,U
+48.069978,-122.300216,Tulalip Reservation,C1-fluorenes,-0.62,U
+48.069978,-122.300216,Tulalip Reservation,C1-naphthalenes,-0.71,U
+48.069978,-122.300216,Tulalip Reservation,C1-phenanthrenes_anthracenes,3.2,D
+48.069978,-122.300216,Tulalip Reservation,C2-dibenzothiophenes,-0.62,U
+48.069978,-122.300216,Tulalip Reservation,C2-fluorenes,-0.62,U
+48.069978,-122.300216,Tulalip Reservation,C2-naphthalenes,1.4,D
+48.069978,-122.300216,Tulalip Reservation,C2-phenanthrenes_anthracenes,3.6,D
+48.069978,-122.300216,Tulalip Reservation,C3-dibenzothiophenes,-0.62,U
+48.069978,-122.300216,Tulalip Reservation,C3-fluorenes,-0.62,U
+48.069978,-122.300216,Tulalip Reservation,C3-naphthalenes,1.9,"D,B"
+48.069978,-122.300216,Tulalip Reservation,C3-phenanthrenes_anthracenes,2.5,D
+48.069978,-122.300216,Tulalip Reservation,C4-dibenzothiophenes,-0.62,U
+48.069978,-122.300216,Tulalip Reservation,C4-naphthalenes,0.98,D
+48.069978,-122.300216,Tulalip Reservation,C4-phenanthrenes_anthracenes,2,D
+48.069978,-122.300216,Tulalip Reservation,dibenzothiophene,-0.61,U
+48.069978,-122.300216,Tulalip Reservation,fluorene,-0.61,U
+48.069978,-122.300216,Tulalip Reservation,naphthalene,2.6,"U,B"
+48.069978,-122.300216,Tulalip Reservation,phenanthrene,4.7,D
+47.052373,-122.9101963,West Bay Park,acenaphthene,0.9,D
+47.052373,-122.9101963,West Bay Park,acenaphthylene,-0.69,U
+47.052373,-122.9101963,West Bay Park,C1-dibenzothiophenes,-0.69,U
+47.052373,-122.9101963,West Bay Park,C1-fluorenes,-0.69,U
+47.052373,-122.9101963,West Bay Park,C1-naphthalenes,-0.68,U
+47.052373,-122.9101963,West Bay Park,C1-phenanthrenes_anthracenes,3,D
+47.052373,-122.9101963,West Bay Park,C2-dibenzothiophenes,-0.69,U
+47.052373,-122.9101963,West Bay Park,C2-fluorenes,-0.69,U
+47.052373,-122.9101963,West Bay Park,C2-naphthalenes,1.3,D
+47.052373,-122.9101963,West Bay Park,C2-phenanthrenes_anthracenes,4,D
+47.052373,-122.9101963,West Bay Park,C3-dibenzothiophenes,-0.69,U
+47.052373,-122.9101963,West Bay Park,C3-fluorenes,-0.69,U
+47.052373,-122.9101963,West Bay Park,C3-naphthalenes,1.8,"D,B"
+47.052373,-122.9101963,West Bay Park,C3-phenanthrenes_anthracenes,3.5,D
+47.052373,-122.9101963,West Bay Park,C4-dibenzothiophenes,-0.69,U
+47.052373,-122.9101963,West Bay Park,C4-naphthalenes,0.8,D
+47.052373,-122.9101963,West Bay Park,C4-phenanthrenes_anthracenes,4.7,D
+47.052373,-122.9101963,West Bay Park,dibenzothiophene,-0.68,U
+47.052373,-122.9101963,West Bay Park,fluorene,-0.68,U
+47.052373,-122.9101963,West Bay Park,naphthalene,2.5,"U,B"
+47.052373,-122.9101963,West Bay Park,phenanthrene,4.1,D
+47.6609,-122.5668,Williams Olson Park,acenaphthene,-0.58,U
+47.6609,-122.5668,Williams Olson Park,acenaphthylene,-0.58,U
+47.6609,-122.5668,Williams Olson Park,C1-dibenzothiophenes,-0.58,U
+47.6609,-122.5668,Williams Olson Park,C1-fluorenes,-0.58,U
+47.6609,-122.5668,Williams Olson Park,C1-naphthalenes,-0.77,U
+47.6609,-122.5668,Williams Olson Park,C1-phenanthrenes_anthracenes,3.2,D
+47.6609,-122.5668,Williams Olson Park,C2-dibenzothiophenes,-0.58,U
+47.6609,-122.5668,Williams Olson Park,C2-fluorenes,0.6,"D,LOQ"
+47.6609,-122.5668,Williams Olson Park,C2-naphthalenes,1.2,D
+47.6609,-122.5668,Williams Olson Park,C2-phenanthrenes_anthracenes,4.8,D
+47.6609,-122.5668,Williams Olson Park,C3-dibenzothiophenes,-0.58,U
+47.6609,-122.5668,Williams Olson Park,C3-fluorenes,0.71,D
+47.6609,-122.5668,Williams Olson Park,C3-naphthalenes,2,"D,B"
+47.6609,-122.5668,Williams Olson Park,C3-phenanthrenes_anthracenes,3.4,D
+47.6609,-122.5668,Williams Olson Park,C4-dibenzothiophenes,-0.58,U
+47.6609,-122.5668,Williams Olson Park,C4-naphthalenes,1.3,"D,i"
+47.6609,-122.5668,Williams Olson Park,C4-phenanthrenes_anthracenes,2.1,D
+47.6609,-122.5668,Williams Olson Park,dibenzothiophene,-0.57,U
+47.6609,-122.5668,Williams Olson Park,fluorene,-0.57,U
+47.6609,-122.5668,Williams Olson Park,naphthalene,0.8,D
+47.6609,-122.5668,Williams Olson Park,phenanthrene,4.3,D

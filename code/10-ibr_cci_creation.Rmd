@@ -470,7 +470,134 @@ print(may25_ibr)
 ```
 
 ## CCI
-### metals
+## chlordane
+```{r}
+
+chlordane_df<- chlordane
+
+# define variables
+chlordane_analytes <- c("alpha_chlordane", "beta_chlordane", "cis_nonachlor", 
+                        "heptachlor", "heptachlor_epoxide", "nonachlor3", 
+                        "Oxychlordane", "trans_Nonachlor")
+
+# z-score
+chlordane_z <- chlordane_df %>%
+  mutate(across(all_of(chlordane_analytes), scale, .names = "z_{.col}"))
+
+# reference
+ref_site <- "Penn Cove Baseline"
+ref_z_chlordane <- chlordane_z %>%
+  filter(site_name == ref_site) %>%
+  select(starts_with("z_")) %>%
+  slice(1)
+
+# deviation
+chlordane_ai <- chlordane_z %>%
+  mutate(across(
+    starts_with("z_"),
+    ~ abs(.x - as.numeric(ref_z_chlordane[[cur_column()]])),
+    .names = "ai_{.col}"
+  ))
+
+# create index
+ai_cols <- names(chlordane_ai)[grepl("^ai_", names(chlordane_ai))] # id ai columns
+chlordane_index<- chlordane_ai %>%
+  rowwise() %>%
+  mutate(chlordane_index = sum(c_across(all_of(ai_cols)), na.rm = TRUE)) %>%
+  ungroup()
+
+# view & save
+print(chlordane_index)
+#write.csv(chlordane_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/chlordane_ai.csv", row.names = FALSE)
+#write.csv(chlordane_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/chlordane_index.csv", row.names = FALSE)
+
+```
+
+## ddt
+```{r}
+
+ddt_df<- ddt
+#colnames(ddt_df)
+
+# define variables
+ddt_analytes <- c("opDDD", "opDDE", "opDDT", "ppDDD", "ppDDT", "ppDDE")
+
+# z-score
+ddt_z <- ddt_df %>%
+  mutate(across(all_of(ddt_analytes), scale, .names = "z_{.col}"))
+
+# reference
+ref_site <- "Penn Cove Baseline"
+ref_z_ddt <- ddt_z %>%
+  filter(site_name == ref_site) %>%
+  select(starts_with("z_")) %>%
+  slice(1)
+
+# deviation
+ddt_ai <- ddt_z %>%
+  mutate(across(
+    starts_with("z_"),
+    ~ abs(.x - as.numeric(ref_z_ddt[[cur_column()]])),
+    .names = "ai_{.col}"
+  ))
+
+# create index
+ai_cols <- names(ddt_ai)[grepl("^ai_", names(ddt_ai))] # id ai columns
+ddt_index<- ddt_ai %>%
+  rowwise() %>%
+  mutate(ddt_index = sum(c_across(all_of(ai_cols)), na.rm = TRUE)) %>%
+  ungroup()
+
+# view & save
+print(ddt_index)
+#write.csv(ddt_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/ddt_ai.csv", row.names = FALSE)
+#write.csv(ddt_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/ddt_index.csv", row.names = FALSE)
+
+```
+
+## hch
+```{r}
+
+hch_df<- hch
+colnames(hch_df)
+
+# define variables
+hch_analytes <- c("alpha_hexachlorocyclohexane", "beta_hexachlorocyclohexane", "gamma_hexachlorocyclohexane")
+
+# z-score
+hch_z <- hch_df %>%
+  mutate(across(all_of(hch_analytes), scale, .names = "z_{.col}"))
+
+# reference
+ref_site <- "Penn Cove Baseline"
+ref_z_hch <- hch_z %>%
+  filter(site_name == ref_site) %>%
+  select(starts_with("z_")) %>%
+  slice(1)
+
+# deviation
+hch_ai <- hch_z %>%
+  mutate(across(
+    starts_with("z_"),
+    ~ abs(.x - as.numeric(ref_z_hch[[cur_column()]])),
+    .names = "ai_{.col}"
+  ))
+
+# create index
+ai_cols <- names(hch_ai)[grepl("^ai_", names(hch_ai))] # id ai columns
+hch_index<- hch_ai %>%
+  rowwise() %>%
+  mutate(hch_index = sum(c_across(all_of(ai_cols)), na.rm = TRUE)) %>%
+  ungroup()
+
+# view & save
+print(hch_index)
+#write.csv(hch_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/hch_ai.csv", row.names = FALSE)
+#write.csv(hch_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/hch_index.csv", row.names = FALSE)
+
+```
+
+## metal
 ```{r}
 
 metal_df<- metal
@@ -502,42 +629,404 @@ metals_ai <- metals_z %>%
   ))
 
 # create indices
-metal_index <- metals_ai %>%
+ai_cols <- names(metals_ai)[grepl("^ai_z_", names(metals_ai))] # grabbing ai_z columns
+metal_names <- gsub("^ai_z_", "", ai_cols) # removing the prefix
+
+# filter columns into heavy and nutrient classes
+ai_heavy <- ai_cols[metal_names %in% c("arsenic", "cadmium", "mercury")]
+ai_nutrient <- ai_cols[metal_names %in% c("copper", "lead", "zinc")]
+
+# create new index columns
+metals_index <- metals_ai %>%
   rowwise() %>%
   mutate(
-    heavy_metal_index = sum(c_across(starts_with("ai_z_")[heavy_metals %in% sub("z_", "", names(.)[grepl("ai_z_", names(.))])]), na.rm = TRUE),
-    nutrient_metal_index = sum(c_across(starts_with("ai_z_")[nutrient_metals %in% sub("z_", "", names(.)[grepl("ai_z_", names(.))])]), na.rm = TRUE),
+    heavy_metal_index = sum(c_across(all_of(ai_heavy)), na.rm = TRUE),
+    nutrient_metal_index = sum(c_across(all_of(ai_nutrient)), na.rm = TRUE),
     total_metal_index = heavy_metal_index + nutrient_metal_index
   ) %>%
   ungroup()
 
+
 # view & save
-print(metal_index)
-write.csv(metals_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metals_ai.csv", row.names = FALSE)
-#write.csv(metal_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metal_index.csv", row.names = FALSE)
+print(metals_index)
+#write.csv(metals_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metals_ai.csv", row.names = FALSE)
+#write.csv(metals_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metal_index.csv", row.names = FALSE)
 
 ```
 
-
-## Contaminant Index - chlordane, ddt, hch, metal, pbde, pcb, pesticide
-### metal
+## pah, lmw
+### data prep
 ```{r}
 
-baseline_sites <- c("Penn Cove Baseline", "Broad Spit Baseline", "Hood Canal Holly Baseline")
-ref_metal_df <- metals_wide %>% filter(site_name %in% baseline_sites)
+pah_lmw<- read.csv("../data/index_df/test_pah_lmw.csv")
+# fixing site names, fixing column names, removing white space in the name changes, adjusting undetected values to zero, pivoting for index creation
+pah_lmw$site_name[pah_lmw$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+pah_lmw$site_name[pah_lmw$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+pah_lmw$site_name[pah_lmw$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+pah_lmw$site_name[pah_lmw$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+pah_lmw$site_name[pah_lmw$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+pah_lmw$site_name[pah_lmw$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+pah_lmw$site_name[pah_lmw$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+pah_lmw$site_name[pah_lmw$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
 
-metal_vars <- c("Zinc", "Copper", "Lead", "Arsenic", "Mercury", "Cadmium") # how to call column numbers instead of names?
+pah_lmw <- pah_lmw %>%
+  mutate(across(where(is.character), str_trim))
 
-ref_metal_means <- colMeans(ref_metal_df[, metal_vars], na.rm = TRUE)
-ref_metal_sds   <- apply(ref_metal_df[, metal_vars], 2, sd, na.rm = TRUE)
+pah_lmw<- pah_lmw %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
 
-metal_z <- sweep(metals_wide[, metal_vars], 2, ref_metal_means, "-")
-metal_z <- sweep(metal_z, 2, ref_metal_sds, "/")
+#install.packages("janitor")
+library("janitor")
+pah_lmw <- pah_lmw %>%
+  mutate(analyte_clean = make_clean_names(analyte))
 
-contaminant_index_df <- metals_wide %>%
-  select(site_name, latitude, longitude) %>%  # include other metadata as needed
-  bind_cols(metal_z) %>%
-  mutate(cci_metals = rowMeans(metal_z, na.rm = TRUE))
+write.csv(pah_lmw, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_lmw_interim.csv", row.names = FALSE)
+
+pah_lmw <- pah_lmw %>%
+  select(site_name, latitude, longitude, analyte, wet_value)  # keep only what's needed
+pah_lmw_wide <- pah_lmw %>%
+  pivot_wider(
+    names_from = analyte,
+    values_from = wet_value
+  )
+
+# Save the cleaned wide-format table
+#write.csv(pah_lmw_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pah_lmw_wide.csv", row.names = FALSE)
+
+```
+
+### index creation
+```{r}
+
+pah_lmw_df<- pah_lmw
+colnames(pah_lmw_df)
+
+# define variables
+pah_lmw_analytes <- names(pah_lmw_df)[4:14]
+
+# z-score
+pah_lmw_z <- pah_lmw_df %>%
+  mutate(across(all_of(pah_lmw_analytes), scale, .names = "z_{.col}"))
+
+# reference
+ref_site <- "Penn Cove Baseline"
+ref_z_pah_lmw <- pah_lmw_z %>%
+  filter(site_name == ref_site) %>%
+  select(starts_with("z_")) %>%
+  slice(1)
+
+# deviation
+pah_lmw_ai <- pah_lmw_z %>%
+  mutate(across(
+    starts_with("z_"),
+    ~ abs(.x - as.numeric(ref_z_pah_lmw[[cur_column()]])),
+    .names = "ai_{.col}"
+  ))
+
+# create index
+ai_cols <- names(pah_lmw_ai)[grepl("^ai_", names(pah_lmw_ai))] # id ai columns
+pah_lmw_index<- pah_lmw_ai %>%
+  rowwise() %>%
+  mutate(pah_lmw_index = sum(c_across(all_of(ai_cols)), na.rm = TRUE)) %>%
+  ungroup()
+
+# view & save
+print(pah_lmw_index)
+#write.csv(pah_lmw_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_lmw_ai.csv", row.names = FALSE)
+#write.csv(pah_lmw_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_lmw_index.csv", row.names = FALSE)
+
+```
+
+## pah, hmw
+### data prep
+```{r}
+
+pah_hmw<- read.csv("../data/index_df/test_pah_hmw.csv")
+# fixing site names, fixing column names, removing white space in the name changes, adjusting undetected values to zero, pivoting for index creation
+pah_hmw$site_name[pah_hmw$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+pah_hmw$site_name[pah_hmw$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+pah_hmw$site_name[pah_hmw$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+pah_hmw$site_name[pah_hmw$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+pah_hmw$site_name[pah_hmw$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+pah_hmw$site_name[pah_hmw$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+pah_hmw$site_name[pah_hmw$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+pah_hmw$site_name[pah_hmw$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+
+pah_hmw <- pah_hmw %>%
+  mutate(across(where(is.character), str_trim))
+
+pah_hmw<- pah_hmw %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
+
+#install.packages("janitor")
+library("janitor")
+pah_hmw <- pah_hmw %>%
+  mutate(analyte_clean = make_clean_names(analyte))
+
+
+pah_hmw <- pah_hmw %>%
+  select(site_name, latitude, longitude, analyte, wet_value)  # keep only what's needed
+pah_hmw_wide <- pah_hmw %>%
+  pivot_wider(
+    names_from = analyte,
+    values_from = wet_value
+  )
+
+# Save the cleaned wide-format table
+#write.csv(pah_hmw_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pah_hmw_wide.csv", row.names = FALSE)
+
+```
+
+### index creation
+```{r}
+
+pah_hmw_df<- pah_hmw
+colnames(pah_hmw_df)
+
+# define variables
+pah_hmw_analytes <- names(pah_hmw_df)[4:14]
+
+# z-score
+pah_hmw_z <- pah_hmw_df %>%
+  mutate(across(all_of(pah_hmw_analytes), scale, .names = "z_{.col}"))
+
+# reference
+ref_site <- "Penn Cove Baseline"
+ref_z_pah_hmw <- pah_hmw_z %>%
+  filter(site_name == ref_site) %>%
+  select(starts_with("z_")) %>%
+  slice(1)
+
+# deviation
+pah_hmw_ai <- pah_hmw_z %>%
+  mutate(across(
+    starts_with("z_"),
+    ~ abs(.x - as.numeric(ref_z_pah_hmw[[cur_column()]])),
+    .names = "ai_{.col}"
+  ))
+
+# create index
+ai_cols <- names(pah_hmw_ai)[grepl("^ai_", names(pah_hmw_ai))] # id ai columns
+pah_hmw_index<- pah_hmw_ai %>%
+  rowwise() %>%
+  mutate(pah_hmw_index = sum(c_across(all_of(ai_cols)), na.rm = TRUE)) %>%
+  ungroup()
+
+# view & save
+print(pah_hmw_index)
+write.csv(pah_hmw_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_hmw_ai.csv", row.names = FALSE)
+write.csv(pah_hmw_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_hmw_index.csv", row.names = FALSE)
+
+```
+
+## pah, additional
+### data prep
+```{r}
+
+pah_add<- read.csv("../data/index_df/test_pah_add.csv")
+# fixing site names, fixing column names, removing white space in the name changes, adjusting undetected values to zero, pivoting for index creation
+pah_add$site_name[pah_add$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+pah_add$site_name[pah_add$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+pah_add$site_name[pah_add$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+pah_add$site_name[pah_add$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+pah_add$site_name[pah_add$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+pah_add$site_name[pah_add$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+pah_add$site_name[pah_add$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+pah_add$site_name[pah_add$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+
+pah_add <- pah_add %>%
+  mutate(across(where(is.character), str_trim))
+
+pah_add<- pah_add %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
+
+#install.packages("janitor")
+library("janitor")
+pah_add <- pah_add %>%
+  mutate(analyte_clean = make_clean_names(analyte))
+
+
+pah_add <- pah_add %>%
+  select(site_name, latitude, longitude, analyte, wet_value)  # keep only what's needed
+pah_add_wide <- pah_add %>%
+  pivot_wider(
+    names_from = analyte,
+    values_from = wet_value
+  )
+
+# Save the cleaned wide-format table
+write.csv(pah_add_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pah_add_wide.csv", row.names = FALSE)
+
+```
+
+### index creation
+```{r}
+
+pah_add_df<- pah_add
+colnames(pah_add_df)
+
+# define variables
+pah_add_analytes <- names(pah_add_df)[4:14]
+
+# z-score
+pah_add_z <- pah_add_df %>%
+  mutate(across(all_of(pah_add_analytes), scale, .names = "z_{.col}"))
+
+# reference
+ref_site <- "Penn Cove Baseline"
+ref_z_pah_add <- pah_add_z %>%
+  filter(site_name == ref_site) %>%
+  select(starts_with("z_")) %>%
+  slice(1)
+
+# deviation
+pah_add_ai <- pah_add_z %>%
+  mutate(across(
+    starts_with("z_"),
+    ~ abs(.x - as.numeric(ref_z_pah_add[[cur_column()]])),
+    .names = "ai_{.col}"
+  ))
+
+# create index
+ai_cols <- names(pah_add_ai)[grepl("^ai_", names(pah_add_ai))] # id ai columns
+pah_add_index<- pah_add_ai %>%
+  rowwise() %>%
+  mutate(pah_add_index = sum(c_across(all_of(ai_cols)), na.rm = TRUE)) %>%
+  ungroup()
+
+# view & save
+print(pah_add_index)
+write.csv(pah_add_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_add_ai.csv", row.names = FALSE)
+write.csv(pah_add_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_add_index.csv", row.names = FALSE)
+
+```
+
+## pbde
+```{r}
+
+pbde_df<- pbde
+colnames(pbde_df)
+
+# define variables
+pbde_analytes <- names(pbde_df)[4:14]
+
+# z-score
+pbde_z <- pbde_df %>%
+  mutate(across(all_of(pbde_analytes), scale, .names = "z_{.col}"))
+
+# reference
+ref_site <- "Penn Cove Baseline"
+ref_z_pbde <- pbde_z %>%
+  filter(site_name == ref_site) %>%
+  select(starts_with("z_")) %>%
+  slice(1)
+
+# deviation
+pbde_ai <- pbde_z %>%
+  mutate(across(
+    starts_with("z_"),
+    ~ abs(.x - as.numeric(ref_z_pbde[[cur_column()]])),
+    .names = "ai_{.col}"
+  ))
+
+# create index
+ai_cols <- names(pbde_ai)[grepl("^ai_", names(pbde_ai))] # id ai columns
+pbde_index<- pbde_ai %>%
+  rowwise() %>%
+  mutate(pbde_index = sum(c_across(all_of(ai_cols)), na.rm = TRUE)) %>%
+  ungroup()
+
+# view & save
+print(pbde_index)
+#write.csv(pbde_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pbde_ai.csv", row.names = FALSE)
+#write.csv(pbde_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pbde_index.csv", row.names = FALSE)
+
+```
+
+## pcb
+```{r}
+
+pcb_df<- pcb
+colnames(pcb_df)
+
+# define variables
+pcb_analytes <- names(pcb_df)[4:45]
+
+# z-score
+pcb_z <- pcb_df %>%
+  mutate(across(all_of(pcb_analytes), scale, .names = "z_{.col}"))
+
+# reference
+ref_site <- "Penn Cove Baseline"
+ref_z_pcb <- pcb_z %>%
+  filter(site_name == ref_site) %>%
+  select(starts_with("z_")) %>%
+  slice(1)
+
+# deviation
+pcb_ai <- pcb_z %>%
+  mutate(across(
+    starts_with("z_"),
+    ~ abs(.x - as.numeric(ref_z_pcb[[cur_column()]])),
+    .names = "ai_{.col}"
+  ))
+
+# create index
+ai_cols <- names(pcb_ai)[grepl("^ai_", names(pcb_ai))] # id ai columns
+pcb_index<- pcb_ai %>%
+  rowwise() %>%
+  mutate(pcb_index = sum(c_across(all_of(ai_cols)), na.rm = TRUE)) %>%
+  ungroup()
+
+# view & save
+print(pcb_index)
+#write.csv(pcb_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pcb_ai.csv", row.names = FALSE)
+#write.csv(pcb_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pcb_index.csv", row.names = FALSE)
+
+```
+
+## pesticide
+```{r}
+
+pesticide_df<- pesticide
+colnames(pesticide_df)
+
+# define variables
+pesticide_analytes <- names(pesticide_df)[4:8]
+
+# z-score
+pesticide_z <- pesticide_df %>%
+  mutate(across(all_of(pesticide_analytes), scale, .names = "z_{.col}"))
+
+# reference
+ref_site <- "Penn Cove Baseline"
+ref_z_pesticide <- pesticide_z %>%
+  filter(site_name == ref_site) %>%
+  select(starts_with("z_")) %>%
+  slice(1)
+
+# deviation
+pesticide_ai <- pesticide_z %>%
+  mutate(across(
+    starts_with("z_"),
+    ~ abs(.x - as.numeric(ref_z_pesticide[[cur_column()]])),
+    .names = "ai_{.col}"
+  ))
+
+# create index
+ai_cols <- names(pesticide_ai)[grepl("^ai_", names(pesticide_ai))] # id ai columns
+pesticide_index<- pesticide_ai %>%
+  rowwise() %>%
+  mutate(pesticide_index = sum(c_across(all_of(ai_cols)), na.rm = TRUE)) %>%
+  ungroup()
+
+# view & save
+print(pesticide_index)
+#write.csv(pesticide_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pesticide_ai.csv", row.names = FALSE)
+#write.csv(pesticide_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pesticide_index.csv", row.names = FALSE)
 
 ```
 
