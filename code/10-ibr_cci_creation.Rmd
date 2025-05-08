@@ -1032,9 +1032,9 @@ print(pesticide_index)
 ## Fix the averaging after adding the IBRs and CCIs
 ```{r}
 
-# cleaning up site names and then averaging by site for new df
-#data$site_name <- trimws(data$site_name)
-#data <- data %>%
+metrics<- read.csv("../data/index_df/ibr_for_averaging.csv")
+metrics$site_name <- trimws(metrics$site_name)
+#metrics <- metrics %>%
 #  filter(!is.na(site_name), site_name != "")
 
 metrics <- metrics %>%
@@ -1043,24 +1043,27 @@ metrics <- metrics %>%
     latitude= first(latitude),
     longitude= first(longitude),
     site_number= first(site_number),
-    p450 = mean(p450, na.rm = TRUE),
-    sod = mean(sod, na.rm = TRUE),
-    shell = mean(shell, na.rm = TRUE),
-    weight_initial = mean(weight_initial_g, na.rm = TRUE),
-    weight_change = mean(weight_change_g, na.rm = TRUE),
-    weight_final = mean(weight_final_g, na.rm = TRUE),
-    length = mean(length_mm, na.rm = TRUE),
-    height = mean(height_mm, na.rm = TRUE),
-    width = mean(width_mm, na.rm = TRUE),
-    ci1 = mean(ci1, na.rm = TRUE),
-    ci2 = mean(ci2, na.rm = TRUE),
-    ci3 = mean(ci3, na.rm = TRUE)
+    p450 = median(log2_p450, na.rm = TRUE),
+    sod = median(log2_sod, na.rm = TRUE),
+    shell = median(log2_shell, na.rm = TRUE),
+    ci1 = median(log2_ci1, na.rm = TRUE),
+    ci2 = median(log2_ci2, na.rm = TRUE),
+    ci3 = median(log2_ci3, na.rm = TRUE),
+    weight_initial = median(log2_weight_initial_g, na.rm = TRUE),
+    weight_change = median(log2_weight_change_g, na.rm = TRUE),
+    weight_final = median(log2_weight_final_g, na.rm = TRUE),
+    length = median(log2_length_mm, na.rm = TRUE),
+    height = median(log2_height_mm, na.rm = TRUE),
+    width = median(log2_width_mm, na.rm = TRUE),
+    ibr_bio = mean(ibr_biomarker, na.rm = TRUE),
+    ibr_morph = mean(ibr_morphometric, na.rm = TRUE),
+    ibr_combined = mean(ibr_combined, na.rm = TRUE)
   ) %>%
   ungroup()
 
 head(metrics)
-# created/ saved 5-7-2025
-#write.csv(metrics, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metrics_site_level.csv", row.names = FALSE)
+# created/ saved 5-8-2025
+#write.csv(metrics, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/avg_ibr_with_log2_metrics.csv", row.names = FALSE)
 
 ```
 
