@@ -1,5 +1,5 @@
 ---
-title: "10- Creating an IBR & Contaminant Index"
+title: "10- Creating an IBR & Contaminant Concentration Index (CCI)"
 output:
   pdf_document: 
     fig_width: 20
@@ -17,23 +17,23 @@ output:
 ```{r, setup, eval=TRUE, include=TRUE, echo=FALSE}
 
 # libraries
-library(knitr) # output fotmatting
-library(tidyr) # data wrangling
-library(tidyverse) # data wrangling
-library(dplyr) # data wrangling
-library(vegan) # ecological stats 
+library(car) # VERIFY what this is for 
 library(cluster) # grouping metrics - VERIFY still needed
-library(pgirmess) # stats - KW
-library(ggplot2) # plots
+library(dplyr) # data wrangling
 library(factoextra) # pca/ nmds/ tweaking radars
 library(FactoMineR) # pca/ nmds/ tweaking radars
-library(FSA) # post hoc test - Dunn's Test       
-library(rstatix) # VERIFY what this is for      
-library(car) # VERIFY what this is for  
-library(RVAideMemoire) # post hoc test for permanova
-library(rcompanion) # KW testing
-library(scales) # scaling data for IBR - works with data wrangling packages
 library(fmsb) # polygon calculations for the radars
+library(FSA) # post hoc test - Dunn's Test    
+library(ggplot2) # plots
+library(knitr) # output formatting
+library(pgirmess) # stats - KW
+library(rcompanion) # KW testing
+library(rstatix) # VERIFY what this is for      
+library(RVAideMemoire) # post hoc test for permanova
+library(scales) # scaling data for IBR - works with data wrangling packages
+library(tidyr) # data wrangling
+library(tidyverse) # data wrangling
+library(vegan) # ecological stats 
 
 knitr::opts_chunk$set(
   root.dir = here::here(),
@@ -54,42 +54,43 @@ knitr::opts_chunk$set(
 getwd()
 #setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels") # something here isn't working right - check out why
 
-# double check the df's - i updated once i built my new ones
+# DOUBLE CHECK the df's - i updated once i built my new ones as of May 7, 2025
 
-df1<- read.csv("../data/all_with_imputations_and_identifiers.csv")
-chlordane<- read.csv("../data/indices/chlordane_wide.csv")
-ddt<- read.csv("../data/indices/ddt_wide.csv")
-hch<- read.csv("../data/indices/hch_wide.csv")
-metal<- read.csv("../data/indices/metal_wide.csv")
-pbde<- read.csv("../data/indices/pbde_wide.csv")
-pcb<- read.csv("../data/indices/pcb_wide.csv")
-pesticide<- read.csv("../data/indices/pesticide_wide.csv")
+metrics<- read.csv("../data/all_with_imputations_and_identifiers.csv")
+chlordane<- read.csv("../data/index_df/chlordane_wide.csv")
+ddt<- read.csv("../data/index_df/ddt_wide.csv")
+hch<- read.csv("../data/index_df/hch_wide.csv")
+metal<- read.csv("../data/index_df/metal_wide.csv")
+pbde<- read.csv("../data/index_df/pbde_wide.csv")
+pcb<- read.csv("../data/index_df/pcb_wide.csv")
+pesticide<- read.csv("../data/index_df/pesticide_wide.csv")
 
-str(df1) # checking df structure (classes of each column of data)
-summary(df1) #checking df contents (quick stats for each column)
+str(metrics) # checking df structure (classes of each column of data)
+summary(metrics) #checking df contents (quick stats for each column)
 
 ```
 
+## fixing sod values 
 ```{r }
 
-df1$sod[df1$sod <= 0] <- 0.0025 # replace any values below LOQ with imputed LOQ (.5 x LOD), LOD= 0.05
+metrics$sod[metrics$sod <= 0] <- 0.0025 # replace any values below LOQ with imputed LOQ (.5 x LOD), LOD= 0.05
 
-summary(df1) # check
+summary(metrics) # check
 
 ```
 
-# Creating IBRv2i Index with biomarkers and raw morphometrics (no condition indices)
+# Creating Mattos' IBRv2i Index with biomarkers and raw morphometrics (no condition indices)
 ## df prep
 ```{r}
 
 # make categorical columns factors
-df1$site_number <- as.factor(df1$site_number)
-df1$sample_id <- as.factor(df1$sample_id)
-df1$reporting_area <- as.factor(df1$reporting_area)
+metrics$site_number <- as.factor(metrics$site_number)
+metrics$sample_id <- as.factor(metrics$sample_id)
+metrics$reporting_area <- as.factor(metrics$reporting_area)
 
 ```
 
-## fixing site names & trimming white space
+## fixing site names & trimming white space for chem data sets
 ```{r}
 
 chlordane$site_name[chlordane$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
@@ -127,8 +128,8 @@ metal$site_name[metal$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer'
 metal$site_name[metal$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
 metal$site_name[metal$site_name == "S of Skunk Island"] <- "South of Skunk Island"
 metal$site_name[metal$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
-metal$analyte[metal$analyte == "mercuryTotal"] <- "mercury"
-metal$analyte[metal$analyte == "Zinc"] <- "zinc"
+#metal$analyte[metal$analyte == "mercuryTotal"] <- "mercury"
+#metal$analyte[metal$analyte == "Zinc"] <- "zinc"
 
 pbde$site_name[pbde$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
 pbde$site_name[pbde$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
@@ -157,7 +158,7 @@ pesticide$site_name[pesticide$site_name == "Purdy - Dexters"] <- "Purdy, Dexters
 pesticide$site_name[pesticide$site_name == "S of Skunk Island"] <- "South of Skunk Island"
 pesticide$site_name[pesticide$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
 
-df1 <- df1 %>%
+metrics <- metrics %>%
   mutate(across(where(is.character), str_trim))
 
 chlordane <- chlordane %>%
@@ -183,41 +184,8 @@ pesticide <- pesticide %>%
 
 ```
 
-## Reducing all sample df to site-level
-```{r}
-
-# cleaning up site names and then averaging by site for new df
-#data$site_name <- trimws(data$site_name)
-#data <- data %>%
-#  filter(!is.na(site_name), site_name != "")
-
-df1 <- df1 %>%
-  group_by(site_name, reporting_area) %>% 
-  summarise(
-    latitude= first(latitude),
-    longitude= first(longitude),
-    site_number= first(site_number),
-    p450 = mean(p450, na.rm = TRUE),
-    sod = mean(sod, na.rm = TRUE),
-    shell = mean(shell, na.rm = TRUE),
-    weight_initial = mean(weight_initial_g, na.rm = TRUE),
-    weight_change = mean(weight_change_g, na.rm = TRUE),
-    weight_final = mean(weight_final_g, na.rm = TRUE),
-    length = mean(length_mm, na.rm = TRUE),
-    height = mean(height_mm, na.rm = TRUE),
-    width = mean(width_mm, na.rm = TRUE),
-    ci1 = mean(ci1, na.rm = TRUE),
-    ci2 = mean(ci2, na.rm = TRUE),
-    ci3 = mean(ci3, na.rm = TRUE)
-  ) %>%
-  ungroup()
-
-head(df1)
-#write.csv(df1, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/avg_site_level.csv", row.names = FALSE)
-
-```
-
-## replace undetected analyte values 
+## Completed 5-5-2025; Only run if rebuilding
+### replace undetected analyte values 
 ```{r}
 
 chlordane<- chlordane %>%
@@ -250,7 +218,8 @@ pesticide<- pesticide %>%
 
 ```
 
-## pivoting analytes
+## Completed 5-5-2025; Only run if rebuilding
+### pivoting analytes
 ```{r}
 
 chlordane <- chlordane %>%
@@ -262,7 +231,7 @@ chlordane_wide <- chlordane %>%
   )
 
 # Save the cleaned wide-format table
-write.csv(chlordane_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/chlordane_wide.csv", row.names = FALSE)
+#write.csv(chlordane_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/chlordane_wide.csv", row.names = FALSE)
 
 ddt <- ddt %>%
   select(site_name, latitude, longitude, analyte, wet_value) 
@@ -271,7 +240,7 @@ ddt_wide <- ddt %>%
     names_from = analyte,      
     values_from = wet_value    
   )
-write.csv(ddt_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/ddt_wide.csv", row.names = FALSE)
+#write.csv(ddt_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/ddt_wide.csv", row.names = FALSE)
 
 hch <- hch %>%
   select(site_name, latitude, longitude, analyte, wet_value)  
@@ -280,7 +249,7 @@ hch_wide <- hch %>%
     names_from = analyte,      
     values_from = wet_value    
   )
-write.csv(hch_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/hch_wide.csv", row.names = FALSE)
+#write.csv(hch_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/hch_wide.csv", row.names = FALSE)
 
 metal <- metal %>%
   select(site_name, latitude, longitude, analyte, wet_value)  
@@ -289,7 +258,7 @@ metal_wide <- metal %>%
     names_from = analyte,      
     values_from = wet_value    
   )
-write.csv(metal_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/metal_wide.csv", row.names = FALSE)
+#write.csv(metal_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/metal_wide.csv", row.names = FALSE)
 
 pbde <- pbde %>%
   select(site_name, latitude, longitude, analyte, wet_value)  
@@ -298,7 +267,7 @@ pbde_wide <- pbde %>%
     names_from = analyte,      
     values_from = wet_value   
   )
-write.csv(pbde_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pbde_wide.csv", row.names = FALSE)
+#write.csv(pbde_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pbde_wide.csv", row.names = FALSE)
 
 pcb <- pcb %>%
   select(site_name, latitude, longitude, analyte, wet_value)  
@@ -307,7 +276,7 @@ pcb_wide <- pcb %>%
     names_from = analyte,      
     values_from = wet_value    
   )
-write.csv(pcb_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pcb_wide.csv", row.names = FALSE)
+#write.csv(pcb_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pcb_wide.csv", row.names = FALSE)
 
 pesticide <- pesticide %>%
   select(site_name, latitude, longitude, analyte, wet_value)  # keep only what's needed
@@ -316,41 +285,111 @@ pesticide_wide <- pesticide %>%
     names_from = analyte,      # this becomes the new column names
     values_from = wet_value    # this fills the values
   )
-write.csv(pesticide_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pesticide_wide.csv", row.names = FALSE)
+#write.csv(pesticide_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pesticide_wide.csv", row.names = FALSE)
 
 ```
 
-## IBR - biomarker, morphometric, combined
+
+## check for outliers, metrics df
 ```{r}
 
-# define variables used in building the ibr - 2 biomarkers and 7 morphometric values, CI left out because it is derived from raw measurements that are included in the ibr
+library(purrr)
+library(rlang)
 
-#df1<- read.csv("/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/avg_site_level.csv")
+metrics_df<- metrics
+metric_cols <- c("p450", "sod", "shell", "length_mm", "height_mm", "width_mm", 
+                 "ci1", "ci2", "ci3", "weight_initial_g", "weight_final_g", "weight_change_g") #define what we're assessing
 
+# function to assess & label 'in' or 'out'
+flag_outliers <- function(x) {
+  q1 <- quantile(x, 0.25, na.rm = TRUE)
+  q3 <- quantile(x, 0.75, na.rm = TRUE)
+  iqr <- q3 - q1
+  lower <- q1 - 1.5 * iqr
+  upper <- q3 + 1.5 * iqr
+  ifelse(x < lower | x > upper, "out", "in")
+}
+
+# loop and add columns to df
+metrics_df <- metrics_df %>%
+  bind_cols(
+    map_dfc(metric_cols, function(col) {
+      out_flag <- flag_outliers(metrics_df[[col]])
+      new_col <- paste0(col, "_quantile")
+      tibble(!!new_col := out_flag)
+    })
+  )
+
+# summary table
+outlier_cols <- grep("_quantile$", names(metrics_df), value = TRUE) # pull the columns from metrics_df
+
+# pivot and count
+outlier_summary <- metrics_df %>%
+  select(all_of(outlier_cols)) %>%
+  pivot_longer(cols = everything(),
+               names_to = "metric",
+               values_to = "status") %>%
+  mutate(metric = gsub("_quantile", "", metric)) %>%
+  group_by(metric, status) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  pivot_wider(names_from = status, values_from = count, values_fill = 0)
+
+# view & save SAVED on 5.7.25
+print(outlier_summary)
+#write.csv(outlier_summary, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metrics_outlier_summary_pre-transformation.csv", row.names = FALSE)
+
+```
+
+## transform
+```{r}
+
+metric_cols <- c("p450", "sod", "shell", "length_mm", "height_mm", "width_mm", 
+                 "ci1", "ci2", "ci3", "weight_initial_g", "weight_final_g", "weight_change_g")
+
+ref_site <- "Penn Cove Reference"
+
+# reference site mean
+ref_means <- metrics_df %>%
+  filter(site_name == ref_site) %>%
+  summarise(across(all_of(metric_cols), mean, na.rm = TRUE))
+
+# log2-transformation table
+log2_df <- metrics_df %>%
+  mutate(across(
+    all_of(metric_cols),
+    .fns = ~ log2(.x / ref_means[[cur_column()]]),
+    .names = "log2_{.col}"
+  ))
+
+# view & save
+print(log2_df)
+#write.csv(log2_df, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metrics_outlier_summary_post-transformation.csv", row.names = FALSE)
+
+```
+
+
+## IBRs - biomarker, morphometric, combined
+```{r}
+
+# define variables- 2 biomarkers and 7 morphometric values 
+# CI left out because it's derived 
 biomarkers<- c("p450", "sod")
-morphometrics<- c("shell", "weight_initial", "weight_change", "weight_final", "length", "height", "width")
+morphometrics<- c("shell", "weight_initial_g", "weight_change_g", "weight_final_g", "length_mm", "height_mm", "width_mm")
 
-# define the reference groups - only using Penn Cove
-# penn cove= site 3, using in index 1 and 3, hc holly = site 29, using in index 2 and 3, broad spit = site 30, using in index 2 and 3
-
-#### Penn Cove Only 
-ref_df <- df1 %>% filter(site_name == "Penn Cove Reference") # define reference site
-
-# not using since I'm separating biomarkers from morphometrics to balance their weight in the index
-#ref_vars <- ref_df %>%
-#  select(p450, sod, shell, weight_initial_g, weight_change_g, weight_final_g, length_mm, height_mm, width_mm) 
+ref_df <- metrics %>% filter(site_name == "Penn Cove Reference") # define reference site
 
 ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE) # reference site means - biomarkers
 ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE) # reference site sds - biomarkers
 ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE) # same as above - morphometrics
 ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE)  # same as above - morphometrics
 
-bio_z <- sweep(df[, biomarkers], 2, ref_bio_means, "-") # z-scores, maintaining sign - biomarkers
+bio_z <- sweep(metrics[, biomarkers], 2, ref_bio_means, "-") # z-scores, maintaining sign - biomarkers
 bio_z <- sweep(bio_z, 2, ref_bio_sds, "/") # z-scores- actual conversion from the centered values calculated above
-morph_z <- sweep(df[, morphometrics], 2, ref_morph_means, "-")
+morph_z <- sweep(metrics[, morphometrics], 2, ref_morph_means, "-")
 morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
-# add to OG df or create a new one and name the columns correctly
-ibr_df <- df1 %>%
+
+# add to metrics df
+ibr_df <- metrics %>%
   select(latitude, longitude, site_number, site_name, reporting_area) %>%
   bind_cols(bio_z, morph_z) %>%
   mutate(
@@ -358,9 +397,32 @@ ibr_df <- df1 %>%
     ibr_morphometric = rowMeans(morph_z, na.rm = TRUE),
     ibr_combined = rowMeans(cbind(ibr_biomarker, ibr_morphometric), na.rm = TRUE))
 
-class(df)
+#### troubleshooting my df error and the NAs in my standard deviation ####
+#class(df)
+#df
+#summary(ref_df[, biomarkers])
+#str(ref_df[, biomarkers])
+#sapply(ref_df[, biomarkers], class)
+#### end troubleshooting ####
+
+head(ibr_df)
+summary(ibr_df)
 
 ```
+
+## checking outliers in metrics becasue the IBR is heavily skewed
+```{r}
+
+your_data$p450_z <- scale(your_data$p450)
+your_data$ibr_z <- scale(your_data$biomarker_ibr)
+
+# Filter rows with extreme z-scores
+subset(your_data, abs(p450_z) > 3 | abs(ibr_z) > 3)
+
+
+```
+
+
 
 ## adding condition indices back to df
 ```{r}
@@ -388,12 +450,61 @@ ibr_df <- ibr_df %>%
 ```
 
 ## Contaminant Index - chlordane, ddt, hch, metal, pbde, pcb, pesticide
+### metal
 ```{r}
 
+baseline_sites <- c("Penn Cove Baseline", "Broad Spit Baseline", "Hood Canal Holly Baseline")
+ref_metal_df <- metals_wide %>% filter(site_name %in% baseline_sites)
 
+metal_vars <- c("Zinc", "Copper", "Lead", "Arsenic", "Mercury", "Cadmium") # how to call column numbers instead of names?
+
+ref_metal_means <- colMeans(ref_metal_df[, metal_vars], na.rm = TRUE)
+ref_metal_sds   <- apply(ref_metal_df[, metal_vars], 2, sd, na.rm = TRUE)
+
+metal_z <- sweep(metals_wide[, metal_vars], 2, ref_metal_means, "-")
+metal_z <- sweep(metal_z, 2, ref_metal_sds, "/")
+
+contaminant_index_df <- metals_wide %>%
+  select(site_name, latitude, longitude) %>%  # include other metadata as needed
+  bind_cols(metal_z) %>%
+  mutate(cci_metals = rowMeans(metal_z, na.rm = TRUE))
 
 ```
 
+## Fix the averaging after adding the IBRs and CCIs
+```{r}
+
+# cleaning up site names and then averaging by site for new df
+#data$site_name <- trimws(data$site_name)
+#data <- data %>%
+#  filter(!is.na(site_name), site_name != "")
+
+metrics <- metrics %>%
+  group_by(site_name, reporting_area) %>% 
+  summarise(
+    latitude= first(latitude),
+    longitude= first(longitude),
+    site_number= first(site_number),
+    p450 = mean(p450, na.rm = TRUE),
+    sod = mean(sod, na.rm = TRUE),
+    shell = mean(shell, na.rm = TRUE),
+    weight_initial = mean(weight_initial_g, na.rm = TRUE),
+    weight_change = mean(weight_change_g, na.rm = TRUE),
+    weight_final = mean(weight_final_g, na.rm = TRUE),
+    length = mean(length_mm, na.rm = TRUE),
+    height = mean(height_mm, na.rm = TRUE),
+    width = mean(width_mm, na.rm = TRUE),
+    ci1 = mean(ci1, na.rm = TRUE),
+    ci2 = mean(ci2, na.rm = TRUE),
+    ci3 = mean(ci3, na.rm = TRUE)
+  ) %>%
+  ungroup()
+
+head(metrics)
+# created/ saved 5-7-2025
+#write.csv(metrics, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metrics_site_level.csv", row.names = FALSE)
+
+```
 
 
 
@@ -401,7 +512,7 @@ ibr_df <- ibr_df %>%
 ## Box plots, Separate Indices per Site
 ```{r}
 
-#df1<- read.csv("../data/cleaned/ibr_1.csv")
+#metrics<- read.csv("../data/cleaned/ibr_1.csv")
 
 
 # pivot only the index columns - adjusted for each df
