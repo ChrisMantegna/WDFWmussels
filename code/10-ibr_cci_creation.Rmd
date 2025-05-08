@@ -419,122 +419,105 @@ print(outlier_summary)
 ## z-score standardization, absolute sd & IBR scoring
 ```{r}
 
-df_z <- log2_df %>%
-  mutate(across(
-    starts_with("log_"),
-    ~ scale(.x)[, 1],
-    .names = "z_{.col}"
-  ))
-
-summary(df_z)
-# reference z-means
-ref_means <- df_z %>%
-  filter(site_name == ref_site) %>%
-  summarise(across(starts_with("z_"), mean, na.rm = TRUE))
-
-# subtract reference means and take absolute value
-df_ai <- df_z %>%
-  mutate(across(
-    starts_with("z_"),
-    .fns = function(z, nm) abs(z - ref_means[[nm]]),
-    .names = "ai_{.col}",
-    .names_sep = ""
-  ))
+trans<- read.csv("../data/index_df/transformed_metrics.csv")
 
 # Define metric groups for clarity
 biomarker_metrics <- c("p450", "sod")
 morphometric_metrics <- c("shell", "length_mm", "height_mm", "width_mm", 
-                          "weight_initial", "weight_change", "weight_final")
+                          "weight_initial_g", "weight_change_g", "weight_final_g")
 
-# calculate IBR score
-df_ibr <- df_ai %>%
+# z-score
+z_df <- trans %>%
+  mutate(across(
+    starts_with("log2_"),
+    ~ as.numeric(scale(.x)),
+    .names = "z_{.col}"
+  ))
+
+# reference means
+ref_site <- "Penn Cove Reference"
+z_ref_means <- z_df %>%
+  filter(site_name == ref_site) %>%
+  summarise(across(starts_with("z_log2_"), mean, na.rm = TRUE))
+
+# deviation from reference
+ai_df <- z_df %>%
+  mutate(across(
+    starts_with("z_log2_"),
+    ~ abs(.x - z_ref_means[[cur_column()]]),
+    .names = "ai_{.col}"
+  ))
+
+# identify absolute dev columns
+ai_biomarker_cols <- paste0("ai_z_log2_", biomarker_metrics)
+ai_morphometric_cols <- paste0("ai_z_log2_", morphometric_metrics)
+
+# create ibr scores
+may25_ibr <- ai_df %>%
   rowwise() %>%
-  mutate(IBRv2i = sum(c_across(starts_with("ai_")), na.rm = TRUE)) %>%
+  mutate(
+    ibr_biomarker = sum(c_across(all_of(ai_biomarker_cols)), na.rm = TRUE),
+    ibr_morphometric = sum(c_across(all_of(ai_morphometric_cols)), na.rm = TRUE),
+    ibr_combined = ibr_biomarker + ibr_morphometric
+  ) %>%
   ungroup()
 
-```
-
-
-## IBRs - biomarker, morphometric, combined
-```{r}
-
-# define variables- 2 biomarkers and 7 morphometric values 
-# CI left out because it's derived 
-biomarkers<- c("p450", "sod")
-morphometrics<- c("shell", "weight_initial_g", "weight_change_g", "weight_final_g", "length_mm", "height_mm", "width_mm")
-
-ref_df <- metrics %>% filter(site_name == "Penn Cove Reference") # define reference site
-
-ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE) # reference site means - biomarkers
-ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE) # reference site sds - biomarkers
-ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE) # same as above - morphometrics
-ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE)  # same as above - morphometrics
-
-bio_z <- sweep(metrics[, biomarkers], 2, ref_bio_means, "-") # z-scores, maintaining sign - biomarkers
-bio_z <- sweep(bio_z, 2, ref_bio_sds, "/") # z-scores- actual conversion from the centered values calculated above
-morph_z <- sweep(metrics[, morphometrics], 2, ref_morph_means, "-")
-morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
-
-# add to metrics df
-ibr_df <- metrics %>%
-  select(latitude, longitude, site_number, site_name, reporting_area) %>%
-  bind_cols(bio_z, morph_z) %>%
-  mutate(
-    ibr_biomarker = rowMeans(bio_z, na.rm = TRUE),
-    ibr_morphometric = rowMeans(morph_z, na.rm = TRUE),
-    ibr_combined = rowMeans(cbind(ibr_biomarker, ibr_morphometric), na.rm = TRUE))
-
-#### troubleshooting my df error and the NAs in my standard deviation ####
-#class(df)
-#df
-#summary(ref_df[, biomarkers])
-#str(ref_df[, biomarkers])
-#sapply(ref_df[, biomarkers], class)
-#### end troubleshooting ####
-
-head(ibr_df)
-summary(ibr_df)
+# view & save. Completed 5-7-25.
+print(may25_ibr)
+#write.csv(ai_df, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metrics_zscore_sd_may25.csv", row.names = FALSE)
+#write.csv(may25_ibr, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/ibr_transformed_may25.csv", row.names = FALSE)
 
 ```
 
-## checking outliers in metrics becasue the IBR is heavily skewed
+## CCI
+### metals
 ```{r}
 
-your_data$p450_z <- scale(your_data$p450)
-your_data$ibr_z <- scale(your_data$biomarker_ibr)
-
-# Filter rows with extreme z-scores
-subset(your_data, abs(p450_z) > 3 | abs(ibr_z) > 3)
-
-
-```
-
-
-
-## adding condition indices back to df
-```{r}
+metal_df<- metal
 
 # define variables
-condition <- c("ci1", "ci2", "ci3")
+heavy_metals <- c("arsenic", "cadmium", "mercury")
+nutrient_metals <- c("copper", "lead", "zinc")
 
-#### Penn Cove Only
-ref_df <- df %>% filter(site_name == "Penn Cove Reference") # define reference site
-ref_ci_means <- colMeans(ref_df[, condition], na.rm = TRUE) # reference means
-ref_ci_sds   <- apply(ref_df[, condition], 2, sd, na.rm = TRUE) # reference sds
-condition_z <- sweep(df[, condition], 2, ref_ci_means, "-") # z-scores relative to reference site - preserving sign
-condition_z <- sweep(condition_z, 2, ref_ci_sds, "/") # z-scores
-ibr_df <- bind_cols(ibr_df, condition_z) # add the new columns to the df
-ibr_df <- ibr_df %>%
- mutate(
-    ci1_1 = condition_z$ci1,
-    ci2_1 = condition_z$ci2,
-    ci3_1 = condition_z$ci3,)
+# setup complete metal index
+all_metals <- c(heavy_metals, nutrient_metals)
 
+# z-score for each analyte (site-level is not possible based on single site values)
+metals_z <- metal_df %>%
+  mutate(across(all_of(all_metals), scale, .names = "z_{.col}"))
 
-# save it
-#write.csv(ibr_df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/complete_cleaned_ibr.csv", row.names = FALSE)
+# pull reference scores
+ref_site <- "Penn Cove Baseline"
+ref_z <- metals_z %>%
+  filter(site_name == ref_site) %>%
+  select(starts_with("z_")) %>%
+  slice(1)
+
+# absolute deviation from reference z-score for each metal
+metals_ai <- metals_z %>%
+  mutate(across(
+    starts_with("z_"),
+    ~ abs(.x - as.numeric(ref_z[[cur_column()]])),  # force scalar extraction
+    .names = "ai_{.col}"
+  ))
+
+# create indices
+metal_index <- metals_ai %>%
+  rowwise() %>%
+  mutate(
+    heavy_metal_index = sum(c_across(starts_with("ai_z_")[heavy_metals %in% sub("z_", "", names(.)[grepl("ai_z_", names(.))])]), na.rm = TRUE),
+    nutrient_metal_index = sum(c_across(starts_with("ai_z_")[nutrient_metals %in% sub("z_", "", names(.)[grepl("ai_z_", names(.))])]), na.rm = TRUE),
+    total_metal_index = heavy_metal_index + nutrient_metal_index
+  ) %>%
+  ungroup()
+
+# view & save
+print(metal_index)
+write.csv(metals_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metals_ai.csv", row.names = FALSE)
+#write.csv(metal_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metal_index.csv", row.names = FALSE)
 
 ```
+
 
 ## Contaminant Index - chlordane, ddt, hch, metal, pbde, pcb, pesticide
 ### metal

@@ -375,3 +375,83 @@ all_index3<- ggplot(ibr3_long, aes(x = site_name, y = index_value,
 
 print(all_index3)
 
+```{r}
+
+# define variables- 2 biomarkers and 7 morphometric values 
+# CI left out because it's derived 
+biomarkers<- c("p450", "sod")
+morphometrics<- c("shell", "weight_initial_g", "weight_change_g", "weight_final_g", "length_mm", "height_mm", "width_mm")
+
+ref_df <- metrics %>% filter(site_name == "Penn Cove Reference") # define reference site
+
+ref_bio_means <- colMeans(ref_df[, biomarkers], na.rm = TRUE) # reference site means - biomarkers
+ref_bio_sds   <- apply(ref_df[, biomarkers], 2, sd, na.rm = TRUE) # reference site sds - biomarkers
+ref_morph_means <- colMeans(ref_df[, morphometrics], na.rm = TRUE) # same as above - morphometrics
+ref_morph_sds   <- apply(ref_df[, morphometrics], 2, sd, na.rm = TRUE)  # same as above - morphometrics
+
+bio_z <- sweep(metrics[, biomarkers], 2, ref_bio_means, "-") # z-scores, maintaining sign - biomarkers
+bio_z <- sweep(bio_z, 2, ref_bio_sds, "/") # z-scores- actual conversion from the centered values calculated above
+morph_z <- sweep(metrics[, morphometrics], 2, ref_morph_means, "-")
+morph_z <- sweep(morph_z, 2, ref_morph_sds, "/")
+
+# add to metrics df
+ibr_df <- metrics %>%
+  select(latitude, longitude, site_number, site_name, reporting_area) %>%
+  bind_cols(bio_z, morph_z) %>%
+  mutate(
+    ibr_biomarker = rowMeans(bio_z, na.rm = TRUE),
+    ibr_morphometric = rowMeans(morph_z, na.rm = TRUE),
+    ibr_combined = rowMeans(cbind(ibr_biomarker, ibr_morphometric), na.rm = TRUE))
+
+#### troubleshooting my df error and the NAs in my standard deviation ####
+#class(df)
+#df
+#summary(ref_df[, biomarkers])
+#str(ref_df[, biomarkers])
+#sapply(ref_df[, biomarkers], class)
+#### end troubleshooting ####
+
+head(ibr_df)
+summary(ibr_df)
+
+```
+
+## checking outliers in metrics becasue the IBR is heavily skewed
+```{r}
+
+your_data$p450_z <- scale(your_data$p450)
+your_data$ibr_z <- scale(your_data$biomarker_ibr)
+
+# Filter rows with extreme z-scores
+subset(your_data, abs(p450_z) > 3 | abs(ibr_z) > 3)
+
+
+```
+
+
+
+## adding condition indices back to df
+```{r}
+
+# define variables
+condition <- c("ci1", "ci2", "ci3")
+
+#### Penn Cove Only
+ref_df <- df %>% filter(site_name == "Penn Cove Reference") # define reference site
+ref_ci_means <- colMeans(ref_df[, condition], na.rm = TRUE) # reference means
+ref_ci_sds   <- apply(ref_df[, condition], 2, sd, na.rm = TRUE) # reference sds
+condition_z <- sweep(df[, condition], 2, ref_ci_means, "-") # z-scores relative to reference site - preserving sign
+condition_z <- sweep(condition_z, 2, ref_ci_sds, "/") # z-scores
+ibr_df <- bind_cols(ibr_df, condition_z) # add the new columns to the df
+ibr_df <- ibr_df %>%
+  mutate(
+    ci1_1 = condition_z$ci1,
+    ci2_1 = condition_z$ci2,
+    ci3_1 = condition_z$ci3,)
+
+
+# save it
+#write.csv(ibr_df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/complete_cleaned_ibr.csv", row.names = FALSE)
+
+```
+
