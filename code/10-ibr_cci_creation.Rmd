@@ -340,7 +340,7 @@ print(outlier_summary)
 
 ```
 
-## transform
+## transform, log2 based on the reference site
 ```{r}
 
 metric_cols <- c("p450", "sod", "shell", "length_mm", "height_mm", "width_mm", 
@@ -364,6 +364,93 @@ log2_df <- metrics_df %>%
 # view & save
 print(log2_df)
 #write.csv(log2_df, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metrics_outlier_summary_post-transformation.csv", row.names = FALSE)
+
+```
+
+## check for outliers in log2_df
+```{r}
+
+library(purrr)
+library(rlang)
+
+metric_cols <- c("log2_p450", "log2_sod", "log2_shell", "log2_length_mm", "log2_height_mm", "log2_width_mm", 
+                 "log2_ci1", "log2_ci2", "log2_ci3", "log2_weight_initial_g", "log2_weight_final_g", "log2_weight_change_g") 
+
+# function to assess & label 'in' or 'out'
+flag_outliers <- function(x) {
+  q1 <- quantile(x, 0.25, na.rm = TRUE)
+  q3 <- quantile(x, 0.75, na.rm = TRUE)
+  iqr <- q3 - q1
+  lower <- q1 - 1.5 * iqr
+  upper <- q3 + 1.5 * iqr
+  ifelse(x < lower | x > upper, "out", "in")
+}
+
+# loop and add columns to df
+log2_df <- log2_df %>%
+  bind_cols(
+    map_dfc(metric_cols, function(col) {
+      out_flag <- flag_outliers(log2_df[[col]])
+      new_col <- paste0(col, "_quantile")
+      tibble(!!new_col := out_flag)
+    })
+  )
+
+# summary table
+outlier_cols <- grep("_quantile$", names(log2_df), value = TRUE) # pull the columns from log2_df
+
+# pivot and count
+outlier_summary <- log2_df %>%
+  select(all_of(outlier_cols)) %>%
+  pivot_longer(cols = everything(),
+               names_to = "metric",
+               values_to = "status") %>%
+  mutate(metric = gsub("_quantile", "", metric)) %>%
+  group_by(metric, status) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  pivot_wider(names_from = status, values_from = count, values_fill = 0)
+
+# view & save. Completed on 5-7-25 
+print(outlier_summary)
+#write.csv(outlier_summary, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metrics_outlier_summary_post-transformation.csv", row.names = FALSE)
+
+```
+
+## z-score standardization, absolute sd & IBR scoring
+```{r}
+
+df_z <- log2_df %>%
+  mutate(across(
+    starts_with("log_"),
+    ~ scale(.x)[, 1],
+    .names = "z_{.col}"
+  ))
+
+summary(df_z)
+# reference z-means
+ref_means <- df_z %>%
+  filter(site_name == ref_site) %>%
+  summarise(across(starts_with("z_"), mean, na.rm = TRUE))
+
+# subtract reference means and take absolute value
+df_ai <- df_z %>%
+  mutate(across(
+    starts_with("z_"),
+    .fns = function(z, nm) abs(z - ref_means[[nm]]),
+    .names = "ai_{.col}",
+    .names_sep = ""
+  ))
+
+# Define metric groups for clarity
+biomarker_metrics <- c("p450", "sod")
+morphometric_metrics <- c("shell", "length_mm", "height_mm", "width_mm", 
+                          "weight_initial", "weight_change", "weight_final")
+
+# calculate IBR score
+df_ibr <- df_ai %>%
+  rowwise() %>%
+  mutate(IBRv2i = sum(c_across(starts_with("ai_")), na.rm = TRUE)) %>%
+  ungroup()
 
 ```
 
