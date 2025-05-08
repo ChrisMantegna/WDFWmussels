@@ -676,12 +676,14 @@ pah_lmw<- pah_lmw %>%
   mutate(flagged = grepl("U|B|I", qualifier),
          wet_value = ifelse(flagged, 0, wet_value))
 
-#install.packages("janitor")
-library("janitor")
-pah_lmw <- pah_lmw %>%
-  mutate(analyte_clean = make_clean_names(analyte))
+head(pah_lmw)
 
-write.csv(pah_lmw, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_lmw_interim.csv", row.names = FALSE)
+#### changing analyte names with janitor ####
+#install.packages("janitor")
+#library("janitor")
+#pah_lmw <- pah_lmw %>%
+#  mutate(analyte_clean = make_clean_names(analyte))
+#### end name changing ####
 
 pah_lmw <- pah_lmw %>%
   select(site_name, latitude, longitude, analyte, wet_value)  # keep only what's needed
@@ -691,19 +693,20 @@ pah_lmw_wide <- pah_lmw %>%
     values_from = wet_value
   )
 
+print(pah_lmw_wide)
 # Save the cleaned wide-format table
-#write.csv(pah_lmw_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pah_lmw_wide.csv", row.names = FALSE)
+#write.csv(pah_lmw_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_lmw_wide.csv", row.names = FALSE)
 
 ```
 
 ### index creation
 ```{r}
 
-pah_lmw_df<- pah_lmw
+pah_lmw_df<- pah_lmw_wide
 colnames(pah_lmw_df)
 
 # define variables
-pah_lmw_analytes <- names(pah_lmw_df)[4:14]
+pah_lmw_analytes <- names(pah_lmw_df)[4:24]
 
 # z-score
 pah_lmw_z <- pah_lmw_df %>%
@@ -760,33 +763,30 @@ pah_hmw<- pah_hmw %>%
   mutate(flagged = grepl("U|B|I", qualifier),
          wet_value = ifelse(flagged, 0, wet_value))
 
-#install.packages("janitor")
-library("janitor")
-pah_hmw <- pah_hmw %>%
-  mutate(analyte_clean = make_clean_names(analyte))
-
+#### changing analyte names with janitor - see pah_lmw block ####
 
 pah_hmw <- pah_hmw %>%
-  select(site_name, latitude, longitude, analyte, wet_value)  # keep only what's needed
+  select(site_name, latitude, longitude, analyte, wet_value) 
 pah_hmw_wide <- pah_hmw %>%
   pivot_wider(
     names_from = analyte,
     values_from = wet_value
   )
 
-# Save the cleaned wide-format table
-#write.csv(pah_hmw_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pah_hmw_wide.csv", row.names = FALSE)
+# view & save
+print(pah_hmw_wide)
+#write.csv(pah_hmw_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_hmw_wide.csv", row.names = FALSE)
 
 ```
 
 ### index creation
 ```{r}
 
-pah_hmw_df<- pah_hmw
+pah_hmw_df<- pah_hmw_wide
 colnames(pah_hmw_df)
 
 # define variables
-pah_hmw_analytes <- names(pah_hmw_df)[4:14]
+pah_hmw_analytes <- names(pah_hmw_df)[4:23]
 
 # z-score
 pah_hmw_z <- pah_hmw_df %>%
@@ -816,8 +816,8 @@ pah_hmw_index<- pah_hmw_ai %>%
 
 # view & save
 print(pah_hmw_index)
-write.csv(pah_hmw_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_hmw_ai.csv", row.names = FALSE)
-write.csv(pah_hmw_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_hmw_index.csv", row.names = FALSE)
+#write.csv(pah_hmw_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_hmw_ai.csv", row.names = FALSE)
+#write.csv(pah_hmw_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_hmw_index.csv", row.names = FALSE)
 
 ```
 
@@ -825,7 +825,7 @@ write.csv(pah_hmw_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/ind
 ### data prep
 ```{r}
 
-pah_add<- read.csv("../data/index_df/test_pah_add.csv")
+pah_add<- read.csv("../data/index_df/test_pah_additional.csv")
 # fixing site names, fixing column names, removing white space in the name changes, adjusting undetected values to zero, pivoting for index creation
 pah_add$site_name[pah_add$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
 pah_add$site_name[pah_add$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
@@ -843,11 +843,7 @@ pah_add<- pah_add %>%
   mutate(flagged = grepl("U|B|I", qualifier),
          wet_value = ifelse(flagged, 0, wet_value))
 
-#install.packages("janitor")
-library("janitor")
-pah_add <- pah_add %>%
-  mutate(analyte_clean = make_clean_names(analyte))
-
+#### changing analyte names with janitor - see pah_lmw block ####
 
 pah_add <- pah_add %>%
   select(site_name, latitude, longitude, analyte, wet_value)  # keep only what's needed
@@ -857,19 +853,20 @@ pah_add_wide <- pah_add %>%
     values_from = wet_value
   )
 
-# Save the cleaned wide-format table
-write.csv(pah_add_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pah_add_wide.csv", row.names = FALSE)
+# view & save
+print(pah_add_wide)
+write.csv(pah_add_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_additional_wide.csv", row.names = FALSE)
 
 ```
 
 ### index creation
 ```{r}
 
-pah_add_df<- pah_add
+pah_add_df<- pah_add_wide
 colnames(pah_add_df)
 
 # define variables
-pah_add_analytes <- names(pah_add_df)[4:14]
+pah_add_analytes <- names(pah_add_df)[4:12]
 
 # z-score
 pah_add_z <- pah_add_df %>%
@@ -899,8 +896,8 @@ pah_add_index<- pah_add_ai %>%
 
 # view & save
 print(pah_add_index)
-write.csv(pah_add_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_add_ai.csv", row.names = FALSE)
-write.csv(pah_add_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_add_index.csv", row.names = FALSE)
+#write.csv(pah_add_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_add_ai.csv", row.names = FALSE)
+#write.csv(pah_add_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_additional_index.csv", row.names = FALSE)
 
 ```
 
@@ -1065,7 +1062,7 @@ head(metrics)
 
 ```
 
-
+# Move all of this to its own file
 
 # Plotting
 ## Box plots, Separate Indices per Site
