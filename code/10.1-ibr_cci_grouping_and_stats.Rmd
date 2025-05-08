@@ -1,5 +1,5 @@
 ---
-title: "11- Creating Analysis Groups and Running Stats"
+title: "10.1- Creating Analysis Groups and Running Stats"
 output:
   pdf_document: 
     fig_width: 20
@@ -17,7 +17,7 @@ output:
 ```{r, setup, eval=TRUE, include=TRUE, echo=FALSE}
 
 # libraries
-library(knitr) # output fotmatting
+library(knitr) # output formatting
 library(tidyr) # data wrangling
 library(tidyverse) # data wrangling
 library(dplyr) # data wrangling
@@ -55,62 +55,74 @@ knitr::opts_chunk$set(
 getwd()
 #setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels") # something here isn't working right - check out why
 
-df1<- read.csv("../data/cleaned/ibr_1.csv") # penn cove reference site only
-df2<- read.csv("../data/cleaned/ibr_2.csv")
-#df3<- read.csv("../data/cleaned/ibr_3.csv")
-df4<- read.csv("../data/cleaned/analytes_long.csv")
-#df5<- read.csv("../data/cleaned/metals_long.csv")
-df6<- read.csv("../data/cleaned/avg_ibr1_metals.csv")
-ibr_analyte<- read.csv("../data/cleaned/avg_ibr1_analytess.csv")
-
-# clean up names if needed
-#df1 <- df1 %>%
-#  mutate(across(where(is.character), trimws))
-
+all_data<- read.csv("../data/index_df/ibr_for_averaging.csv")
+avg_data<- read.csv("../data/index_df/avg_metrics_ibr_indices_for_correlations.csv")   
 
 ```
 
 ```{r}
 
-# make categorical columns factors
-df1$site_number <- as.factor(df1$site_number)
-df1$sample_id <- as.factor(df1$sample_id)
-df1$reporting_area <- as.factor(df1$reporting_area)
+# make reporting area a factor
+all_data$reporting_area <- as.factor(all_data$reporting_area)
+avg_data$reporting_area <- as.factor(avg_data$reporting_area)
 
-df1<- ibr_analyte #only did this for validation, remove when cleaning up the code
 
 ```
 
 # Normality - Shapiro-Wilkes
 ```{r}
+# all data - metrics & ibrs
+shapiro.test(all_data$log2_p450) # Normal
+shapiro.test(all_data$log2_sod) # Not Normal
+shapiro.test(all_data$log2_shell) # Not Normal
+shapiro.test(all_data$log2_ci1) # Not Normal
+shapiro.test(all_data$log2_ci2) # Not Normal
+shapiro.test(all_data$log2_ci3) # Not Normal
+shapiro.test(all_data$ibr_biomarker) # Not Normal
+shapiro.test(all_data$ibr_morphometric) # Not Normal
+shapiro.test(all_data$ibr_combined) # Not Normal
 
-shapiro.test(df1$p450) # Not Normal
-shapiro.test(df1$sod) # Not Normal
-shapiro.test(df1$shell) # Normal - ANOVA for this one
-shapiro.test(df1$ci1) # Not Normal
-shapiro.test(df1$ci2) # Not Normal
-shapiro.test(df1$ci3) # Not Normal
-shapiro.test(df1$ibr1bio) # Not Normal
-shapiro.test(df1$ibr1morph) # Not Normal
-shapiro.test(df1$ibr1overall) # Not Normal
+# avg data - metrics
+shapiro.test(avg_data$p450) # Normal
+shapiro.test(avg_data$sod) # Not Normal
+shapiro.test(avg_data$shell) # Not Normal
+shapiro.test(avg_data$ci1) # Not Normal
+shapiro.test(avg_data$ci2) # Normal
+shapiro.test(avg_data$ci3) # Normal
+shapiro.test(avg_data$weight_initial) # Normal
+shapiro.test(avg_data$weight_change) # Normal
+shapiro.test(avg_data$weight_final) # Normal
+shapiro.test(avg_data$height) # Normal
+shapiro.test(avg_data$length) # Normal
+shapiro.test(avg_data$width) # Normal
+
+#indices
+shapiro.test(avg_data$ibr_bio) # Not Normal
+shapiro.test(avg_data$ibr_morph) # Normal
+shapiro.test(avg_data$ibr_combined) # Normal
+shapiro.test(avg_data$chlordane_index) # Not Normal
+shapiro.test(avg_data$ddt_index) # Not Normal
+shapiro.test(avg_data$hch_index) # Not Normal
+shapiro.test(avg_data$heavy_metal_index) # Not Normal
+shapiro.test(avg_data$nutrient_metal_index) # Not Normal
+shapiro.test(avg_data$total_metal_index) # Not Normal
+shapiro.test(avg_data$pah_lmw_index) # Not Normal
+shapiro.test(avg_data$pah_hmw_index) # Not Normal
+shapiro.test(avg_data$pah_add_index) # Not Normal
+shapiro.test(avg_data$pbde_index) # Not Normal
+shapiro.test(avg_data$pcb_index) # Not Normal
+shapiro.test(avg_data$pesticide_index) # Not Normal
 
 ```
 
-# Add groups to match WDFW reporting style
-Groups
-1. Biomarker- driven grouping - K-means clustering
-2. Impervious Surface Percentage (0-10, 10-20, 20-40, 40-100)
-3. Concentration Thresholds by contaminant - sketch this out to see if this is something I really need
-4. Quantiles - same comment as above
-
 ## Create biomarker- driven grouping
-### DO NOT rerun
+### This code is incorrect - fix it before re-running
 ```{r}
 
 # ibr overall yields the same result as the kmeans below - no need to rerun
 # Use only rows with non-missing biomarker data
-bio_clust_df <- data %>%
-  select(sample_id, ibr1overall)
+bio_clust_df <- all_data %>%
+  select(log2_p450, log2_sod, ibr_combined)
 
 wss <- vector()
 
@@ -128,7 +140,7 @@ plot(1:10, wss, type = "b",
      main = "Elbow Method for Choosing k")
 
 set.seed(42)
-k_opt <- 3  # elbow is distinctly at 2 with 3 close by, I have checked both with no real resolution
+k_opt <- 3  # elbow is distinctly at 3, I have checked both with no real resolution
 
 kmeans_result <- kmeans(bio_clust_df, centers = k_opt, nstart = 25)
 
@@ -136,7 +148,7 @@ kmeans_result <- kmeans(bio_clust_df, centers = k_opt, nstart = 25)
 bio_clust_df$cluster3 <- as.factor(kmeans_result$cluster)
 
 data <- data %>%
-  left_join(bio_clust_df[, c("sample_id", "cluster3")], by = "sample_id")
+  left_join(bio_clust_df[, c("sa", "cluster3")], by = "sample_id")
 
 # saving ibrv2i df
 #write.csv(ibrv2i_df, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/ibrv2i_all_scaled_indices_groups.csv", row.names = FALSE)
@@ -144,6 +156,7 @@ data <- data %>%
 ```
 
 ## PCA plot to check clusters
+### This code is incorrect - fix it before re-running
 ```{r}
 
 # Define variables for PCA
@@ -178,14 +191,14 @@ ggplot(scores_df, aes(x = PC1, y = PC2, color = geo_cluster_2)) +
 
 ```
 
-## Create geographic grouping
+## Create geographic grouping - review with avg table, all sample table looks good - 5/8/25
 ### K-Means for Geographic Groups
 
 ```{r}
 
 ## 2,6, and 9 clusters are optimal using this method - test with anosim
 
-geo_data <- data.frame(lat = data$latitude, lon = data$longitude) # pulling out lat/ long
+geo_data <- data.frame(lat = all_data$latitude, lon = all_data$longitude) # pulling out lat/ long
 
 fviz_nbclust(geo_data, kmeans, method = "wss") +
   ggtitle("Elbow Method for Optimal Geographic Clusters") # Compute within-cluster sum of squares for different k values
@@ -206,9 +219,9 @@ k_optimal <- 2  # Choose based on elbow/silhouette/gap methods
 km <- kmeans(geo_data, centers = k_optimal, nstart = 25)
 
 # Add cluster assignments to dataset
-data$geo_cluster <- as.factor(km$cluster)
+all_data$geo_cluster <- as.factor(km$cluster)
 
-ggplot(data, aes(x = longitude, y = latitude, color = geo_cluster)) +
+ggplot(all_data, aes(x = longitude, y = latitude, color = geo_cluster)) +
   geom_point(size = 3) +
   ggtitle("Geographic Clusters of Sampling Sites") +
   xlab("Longitude") + ylab("Latitude")
