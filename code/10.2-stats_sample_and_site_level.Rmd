@@ -82,7 +82,9 @@ all_data_complete_indices <- all_data %>%
   left_join(site_df, by = "site_name")
 
 head(all_data_complete_indices)
-#write.csv(all_data_complete_indices, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/complete_sample_level.csv", row.names = FALSE) # write it out
+
+# write it out
+#write.csv(all_data_complete_indices, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/complete_sample_level.csv", row.names = FALSE) 
 
 ```
 
