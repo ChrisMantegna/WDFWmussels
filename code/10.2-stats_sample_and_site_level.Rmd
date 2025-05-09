@@ -55,8 +55,8 @@ knitr::opts_chunk$set(
 getwd()
 #setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels") # something here isn't working right - check out why
 
-all_data<- read.csv("../data/index_df/ibr_for_averaging.csv")
-avg_data<- read.csv("../data/index_df/avg_metrics_ibr_indices_for_correlations.csv")   
+sample_data<- read.csv("../data/index_df/complete_sample_level.csv")
+site_data<- read.csv("../data/index_df/complete_site_level.csv")
 
 ```
 
@@ -65,11 +65,11 @@ avg_data<- read.csv("../data/index_df/avg_metrics_ibr_indices_for_correlations.c
 
 # make site_number & reporting area a factor in both dfs
 
-all_data$reporting_area <- as.factor(all_data$reporting_area)
-avg_data$reporting_area <- as.factor(avg_data$reporting_area)
+sample_data$reporting_area <- as.factor(sample_data$reporting_area)
+site_data$reporting_area <- as.factor(site_data$reporting_area)
 
-all_data$site_number <- as.factor(all_data$site_number)
-avg_data$site_number <- as.factor(avg_data$site_number)
+sample_data$site_number <- as.factor(all_data$site_number)
+site_data$site_number <- as.factor(avg_data$site_number)
 
 ```
 
