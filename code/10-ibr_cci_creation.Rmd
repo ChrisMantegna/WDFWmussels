@@ -904,21 +904,16 @@ print(pah_add_index)
 ## total pah index creation
 ```{r}
 
-pah_df<- read.csv("../data/index_df/combined_pah_index_interim.csv")
-# create new index columns
-combined_pah_index <- pah_df %>%
-  rowwise() %>%
-  mutate(
-    pah_lmw_index = sum(c_across(all_of(ai_heavy)), na.rm = TRUE),
-    nutrient_metal_index = sum(c_across(all_of(ai_nutrient)), na.rm = TRUE),
-    total_metal_index = heavy_metal_index + nutrient_metal_index
-  ) %>%
-  ungroup()
+# read in
+pah_df <- read.csv("../data/index_df/combined_pah_index_interim.csv")
 
+# create total pah index
+pah_df <- pah_df %>%
+  mutate(total_pah_index = pah_lmw_index + pah_hmw_index + pah_add_index)
 
 # view & save
-print(metals_index)
-#write.csv(metals_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metals_ai.csv", row.names = FALSE)
+print(pah_df)
+#write.csv(pah_df, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/pah_total_index.csv", row.names = FALSE)
 
 ```
 

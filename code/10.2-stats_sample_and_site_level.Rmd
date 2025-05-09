@@ -1,5 +1,5 @@
 ---
-title: "10.1- Creating Analysis Groups and Running Stats"
+title: "10.2- Running Stats at the Sample and Site Levels"
 output:
   pdf_document: 
     fig_width: 20
@@ -63,14 +63,26 @@ avg_data<- read.csv("../data/index_df/avg_metrics_ibr_indices_for_correlations.c
 # Data prep
 ```{r}
 
-# make reporting area a factor in both
+# make site_number & reporting area a factor in both dfs
+
 all_data$reporting_area <- as.factor(all_data$reporting_area)
 avg_data$reporting_area <- as.factor(avg_data$reporting_area)
+
+all_data$site_number <- as.factor(all_data$site_number)
+avg_data$site_number <- as.factor(avg_data$site_number)
 
 ```
 
 ## add contaminant indices to sample- level df
 ```{r}
+
+site_df<- read.csv("../data/index_df/contaminant_indices_only.csv")
+
+all_data_complete_indices <- all_data %>%
+  left_join(site_df, by = "site_name")
+
+head(all_data_complete_indices)
+#write.csv(all_data_complete_indices, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/complete_sample_level.csv", row.names = FALSE) # write it out
 
 ```
 
