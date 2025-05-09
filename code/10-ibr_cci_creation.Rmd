@@ -901,14 +901,15 @@ print(pah_add_index)
 
 ```
 
-### total pah index creation
+## total pah index creation
 ```{r}
 
+pah_df<- read.csv("../data/index_df/combined_pah_index_interim.csv")
 # create new index columns
-metals_index <- metals_ai %>%
+combined_pah_index <- pah_df %>%
   rowwise() %>%
   mutate(
-    heavy_metal_index = sum(c_across(all_of(ai_heavy)), na.rm = TRUE),
+    pah_lmw_index = sum(c_across(all_of(ai_heavy)), na.rm = TRUE),
     nutrient_metal_index = sum(c_across(all_of(ai_nutrient)), na.rm = TRUE),
     total_metal_index = heavy_metal_index + nutrient_metal_index
   ) %>%
