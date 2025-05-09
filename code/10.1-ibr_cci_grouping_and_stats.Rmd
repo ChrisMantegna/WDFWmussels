@@ -213,15 +213,15 @@ fviz_gap_stat(gap_stat) # statistical test for cluster quality
 
 # plot to see that the optimal cluster count is a reliable metric in real life
 set.seed(123)  # Ensure consistent results
-k_optimal <- 6  # Choose based on elbow/silhouette/gap methods
+k_optimal <- 9  # Choose based on elbow/silhouette/gap methods
 
 # Run k-means
 km <- kmeans(geo_data, centers = k_optimal, nstart = 25)
 
 # Add cluster assignments to dataset
-all_data$cluster6 <- as.factor(km$cluster)
+all_data$cluster9 <- as.factor(km$cluster)
 
-ggplot(all_data, aes(x = longitude, y = latitude, color = cluster6)) +
+ggplot(all_data, aes(x = longitude, y = latitude, color = cluster9)) +
   geom_point(size = 3) +
   ggtitle("Geographic Clusters of Sampling Sites") +
   xlab("Longitude") + ylab("Latitude")
@@ -230,17 +230,18 @@ ggplot(all_data, aes(x = longitude, y = latitude, color = cluster6)) +
 ```
 
 # ANOSIM, Analysis of similarity
+## no geographic groups are statistically robust enough for further analysis
 ```{r}
 
 df_anosim <- all_data
 
 # Create a new distance matrix
 dist_matrix <- vegdist(df_anosim %>%
-                         select(log2_p450, log2_sod, log2_shell, log2_ci1, log2_ci2, log2_ci3, ibr_combined) %>%
+                         select(log2_p450, log2_sod, log2_shell, ibr_combined) %>%
                          scale(), method = "euclidean")
 
 # Run ANOSIM
-anosim_results <- anosim(dist_matrix, grouping = df_anosim$cluster2)
+anosim_results <- anosim(dist_matrix, grouping = df_anosim$cluster9)
 print(anosim_results)
 
 #Interpretation:
@@ -249,112 +250,27 @@ print(anosim_results)
 
 ```
 
-# Verifying K-Means Cluster Counts - MOVE to 12-viz
+# Analysis of Variance & Dispersion
+## Variance, p-value= 4.866e-05. We will proceed with KW testing - 4.23.25
 ```{r}
 
-set.seed(123)
-km2 <- kmeans(geo_data, centers = 2, nstart = 25)
-km6 <- kmeans(geo_data, centers = 6, nstart = 25)
-km9 <- kmeans(geo_data, centers = 9, nstart = 25)
+# explanation is code file: 03-creating_analysis_dfs
 
+# all data
+all_data$site_name <- as.factor(all_data$site_name) # change site names to a factor instead of a character
+metric_matrix <- as.matrix(all_data[, 7:20]) # pull out my metrics - confirm column numbers are still correct
+dist_matrix_variance <- vegdist(metric_matrix, na.rm= TRUE, method = "bray") # create a distance matrix
+dispersion_test <- betadisper(dist_matrix_variance, group = all_data$site_name) # check homogeneity of group variances
+anova(dispersion_test) # Perform permutation test for homogeneity. A p-value > .05 means we need to use PERMANOVA. 
+boxplot(dispersion_test) # visualize results (boxplot of dispersions)
 
-# Add new clusters
-data$geo_cluster_2 <- as.factor(km2$cluster)
-data$geo_cluster_6 <- as.factor(km6$cluster)
-data$geo_cluster_9 <- as.factor(km9$cluster)
-
-# Plot- map without the map underlay
-ggplot(data, aes(x = longitude, y = latitude, color = geo_cluster_2)) +
-  geom_point(size = 3) + ggtitle("Geographic Clusters (k=4)") +
-  xlab("Longitude") + ylab("Latitude")
-
-ggplot(data, aes(x = longitude, y = latitude, color = geo_cluster_6)) +
-  geom_point(size = 3) + ggtitle("Geographic Clusters (k=4)") +
-  xlab("Longitude") + ylab("Latitude")
-
-ggplot(data, aes(x = longitude, y = latitude, color = geo_cluster_9)) +
-  geom_point(size = 3) + ggtitle("Geographic Clusters (k=5)") +
-  xlab("Longitude") + ylab("Latitude")
-
-
-```
-
-# Mapping Clusters - MOVE this to 12-viz
-## moving forward with K-Means 4 & 5 + Hierarchical 4 & 5
-```{r}
-
-library(sf)
-library(ggmap, 'maps')
-library("cowplot")
-
-usa <- map_data("usa")
-gg1 <-ggplot() + geom_polygon(data = usa, aes(x=long, y = lat, group = group)) + 
-  coord_fixed(1.3) 
-
-states <- map_data("state")
-head(states)
-
-wa_df <- subset(states, region== "washington")
-head(wa_df)
-
-counties <- map_data("county")
-wa_county <- subset(counties, region== "washington")
-head(wa_county)
-
-#### troubleshooting why the combined plot is not working
-str(wa_df)      # Ensure 'group' is numeric or factor
-summary(wa_df)
-str(data)  # Ensure 'longitude', 'latitude', and 'geo_hclust3' exist
-summary(data)  # Check for missing values
-"group" %in% colnames(data)  # Should return FALSE
-class(data)  # Should return "data.frame"
-
-print(wa_base + geom_point(data = data, aes(x = longitude, y = latitude, color = geo_hclust3), size = 3))
-
-
-#data$geo_hclust3<- as.factor(data$geo_hclust3) 
-#### end of troubleshooting
-
-wa_base <- ggplot(data = wa_df, mapping = aes(x = long, y = lat, group = as.factor(group))) + 
-  coord_fixed(1.3) + 
-  geom_polygon(color = "black", fill = "gray")
-wa_base + theme_nothing()
-
-print(wa_base)
-
-#hc 3
-wa_base + 
-  geom_point(data = data, aes(x = longitude, y = latitude, color = as.factor(geo_hclust3)), size = 3, inherit.aes = FALSE) +
-  ggtitle("Geographic Clusters of Sampling Sites")
-
-#hc 4
-wa_base + 
-  geom_point(data = data, aes(x = longitude, y = latitude, color = as.factor(geo_hclust4)), size = 3, inherit.aes = FALSE) +
-  ggtitle("Geographic Clusters of Sampling Sites")
-
-#group 4
-wa_base + 
-  geom_point(data = data, aes(x = longitude, y = latitude, color = as.factor(geo_cluster_4)), size = 3, inherit.aes = FALSE) +
-  ggtitle("Geographic Clusters of Sampling Sites")
-
-#group 5
-wa_base + 
-  geom_point(data = data, aes(x = longitude, y = latitude, color = as.factor(geo_cluster_5)), size = 3, inherit.aes = FALSE) +
-  ggtitle("Geographic Clusters of Sampling Sites")
-
-# group 6
-wa_base + 
-  geom_point(data = data, aes(x = longitude, y = latitude, color = as.factor(geo_cluster_6)), size = 3, inherit.aes = FALSE) +
-  ggtitle("Geographic Clusters of Sampling Sites")
-
-```
-
-# Write out the data df with all of the geo groups
-```{r}
-
-getwd()
-
-write.csv(data, "/Users/cmantegna/Documents/GitHub/WDFWmussels/data/cleaned/full_data_all_geo_groups.csv")
+# avg data
+avg_data$site_name <- as.factor(avg_data$site_name) # change site names to a factor instead of a character
+metric_matrix <- as.matrix(avg_data[, 7:9]) # pull out my metrics - confirm column numbers are still correct
+dist_matrix_variance <- vegdist(metric_matrix, na.rm= TRUE, method = "bray") # create a distance matrix
+dispersion_test <- betadisper(dist_matrix_variance, group = avg_data$site_name) # check homogeneity of group variances
+anova(dispersion_test) # Perform permutation test for homogeneity. A p-value > .05 means we need to use PERMANOVA. 
+boxplot(dispersion_test) # visualize results (boxplot of dispersions)
 
 ```
 
