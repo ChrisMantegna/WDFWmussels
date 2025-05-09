@@ -68,8 +68,8 @@ site_data<- read.csv("../data/index_df/complete_site_level.csv")
 sample_data$reporting_area <- as.factor(sample_data$reporting_area)
 site_data$reporting_area <- as.factor(site_data$reporting_area)
 
-sample_data$site_number <- as.factor(all_data$site_number)
-site_data$site_number <- as.factor(avg_data$site_number)
+sample_data$site_number <- as.factor(sample_data$site_number)
+site_data$site_number <- as.factor(site_data$site_number)
 
 ```
 
@@ -91,7 +91,7 @@ head(all_data_complete_indices)
 # Normality, similarity and variance all tested in 10.1 to validate groupings
 
 # KW 
-## individual sample - level
+## sample - level
 ```{r}
 
 #KW
