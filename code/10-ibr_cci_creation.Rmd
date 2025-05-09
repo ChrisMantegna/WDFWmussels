@@ -901,6 +901,26 @@ print(pah_add_index)
 
 ```
 
+### total pah index creation
+```{r}
+
+# create new index columns
+metals_index <- metals_ai %>%
+  rowwise() %>%
+  mutate(
+    heavy_metal_index = sum(c_across(all_of(ai_heavy)), na.rm = TRUE),
+    nutrient_metal_index = sum(c_across(all_of(ai_nutrient)), na.rm = TRUE),
+    total_metal_index = heavy_metal_index + nutrient_metal_index
+  ) %>%
+  ungroup()
+
+
+# view & save
+print(metals_index)
+#write.csv(metals_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metals_ai.csv", row.names = FALSE)
+
+```
+
 ## pbde
 ```{r}
 
