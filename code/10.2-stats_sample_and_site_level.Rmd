@@ -91,37 +91,162 @@ head(all_data_complete_indices)
 # Normality, similarity and variance all tested in 10.1 to validate groupings
 
 # KW 
-## sample - level
+## sample - level, run 5.11.25
+### commented out line indicate non- significant results
 ```{r}
 
 #KW
-#kruskal.test(p450 ~ site_name, data = df1) # p-value = 4.219e-06
-#kruskal.test(p450 ~ reporting_area, data = df1) # p-value = 4.09e-05
+#kruskal.test(p450 ~ site_name, data = df1) 
+#kruskal.test(p450 ~ reporting_area, data = df1)
 
-kruskal.test(sod ~ site_name, data = df1) # p-value = 0.002259
-kruskal.test(sod ~ reporting_area, data = df1) # p-value = 0.3136
+kruskal.test(sod ~ site_name, data = sample_data) # p-value = 0.001777
+#kruskal.test(sod ~ reporting_area, data = sample_data) # p-value = 0.3136
 
-kruskal.test(ci1 ~ site_name, data = df1) # p-value = 0.0006876
-kruskal.test(ci1 ~ reporting_area, data = df1) # p-value = 0.7855
+kruskal.test(ci1 ~ site_name, data = sample_data) # p-value = 0.001056
+#kruskal.test(ci1 ~ reporting_area, data = sample_data) # p-value = 0.7855
 
-kruskal.test(ci2 ~ site_name, data = df1) # p-value = 3.173e-08
-kruskal.test(ci2 ~ reporting_area, data = df1) # p-value = 0.3396
+kruskal.test(ci2 ~ site_name, data = sample_data) # p-value = 2.191e-08
+#kruskal.test(ci2 ~ reporting_area, data = sample_data) # p-value = 0.3396
 
-kruskal.test(ci3 ~ site_name, data = df1) # p-value = 0.0001327
-kruskal.test(ci3 ~ reporting_area, data = df1) # p-value = 0.02201
+kruskal.test(ci3 ~ site_name, data = sample_data) # p-value = 0.0001364
+kruskal.test(ci3 ~ reporting_area, data = sample_data) # p-value = 0.02201
 
-kruskal.test(ibr_bio ~ site_name, data = df1) # p-value = 0.002612
-kruskal.test(ibr_bio ~ reporting_area, data = df1) # p-value = 0.0001853
+kruskal.test(ibr_bio ~ site_name, data = sample_data) # p-value = 1.652e-05
+kruskal.test(ibr_bio ~ reporting_area, data = sample_data) # p-value = 0.01583
 
-kruskal.test(ibr_morph ~ site_name, data = df1) # p-value = 0.08877
-kruskal.test(ibr_morph ~ reporting_area, data = df1) # p-value = 0.02514
+kruskal.test(ibr_morph ~ site_name, data = sample_data) # p-value = 8.555e-05
+kruskal.test(ibr_morph ~ reporting_area, data = sample_data) # p-value = 8.025e-05
 
-kruskal.test(ibr_overall ~ site_name, data = df1) # p-value = 0.0134
-kruskal.test(ibr_overall ~ reporting_area, data = df1) # p-value = 0.001949
+kruskal.test(ibr_combined ~ site_name, data = sample_data) # p-value = 0.0002026
+kruskal.test(ibr_combined ~ reporting_area, data = sample_data) # p-value = 0.002755
 
 ```
 
+## contaminant indices, all samples
+```{r}
 
+#sod - something is wrong with the pah & metal indices p-values
+
+#kruskal.test(sod ~ chlordane, data = sample_data) # p-value = 0.6495
+kruskal.test(sod ~ ddt, data = sample_data) # p-value = 0.007339
+#kruskal.test(sod ~ hch, data = sample_data) # p-value = 0.07169
+kruskal.test(sod ~ heavy_metal, data = sample_data) # p-value = 0.001777
+kruskal.test(sod ~ nutrient_metal, data = sample_data) # p-value = 0.001777
+kruskal.test(sod ~ total_metal, data = sample_data) # p-value = 0.001777
+kruskal.test(sod ~ pah_lmw, data = sample_data) # p-value = 0.001777
+kruskal.test(sod ~ pah_hmw, data = sample_data) # p-value = 0.001777
+kruskal.test(sod ~ pah_add, data = sample_data) # p-value = 0.001944
+kruskal.test(sod ~ total_pah, data = sample_data) # p-value = 0.001777
+kruskal.test(sod ~ pbde, data = sample_data) # p-value = 0.03638
+kruskal.test(sod ~ pcb, data = sample_data) # p-value = 0.001777
+kruskal.test(sod ~ pesticide, data = sample_data) # p-value = 0.02234
+
+#shell
+kruskal.test(shell ~ chlordane, data = sample_data) # p-value = 0.002914
+kruskal.test(shell ~ ddt, data = sample_data) # p-value = 7.127e-08
+#kruskal.test(shell ~ hch, data = sample_data) # p-value = 0.08548
+kruskal.test(shell ~ heavy_metal, data = sample_data) # p-value = 1.092e-08
+kruskal.test(shell ~ nutrient_metal, data = sample_data) # p-value = 1.092e-08
+kruskal.test(shell ~ total_metal, data = sample_data) # p-value = 1.092e-08
+kruskal.test(shell ~ pah_lmw, data = sample_data) # p-value = 1.092e-08
+kruskal.test(shell ~ pah_hmw, data = sample_data) # p-value = 1.092e-08
+kruskal.test(shell ~ pah_add, data = sample_data) # p-value = 3.105e-08
+kruskal.test(shell ~ total_pah, data = sample_data) # p-value = 1.092e-08
+kruskal.test(shell ~ pbde, data = sample_data) # p-value = 0.0004765
+kruskal.test(shell ~ pcb, data = sample_data) # p-value = 1.092e-08
+kruskal.test(shell ~ pesticide, data = sample_data) # p-value = 0.000112
+
+#ci1
+#kruskal.test(ci1 ~ chlordane, data = sample_data) # p-value = 0.2269
+kruskal.test(ci1 ~ ddt, data = sample_data) # p-value = 0.0001987
+#kruskal.test(ci1 ~ hch, data = sample_data) # p-value = 0.6598
+kruskal.test(ci1 ~ heavy_metal, data = sample_data) # p-value = 0.001056
+kruskal.test(ci1 ~ nutrient_metal, data = sample_data) # p-value = 0.001056
+kruskal.test(ci1 ~ total_metal, data = sample_data) # p-value = 0.001056
+kruskal.test(ci1 ~ pah_lmw, data = sample_data) # p-value = 0.001056
+kruskal.test(ci1 ~ pah_hmw, data = sample_data) # p-value = 0.001056
+kruskal.test(ci1 ~ pah_add, data = sample_data) # p-value = 0.001006
+kruskal.test(ci1 ~ total_pah, data = sample_data) # p-value = 0.001056
+kruskal.test(ci1 ~ pbde, data = sample_data) # p-value = 0.006813
+kruskal.test(ci1 ~ pcb, data = sample_data) # p-value = 0.001056
+#kruskal.test(ci1 ~ pesticide, data = sample_data) # p-value = 0.187
+
+#ci2
+kruskal.test(ci2 ~ chlordane, data = sample_data) # p-value = 0.002873
+kruskal.test(ci2 ~ ddt, data = sample_data) # p-value = 1.076e-07
+kruskal.test(ci2 ~ hch, data = sample_data) # p-value = 0.04207
+kruskal.test(ci2 ~ heavy_metal, data = sample_data) # p-value = 2.191e-08
+kruskal.test(ci2 ~ nutrient_metal, data = sample_data) # p-value = 2.191e-08
+kruskal.test(ci2 ~ total_metal, data = sample_data) # p-value = 2.191e-08
+kruskal.test(ci2 ~ pah_lmw, data = sample_data) # p-value = 2.191e-08
+kruskal.test(ci2 ~ pah_hmw, data = sample_data) # p-value = 2.191e-08
+kruskal.test(ci2 ~ pah_add, data = sample_data) # p-value = 1.643e-08
+kruskal.test(ci2 ~ total_pah, data = sample_data) # p-value = 2.191e-08
+kruskal.test(ci2 ~ pbde, data = sample_data) # p-value = 0.0003424
+kruskal.test(ci2 ~ pcb, data = sample_data) # p-value = 2.191e-08
+kruskal.test(ci2 ~ pesticide, data = sample_data) # p-value = 0.0007729
+
+#ci3
+#kruskal.test(ci3 ~ chlordane, data = sample_data) # p-value = 0.08169
+kruskal.test(ci3 ~ ddt, data = sample_data) # p-value = 0.0004961
+kruskal.test(ci3 ~ hch, data = sample_data) # p-value = 0.006942
+kruskal.test(ci3 ~ heavy_metal, data = sample_data) # p-value = 0.0001364
+kruskal.test(ci3 ~ nutrient_metal, data = sample_data) # p-value = 0.0001364
+kruskal.test(ci3 ~ total_metal, data = sample_data) # p-value = 0.0001364
+kruskal.test(ci3 ~ pah_lmw, data = sample_data) # p-value = 0.0001364
+kruskal.test(ci3 ~ pah_hmw, data = sample_data) # p-value = 0.0001364
+kruskal.test(ci3 ~ pah_add, data = sample_data) # p-value =9.769e-05
+kruskal.test(ci3 ~ total_pah, data = sample_data) # p-value = 0.0001364
+kruskal.test(ci3 ~ pbde, data = sample_data) # p-value = 0.003256
+kruskal.test(ci3 ~ pcb, data = sample_data) # p-value = 0.0001364
+kruskal.test(ci3 ~ pesticide, data = sample_data) # p-value = 0.01585
+
+#ibr bio
+#kruskal.test(ibr_bio ~ chlordane, data = sample_data) # p-value = 0.3371
+kruskal.test(ibr_bio ~ ddt, data = sample_data) # p-value = 2.556e-05
+#kruskal.test(ibr_bio ~ hch, data = sample_data) # p-value = 0.4202
+kruskal.test(ibr_bio ~ heavy_metal, data = sample_data) # p-value = 1.652e-05
+kruskal.test(ibr_bio ~ nutrient_metal, data = sample_data) # p-value = 1.652e-05
+kruskal.test(ibr_bio ~ total_metal, data = sample_data) # p-value = 1.652e-05
+kruskal.test(ibr_bio ~ pah_lmw, data = sample_data) # p-value = 1.652e-05
+kruskal.test(ibr_bio ~ pah_hmw, data = sample_data) # p-value = 1.652e-05
+kruskal.test(ibr_bio ~ pah_add, data = sample_data) # p-value = 3.369e-05
+kruskal.test(ibr_bio ~ total_pah, data = sample_data) # p-value = 1.652e-05
+kruskal.test(ibr_bio ~ pbde, data = sample_data) # p-value = 0.0124
+kruskal.test(ibr_bio ~ pcb, data = sample_data) # p-value = 1.652e-05
+kruskal.test(ibr_bio ~ pesticide, data = sample_data) # p-value = 0.04495
+
+#ibr morph
+kruskal.test(ibr_morph ~ chlordane, data = sample_data) # p-value = 0.02603
+kruskal.test(ibr_morph ~ ddt, data = sample_data) # p-value = 4.255e-05
+#kruskal.test(ibr_morph ~ hch, data = sample_data) # p-value = 0.0759
+kruskal.test(ibr_morph ~ heavy_metal, data = sample_data) # p-value = 8.555e-05
+kruskal.test(ibr_morph ~ nutrient_metal, data = sample_data) # p-value = 8.555e-05
+kruskal.test(ibr_morph ~ total_metal, data = sample_data) # p-value = 8.555e-05
+kruskal.test(ibr_morph ~ pah_lmw, data = sample_data) # p-value = 8.555e-05
+kruskal.test(ibr_morph ~ pah_hmw, data = sample_data) # p-value = 8.555e-05
+kruskal.test(ibr_morph ~ pah_add, data = sample_data) # p-value = 5.734e-05
+kruskal.test(ibr_morph ~ total_pah, data = sample_data) # p-value = 8.555e-05
+kruskal.test(ibr_morph ~ pbde, data = sample_data) # p-value = 0.002295
+kruskal.test(ibr_morph ~ pcb, data = sample_data) # p-value = 8.555e-05
+kruskal.test(ibr_morph ~ pesticide, data = sample_data) # p-value = 0.04029
+
+#ibr combined
+kruskal.test(ibr_combined ~ chlordane, data = sample_data) # p-value = 0.04963
+kruskal.test(ibr_combined ~ ddt, data = sample_data) # p-value = 7.95e-05
+#kruskal.test(ibr_combined ~ hch, data = sample_data) # p-value = 0.07206
+kruskal.test(ibr_combined ~ heavy_metal, data = sample_data) # p-value = 0.0002026
+kruskal.test(ibr_combined ~ nutrient_metal, data = sample_data) # p-value = 0.0002026
+kruskal.test(ibr_combined ~ total_metal, data = sample_data) # p-value = 0.0002026
+kruskal.test(ibr_combined ~ pah_lmw, data = sample_data) # p-value = 0.0002026
+kruskal.test(ibr_combined ~ pah_hmw, data = sample_data) # p-value = 0.0002026
+kruskal.test(ibr_combined ~ pah_add, data = sample_data) # p-value = 0.0002119
+kruskal.test(ibr_combined ~ total_pah, data = sample_data) # p-value = 0.0002026
+kruskal.test(ibr_combined ~ pbde, data = sample_data) # p-value = 0.001188
+kruskal.test(ibr_combined ~ pcb, data = sample_data) # p-value = 0.0002026
+#kruskal.test(ibr_combined ~ pesticide, data = sample_data) # p-value = 0.0845
+
+```
 
 ## p450
 ```{r}
@@ -266,24 +391,22 @@ dunn_table_with_cld <- dunn_table %>%
 #write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/p450geo9.csv", row.names = FALSE) # write it out
 ```
 
+# Dunn's, site & reporting area
 ## sod
 ```{r}
 
-#sod - site is not significant
-dunn_result <- dunnTest(sod ~ site_name, data = df1, method = "bh") 
+#sod - not significant
+dunn_result <- dunnTest(sod ~ site_name, data = sample_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
   tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
   dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
-
 dunn_table <- dunn_df %>%
   dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
   dplyr::arrange(P.adj)
-
 print(dunn_table) # view
-#write.csv(dunn_table, "/Users/cmantegna/Documents/Github/WDFWmussels/output/sodsite.csv", row.names = FALSE) # write it out
 
-#sod - geo6 is not significant
+#use this base for the contaminant indices
 dunn_result <- dunnTest(sod ~ geo_cluster_6, data = data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
@@ -296,15 +419,13 @@ dunn_table <- dunn_df %>%
 
 print(dunn_table) # view
 
-
-
 ```
 
 ## ci1
 ```{r}
 
-#ci1 - site is significant
-dunn_result <- dunnTest(ci1 ~ site_name, data = df1, method = "bh") 
+#ci1 - site is significant (2)
+dunn_result <- dunnTest(ci1 ~ site_name, data = sample_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
   tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
@@ -315,7 +436,7 @@ dunn_table <- dunn_df %>%
   dplyr::arrange(P.adj)
 
 print(dunn_table) # view
-write.csv(dunn_table, "/Users/cmantegna/Documents/Github/WDFWmussels/output/ci1site.csv", row.names = FALSE) # write it out
+#write.csv(dunn_table, "/Users/cmantegna/Documents/Github/WDFWmussels/output/MAYci1site.csv", row.names = FALSE) # write it out
 
 ```
 
@@ -323,7 +444,7 @@ write.csv(dunn_table, "/Users/cmantegna/Documents/Github/WDFWmussels/output/ci1s
 ```{r}
 
 #ci2 - site is not significant
-dunn_result <- dunnTest(ci2 ~ site_name, data = df1, method = "bh") 
+dunn_result <- dunnTest(ci2 ~ site_name, data = sample_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
   tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
@@ -341,9 +462,10 @@ print(dunn_table) # view
 
 ## ci3
 ```{r}
+library(multcompView)
 
 #ci3 - site is not significant
-dunn_result <- dunnTest(ci3 ~ site_name, data = df1, method = "bh") 
+dunn_result <- dunnTest(ci3 ~ site_name, data = sample_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
   tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
@@ -356,8 +478,8 @@ dunn_table <- dunn_df %>%
 print(dunn_table) # view
 #write.csv(dunn_table, "/Users/cmantegna/Documents/Github/WDFWmussels/output/sodsite.csv", row.names = FALSE) # write it out
 
-#ci3 - reporting area is significant
-dunn_result <- dunnTest(ci3 ~ reporting_area, data = df1, method = "bh") 
+#ci3 - reporting area is significant (2)
+dunn_result <- dunnTest(ci3 ~ reporting_area, data = sample_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
   tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
@@ -395,89 +517,8 @@ dunn_table_with_cld <- dunn_table %>%
   left_join(cld_df, by = c("Group2" = "Group")) %>%
   rename(Group2_CLD = CLD)
 
-#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/ci3ra.csv", row.names = FALSE) # write it out
+write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/MAYci3ra.csv", row.names = FALSE) # write it out
 
-#ci3 - geo6 is significant
-dunn_result <- dunnTest(ci3 ~ geo_cluster_6, data = data, method = "bh") 
-dunn_df <- dunn_result$res %>%
-  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
-  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
-  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
-
-dunn_table <- dunn_df %>%
-  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
-  dplyr::arrange(P.adj)
-
-print(dunn_table) # view
-
-groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
-
-pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
-                      dimnames = list(groups, groups))
-
-for (i in 1:nrow(dunn_df)) {
-  g1 <- dunn_df$Group1[i]
-  g2 <- dunn_df$Group2[i]
-  p <- dunn_df$P.adj[i]
-  pval_matrix[g1, g2] <- p
-  pval_matrix[g2, g1] <- p
-}
-
-cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
-cld_df <- data.frame(
-  Group = names(cld_letters),
-  CLD = cld_letters,
-  stringsAsFactors = FALSE
-)
-
-dunn_table_with_cld <- dunn_table %>%
-  left_join(cld_df, by = c("Group1" = "Group")) %>%
-  rename(Group1_CLD = CLD) %>%
-  left_join(cld_df, by = c("Group2" = "Group")) %>%
-  rename(Group2_CLD = CLD)
-
-#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/ci3geo6.csv", row.names = FALSE) # write it out
-
-#ci3 - geo9 is significant
-dunn_result <- dunnTest(ci3 ~ geo_cluster_9, data = data, method = "bh") 
-dunn_df <- dunn_result$res %>%
-  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
-  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
-  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
-
-dunn_table <- dunn_df %>%
-  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
-  dplyr::arrange(P.adj)
-
-print(dunn_table) # view
-
-groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
-
-pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
-                      dimnames = list(groups, groups))
-
-for (i in 1:nrow(dunn_df)) {
-  g1 <- dunn_df$Group1[i]
-  g2 <- dunn_df$Group2[i]
-  p <- dunn_df$P.adj[i]
-  pval_matrix[g1, g2] <- p
-  pval_matrix[g2, g1] <- p
-}
-
-cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
-cld_df <- data.frame(
-  Group = names(cld_letters),
-  CLD = cld_letters,
-  stringsAsFactors = FALSE
-)
-
-dunn_table_with_cld <- dunn_table %>%
-  left_join(cld_df, by = c("Group1" = "Group")) %>%
-  rename(Group1_CLD = CLD) %>%
-  left_join(cld_df, by = c("Group2" = "Group")) %>%
-  rename(Group2_CLD = CLD)
-
-write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/ci3geo9.csv", row.names = FALSE) # write it out
 
 ```
 
