@@ -984,22 +984,23 @@ for (var in c(bio_vars, index_vars)) {
   site_sf[[paste0(var, "_lisa_I")]] <- lisa[,1]
   site_sf[[paste0(var, "_lisa_p")]] <- lisa[,5]
 
-  # Define cluster types
-  site_sf[[paste0(var, "_lisa_cluster")]] <- case_when(
-    x > mean(x, na.rm = TRUE) & lisa[,1] > 0 ~ "High-High",
-    x < mean(x, na.rm = TRUE) & lisa[,1] > 0 ~ "Low-Low",
-    lisa[,1] < 0 ~ "Outlier",
-    TRUE ~ "Not Significant"
-  )
-  
-  # Save spatial cluster results (optional)
-  st_write(site_sf[, c("site_name", paste0(var, "_lisa_cluster"))],
-           paste0("lisa_outputs/LISA_", var, ".geojson"), delete_dsn = TRUE)
+  # Define cluster types with p-value significance threshold
+site_sf[[paste0(var, "_lisa_cluster")]] <- case_when(
+  x > mean(x, na.rm = TRUE) & lisa[,1] > 0 & lisa[,5] < 0.05 ~ "High-High",
+  x < mean(x, na.rm = TRUE) & lisa[,1] > 0 & lisa[,5] < 0.05 ~ "Low-Low",
+  lisa[,1] < 0 & lisa[,5] < 0.05 ~ "Outlier",
+  TRUE ~ "Not Significant"
+)
+
+  # Save spatial cluster results with p-values included
+st_write(site_sf[, c("site_name", paste0(var, "_lisa_cluster"), paste0(var, "_lisa_p"))],
+         paste0("lisa_outputs/LISA_", var, ".geojson"), delete_dsn = TRUE)
 }
 
 ```
 
 ## plotting LISA output
+### testing p450 to spot check LISA results
 ```{r}
 
 getwd()
@@ -1007,6 +1008,94 @@ library(sf)
 lisa_p450<- st_read("lisa_outputs/LISA_p450.geojson")
 names(lisa_p450)
 head(lisa_p450)
+
+```
+
+## mapping p450 LISA clusters to visualize the results before moving to the next steps
+```{r}
+
+library(tmap)
+
+# basic LISA plot
+tm_shape(lisa_p450) +
+  tm_symbols(col = "p450_lisa_cluster",
+             palette = "Set1",
+             size = 0.5,
+             title.col = "LISA Cluster") +
+  tm_layout(main.title = "LISA Clusters for P450 Biomarker")
+
+# only signficant clusters
+tm_shape(lisa_p450) +
+  tm_symbols(col = "p450_lisa_cluster",
+             palette = c("High-High" = "red",
+                         "Low-Low" = "blue",
+                         "Outlier" = "purple",
+                         "Not Significant" = "grey80"),
+             size = 0.5,
+             title.col = "Cluster Type") +
+  tm_layout(main.title = "Significant LISA Clusters (P450)")
+
+# table of results
+table(lisa_p450$p450_lisa_cluster)
+
+# adding WA basemap for another way to see the clusters
+library(rnaturalearth)
+
+# grab WA
+us_states <- ne_states(country = "united states of america", returnclass = "sf")
+wa_outline <- us_states[us_states$name == "Washington", ]
+
+library(tmap)
+
+tm_shape(wa_outline) +
+  tm_borders(col = "gray30") +
+tm_shape(lisa_p450) +
+  tm_symbols(col = "p450_lisa_cluster",
+             palette = c("High-High" = "red",
+                         "Low-Low" = "blue",
+                         "Outlier" = "purple",
+                         "Not Significant" = "gray80"),
+             size = 0.5,
+             title.col = "Cluster Type") +
+  tm_layout(main.title = "LISA Clusters for P450 Biomarker")
+
+
+```
+
+## creating LISA summary table
+```{r}
+
+# Directly from Chat GPT
+
+library(stringr)
+
+# Get list of all LISA geojson files
+lisa_files <- list.files("lisa_outputs", pattern = "\\.geojson$", full.names = TRUE)
+
+# Create a summary table for each
+lisa_summary <- lapply(lisa_files, function(file) {
+  data <- st_read(file, quiet = TRUE)
+  
+  # Extract the variable name from the file name
+  var_name <- str_extract(basename(file), "(?<=LISA_).*(?=\\.geojson)")
+  
+  # Identify cluster column (should be the only one with 'cluster' in name)
+  cluster_col <- names(data)[grepl("cluster", names(data))][1]
+  
+  # Summarize cluster counts
+  summary <- data %>%
+    st_drop_geometry() %>%
+    count(!!sym(cluster_col), name = "n") %>%
+    mutate(variable = var_name, cluster = !!sym(cluster_col)) %>%
+    select(variable, cluster, n)
+  
+  return(summary)
+})
+
+# Combine all summaries into one dataframe
+all_lisa_summary <- bind_rows(lisa_summary)
+
+#write.csv(all_lisa_summary, "/Users/cmantegna/Documents/Github/WDFWmussels/output/lisa_summary.csv", row.names = FALSE) # write it out
 
 ```
 
