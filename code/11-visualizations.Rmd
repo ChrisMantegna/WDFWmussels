@@ -279,7 +279,267 @@ for (area in reporting_areas) {
 
 ```
 
+# Old Spatial code - will delete after i update
+# Spatial Autocorrelation - redo this whole workflow, something is wrong
+## OLD Moran's I and Spearman
+```{r}
 
+ibr_analytes<- read.csv("../data/cleaned/avg_ibr1_analytess.csv")
+analytes_long<- read.csv("../data/cleaned/analytes_long.csv")
+metals_long<- read.csv("../data/cleaned/metals_long.csv")
+
+# Moran's: ibr - analytes
+ibr_sf <- st_as_sf(ibr_analytes, coords = c("longitude", "latitude"), crs = 4326)
+
+coords <- st_coordinates(ibr_sf)
+nb <- knn2nb(knearneigh(coords, k = 4))   # adjust k if needed
+lw <- nb2listw(nb, style = "W")
+
+bio_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3", "ibr1bio", "ibr1morph", "ibr1overall")
+
+bio_moran_results <- lapply(bio_vars, function(var) {
+  vals <- ibr_sf[[var]]
+  if (sum(!is.na(vals)) >= 4 && length(unique(vals[!is.na(vals)])) > 1) {
+    m <- moran.test(vals, lw)
+    data.frame(
+      metric = var,
+      moran_i = m$estimate[["Moran I statistic"]],
+      expected_i = m$estimate[["Expectation"]],
+      sd = if ("Standard deviate" %in% names(m$estimate)) m$estimate[["Standard deviate"]] else NA,
+      p_value = m$p.value
+    )
+  } else {
+    NULL
+  }
+}) %>% bind_rows()
+
+# add significance stars
+bio_moran_results <- bio_moran_results %>%
+  mutate(
+    sig = case_when(
+      p_value <= 0.001 ~ "***",
+      p_value <= 0.01 ~ "**",
+      p_value <= 0.05 ~ "*",
+      TRUE ~ ""
+    )
+  )
+
+# results
+print(bio_moran_results)
+#write.csv(bio_moran_results, "/Users/cmantegna/Documents/Github/WDFWmussels/output/moran_metrics.csv", row.names = FALSE)
+
+
+# Moran's: ibr - metals
+ibr_sf <- st_as_sf(ibr_metal, coords = c("longitude", "latitude"), crs = 4326)
+
+coords <- st_coordinates(ibr_sf)
+nb <- knn2nb(knearneigh(coords, k = 4))   # adjust k if needed
+lw <- nb2listw(nb, style = "W")
+
+bio_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3", "ibr1bio", "ibr1morph", "ibr1overall")
+
+bio_moran_results <- lapply(bio_vars, function(var) {
+  vals <- ibr_sf[[var]]
+  if (sum(!is.na(vals)) >= 4 && length(unique(vals[!is.na(vals)])) > 1) {
+    m <- moran.test(vals, lw)
+    data.frame(
+      metric = var,
+      moran_i = m$estimate[["Moran I statistic"]],
+      expected_i = m$estimate[["Expectation"]],
+      sd = if ("Standard deviate" %in% names(m$estimate)) m$estimate[["Standard deviate"]] else NA,
+      p_value = m$p.value
+    )
+  } else {
+    NULL
+  }
+}) %>% bind_rows()
+
+# add significance stars
+bio_moran_results <- bio_moran_results %>%
+  mutate(
+    sig = case_when(
+      p_value <= 0.001 ~ "***",
+      p_value <= 0.01 ~ "**",
+      p_value <= 0.05 ~ "*",
+      TRUE ~ ""
+    )
+  )
+
+# results
+print(bio_moran_results)
+write.csv(bio_moran_results, "/Users/cmantegna/Documents/Github/WDFWmussels/output/moran_metals.csv", row.names = FALSE)
+
+# Spearman - analytes
+results_latlong <- analytes_long %>%
+  group_by(analyte) %>%
+  summarise(
+    corr_lat = cor(dry_value, latitude, method = "spearman", use = "complete.obs"),
+    p_lat = cor.test(dry_value, latitude, method = "spearman")$p.value,
+    corr_long = cor(dry_value, longitude, method = "spearman", use = "complete.obs"),
+    p_long = cor.test(dry_value, longitude, method = "spearman")$p.value,
+    .groups = "drop"
+  )
+
+# add significance stars
+results_latlong <- results_latlong %>%
+  mutate(
+    lat_sig = case_when(
+      p_lat <= 0.001 ~ "***",
+      p_lat <= 0.01 ~ "**",
+      p_lat <= 0.05 ~ "*",
+      TRUE ~ ""
+    ),
+    long_sig = case_when(
+      p_long <= 0.001 ~ "***",
+      p_long <= 0.01 ~ "**",
+      p_long <= 0.05 ~ "*",
+      TRUE ~ ""
+    )
+  )
+
+view(results_latlong)
+#write.csv(results_latlong, "/Users/cmantegna/Documents/Github/WDFWmussels/output/spatial_correlation_analytes.csv", row.names = FALSE)
+
+
+# Spearman's - metals
+results_latlong <- metals_long %>%
+  group_by(analyte) %>%
+  summarise(
+    corr_lat = cor(dry_value, latitude, method = "spearman", use = "complete.obs"),
+    p_lat = cor.test(dry_value, latitude, method = "spearman")$p.value,
+    corr_long = cor(dry_value, longitude, method = "spearman", use = "complete.obs"),
+    p_long = cor.test(dry_value, longitude, method = "spearman")$p.value,
+    .groups = "drop"
+  )
+
+# add significance stars
+results_latlong <- results_latlong %>%
+  mutate(
+    lat_sig = case_when(
+      p_lat <= 0.001 ~ "***",
+      p_lat <= 0.01 ~ "**",
+      p_lat <= 0.05 ~ "*",
+      TRUE ~ ""
+    ),
+    long_sig = case_when(
+      p_long <= 0.001 ~ "***",
+      p_long <= 0.01 ~ "**",
+      p_long <= 0.05 ~ "*",
+      TRUE ~ ""
+    )
+  )
+
+view(results_latlong)
+#write.csv(results_latlong, "/Users/cmantegna/Documents/Github/WDFWmussels/output/spatial_correlation_metals.csv", row.names = FALSE)
+
+```
+
+## OLD Morans I
+```{r}
+
+# biomarkers & ibr's
+bio_vars <- c("p450", "sod", "ibr1bio", "ibr1morph", "ibr1overall")
+
+bio_moran_results <- lapply(bio_vars, function(var) {
+  vals <- df_sf[[var]]
+  if (sum(!is.na(vals)) >= 4 && length(unique(vals[!is.na(vals)])) > 1) {
+    m <- moran.test(vals, lw)
+    data.frame(
+      metric = var,
+      moran_i = m$estimate[["Moran I statistic"]],
+      expected_i = m$estimate[["Expectation"]],
+      sd = if ("Standard deviate" %in% names(m$estimate)) m$estimate[["Standard deviate"]] else NA,
+      p_value = m$p.value
+    )
+  } else {
+    NULL
+  }
+}) %>% bind_rows()
+
+
+# analytes
+df_class_summary <- analytes_long %>%
+  group_by(site_name, latitude, longitude, class) %>%
+  summarise(class_value = mean(dry_value, na.rm = TRUE), .groups = "drop")
+
+library(sf)
+df_sf <- st_as_sf(df_class_summary, coords = c("longitude", "latitude"), crs = 4326)
+
+library(spdep)
+moran_results <- list()
+
+for (cl in unique(df_sf$class)) {
+  sub_sf <- df_sf %>% filter(class == cl)
+  
+  # Create spatial neighbors (e.g., 4-nearest)
+  coords <- st_coordinates(sub_sf)
+  nb <- knn2nb(knearneigh(coords, k = 4))
+  lw <- nb2listw(nb, style = "W")
+
+  # Run Moran's I on the class_value
+  moran <- moran.test(sub_sf$class_value, lw)
+
+  moran_results[[cl]] <- data.frame(
+    class = cl,
+    moran_i = moran$estimate[["Moran I statistic"]],
+    expected_i = moran$estimate[["Expectation"]],
+    p_value = moran$p.value
+  )
+}
+
+moran_results_df <- bind_rows(moran_results)
+
+view(moran_results_df)
+write.csv(moran_results_df, "/Users/cmantegna/Documents/Github/WDFWmussels/output/moran_analyte.csv", row.names = FALSE)
+
+# metals
+metals_wide <- metals_long %>%
+  select(site_name, latitude, longitude, analyte, dry_value) %>%
+  pivot_wider(names_from = analyte, values_from = dry_value)
+
+df_sf <- st_as_sf(metals_wide, coords = c("longitude", "latitude"), crs = 4326)
+
+# List of metals
+metals <- colnames(df_sf)[!(colnames(df_sf) %in% c("site_name", "geometry"))]
+
+# Create neighbor list
+coords <- st_coordinates(df_sf)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+
+moran_results <- list()
+
+for (metal in metals) {
+  values <- df_sf[[metal]]
+  
+  if (sum(!is.na(values)) >= 4 && length(unique(values[!is.na(values)])) > 1) {
+    moran <- moran.test(values, lw)
+    
+    moran_results[[metal]] <- data.frame(
+      metal = metal,
+      moran_i = moran$estimate[["Moran I statistic"]],
+      expected_i = moran$estimate[["Expectation"]],
+      sd = if ("Standard deviate" %in% names(moran$estimate)) moran$estimate[["Standard deviate"]] else NA,
+      p_value = moran$p.value
+    )
+  } else {
+    message(paste("Skipping", metal, "- not enough variation or data."))
+  }
+}
+
+moran_metals_df <- bind_rows(moran_results) %>%
+  mutate(
+    sig = case_when(
+      p_value <= 0.001 ~ "***",
+      p_value <= 0.01 ~ "**",
+      p_value <= 0.05 ~ "*",
+      TRUE ~ ""
+    )
+  )
+view(moran_metals_df)
+write.csv(moran_results_df, "/Users/cmantegna/Documents/Github/WDFWmussels/output/moran_metal.csv", row.names = FALSE)
+
+```
 
 
 

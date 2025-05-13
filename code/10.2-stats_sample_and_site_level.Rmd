@@ -583,168 +583,24 @@ tukey_table_with_cld <- tukey_df %>%
   rename(Group2_CLD = CLD)
 
 view(tukey_table_with_cld) #view
-write.csv(tukey_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/tukey_p450_ra.csv", row.names = FALSE) #save
-
-#post - geo6
-tukey_6 <- TukeyHSD(anova_6, "geo_cluster_6")
-tukey_df <- as.data.frame(tukey_6$geo_cluster_6)
-
-tukey_df <- tukey_df %>%
-  tibble::rownames_to_column("Comparison") %>%
-  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = "-") %>%
-  rename(Diff = diff, Lower = lwr, Upper = upr, P.adj = `p adj`) %>%
-  mutate(across(everything(), ~trimws(as.character(.)))) %>%  
-  mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
-
-groups <- unique(c(tukey_df$Group1, tukey_df$Group2))
-pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
-                      dimnames = list(groups, groups))
-
-for (i in 1:nrow(tukey_df)) {
-  g1 <- tukey_df$Group1[i]
-  g2 <- tukey_df$Group2[i]
-  pval <- as.numeric(tukey_df$P.adj[i])
-  pval_matrix[g1, g2] <- pval
-  pval_matrix[g2, g1] <- pval
-}
-
-cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
-
-cld_df <- data.frame(
-  Group = names(cld_letters),
-  CLD = cld_letters,
-  stringsAsFactors = FALSE
-)
-
-tukey_table_with_cld <- tukey_df %>%
-  left_join(cld_df, by = c("Group1" = "Group")) %>%
-  rename(Group1_CLD = CLD) %>%
-  left_join(cld_df, by = c("Group2" = "Group")) %>%
-  rename(Group2_CLD = CLD)
-
-view(tukey_table_with_cld) #view
-write.csv(tukey_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/shellgeo6.csv", row.names = FALSE) #save
-
-#post - geo9
-tukey_9 <- TukeyHSD(anova_9, "geo_cluster_9")
-tukey_df <- as.data.frame(tukey_9$geo_cluster_9)
-
-tukey_df <- tukey_df %>%
-  tibble::rownames_to_column("Comparison") %>%
-  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = "-") %>%
-  rename(Diff = diff, Lower = lwr, Upper = upr, P.adj = `p adj`) %>%
-  mutate(across(everything(), ~trimws(as.character(.)))) %>%  
-  mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
-
-groups <- unique(c(tukey_df$Group1, tukey_df$Group2))
-pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
-                      dimnames = list(groups, groups))
-
-for (i in 1:nrow(tukey_df)) {
-  g1 <- tukey_df$Group1[i]
-  g2 <- tukey_df$Group2[i]
-  pval <- as.numeric(tukey_df$P.adj[i])
-  pval_matrix[g1, g2] <- pval
-  pval_matrix[g2, g1] <- pval
-}
-
-cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
-
-cld_df <- data.frame(
-  Group = names(cld_letters),
-  CLD = cld_letters,
-  stringsAsFactors = FALSE
-)
-
-tukey_table_with_cld <- tukey_df %>%
-  left_join(cld_df, by = c("Group1" = "Group")) %>%
-  rename(Group1_CLD = CLD) %>%
-  left_join(cld_df, by = c("Group2" = "Group")) %>%
-  rename(Group2_CLD = CLD)
-
-view(tukey_table_with_cld) #view
-write.csv(tukey_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/shellgeo9.csv", row.names = FALSE) #save
+#write.csv(tukey_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/tukey_p450_ra.csv", row.names = FALSE) #save
 
 ```
 
 # Correlations, Spearman & Kendalls
 ## site-level
-## data prep
+### all indices
 ```{r}
 
-# cleaning up site names and then averaging by site for new df
-data$site_name <- trimws(data$site_name)
-data <- data %>%
-  filter(!is.na(site_name), site_name != "")
-
-df_sites <- data %>%
-  group_by(site_name, reporting_area) %>% 
-  summarise(
-    latitude= first(latitude),
-    longitude= first(longitude),
-    geo_cluster_6= first(geo_cluster_6),
-    geo_cluster_9= first(geo_cluster_9),
-    p450 = mean(p450, na.rm = TRUE),
-    sod = mean(sod, na.rm = TRUE),
-    shell = mean(shell, na.rm = TRUE),
-    ci1 = mean(ci1, na.rm = TRUE),
-    ci2 = mean(ci2, na.rm = TRUE),
-    ci3 = mean(ci3, na.rm = TRUE),
-    ibr1bio = mean(ibr1bio, na.rm = TRUE),  # or whatever your IBR column is called
-    ibr1morph = mean(ibr1morph, na.rm = TRUE),
-    ibr1overall = mean(ibr1overall, na.rm = TRUE),
-    n_samples = n()
-  ) %>%
-  ungroup()
-
-head(df_sites)
-write.csv(df_sites, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/avg_ibr1_geo_groups.csv", row.names = FALSE)
-
-# pivoting analyte and metal table to match the format of the biomarker table
-# remove trailing white spaces from the site names before pivoting
-df4$analyte <- as.character(df4$analyte)
-df4$analyte <- trimws(df4$analyte)
-df4 <- df4 %>%
-  filter(!is.na(analyte), analyte != "")
-
-analytes <- df4 %>%
-  select(site_name, analyte, dry_value) %>%
-  pivot_wider(
-    names_from = analyte,
-    values_from = dry_value
-  )
-
-# join to df1
-df1_analytes <- df_sites %>%
-  left_join(analytes, by = c("site_name"))
-
-# metals
-metals <- metal_long %>%
-  select(site_name, latitude, longitude, analyte, dry_value) %>%
-  pivot_wider(
-    names_from = analyte,
-    values_from = dry_value
-  )
-
-# join to df1
-df1_metal <- df_sites %>%
-  left_join(metals, by = c("site_name"))
-
-#write.csv(df1_analytes, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned/avg_ibr1_analytess.csv", row.names = FALSE)
-
-```
-
-## metrics + ibr
-```{r}
-
+colnames(site_data)
 # Define your variable sets
-metrics_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3")
+metrics_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3", "weight_initial", "weight_change", "weight_final", "length", "width", "height", "ibr_bio", "ibr_morph", "ibr_combined")
 
 # List any ID columns to exclude here
-id_columns <- c("site_name", "reporting_area", "latitude", "longitude", "n_samples")
+id_columns <- c("site_name", "site_number",  "reporting_area", "latitude", "longitude", "heavy_metal", "nutrient_metal", "total_metal")
 
 # Build analyte_vars by excluding both metrics and IDs
-analyte_vars <- c("ibr1bio", "ibr1morph", "ibr1overall")
+analyte_vars <- c("chlordane", "ddt", "hch", "pah_lmw", "pah_hmw", "pah_add", "total_pah", "pbde", "pcb", "pesticide", "mixture_index_sum", "heavy_metal_ng", "nutrient_metal_ng", "mixture_index_pca")
 
 # set p-value & initialize empty list
 alpha <- 0.05
@@ -754,8 +610,8 @@ results_list <- list()
 for (metric in metrics_vars) {
   for (analyte in analyte_vars) {
     
-    x <- df_sites[[metric]]
-    y <- df_sites[[analyte]]
+    x <- site_data[[metric]]
+    y <- site_data[[analyte]]
     
     valid_idx <- complete.cases(x, y)
     x_valid <- x[valid_idx]
@@ -797,25 +653,34 @@ corr_full <- corr_full %>%
     )
   )
 
-
 View(corr_full)
-write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_ibr_biomarkers.csv", row.names = FALSE)
-
+#write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_all_indices.csv", row.names = FALSE)
 
 ```
 
-
-## analytes
+### individual analytes
 ```{r}
 
-# Define your variable sets
-metrics_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3", 
-                  "ibr1bio", "ibr1morph", "ibr1overall")
-# List any ID columns to exclude here
-id_columns <- c("site_name", "reporting_area", "latitude", "longitude")
+#correlation_data<- read.csv("../data/index_df/site_level_all_analytes_scaled.csv")
+
+metrics_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3", "weight_initial", "weight_change", "weight_final", "length", "width", "height", "ibr_bio", "ibr_morph", "ibr_combined")
+
+# identifying columns to exclude from analysis
+id_columns <- c("site_name", "site_number",  "reporting_area", "latitude", "longitude", "ai_z_arsenic", "ai_z_cadmium", "ai_z_copper", "ai_z_lead", "ai_z_mercury", "ai_z_zinc")
+
+# converting metals to match other contaminants - metals are reported in mg/kg and all others are ng/g
+# 1 mg/kg = 1,000 ng/g
+correlation_data$ai_z_arsenic_ng <- correlation_data$ai_z_arsenic * 1000
+correlation_data$ai_z_cadmium_ng <- correlation_data$ai_z_cadmium * 1000
+correlation_data$ai_z_copper_ng <- correlation_data$ai_z_copper * 1000
+correlation_data$ai_z_lead_ng <- correlation_data$ai_z_lead * 1000
+correlation_data$ai_z_mercury_ng <- correlation_data$ai_z_mercury * 1000
+correlation_data$ai_z_zinc_ng <- correlation_data$ai_z_zinc * 1000
+
+#write.csv(correlation_data, "/Users/cmantegna/Documents/Github/WDFWmussels/data/site_level_corrected_metals_all_analytes.csv", row.names = FALSE)
 
 # Build analyte_vars by excluding both metrics and IDs
-analyte_vars <- colnames(df1_analytes)[!(colnames(df1_analytes) %in% c(metrics_vars, id_columns))]
+analyte_vars <- colnames(correlation_data)[!(colnames(correlation_data) %in% c(metrics_vars, id_columns))]
 
 # set p-value & initialize empty list
 alpha <- 0.05
@@ -825,8 +690,8 @@ results_list <- list()
 for (metric in metrics_vars) {
   for (analyte in analyte_vars) {
     
-    x <- df1_analytes[[metric]]
-    y <- df1_analytes[[analyte]]
+    x <- correlation_data[[metric]]
+    y <- correlation_data[[analyte]]
     
     valid_idx <- complete.cases(x, y)
     x_valid <- x[valid_idx]
@@ -867,487 +732,18 @@ corr_full <- corr_full %>%
       TRUE ~ ""
     )
   )
-
 
 View(corr_full)
-#write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_analytes.csv", row.names = FALSE)
-
-# adding the chemical class to the correlation table
-df4$analyte <- tolower(df4$analyte)
-corr_full$Analyte <- tolower(corr_full$Analyte) 
-
-# find unique analytes & merge
-df4_clean <- df4 %>%
-  distinct(analyte, .keep_all = TRUE)  # Keep only one row per analyte
-
-corr_full <- merge(corr_full, df4_clean[, c("analyte", "class")],
-                   by = "analyte", all.x = TRUE)
-
-# save again
-#write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_analytes.csv", row.names = FALSE)
+#write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_individual_analytes.csv", row.names = FALSE)
 
 ```
 
-## metals
-```{r}
-
-# Define your variable sets
-metrics_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3", 
-                  "ibr1bio", "ibr1morph", "ibr1overall")
-# List any ID columns to exclude here
-id_columns <- c("site_name", "reporting_area", "latitude", "longitude")
-
-# Build analyte_vars by excluding both metrics and IDs
-analyte_vars <- c("arsenic", "cadmium", "copper", "lead", "mercury", "zinc")
-
-
-results_list <- list()
-
-# Loop over metric–analyte pairs across sites
-for (metric in metrics_vars) {
-  for (analyte in analyte_vars) {
-    
-    x <- df6[[metric]]
-    y <- df6[[analyte]]
-    
-    valid_idx <- complete.cases(x, y)
-    x_valid <- x[valid_idx]
-    y_valid <- y[valid_idx]
-    
-    if (length(x_valid) < 4) next  # Skip if too few values
-    
-    spearman <- cor.test(x_valid, y_valid, method = "spearman")
-    kendall <- cor.test(x_valid, y_valid, method = "kendall")
-    
-    results_list[[paste(metric, analyte, sep = "_")]] <- data.frame(
-      Metric = metric,
-      Analyte = analyte,
-      Spearman_r = as.numeric(spearman$estimate),
-      Spearman_p = as.numeric(spearman$p.value),
-      Kendall_tau = as.numeric(kendall$estimate),
-      Kendall_p = as.numeric(kendall$p.value)
-    )
-  }
-}
-
-# Combine results
-corr_full <- bind_rows(results_list)
-
-# Add significance stars
-corr_full <- corr_full %>%
-  mutate(
-    Spearman_sig = case_when(
-      Spearman_p <= 0.001 ~ "***",
-      Spearman_p <= 0.01  ~ "**",
-      Spearman_p <= 0.05  ~ "*",
-      TRUE ~ ""
-    ),
-    Kendall_sig = case_when(
-      Kendall_p <= 0.001 ~ "***",
-      Kendall_p <= 0.01  ~ "**",
-      Kendall_p <= 0.05  ~ "*",
-      TRUE ~ ""
-    )
-  )
-
-# View result
-view(corr_full)
-
-#write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_metals.csv", row.names = FALSE)
-
-```
-
-## contaminant indices, all samples - move this to site-level work
-```{r}
-
-#sod - something is wrong with the pah & metal indices p-values
-
-#kruskal.test(sod ~ chlordane, data = sample_data) # p-value = 0.6495
-kruskal.test(sod ~ ddt, data = sample_data) # p-value = 0.007339
-#kruskal.test(sod ~ hch, data = sample_data) # p-value = 0.07169
-kruskal.test(sod ~ heavy_metal, data = sample_data) # p-value = 0.001777
-kruskal.test(sod ~ nutrient_metal, data = sample_data) # p-value = 0.001777
-kruskal.test(sod ~ total_metal, data = sample_data) # p-value = 0.001777
-kruskal.test(sod ~ pah_lmw, data = sample_data) # p-value = 0.001777
-kruskal.test(sod ~ pah_hmw, data = sample_data) # p-value = 0.001777
-kruskal.test(sod ~ pah_add, data = sample_data) # p-value = 0.001944
-kruskal.test(sod ~ total_pah, data = sample_data) # p-value = 0.001777
-kruskal.test(sod ~ pbde, data = sample_data) # p-value = 0.03638
-kruskal.test(sod ~ pcb, data = sample_data) # p-value = 0.001777
-kruskal.test(sod ~ pesticide, data = sample_data) # p-value = 0.02234
-
-#shell
-kruskal.test(shell ~ chlordane, data = sample_data) # p-value = 0.002914
-kruskal.test(shell ~ ddt, data = sample_data) # p-value = 7.127e-08
-#kruskal.test(shell ~ hch, data = sample_data) # p-value = 0.08548
-kruskal.test(shell ~ heavy_metal, data = sample_data) # p-value = 1.092e-08
-kruskal.test(shell ~ nutrient_metal, data = sample_data) # p-value = 1.092e-08
-kruskal.test(shell ~ total_metal, data = sample_data) # p-value = 1.092e-08
-kruskal.test(shell ~ pah_lmw, data = sample_data) # p-value = 1.092e-08
-kruskal.test(shell ~ pah_hmw, data = sample_data) # p-value = 1.092e-08
-kruskal.test(shell ~ pah_add, data = sample_data) # p-value = 3.105e-08
-kruskal.test(shell ~ total_pah, data = sample_data) # p-value = 1.092e-08
-kruskal.test(shell ~ pbde, data = sample_data) # p-value = 0.0004765
-kruskal.test(shell ~ pcb, data = sample_data) # p-value = 1.092e-08
-kruskal.test(shell ~ pesticide, data = sample_data) # p-value = 0.000112
-
-#ci1
-#kruskal.test(ci1 ~ chlordane, data = sample_data) # p-value = 0.2269
-kruskal.test(ci1 ~ ddt, data = sample_data) # p-value = 0.0001987
-#kruskal.test(ci1 ~ hch, data = sample_data) # p-value = 0.6598
-kruskal.test(ci1 ~ heavy_metal, data = sample_data) # p-value = 0.001056
-kruskal.test(ci1 ~ nutrient_metal, data = sample_data) # p-value = 0.001056
-kruskal.test(ci1 ~ total_metal, data = sample_data) # p-value = 0.001056
-kruskal.test(ci1 ~ pah_lmw, data = sample_data) # p-value = 0.001056
-kruskal.test(ci1 ~ pah_hmw, data = sample_data) # p-value = 0.001056
-kruskal.test(ci1 ~ pah_add, data = sample_data) # p-value = 0.001006
-kruskal.test(ci1 ~ total_pah, data = sample_data) # p-value = 0.001056
-kruskal.test(ci1 ~ pbde, data = sample_data) # p-value = 0.006813
-kruskal.test(ci1 ~ pcb, data = sample_data) # p-value = 0.001056
-#kruskal.test(ci1 ~ pesticide, data = sample_data) # p-value = 0.187
-
-#ci2
-kruskal.test(ci2 ~ chlordane, data = sample_data) # p-value = 0.002873
-kruskal.test(ci2 ~ ddt, data = sample_data) # p-value = 1.076e-07
-kruskal.test(ci2 ~ hch, data = sample_data) # p-value = 0.04207
-kruskal.test(ci2 ~ heavy_metal, data = sample_data) # p-value = 2.191e-08
-kruskal.test(ci2 ~ nutrient_metal, data = sample_data) # p-value = 2.191e-08
-kruskal.test(ci2 ~ total_metal, data = sample_data) # p-value = 2.191e-08
-kruskal.test(ci2 ~ pah_lmw, data = sample_data) # p-value = 2.191e-08
-kruskal.test(ci2 ~ pah_hmw, data = sample_data) # p-value = 2.191e-08
-kruskal.test(ci2 ~ pah_add, data = sample_data) # p-value = 1.643e-08
-kruskal.test(ci2 ~ total_pah, data = sample_data) # p-value = 2.191e-08
-kruskal.test(ci2 ~ pbde, data = sample_data) # p-value = 0.0003424
-kruskal.test(ci2 ~ pcb, data = sample_data) # p-value = 2.191e-08
-kruskal.test(ci2 ~ pesticide, data = sample_data) # p-value = 0.0007729
-
-#ci3
-#kruskal.test(ci3 ~ chlordane, data = sample_data) # p-value = 0.08169
-kruskal.test(ci3 ~ ddt, data = sample_data) # p-value = 0.0004961
-kruskal.test(ci3 ~ hch, data = sample_data) # p-value = 0.006942
-kruskal.test(ci3 ~ heavy_metal, data = sample_data) # p-value = 0.0001364
-kruskal.test(ci3 ~ nutrient_metal, data = sample_data) # p-value = 0.0001364
-kruskal.test(ci3 ~ total_metal, data = sample_data) # p-value = 0.0001364
-kruskal.test(ci3 ~ pah_lmw, data = sample_data) # p-value = 0.0001364
-kruskal.test(ci3 ~ pah_hmw, data = sample_data) # p-value = 0.0001364
-kruskal.test(ci3 ~ pah_add, data = sample_data) # p-value =9.769e-05
-kruskal.test(ci3 ~ total_pah, data = sample_data) # p-value = 0.0001364
-kruskal.test(ci3 ~ pbde, data = sample_data) # p-value = 0.003256
-kruskal.test(ci3 ~ pcb, data = sample_data) # p-value = 0.0001364
-kruskal.test(ci3 ~ pesticide, data = sample_data) # p-value = 0.01585
-
-#ibr bio
-#kruskal.test(ibr_bio ~ chlordane, data = sample_data) # p-value = 0.3371
-kruskal.test(ibr_bio ~ ddt, data = sample_data) # p-value = 2.556e-05
-#kruskal.test(ibr_bio ~ hch, data = sample_data) # p-value = 0.4202
-kruskal.test(ibr_bio ~ heavy_metal, data = sample_data) # p-value = 1.652e-05
-kruskal.test(ibr_bio ~ nutrient_metal, data = sample_data) # p-value = 1.652e-05
-kruskal.test(ibr_bio ~ total_metal, data = sample_data) # p-value = 1.652e-05
-kruskal.test(ibr_bio ~ pah_lmw, data = sample_data) # p-value = 1.652e-05
-kruskal.test(ibr_bio ~ pah_hmw, data = sample_data) # p-value = 1.652e-05
-kruskal.test(ibr_bio ~ pah_add, data = sample_data) # p-value = 3.369e-05
-kruskal.test(ibr_bio ~ total_pah, data = sample_data) # p-value = 1.652e-05
-kruskal.test(ibr_bio ~ pbde, data = sample_data) # p-value = 0.0124
-kruskal.test(ibr_bio ~ pcb, data = sample_data) # p-value = 1.652e-05
-kruskal.test(ibr_bio ~ pesticide, data = sample_data) # p-value = 0.04495
-
-#ibr morph
-kruskal.test(ibr_morph ~ chlordane, data = sample_data) # p-value = 0.02603
-kruskal.test(ibr_morph ~ ddt, data = sample_data) # p-value = 4.255e-05
-#kruskal.test(ibr_morph ~ hch, data = sample_data) # p-value = 0.0759
-kruskal.test(ibr_morph ~ heavy_metal, data = sample_data) # p-value = 8.555e-05
-kruskal.test(ibr_morph ~ nutrient_metal, data = sample_data) # p-value = 8.555e-05
-kruskal.test(ibr_morph ~ total_metal, data = sample_data) # p-value = 8.555e-05
-kruskal.test(ibr_morph ~ pah_lmw, data = sample_data) # p-value = 8.555e-05
-kruskal.test(ibr_morph ~ pah_hmw, data = sample_data) # p-value = 8.555e-05
-kruskal.test(ibr_morph ~ pah_add, data = sample_data) # p-value = 5.734e-05
-kruskal.test(ibr_morph ~ total_pah, data = sample_data) # p-value = 8.555e-05
-kruskal.test(ibr_morph ~ pbde, data = sample_data) # p-value = 0.002295
-kruskal.test(ibr_morph ~ pcb, data = sample_data) # p-value = 8.555e-05
-kruskal.test(ibr_morph ~ pesticide, data = sample_data) # p-value = 0.04029
-
-#ibr combined
-kruskal.test(ibr_combined ~ chlordane, data = sample_data) # p-value = 0.04963
-kruskal.test(ibr_combined ~ ddt, data = sample_data) # p-value = 7.95e-05
-#kruskal.test(ibr_combined ~ hch, data = sample_data) # p-value = 0.07206
-kruskal.test(ibr_combined ~ heavy_metal, data = sample_data) # p-value = 0.0002026
-kruskal.test(ibr_combined ~ nutrient_metal, data = sample_data) # p-value = 0.0002026
-kruskal.test(ibr_combined ~ total_metal, data = sample_data) # p-value = 0.0002026
-kruskal.test(ibr_combined ~ pah_lmw, data = sample_data) # p-value = 0.0002026
-kruskal.test(ibr_combined ~ pah_hmw, data = sample_data) # p-value = 0.0002026
-kruskal.test(ibr_combined ~ pah_add, data = sample_data) # p-value = 0.0002119
-kruskal.test(ibr_combined ~ total_pah, data = sample_data) # p-value = 0.0002026
-kruskal.test(ibr_combined ~ pbde, data = sample_data) # p-value = 0.001188
-kruskal.test(ibr_combined ~ pcb, data = sample_data) # p-value = 0.0002026
-#kruskal.test(ibr_combined ~ pesticide, data = sample_data) # p-value = 0.0845
-
-```
-# Interaction Assessment
-## test name
+# Spatial Analysis
+## Global Moran's I
 ```{r}
 
 
-
 ```
 
 
-# Spatial Autocorrelation - redo this whole workflow, something is wrong
-## Moran's I and Spearman
-```{r}
 
-ibr_analytes<- read.csv("../data/cleaned/avg_ibr1_analytess.csv")
-analytes_long<- read.csv("../data/cleaned/analytes_long.csv")
-metals_long<- read.csv("../data/cleaned/metals_long.csv")
-
-# Moran's: ibr - analytes
-ibr_sf <- st_as_sf(ibr_analytes, coords = c("longitude", "latitude"), crs = 4326)
-
-coords <- st_coordinates(ibr_sf)
-nb <- knn2nb(knearneigh(coords, k = 4))   # adjust k if needed
-lw <- nb2listw(nb, style = "W")
-
-bio_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3", "ibr1bio", "ibr1morph", "ibr1overall")
-
-bio_moran_results <- lapply(bio_vars, function(var) {
-  vals <- ibr_sf[[var]]
-  if (sum(!is.na(vals)) >= 4 && length(unique(vals[!is.na(vals)])) > 1) {
-    m <- moran.test(vals, lw)
-    data.frame(
-      metric = var,
-      moran_i = m$estimate[["Moran I statistic"]],
-      expected_i = m$estimate[["Expectation"]],
-      sd = if ("Standard deviate" %in% names(m$estimate)) m$estimate[["Standard deviate"]] else NA,
-      p_value = m$p.value
-    )
-  } else {
-    NULL
-  }
-}) %>% bind_rows()
-
-# add significance stars
-bio_moran_results <- bio_moran_results %>%
-  mutate(
-    sig = case_when(
-      p_value <= 0.001 ~ "***",
-      p_value <= 0.01 ~ "**",
-      p_value <= 0.05 ~ "*",
-      TRUE ~ ""
-    )
-  )
-
-# results
-print(bio_moran_results)
-#write.csv(bio_moran_results, "/Users/cmantegna/Documents/Github/WDFWmussels/output/moran_metrics.csv", row.names = FALSE)
-
-
-# Moran's: ibr - metals
-ibr_sf <- st_as_sf(ibr_metal, coords = c("longitude", "latitude"), crs = 4326)
-
-coords <- st_coordinates(ibr_sf)
-nb <- knn2nb(knearneigh(coords, k = 4))   # adjust k if needed
-lw <- nb2listw(nb, style = "W")
-
-bio_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3", "ibr1bio", "ibr1morph", "ibr1overall")
-
-bio_moran_results <- lapply(bio_vars, function(var) {
-  vals <- ibr_sf[[var]]
-  if (sum(!is.na(vals)) >= 4 && length(unique(vals[!is.na(vals)])) > 1) {
-    m <- moran.test(vals, lw)
-    data.frame(
-      metric = var,
-      moran_i = m$estimate[["Moran I statistic"]],
-      expected_i = m$estimate[["Expectation"]],
-      sd = if ("Standard deviate" %in% names(m$estimate)) m$estimate[["Standard deviate"]] else NA,
-      p_value = m$p.value
-    )
-  } else {
-    NULL
-  }
-}) %>% bind_rows()
-
-# add significance stars
-bio_moran_results <- bio_moran_results %>%
-  mutate(
-    sig = case_when(
-      p_value <= 0.001 ~ "***",
-      p_value <= 0.01 ~ "**",
-      p_value <= 0.05 ~ "*",
-      TRUE ~ ""
-    )
-  )
-
-# results
-print(bio_moran_results)
-write.csv(bio_moran_results, "/Users/cmantegna/Documents/Github/WDFWmussels/output/moran_metals.csv", row.names = FALSE)
-
-# Spearman - analytes
-results_latlong <- analytes_long %>%
-  group_by(analyte) %>%
-  summarise(
-    corr_lat = cor(dry_value, latitude, method = "spearman", use = "complete.obs"),
-    p_lat = cor.test(dry_value, latitude, method = "spearman")$p.value,
-    corr_long = cor(dry_value, longitude, method = "spearman", use = "complete.obs"),
-    p_long = cor.test(dry_value, longitude, method = "spearman")$p.value,
-    .groups = "drop"
-  )
-
-# add significance stars
-results_latlong <- results_latlong %>%
-  mutate(
-    lat_sig = case_when(
-      p_lat <= 0.001 ~ "***",
-      p_lat <= 0.01 ~ "**",
-      p_lat <= 0.05 ~ "*",
-      TRUE ~ ""
-    ),
-    long_sig = case_when(
-      p_long <= 0.001 ~ "***",
-      p_long <= 0.01 ~ "**",
-      p_long <= 0.05 ~ "*",
-      TRUE ~ ""
-    )
-  )
-
-view(results_latlong)
-#write.csv(results_latlong, "/Users/cmantegna/Documents/Github/WDFWmussels/output/spatial_correlation_analytes.csv", row.names = FALSE)
-
-
-# Spearman's - metals
-results_latlong <- metals_long %>%
-  group_by(analyte) %>%
-  summarise(
-    corr_lat = cor(dry_value, latitude, method = "spearman", use = "complete.obs"),
-    p_lat = cor.test(dry_value, latitude, method = "spearman")$p.value,
-    corr_long = cor(dry_value, longitude, method = "spearman", use = "complete.obs"),
-    p_long = cor.test(dry_value, longitude, method = "spearman")$p.value,
-    .groups = "drop"
-  )
-
-# add significance stars
-results_latlong <- results_latlong %>%
-  mutate(
-    lat_sig = case_when(
-      p_lat <= 0.001 ~ "***",
-      p_lat <= 0.01 ~ "**",
-      p_lat <= 0.05 ~ "*",
-      TRUE ~ ""
-    ),
-    long_sig = case_when(
-      p_long <= 0.001 ~ "***",
-      p_long <= 0.01 ~ "**",
-      p_long <= 0.05 ~ "*",
-      TRUE ~ ""
-    )
-  )
-
-view(results_latlong)
-#write.csv(results_latlong, "/Users/cmantegna/Documents/Github/WDFWmussels/output/spatial_correlation_metals.csv", row.names = FALSE)
-
-```
-
-## Morans I
-```{r}
-
-# biomarkers & ibr's
-bio_vars <- c("p450", "sod", "ibr1bio", "ibr1morph", "ibr1overall")
-
-bio_moran_results <- lapply(bio_vars, function(var) {
-  vals <- df_sf[[var]]
-  if (sum(!is.na(vals)) >= 4 && length(unique(vals[!is.na(vals)])) > 1) {
-    m <- moran.test(vals, lw)
-    data.frame(
-      metric = var,
-      moran_i = m$estimate[["Moran I statistic"]],
-      expected_i = m$estimate[["Expectation"]],
-      sd = if ("Standard deviate" %in% names(m$estimate)) m$estimate[["Standard deviate"]] else NA,
-      p_value = m$p.value
-    )
-  } else {
-    NULL
-  }
-}) %>% bind_rows()
-
-
-# analytes
-df_class_summary <- analytes_long %>%
-  group_by(site_name, latitude, longitude, class) %>%
-  summarise(class_value = mean(dry_value, na.rm = TRUE), .groups = "drop")
-
-library(sf)
-df_sf <- st_as_sf(df_class_summary, coords = c("longitude", "latitude"), crs = 4326)
-
-library(spdep)
-moran_results <- list()
-
-for (cl in unique(df_sf$class)) {
-  sub_sf <- df_sf %>% filter(class == cl)
-  
-  # Create spatial neighbors (e.g., 4-nearest)
-  coords <- st_coordinates(sub_sf)
-  nb <- knn2nb(knearneigh(coords, k = 4))
-  lw <- nb2listw(nb, style = "W")
-
-  # Run Moran's I on the class_value
-  moran <- moran.test(sub_sf$class_value, lw)
-
-  moran_results[[cl]] <- data.frame(
-    class = cl,
-    moran_i = moran$estimate[["Moran I statistic"]],
-    expected_i = moran$estimate[["Expectation"]],
-    p_value = moran$p.value
-  )
-}
-
-moran_results_df <- bind_rows(moran_results)
-
-view(moran_results_df)
-write.csv(moran_results_df, "/Users/cmantegna/Documents/Github/WDFWmussels/output/moran_analyte.csv", row.names = FALSE)
-
-# metals
-metals_wide <- metals_long %>%
-  select(site_name, latitude, longitude, analyte, dry_value) %>%
-  pivot_wider(names_from = analyte, values_from = dry_value)
-
-df_sf <- st_as_sf(metals_wide, coords = c("longitude", "latitude"), crs = 4326)
-
-# List of metals
-metals <- colnames(df_sf)[!(colnames(df_sf) %in% c("site_name", "geometry"))]
-
-# Create neighbor list
-coords <- st_coordinates(df_sf)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-
-moran_results <- list()
-
-for (metal in metals) {
-  values <- df_sf[[metal]]
-  
-  if (sum(!is.na(values)) >= 4 && length(unique(values[!is.na(values)])) > 1) {
-    moran <- moran.test(values, lw)
-    
-    moran_results[[metal]] <- data.frame(
-      metal = metal,
-      moran_i = moran$estimate[["Moran I statistic"]],
-      expected_i = moran$estimate[["Expectation"]],
-      sd = if ("Standard deviate" %in% names(moran$estimate)) moran$estimate[["Standard deviate"]] else NA,
-      p_value = moran$p.value
-    )
-  } else {
-    message(paste("Skipping", metal, "- not enough variation or data."))
-  }
-}
-
-moran_metals_df <- bind_rows(moran_results) %>%
-  mutate(
-    sig = case_when(
-      p_value <= 0.001 ~ "***",
-      p_value <= 0.01 ~ "**",
-      p_value <= 0.05 ~ "*",
-      TRUE ~ ""
-    )
-  )
-view(moran_metals_df)
-write.csv(moran_results_df, "/Users/cmantegna/Documents/Github/WDFWmussels/output/moran_metal.csv", row.names = FALSE)
-
-```
