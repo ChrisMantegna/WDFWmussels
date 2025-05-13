@@ -1,5 +1,5 @@
 ---
-title: "10.1- Creating Analysis Groups and Running Stats"
+title: "10.1- Creating Analysis Groups"
 output:
   pdf_document: 
     fig_width: 20

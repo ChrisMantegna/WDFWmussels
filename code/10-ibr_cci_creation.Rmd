@@ -1065,30 +1065,30 @@ site_data$nutrient_metal_ng <- site_data$nutrient_metal * 1000
 
 site_data$mixture_index_sum <- rowSums(site_data[, c("ddt", "heavy_metal_ng", "nutrient_metal_ng", "pah_lmw", "pah_hmw", "pah_add", "pbde", "pcb")], na.rm = TRUE)
 
-
-
 ```
 
 ## pca- based, standardized mixture index
 ```{r}
 
-# read- in data if using a different table than the block before
+# leaving out chlordane, hch and pesticides since they have heavy zeros; same as above
 
-# Step 1: Extract contaminant index matrix
-contaminants <- site_data[, c("total_metal", "total_pah", "pbde", "pcb", "pesticide")]
+# contaminant index matrix
+contaminants <- site_data[, c("ddt", "heavy_metal_ng", "nutrient_metal_ng", "pah_lmw", "pah_hmw", "pah_add", "pbde", "pcb")]
 
-# Step 2: Scale the data (z-score standardization)
+# scale with z-score standardization
 contaminants_scaled <- scale(contaminants)
 
-# Step 3: Run PCA
+# PCA
 pca_result <- prcomp(contaminants_scaled, center = TRUE, scale. = TRUE)
 
-# Step 4: Extract PC1 scores as the PCA-based mixture index
+# use PC1 scores as the PCA-based mixture index
 site_data$mixture_index_pca <- pca_result$x[, 1]
 
-# Optional: View how much variance is explained by PC1
+# how much variance is explained by PC1? ~49% of variation
 summary(pca_result)$importance[2, 1]  # proportion of variance explained by PC1
 
+#save data for other downstream analyses
+#write.csv(site_data, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/site_with_mixture_index.csv", row.names = FALSE)
 
 ```
 
