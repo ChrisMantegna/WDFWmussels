@@ -739,10 +739,281 @@ View(corr_full)
 ```
 
 # Spatial Analysis
-## Global Moran's I
+## Global Moran's I - only Local worked here - adjust the code later
 ```{r}
 
+library(sf)
+library(spdep)
 
+# convert df to a spatial object
+site_sf <- st_as_sf(site_data, coords = c("longitude", "latitude"), crs = 4326)
+site_sf <- st_transform(site_sf, crs = 3857)  # projected CRS for distance-based neighbors
+
+# create spatial neighbors and weights (4 nearest neighbors)
+coords <- st_coordinates(site_sf)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+
+# response variables to test
+bio_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3", "weight_initial", "weight_change", "weight_final", "length", "width", "height", "ibr_bio", "ibr_morph", "ibr_combined")
+
+# contaminant indices 
+index_vars <- c("chlordane", "ddt", "hch", "pah_lmw", "pah_hmw", "pah_add", "pbde", "pcb", "pesticide", "heavy_metal_ng", "nutrient_metal_ng", "mixture_index_sum", "mixture_index_pca")
+
+# ---- LOOP FOR LOCAL MORAN'S I (LISA) ----
+
+# Create output folder
+dir.create("lisa_outputs", showWarnings = FALSE)
+
+for (var in c(bio_vars, index_vars)) {
+  x <- site_sf[[var]]
+  lisa <- localmoran(scale(x)[,1], lw)
+
+  # Add LISA results to spatial dataframe
+  site_sf[[paste0(var, "_lisa_I")]] <- lisa[,1]
+  site_sf[[paste0(var, "_lisa_p")]] <- lisa[,5]
+
+  # Define cluster types
+  site_sf[[paste0(var, "_lisa_cluster")]] <- case_when(
+    x > mean(x, na.rm = TRUE) & lisa[,1] > 0 ~ "High-High",
+    x < mean(x, na.rm = TRUE) & lisa[,1] > 0 ~ "Low-Low",
+    lisa[,1] < 0 ~ "Outlier",
+    TRUE ~ "Not Significant"
+  )
+  
+  # Save spatial cluster results (optional)
+  st_write(site_sf[, c("site_name", paste0(var, "_lisa_cluster"))],
+           paste0("lisa_outputs/LISA_", var, ".geojson"), delete_dsn = TRUE)
+}
+
+
+```
+
+## Global - one metric at a time
+```{r}
+
+# p450
+site_data <- site_sf %>% filter(!is.na(p450))
+summary(site_data$p450)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$p450)[, 1]
+moran.test(x_scaled, lw)
+
+#sod
+site_data <- site_sf %>% filter(!is.na(sod))
+summary(site_data$sod)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$sod)[, 1]
+moran.test(x_scaled, lw)
+
+#shell
+site_data <- site_sf %>% filter(!is.na(shell))
+summary(site_data$shell)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$shell)[, 1]
+moran.test(x_scaled, lw)
+
+#ci1
+site_data <- site_sf %>% filter(!is.na(ci1))
+summary(site_data$ci1)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$ci1)[, 1]
+moran.test(x_scaled, lw)
+
+#ci2
+site_data <- site_sf %>% filter(!is.na(ci2))
+summary(site_data$ci2)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$ci2)[, 1]
+moran.test(x_scaled, lw)
+
+#ci3
+site_data <- site_sf %>% filter(!is.na(ci3))
+summary(site_data$ci3)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$ci3)[, 1]
+moran.test(x_scaled, lw)
+
+
+#ibr_bio
+site_data <- site_sf %>% filter(!is.na(ibr_bio))
+summary(site_data$ibr_bio)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$ibr_bio)[, 1]
+moran.test(x_scaled, lw)
+
+#ibr_morph
+site_data <- site_sf %>% filter(!is.na(ibr_morph))
+summary(site_data$ibr_morph)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$ibr_morph)[, 1]
+moran.test(x_scaled, lw)
+
+#ibr_combined
+site_data <- site_sf %>% filter(!is.na(ibr_combined))
+summary(site_data$ibr_combined)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$ibr_combined)[, 1]
+moran.test(x_scaled, lw)
+
+#mixture, sum
+site_data <- site_sf %>% filter(!is.na(mixture_index_sum))
+summary(site_data$mixture_index_sum)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$mixture_index_sum)[, 1]
+moran.test(x_scaled, lw)
+
+#mixture, pca
+site_data <- site_sf %>% filter(!is.na(mixture_index_pca))
+summary(site_data$mixture_index_pca)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$mixture_index_pca)[, 1]
+moran.test(x_scaled, lw)
+
+#chlordane
+site_data <- site_sf %>% filter(!is.na(chlordane))
+summary(site_data$chlordane)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$chlordane)[, 1]
+moran.test(x_scaled, lw)
+
+# UPDATE the CODE from HERE
+#ddt
+site_data <- site_sf %>% filter(!is.na(chlordane))
+summary(site_data$chlordane)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$chlordane)[, 1]
+moran.test(x_scaled, lw)
+
+#hch
+site_data <- site_sf %>% filter(!is.na(chlordane))
+summary(site_data$chlordane)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$chlordane)[, 1]
+moran.test(x_scaled, lw)
+
+#metal - nutrients
+site_data <- site_sf %>% filter(!is.na(chlordane))
+summary(site_data$chlordane)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$chlordane)[, 1]
+moran.test(x_scaled, lw)
+
+#metal - nutrients
+site_data <- site_sf %>% filter(!is.na(chlordane))
+summary(site_data$chlordane)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$chlordane)[, 1]
+moran.test(x_scaled, lw)
+
+#metal - nutrients
+site_data <- site_sf %>% filter(!is.na(chlordane))
+summary(site_data$chlordane)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$chlordane)[, 1]
+moran.test(x_scaled, lw)
+
+#metal - nutrients
+site_data <- site_sf %>% filter(!is.na(chlordane))
+summary(site_data$chlordane)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$chlordane)[, 1]
+moran.test(x_scaled, lw)
+
+#metal - nutrients
+site_data <- site_sf %>% filter(!is.na(chlordane))
+summary(site_data$chlordane)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$chlordane)[, 1]
+moran.test(x_scaled, lw)
+
+#metal - nutrients
+site_data <- site_sf %>% filter(!is.na(chlordane))
+summary(site_data$chlordane)
+coords <- st_coordinates(site_data)
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$chlordane)[, 1]
+moran.test(x_scaled, lw)
+
+```
+```{r}
+#p450
+# 1. Filter your spatial data to rows where ibr_combined is not NA
+site_data <- site_sf %>% filter(!is.na(p450))
+
+# 2. Check that it has more than a few rows and some variance
+summary(site_data$p450)
+
+# 3. Get coordinates from the filtered sf object
+coords <- st_coordinates(site_data)
+
+# 4. Build neighbor list and weights
+library(spdep)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+
+# 5. Scale and run Moran’s I
+x_scaled <- scale(site_data$p450)[, 1]
+moran.test(x_scaled, lw)
 ```
 
 
