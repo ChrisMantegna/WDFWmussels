@@ -1,0 +1,285 @@
+---
+title: "10- Creating an IBR & Contaminant Concentration Index (CCI)"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE, echo=FALSE}
+
+# libraries
+library(car) # VERIFY what this is for 
+library(cluster) # grouping metrics - VERIFY still needed
+library(dplyr) # data wrangling
+library(factoextra) # pca/ nmds/ tweaking radars
+library(FactoMineR) # pca/ nmds/ tweaking radars
+library(fmsb) # polygon calculations for the radars
+library(FSA) # post hoc test - Dunn's Test    
+library(ggplot2) # plots
+library(knitr) # output formatting
+library(pgirmess) # stats - KW
+library(rcompanion) # KW testing
+library(rstatix) # VERIFY what this is for      
+library(RVAideMemoire) # post hoc test for permanova
+library(scales) # scaling data for IBR - works with data wrangling packages
+library(tidyr) # data wrangling
+library(tidyverse) # data wrangling
+library(vegan) # ecological stats 
+
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # show code chunks
+  eval = TRUE,         # evaluate code chunks
+  warning = FALSE,     # hide warnings
+  message = FALSE,     # hide messages
+  #fig.width = 15,       # set plot width in inches
+  #fig.height = 9,      # set plot height in inches
+  fig.align = "center" # slign plots to the center in output doc/ slide/ whatever
+)
+
+```
+
+# Load data
+```{r}
+
+```
+
+# Old code that will need a new home - verify I don't need it before moving it to the junkyard
+```{r}
+
+```
+
+# Plotting
+## Box plots, Separate Indices per Site
+```{r}
+
+#metrics<- read.csv("../data/cleaned/ibr_1.csv")
+
+
+# pivot only the index columns - adjusted for each df
+ibr3_long <- df3 %>%
+  pivot_longer(cols = c(ibr3_biomarkers, ibr3_morphometrics, ibr3_overall),
+               names_to = "index_type",
+               values_to = "index_value") %>%
+  mutate(index_type = case_when(
+    index_type == "ibr3_biomarkers" ~ "Biomarkers",
+    index_type == "ibr3_morphometrics" ~ "Morphometrics",
+    index_type == "ibr3_overall" ~ "Overall",
+    TRUE ~ index_type))  # fallback in case of unexpected names
+
+#### plotting ibr1 with Penn Cove reference site
+all_index<- ggplot(ibr1_long, aes(x = site_name, y = index_value,
+                     color = site_name == "Penn Cove Reference")) +
+  geom_jitter(width = 0.2, alpha = 0.7) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.2) +
+  facet_wrap(~ index_type, ncol = 1, scales = "free_y") +
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),legend.position = "none") +
+  labs(title = "IBRv2i Indices by Site",
+       x = "Site", y = "IBRv2i Value")
+
+# save and view
+#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/ibr1_all_indices.png", plot= all_index, width = 16, height = 14, dpi = 300)
+
+print(all_index)
+
+
+
+```
+## Radars, reference overlay
+## All Sites, Do Not Run
+```{r}
+
+z_scores$sample_id <- df$sample_id
+z_scores$site_name <- df$site_name
+
+# Site-averaged Z-scores
+site_means <- z_scores %>%
+  group_by(site_name) %>%
+  summarise(across(1:8, mean, na.rm = TRUE))
+
+# Loop through sites
+for (i in 1:nrow(site_means)) {
+  site_data <- site_means[i, 2:9]
+  max_min <- rbind(apply(site_means[ ,2:9], 2, max),
+                   apply(site_means[ ,2:9], 2, min))
+  radar_data <- rbind(max_min, site_data)
+
+  png(paste0("IBRv2i_radar_site_", gsub(" ", "_", site_means$site_name[i]), ".png"), width = 600, height = 600)
+  radarchart(radar_data,
+             axistype = 1,
+             pcol = "darkblue", pfcol = rgb(0.2, 0.4, 0.9, 0.4),
+             plwd = 2,
+             title = paste("IBRv2i Radar Plot\nSite:", site_means$site_name[i]))
+  dev.off()
+}
+
+```
+
+## All Samples,Only run if spot checking
+```{r}
+
+library(fmsb)
+
+# Loop through each sample
+for (i in 1:nrow(z_scores)) {
+  
+  # Extract sample data
+  sample_data <- z_scores[i, 1:8]
+  
+  # Get axis limits (min/max across all samples)
+  max_min <- rbind(apply(z_scores[, 1:8], 2, max, na.rm = TRUE),
+                   apply(z_scores[, 1:8], 2, min, na.rm = TRUE))
+  
+  # Combine for radar input
+  radar_data <- rbind(max_min, sample_data)
+  
+  # Set output file name (in current directory)
+  filename <- paste0("radar_sample_", z_scores$sample_id[i], ".png")
+  
+  # Save plot
+  png(filename, width = 600, height = 600)
+  radarchart(radar_data,
+             axistype = 1,
+             pcol = "darkblue", pfcol = rgb(0.8, 0.2, 0.2, 0.4),
+             plwd = 2,
+             title = paste("IBRv2i Radar Plot\nSample:", z_scores$sample_id[i],
+                           "\nSite:", z_scores$site_name[i]))
+  dev.off()
+}
+
+
+```
+
+## All sites w/ reference site overlay
+```{r}
+
+#### IBR_1
+# Variables to include in radar plots
+vars_to_use <- c("p450_ibr1", "sod_ibr1", "shell_ibr1", "weight_initial_g_ibr1", "weight_final_g_ibr1", "weight_change_g_ibr1", "length_mm_ibr1", "height_mm_ibr1", "width_mm_ibr1")
+
+# create the reference profile from Penn Cove 
+reference_profile <- z_scores %>%
+  filter(sample_id %in% 41:44) %>%
+  select(all_of(vars_to_use)) %>%
+  summarise(across(everything(), mean, na.rm = TRUE))
+
+# create site-level means 
+site_means <- z_scores %>%
+  group_by(site_name) %>%
+  summarise(across(all_of(vars_to_use), mean, na.rm = TRUE)) %>%
+  ungroup()
+
+# define radar axis limits (same across all sites)
+max_vals <- apply(site_means[, vars_to_use], 2, max, na.rm = TRUE)
+min_vals <- apply(site_means[, vars_to_use], 2, min, na.rm = TRUE)
+
+# convert reference profile to a named numeric vector
+ref_vec <- unlist(reference_profile[1, ], use.names = TRUE)
+
+# loop through each site to create radar plots
+for (i in 1:nrow(site_means)) {
+  site <- site_means[i, ]
+  site_profile <- unlist(site[, vars_to_use], use.names = TRUE)
+  
+  # Combine into radar data
+  radar_data <- as.data.frame(rbind(max_vals, min_vals, ref_vec, site_profile))
+  rownames(radar_data) <- c("Max", "Min", "Reference", as.character(site$site_name))
+  
+  # Save radar plot
+  filename <- paste0("radar_site_with_ref_", gsub(" ", "_", site$site_name), ".png")
+  png(filename, width = 600, height = 600)
+  
+  radarchart(radar_data,
+             axistype = 1,
+             pcol = c("gray40", "steelblue"),
+             pfcol = c(rgb(0.4, 0.4, 0.4, 0.3), rgb(0.2, 0.5, 0.8, 0.4)),
+             plwd = 2,
+             plty = 1,
+             title = paste("IBRv2i Radar Plot with Reference\nSite:", site$site_name))
+  
+  legend("topright", legend = c("Penn Cove Reference", site$site_name),
+         col = c("gray40", "steelblue"), lty = 1, lwd = 2, bty = "n")
+  
+  dev.off()
+}
+
+
+```
+
+## Sites by Reporting Areas w/ Reference
+```{r}
+
+# manually adjusting for each ibr
+# Define variables to include (excluding condition indices and weight final)
+vars_to_use <- c("p450_ibr3", "sod_ibr3", "shell_ibr3", "weight_initial_g_ibr3", "weight_change_g_ibr3", "length_mm_ibr3", "height_mm_ibr3", "width_mm_ibr3")
+
+# Site-level means (if you have multiple entries per site)
+site_means <- df3 %>%
+  group_by(site_name, reporting_area) %>%
+  summarise(across(all_of(vars_to_use), mean, na.rm = TRUE), .groups = "drop")
+
+# Global min/max for radar chart scaling
+global_max <- apply(site_means[, vars_to_use], 2, max, na.rm = TRUE)
+global_min <- apply(site_means[, vars_to_use], 2, min, na.rm = TRUE)
+
+# Reference profile from one or more reference sites
+reference_sites <- c( "Penn Cove Reference", "Hood Canal Holly", "Broad Spit (Fisherman's Point)")  # or use site_number
+reference_profile <- df3 %>%
+  filter(site_name %in% reference_sites) %>%
+  summarise(across(all_of(vars_to_use), mean, na.rm = TRUE), .groups = "drop") %>%
+  unlist(use.names = TRUE)
+
+# Proceed with the rest of the radar chart code
+reporting_areas <- unique(site_means$reporting_area)
+
+for (area in reporting_areas) {
+  area_sites <- site_means %>% filter(reporting_area == area)
+  n_sites <- nrow(area_sites)
+  n_pages <- ceiling(n_sites / 6)
+
+  for (page in 1:n_pages) {
+    start_i <- (page - 1) * 6 + 1
+    end_i <- min(start_i + 5, n_sites)
+    sites_subset <- area_sites[start_i:end_i, ]
+
+    filename <- paste0("radar_group_", gsub(" ", "_", area), "_page_", page, ".png")
+    png(filename, width = 1200, height = 800)
+    par(mfrow = c(2, 3), mar = c(2, 2, 4, 2), oma = c(0, 0, 4, 0))
+
+    for (i in 1:nrow(sites_subset)) {
+      site_data <- unlist(sites_subset[i, vars_to_use], use.names = TRUE)
+      chart_data <- as.data.frame(rbind(global_max, global_min, reference_profile, site_data))
+      rownames(chart_data) <- c("Max", "Min", "Reference", as.character(sites_subset$site_name[i]))
+
+      radarchart(chart_data,
+                 axistype = 1,
+                 pcol = c("gray40", "steelblue"),
+                 pfcol = c(rgb(0.4, 0.4, 0.4, 0.3), rgb(0.2, 0.5, 0.8, 0.4)),
+                 plwd = 2,
+                 plty = 1,
+                 cglcol = "grey80",
+                 title = sites_subset$site_name[i])
+    }
+
+    mtext(paste("Reporting Area:", area), side = 3, line = 1, outer = TRUE, cex = 1.0)
+    dev.off()
+  }
+}
+
+```
+
+
+
+
+
