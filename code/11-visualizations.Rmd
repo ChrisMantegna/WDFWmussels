@@ -57,7 +57,7 @@ getwd()
 #setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels") # something here isn't working right - check out why
 
 sample_data<- read.csv("../data/index_df/complete_sample_level.csv")
-site_data<- read.csv("../data/index_df/complete_site_level.csv")
+site_data<- read.csv("../data/index_df/site_with_mixture_index.csv")
 
 ```
 
@@ -74,8 +74,18 @@ site_data$site_number <- as.factor(site_data$site_number)
 
 ```
 
+# Box plots
 
+
+# Pulling Mapping Data from USGS
 ```{r}
+
+download.file(
+  url = "https://prd-tnm.s3.amazonaws.com/index.html?prefix=StagedProducts/Elevation/1m/Projects/WA_Western_North_2016/TIFF/",
+  destfile = "wa_north_DEM.tif",
+  mode = "wb"
+)
+
 
 ```
 

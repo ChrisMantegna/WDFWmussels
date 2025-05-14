@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8" >
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=4.0, user-scalable=yes">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+	<!--USGS CSS-->
+	<link rel="stylesheet" type="text/css" href="web/css/common.css" />
+	<link rel="stylesheet" type="text/css" href="web/css/tnm.css" />
+	<link rel="stylesheet" type="text/css" href="web/css/ie.css" />
+
+	<!--jQuery-->
+	<script type="text/javascript" src="web/lib/jquery-1.12.4.min.js"></script>
+
+	<!--Bootstrap-->
+	<link rel="stylesheet" type="text/css" href="web/css/bootstrap.3.3.5.min.css">
+	<script src="web/lib/bootstrap.3.3.5.min.js"></script>
+	<script src="web/lib/bootstrap-typeahead.2.3.2.min.js"></script>
+
+	<!--USGS Scripts-->
+	<script type="text/javascript" src="https://www2.usgs.gov/scripts/analytics/usgs-analytics.js"></script>
+	<script type="text/javascript" src="web/js/modDate.js"></script>
+	
+    <title>The National Map</title>
+</head>
+
+<body>
+	<!-- Begin USGS Header Template -->
+	<div id="usgscolorband">
+		<div id="usgsbanner">
+			<div id="usgsidentifier"><a href="http://www.usgs.gov/"><img src="web/images/header_graphic_usgsIdentifier_white.jpg" alt="USGS - science for a changing world" title="U.S. Geological Survey Home Page" width="178" height="72" /></a></div>
+			<span id="usgscoop"><a href="http://nationalmap.gov/"><img src="web/images/tnm_logo.jpg" height="72" width="154" alt="Logo and link to The National Map"></a></span>
+			<div id="usgsccsa">
+			  <br /><a href="http://www.usgs.gov/">USGS Home</a>
+			  <br /><a href="http://www.usgs.gov/ask/">Contact USGS</a>
+			  <br /><a href="http://search.usgs.gov/">Search USGS</a>
+			  <br />
+			</div>
+		</div>
+		</div>
+	<div id="usgstitle">
+		<p><i>The National Map</i></p>
+	</div>
+	<br>
+	<!-- End USGS Header Template -->
+
+	<!-- Begin main body -->
+	<div id="main-wrapper">
+		<div id="page-title">Staged Products Directory</div>
+		<div id="listing-wrapper">
+			<div id="listing">
+				<script type="text/javascript">
+					var S3BL_IGNORE_PATH = true;
+					var BUCKET_NAME = '';
+					var S3B_ROOT_DIR = '';
+					var BUCKET_URL = 'https://prd-tnm.s3.amazonaws.com';
+				</script>
+				<script src="web/js/list.js"></script>
+				<!--<script src="https://prd-tnm.s3.amazonaws.com/web/js/list.js"></script>-->
+				<!--<script src="https://dev.rufuspollock.org/s3-bucket-listing/list.js"></script>-->
+				<!--<script src="https://rgrp.github.io/s3-bucket-listing/list.js"></script>-->
+			</div>
+		</div>
+	</div>
+	<!-- End main body -->
+
+	<!-- Begin USGS Footer Template -->
+	<div class="footer" id="usgsfooter">
+	<!--<div class="row footer" style="padding:0;" id="usgsfooter">-->
+			<div id="usgsfooterbar">
+				<a href="http://www.usgs.gov/accessibility.html" title="Accessibility Policy (Section 508)">Accessibility</a>
+				<a href="http://www.usgs.gov/foia/" title="Freedom of Information Act">FOIA</a>
+				<a href="http://www.usgs.gov/privacy.html" title="Privacy policies of the U.S. Geological Survey.">Privacy</a>
+				<a href="http://www.usgs.gov/policies_notices.html" title="Policies and notices that govern information posted on USGS Web sites.">Policies and Notices</a>
+			</div>
+			<p id="usgsfootertext">
+				<a href="http://usa.gov/"><img src="web/images/footer_graphic_usagov.jpg" alt="USA.gov logo" title="USAGov: Government Made Easy" width="90" height="26" /></a>
+				<a href="http://www.doi.gov/">U.S. Department of the Interior</a> | <a href="http://www.usgs.gov/">U.S. Geological Survey</a><br>
+				URL: <script type="text/javascript">document.write(location.href); </script>&nbsp;&nbsp;
+				Page Last Modified: <script type="text/javascript">document.write(date_lastmodified());</script><br>
+				Page Contact Information: <a target="_blank" href="https://answers.usgs.gov/" title="If you have a question or need assistance..."><i>The National Map</i></a><br>
+			</p>
+	</div>
+	<br>
+	<!-- End USGS Footer Template -->
+</body>
+</html>
