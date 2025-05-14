@@ -74,7 +74,257 @@ site_data$site_number <- as.factor(site_data$site_number)
 
 ```
 
-# Box plots
+# Box plots by reporting area - sample- level
+## Facet wrapped for review - not reporting
+### biomarkers 
+```{r}
+
+# biomarkers - p450 & sod
+bio_df <- sample_data %>%
+  select(site_name, reporting_area, p450, sod) %>%
+  pivot_longer(cols = -c(site_name, reporting_area), 
+               names_to = "metric", 
+               values_to = "value") %>%
+  mutate(site_name = factor(site_name, levels = sort(unique(site_name))))
+
+facet_bio<- ggplot(bio_df, aes(x = site_name, y = value, fill = metric)) +
+  geom_boxplot(position = position_dodge(width = 0.8)) +
+  facet_wrap(~ reporting_area, scales = "free_x") +
+  labs(title = "Biomarkers, Scaled", 
+       x = "Site", y = "Value") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "right")
+
+# view & save
+print(facet_bio)
+#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/may_figures/boxplot_biomarkers_ra_facet.png", plot= facet_bio, width = 16, height = 14, dpi = 300)
+
+```
+
+### morphometrics
+```{r}
+
+# morphometrics - shell, ci1, ci3
+bio_df <- sample_data %>%
+  select(site_name, reporting_area, shell, ci1, ci3) %>%
+  pivot_longer(cols = -c(site_name, reporting_area), 
+               names_to = "metric", 
+               values_to = "value") %>%
+  mutate(site_name = factor(site_name, levels = sort(unique(site_name))))
+
+facet_bio<- ggplot(bio_df, aes(x = site_name, y = value, fill = metric)) +
+  geom_boxplot(position = position_dodge(width = 0.8)) +
+  facet_wrap(~ reporting_area, scales = "free_x") +
+  labs(title = "Morphometrics, Scaled", 
+       x = "Site", y = "Value") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "right")
+
+# view & save
+print(facet_bio)
+#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/may_figures/boxplot_morphometrics_ra_facet.png", plot= facet_bio, width = 16, height = 14, dpi = 300)
+
+```
+
+### raw measurements - width, height, length
+```{r}
+
+# width, height, length
+bio_df <- sample_data %>%
+  select(site_name, reporting_area, height, length, width) %>%
+  pivot_longer(cols = -c(site_name, reporting_area), 
+               names_to = "metric", 
+               values_to = "value") %>%
+  mutate(site_name = factor(site_name, levels = sort(unique(site_name))))
+
+facet_bio<- ggplot(bio_df, aes(x = site_name, y = value, fill = metric)) +
+  geom_boxplot(position = position_dodge(width = 0.8)) +
+  facet_wrap(~ reporting_area, scales = "free_x") +
+  labs(title = "Raw Measurements (height, length, width), Scaled", 
+       x = "Site", y = "Value") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "right")
+
+# view & save
+print(facet_bio)
+#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/may_figures/boxplot_measurements_hlw_ra_facet.png", plot= facet_bio, width = 16, height = 14, dpi = 300)
+
+```
+
+### raw measurements - weights
+```{r}
+
+# weights - note the misspelling of initial weight column name, fix it
+bio_df <- sample_data %>%
+  select(site_name, reporting_area, weigtht_initial, weight_final, weight_change) %>%
+  pivot_longer(cols = -c(site_name, reporting_area), 
+               names_to = "metric", 
+               values_to = "value") %>%
+  mutate(site_name = factor(site_name, levels = sort(unique(site_name))))
+
+facet_bio<- ggplot(bio_df, aes(x = site_name, y = value, fill = metric)) +
+  geom_boxplot(position = position_dodge(width = 0.8)) +
+  facet_wrap(~ reporting_area, scales = "free_x") +
+  labs(title = "Raw Measurements (weights), Scaled", 
+       x = "Site", y = "Value") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "right")
+
+# view & save
+print(facet_bio)
+#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/may_figures/boxplot_measurements_weights_ra_facet.png", plot= facet_bio, width = 16, height = 14, dpi = 300)
+
+```
+
+### IBR
+```{r}
+
+# IBRs
+bio_df <- sample_data %>%
+  select(site_name, reporting_area, ibr_bio, ibr_morph, ibr_combined) %>%
+  pivot_longer(cols = -c(site_name, reporting_area), 
+               names_to = "metric", 
+               values_to = "value") %>%
+  mutate(site_name = factor(site_name, levels = sort(unique(site_name))))
+
+facet_bio<- ggplot(bio_df, aes(x = site_name, y = value, fill = metric)) +
+  geom_boxplot(position = position_dodge(width = 0.8)) +
+  facet_wrap(~ reporting_area, scales = "free_x") +
+  labs(title = "Integrated Biomarker Response, Scores", 
+       x = "Site", y = "Value") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "right")
+
+# view & save
+print(facet_bio)
+#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/may_figures/boxplot_ibr_ra_facet.png", plot= facet_bio, width = 16, height = 14, dpi = 300)
+
+```
+
+# Box plots, sample- level by site
+##
+```{r}
+
+```
+
+
+# Boxplots, site-level
+## double check i can do a box plot by site or must group by reporting area since it's only one value per site
+### contaminant indices, 1 of 
+```{r}
+
+# chlordanes, hch, 
+# ddt, pesticides
+# all 3 metals
+# all 3 pahs
+# pbde, pcb
+# mixtures
+
+bio_df <- sample_data %>%
+  select(site_name, reporting_area, height, length, width) %>%
+  pivot_longer(cols = -c(site_name, reporting_area), 
+               names_to = "metric", 
+               values_to = "value") %>%
+  mutate(site_name = factor(site_name, levels = sort(unique(site_name))))
+
+facet_bio<- ggplot(bio_df, aes(x = site_name, y = value, fill = metric)) +
+  geom_boxplot(position = position_dodge(width = 0.8)) +
+  facet_wrap(~ reporting_area, scales = "free_x") +
+  labs(title = "Raw Measurements (height, length, width), Scaled", 
+       x = "Site", y = "Value") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "right")
+
+# view & save
+print(facet_bio)
+#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/may_figures/boxplot_measurements_hlw_ra_facet.png", plot= facet_bio, width = 16, height = 14, dpi = 300)
+
+```
+
+```{r}
+# ========== Morphometrics & IBR (morph) ==========
+morph_df <- df %>%
+  select(site_name, reporting_area, shell, ci1, ibr1morph, ibr1overall) %>%
+  pivot_longer(cols = -c(site_name, reporting_area), 
+               names_to = "metric", 
+               values_to = "value") %>%
+  mutate(site_name = factor(site_name, levels = sort(unique(site_name))))
+
+facet_morph<- ggplot(morph_df, aes(x = site_name, y = value, fill = metric)) +
+  geom_boxplot(position = position_dodge(width = 0.8)) +
+  facet_wrap(~ reporting_area, scales = "free_x") +
+  labs(title = "Morphometrics and IBRs", 
+       x = "Site", y = "Value") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "right")
+
+ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/morph_metrics_facet_boxplot.png", plot= facet_morph, width = 16, height = 14, dpi = 300)
+
+print(facet_morph)
+
+```
+
+#UPDATE THIS
+# Box plot, facet wrapped by reporting area
+## Metrics and IBRs grouped by reporting area
+```{r}
+
+# prep
+df$reporting_area <- as.factor(df$reporting_area)
+df <- df %>%
+  mutate(across(where(is.character), str_trim))
+
+
+# ========== Functional Biomarkers & IBR (bio) ==========
+bio_df <- df %>%
+  select(site_name, reporting_area, p450, sod, ibr1bio, ibr1overall) %>%
+  pivot_longer(cols = -c(site_name, reporting_area), 
+               names_to = "metric", 
+               values_to = "value") %>%
+  mutate(site_name = factor(site_name, levels = sort(unique(site_name))))
+
+facet_bio<- ggplot(bio_df, aes(x = site_name, y = value, fill = metric)) +
+  geom_boxplot(position = position_dodge(width = 0.8)) +
+  facet_wrap(~ reporting_area, scales = "free_x") +
+  labs(title = "Biomarkers and IBRs", 
+       x = "Site", y = "Value") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "right")
+
+ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/bio_metrics_facet_boxplot.png", plot= facet_bio, width = 16, height = 14, dpi = 300)
+
+print(facet_bio)
+
+# ========== Morphometrics & IBR (morph) ==========
+morph_df <- df %>%
+  select(site_name, reporting_area, shell, ci1, ibr1morph, ibr1overall) %>%
+  pivot_longer(cols = -c(site_name, reporting_area), 
+               names_to = "metric", 
+               values_to = "value") %>%
+  mutate(site_name = factor(site_name, levels = sort(unique(site_name))))
+
+facet_morph<- ggplot(morph_df, aes(x = site_name, y = value, fill = metric)) +
+  geom_boxplot(position = position_dodge(width = 0.8)) +
+  facet_wrap(~ reporting_area, scales = "free_x") +
+  labs(title = "Morphometrics and IBRs", 
+       x = "Site", y = "Value") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "right")
+
+ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/morph_metrics_facet_boxplot.png", plot= facet_morph, width = 16, height = 14, dpi = 300)
+
+print(facet_morph)
+
+```
 
 
 # Pulling Mapping Data from USGS
