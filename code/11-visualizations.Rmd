@@ -207,8 +207,73 @@ print(facet_bio)
 ```
 
 # Box plots, sample- level by site
-##
+## IBRs - facet wrapped plots
 ```{r}
+
+# Reshape IBR data to long format
+ibr_long <- sample_data %>%
+  pivot_longer(cols = c(ibr_bio, ibr_morph, ibr_combined),
+               names_to = "ibr_type",
+               values_to = "ibr_value") %>%
+  mutate(ibr_type = recode(ibr_type,
+                           "ibr_bio" = "Biomarker",
+                           "ibr_morph" = "Morphometric",
+                           "ibr_combined" = "Combined"))
+
+ibr_long$ibr_type <- factor(ibr_long$ibr_type,
+                            levels = c("Biomarker", "Morphometric", "Combined"))
+
+# Plot by site
+ibr_site<- ggplot(ibr_long, aes(x = site_name, y = ibr_value, fill = ibr_type)) +
+  geom_boxplot() +
+  #facet_wrap(~ibr_type, scales = "free") +
+  theme_bw() +
+  labs(x = "Site", y = "IBR Score", title = "IBR Scores by Site") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Plot by reporting area
+ibr_ra<- ggplot(ibr_long, aes(x = reporting_area, y = ibr_value, fill = ibr_type, 
+                              color = site_name == "Penn Cove Reference")) +
+  geom_boxplot() +
+  facet_wrap(~ ibr_type, ncol = 1, scales = "fixed") +  # change to "fixed" if comparing directly
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.05))) +
+  theme_bw() +
+  labs(x = "Reporting Area", y = "IBR Score", title = "IBR Scores by Reporting Area") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# save and view
+#ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/all_ibr_ra_facet_boxplots.png", plot= ibr_ra, width = 16, height = 14, dpi = 300)
+
+print(ibr_site)
+print(ibr_ra)
+
+```
+
+## IBRs 
+```{r}
+# ibr with Penn Cove reference site
+ibr_long$ibr_type <- factor(ibr_long$ibr_type,
+                            levels = c("Biomarker", "Morphometric", "Combined"))
+
+all_index <- ggplot(ibr_long, aes(x = site_name, y = ibr_value,
+                                  color = site_name == "Penn Cove Reference")) +
+  geom_jitter(width = 0.2, alpha = 0.7) +
+  geom_boxplot(outlier.shape = NA, alpha = 0.2) +
+  facet_wrap(~ ibr_type, ncol = 1, scales = "fixed") +  # change to "fixed" if comparing directly
+  scale_color_manual(values = c("FALSE" = "black", "TRUE" = "red")) +
+  scale_y_continuous(limits = c(0, NA), expand = expansion(mult = c(0, 0.05))) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "none") +
+  labs(title = "IBRv2i Indices by Site (Reference site in red)",
+       x = "Site", y = "IBRv2i Score")
+
+
+# save and view
+ggsave(filename= "/Users/cmantegna/Documents/GitHub/WDFWmussels/output/may_figures/all_ibr_boxplot.png", plot= all_index, width = 16, height = 14, dpi = 300)
+
+print(all_index)
 
 ```
 
