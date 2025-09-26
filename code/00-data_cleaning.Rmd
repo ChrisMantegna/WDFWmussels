@@ -1,5 +1,5 @@
 ---
-title: "00- Data Cleaning: Checking out the raw data and making adjustments to support analyses"
+title: "00- Data Cleaning"
 output:
   pdf_document: 
     fig_width: 20
@@ -83,7 +83,7 @@ summary(data)
 
 ```
 
-# Column Names - Don't Run 3.7.25
+# Column Names - Don't Need to Run after 3.7.25
 
 ```{r}
 
