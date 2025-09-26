@@ -37,7 +37,7 @@ knitr::opts_chunk$set(
 getwd()
 
 # load data
-#data<- read.csv("../data/full_with_na.csv")
+data<- read.csv("../data/avg_site_level_no_indices.csv")
 
 # check it out
 str(data) # checking df structure

@@ -38,7 +38,7 @@ knitr::opts_chunk$set(
 getwd()
 
 # load data
-data<- read.csv("../data/cleaned/full_data_all_geo_groups.csv")
+data<- read.csv("../data/all_samples_with_imputations_and_identifiers.csv")
 
 
 ```
@@ -93,3 +93,17 @@ summary(data)
 ```
 
 # don't forget to write out this table, i keep skipping that in this file.
+```{r}
+
+#save df
+write.csv(data, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned_all_samples", row.names = FALSE)
+
+```
+
+# Create averaged df for site level analysis
+```{r}
+
+
+
+```
+

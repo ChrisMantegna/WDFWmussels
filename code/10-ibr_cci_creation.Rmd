@@ -295,7 +295,6 @@ pesticide_wide <- pesticide %>%
 
 ```
 
-
 ## check for outliers, metrics df
 ```{r}
 
@@ -346,7 +345,7 @@ print(outlier_summary)
 
 ```
 
-## transform, log2 based on the reference site
+## transform, log2 based on the reference site - NOT CORRECT, DO NOT RERUN
 ```{r}
 
 metric_cols <- c("p450", "sod", "shell", "length_mm", "height_mm", "width_mm", 
@@ -422,6 +421,7 @@ print(outlier_summary)
 
 ```
 
+
 ## z-score standardization, absolute sd & IBR scoring
 ```{r}
 
@@ -429,8 +429,7 @@ trans<- read.csv("../data/index_df/transformed_metrics.csv")
 
 # Define metric groups for clarity
 biomarker_metrics <- c("p450", "sod")
-morphometric_metrics <- c("shell", "length_mm", "height_mm", "width_mm", 
-                          "weight_initial_g", "weight_change_g", "weight_final_g")
+morphometric_metrics <- c("shell", "length_mm", "height_mm", "width_mm", "weight_initial_g", "weight_change_g", "weight_final_g")
 
 # z-score
 z_df <- trans %>%
