@@ -37,7 +37,8 @@ knitr::opts_chunk$set(
 getwd()
 
 # load data
-data<- read.csv("../data/avg_site_level_no_indices.csv")
+site_data<- read.csv("../data/avg_site_level_no_indices.csv")
+sample_data<- read.csv("../data/cleaned_all_samples.csv")
 
 # check it out
 str(data) # checking df structure
@@ -48,19 +49,35 @@ summary(data) #checking df contents
 ```
 
 Tests of Normality and Variance indicate KW test + Dunn posthoc for all metrics except Shell Thickness which was normally distributed.
-# Normality
+# Normality - sample level
 
 ```{r}
 
 # distribution, normality or non-normality, affects our analysis path
 # test assumes normality, so any p-value > .05 indicates a rejection of that assumption
 
-shapiro.test(data$p450) # NOT normal
-shapiro.test(data$sod) # NOT normal
-shapiro.test(data$ci1) # NOT normal
-shapiro.test(data$ci2) # NOT normal
-shapiro.test(data$ci3) # NOT normal
-shapiro.test(data$shell) # Normal
+shapiro.test(sample_data$p450) # NOT normal
+shapiro.test(sample_data$sod) # NOT normal
+shapiro.test(sample_data$ci1) # NOT normal
+shapiro.test(sample_data$ci2) # NOT normal
+shapiro.test(sample_data$ci3) # NOT normal
+shapiro.test(sample_data$shell) # Normal
+
+```
+
+# Normality - site level
+
+```{r}
+
+# distribution, normality or non-normality, affects our analysis path
+# test assumes normality, so any p-value > .05 indicates a rejection of that assumption
+
+shapiro.test(site_data$p450) # NOT normal
+shapiro.test(site_data$sod) # NOT normal
+shapiro.test(site_data$ci1) # NOT normal
+shapiro.test(site_data$ci2) # NOT normal
+shapiro.test(site_data$ci3) # Normal
+shapiro.test(site_data$shell) # Normal
 
 ```
 
@@ -70,18 +87,18 @@ shapiro.test(data$shell) # Normal
 
 # plotting histograms to visualize the Shapiro results and decide if I want to transform the data or maintain it
 # p450 
-hist(data$p450)
+hist(site_data$p450)
 
 # SOD 
-hist(data$sod)
+hist(site_data$sod)
 
 # CI
-hist(data$ci1)
-hist(data$ci2)
-hist(data$ci3)
+hist(site_data$ci1)
+hist(site_data$ci2)
+hist(site_data$ci3)
 
 # Shell
-hist(data$shell)
+hist(site_data$shell)
 
 ```
 
