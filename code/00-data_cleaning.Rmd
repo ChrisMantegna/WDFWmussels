@@ -96,14 +96,35 @@ summary(data)
 ```{r}
 
 #save df
-write.csv(data, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned_all_samples", row.names = FALSE)
+write.csv(data, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned_all_samples.csv", row.names = FALSE)
 
 ```
 
 # Create averaged df for site level analysis
 ```{r}
 
+library(dplyr)
 
+averaged_data <- data %>%
+  group_by(site_number, latitude, longitude, site_name) %>%  
+  summarise(
+    p450 = mean(p450, na.rm = TRUE),  
+    sod = mean(sod, na.rm = TRUE),
+    shell = mean(shell, na.rm = TRUE),
+    ci1 = mean(ci1, na.rm = TRUE),
+    ci2 = mean(ci2, na.rm = TRUE),
+    ci3 = mean(ci3, na.rm = TRUE),
+    iweight = mean(weight_initial_g, na.rm = TRUE),
+    fweight = mean(weight_final_g, na.rm = TRUE),
+    cweight = mean(weight_change_g, na.rm = TRUE),
+    length = mean(length_mm, na.rm = TRUE),
+    width = mean(width_mm, na.rm = TRUE),
+    height = mean(height_mm, na.rm = TRUE),
+  ) %>%
+  ungroup()  # Remove grouping for the new dataframe
+
+# save df
+write.csv(averaged_data, "/Users/cmantegna/Documents/Github/WDFWmussels/data/cleaned_avg_sites.csv", row.names = FALSE)
 
 ```
 
