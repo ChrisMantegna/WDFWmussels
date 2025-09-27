@@ -1,0 +1,762 @@
+---
+title: "3.0- Analysis without indices, site-level"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE, echo=FALSE}
+
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # show code chunks
+  eval = TRUE,         # evaluate code chunks
+  warning = FALSE,     # hide warnings
+  message = FALSE,     # hide messages
+  #fig.width = 15,       # set plot width in inches
+  #fig.height = 9,      # set plot height in inches
+  fig.align = "center" # slign plots to the center in output doc/ slide/ whatever
+)
+
+# libraries
+library(car) # VERIFY what this is for 
+library(cluster) # grouping metrics - VERIFY still needed
+library(devtools) # installing bespoke packages
+library(dplyr) # data wrangling
+library(factoextra) # pca/ nmds/ tweaking radars
+library(FactoMineR) # pca/ nmds/ tweaking radars
+library(fmsb) # polygon calculations for the radars
+library(FSA) # post hoc test - Dunn's Test   
+library(ggplot2) # plots
+library(knitr) # output formatting
+library(multcompView) # used for the letter assignment
+library(pgirmess) # stats - KW
+library(rcompanion) # for annotation of permanova
+library(rstatix) # VERIFY what this is for      
+library(RVAideMemoire) # post hoc test for permanova
+library(scales) # scaling data for IBR - works with data wrangling packages
+library(sf) # mapping - needed for converting to spatial data
+library(spdep) # building spatial geometric components for analysis
+library(tidyr) # data wrangling
+library(tidyverse) # data wrangling
+library(vegan) # ecological stats 
+
+```
+
+# Load & Check Data
+```{r}
+
+getwd()
+
+site_data<- read.csv("../data/start_here/avg_site_level_no_indices.csv")
+
+```
+
+# Data prep
+```{r}
+
+# make reporting area a factor 
+site_data$reporting_area <- as.factor(site_data$reporting_area)
+site_data$site_name <- as.factor(site_data$site_name)
+
+```
+
+## add contaminant indices to sample- level df
+### NOT needed - do not use
+```{r}
+
+site_df<- read.csv("../data/index_df/contaminant_indices_only.csv")
+
+all_data_complete_indices <- all_data %>%
+  left_join(site_df, by = "site_name")
+
+head(all_data_complete_indices)
+
+# write it out
+#write.csv(all_data_complete_indices, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/complete_sample_level.csv", row.names = FALSE) 
+
+```
+
+# KW 
+## site & reporting area, run 9.26.25
+### no significant result
+```{r}
+
+# both biomarkers
+kruskal.test(p450 ~ sod, data = site_data) # p-value = 0.478
+
+# p450
+kruskal.test(p450 ~ site_name, data = site_data) # p-value = 0.478
+kruskal.test(p450 ~ reporting_area, data = site_data) # p-value = 0.07831
+
+# sod
+kruskal.test(sod ~ site_name, data = site_data) # p-value = 0.478
+kruskal.test(sod ~ reporting_area, data = site_data) # p-value = 0.7474
+
+# ci1
+kruskal.test(ci1 ~ site_name, data = site_data) # p-value = 0.478
+kruskal.test(ci1 ~ reporting_area, data = site_data) # p-value = 0.9762
+
+# ci2
+kruskal.test(ci2 ~ site_name, data = site_data) # p-value = 0.478
+kruskal.test(ci2 ~ reporting_area, data = site_data) # p-value = 0.821
+
+```
+
+# ANOVA + post hoc
+## shell and ci3
+```{r}
+
+#shell
+anova_site <- aov(shell ~ site_name, data = site_data) # p-value= 0.01119
+anova_ra <- aov(shell ~ reporting_area, data = site_data) # p-value= 0.0312
+summary(anova_site)
+summary(anova_ra)
+
+#ci3
+anova_site <- aov(ci3 ~ site_name, data = site_data) # p-value= 1.923e-5
+anova_ra <- aov(ci3 ~ reporting_area, data = site_data) # p-value= 0.386
+summary(anova_site)
+summary(anova_ra)
+
+#post - shell, site=  not significant
+tukey_site <- TukeyHSD(anova_site, "site_name")
+tukey_df <- as.data.frame(tukey_site$site_name)
+
+tukey_df <- tukey_df %>%
+  tibble::rownames_to_column("Comparison") %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = "-") %>%
+  rename(Diff = diff, Lower = lwr, Upper = upr, P.adj = `p adj`) %>%
+  mutate(across(everything(), ~trimws(as.character(.)))) %>%  
+  mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+groups <- unique(c(tukey_df$Group1, tukey_df$Group2))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in 1:nrow(tukey_df)) {
+  g1 <- tukey_df$Group1[i]
+  g2 <- tukey_df$Group2[i]
+  pval <- as.numeric(tukey_df$P.adj[i])
+  pval_matrix[g1, g2] <- pval
+  pval_matrix[g2, g1] <- pval
+}
+
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+
+tukey_table_with_cld <- tukey_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(tukey_table_with_cld) #view
+# write.csv(tukey_table_with_cld, "../output/tukey_shell_site.csv", row.names = FALSE) #save
+
+#post - shell=  not significant
+tukey_ra <- TukeyHSD(anova_ra, "reporting_area")
+tukey_df <- as.data.frame(tukey_ra$reporting_area)
+
+tukey_df <- tukey_df %>%
+  tibble::rownames_to_column("Comparison") %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = "-") %>%
+  rename(Diff = diff, Lower = lwr, Upper = upr, P.adj = `p adj`) %>%
+  mutate(across(everything(), ~trimws(as.character(.)))) %>%  
+  mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+groups <- unique(c(tukey_df$Group1, tukey_df$Group2))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in 1:nrow(tukey_df)) {
+  g1 <- tukey_df$Group1[i]
+  g2 <- tukey_df$Group2[i]
+  pval <- as.numeric(tukey_df$P.adj[i])
+  pval_matrix[g1, g2] <- pval
+  pval_matrix[g2, g1] <- pval
+}
+
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+
+tukey_table_with_cld <- tukey_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(tukey_table_with_cld) #view
+# write.csv(tukey_table_with_cld, "../output/tukey_shell_ra.csv", row.names = FALSE) #save
+
+#post - reporting area
+tukey_ra <- TukeyHSD(anova_ra, "reporting_area")
+tukey_df <- as.data.frame(tukey_ra$reporting_area)
+
+tukey_df <- tukey_df %>%
+  tibble::rownames_to_column("Comparison") %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = "-") %>%
+  rename(Diff = diff, Lower = lwr, Upper = upr, P.adj = `p adj`) %>%
+  mutate(across(everything(), ~trimws(as.character(.)))) %>%  
+  mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+groups <- unique(c(tukey_df$Group1, tukey_df$Group2))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in 1:nrow(tukey_df)) {
+  g1 <- tukey_df$Group1[i]
+  g2 <- tukey_df$Group2[i]
+  pval <- as.numeric(tukey_df$P.adj[i])
+  pval_matrix[g1, g2] <- pval
+  pval_matrix[g2, g1] <- pval
+}
+
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+
+tukey_table_with_cld <- tukey_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(tukey_table_with_cld) #view
+#write.csv(tukey_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/tukey_p450_ra.csv", row.names = FALSE) #save
+
+```
+
+# Correlations, Spearman & Kendalls
+## site-level
+### all indices
+```{r}
+
+colnames(site_data)
+# Define your variable sets
+metrics_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3", "weight_initial", "weight_change", "weight_final", "length", "width", "height", "ibr_bio", "ibr_morph", "ibr_combined")
+
+# List any ID columns to exclude here
+id_columns <- c("site_name", "site_number",  "reporting_area", "latitude", "longitude", "heavy_metal", "nutrient_metal", "total_metal")
+
+# Build analyte_vars by excluding both metrics and IDs
+analyte_vars <- c("chlordane", "ddt", "hch", "pah_lmw", "pah_hmw", "pah_add", "total_pah", "pbde", "pcb", "pesticide", "mixture_index_sum", "heavy_metal_ng", "nutrient_metal_ng", "mixture_index_pca")
+
+# set p-value & initialize empty list
+alpha <- 0.05
+results_list <- list()
+
+# Loop over metric–analyte pairs across sites
+for (metric in metrics_vars) {
+  for (analyte in analyte_vars) {
+    
+    x <- site_data[[metric]]
+    y <- site_data[[analyte]]
+    
+    valid_idx <- complete.cases(x, y)
+    x_valid <- x[valid_idx]
+    y_valid <- y[valid_idx]
+    
+    if (length(x_valid) < 4) next  # Skip if too few values
+    
+    spearman <- cor.test(x_valid, y_valid, method = "spearman")
+    kendall <- cor.test(x_valid, y_valid, method = "kendall")
+    
+    results_list[[paste(metric, analyte, sep = "_")]] <- data.frame(
+      Metric = metric,
+      Analyte = analyte,
+      Spearman_r = as.numeric(spearman$estimate),
+      Spearman_p = as.numeric(spearman$p.value),
+      Kendall_tau = as.numeric(kendall$estimate),
+      Kendall_p = as.numeric(kendall$p.value)
+    )
+  }
+}
+
+# Combine results
+corr_full <- bind_rows(results_list)
+
+# Add significance stars
+corr_full <- corr_full %>%
+  mutate(
+    Spearman_sig = case_when(
+      Spearman_p <= 0.001 ~ "***",
+      Spearman_p <= 0.01  ~ "**",
+      Spearman_p <= 0.05  ~ "*",
+      TRUE ~ ""
+    ),
+    Kendall_sig = case_when(
+      Kendall_p <= 0.001 ~ "***",
+      Kendall_p <= 0.01  ~ "**",
+      Kendall_p <= 0.05  ~ "*",
+      TRUE ~ ""
+    )
+  )
+
+View(corr_full)
+#write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_all_indices.csv", row.names = FALSE)
+
+```
+
+### individual analytes
+```{r}
+
+#correlation_data<- read.csv("../data/index_df/site_level_all_analytes_scaled.csv")
+
+metrics_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3", "weight_initial", "weight_change", "weight_final", "length", "width", "height", "ibr_bio", "ibr_morph", "ibr_combined")
+
+# identifying columns to exclude from analysis
+id_columns <- c("site_name", "site_number",  "reporting_area", "latitude", "longitude", "ai_z_arsenic", "ai_z_cadmium", "ai_z_copper", "ai_z_lead", "ai_z_mercury", "ai_z_zinc")
+
+# converting metals to match other contaminants - metals are reported in mg/kg and all others are ng/g
+# 1 mg/kg = 1,000 ng/g
+correlation_data$ai_z_arsenic_ng <- correlation_data$ai_z_arsenic * 1000
+correlation_data$ai_z_cadmium_ng <- correlation_data$ai_z_cadmium * 1000
+correlation_data$ai_z_copper_ng <- correlation_data$ai_z_copper * 1000
+correlation_data$ai_z_lead_ng <- correlation_data$ai_z_lead * 1000
+correlation_data$ai_z_mercury_ng <- correlation_data$ai_z_mercury * 1000
+correlation_data$ai_z_zinc_ng <- correlation_data$ai_z_zinc * 1000
+
+#write.csv(correlation_data, "/Users/cmantegna/Documents/Github/WDFWmussels/data/site_level_corrected_metals_all_analytes.csv", row.names = FALSE)
+
+# Build analyte_vars by excluding both metrics and IDs
+analyte_vars <- colnames(correlation_data)[!(colnames(correlation_data) %in% c(metrics_vars, id_columns))]
+
+# set p-value & initialize empty list
+alpha <- 0.05
+results_list <- list()
+
+# Loop over metric–analyte pairs across sites
+for (metric in metrics_vars) {
+  for (analyte in analyte_vars) {
+    
+    x <- correlation_data[[metric]]
+    y <- correlation_data[[analyte]]
+    
+    valid_idx <- complete.cases(x, y)
+    x_valid <- x[valid_idx]
+    y_valid <- y[valid_idx]
+    
+    if (length(x_valid) < 4) next  # Skip if too few values
+    
+    spearman <- cor.test(x_valid, y_valid, method = "spearman")
+    kendall <- cor.test(x_valid, y_valid, method = "kendall")
+    
+    results_list[[paste(metric, analyte, sep = "_")]] <- data.frame(
+      Metric = metric,
+      Analyte = analyte,
+      Spearman_r = as.numeric(spearman$estimate),
+      Spearman_p = as.numeric(spearman$p.value),
+      Kendall_tau = as.numeric(kendall$estimate),
+      Kendall_p = as.numeric(kendall$p.value)
+    )
+  }
+}
+
+# Combine results
+corr_full <- bind_rows(results_list)
+
+# Add significance stars
+corr_full <- corr_full %>%
+  mutate(
+    Spearman_sig = case_when(
+      Spearman_p <= 0.001 ~ "***",
+      Spearman_p <= 0.01  ~ "**",
+      Spearman_p <= 0.05  ~ "*",
+      TRUE ~ ""
+    ),
+    Kendall_sig = case_when(
+      Kendall_p <= 0.001 ~ "***",
+      Kendall_p <= 0.01  ~ "**",
+      Kendall_p <= 0.05  ~ "*",
+      TRUE ~ ""
+    )
+  )
+
+View(corr_full)
+#write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_individual_analytes.csv", row.names = FALSE)
+
+```
+
+# Spatial Analysis
+## Global Moran's I
+```{r}
+
+# fix this in post - this can be a loop, but I will need help making it work properly; this is why it is manually done
+
+# all measured metrics
+# p450
+site_data <- site_sf %>% filter(!is.na(p450)) # filter out any NAs
+summary(site_data$p450) # check for variance and more than 3 rows for analysis
+coords <- st_coordinates(site_data) # get coordinated from included sites
+nb <- knn2nb(knearneigh(coords, k = 4)) # build neighbor list and weights
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$p450)[, 1] # scale results and run morans
+moran.test(x_scaled, lw)
+
+# sod
+site_data <- site_sf %>% filter(!is.na(sod))
+summary(site_data$sod)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$sod)[, 1]
+moran.test(x_scaled, lw)
+
+# shell
+site_data <- site_sf %>% filter(!is.na(shell))
+summary(site_data$shell)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$shell)[, 1]
+moran.test(x_scaled, lw)
+
+# ci1
+site_data <- site_sf %>% filter(!is.na(ci1))
+summary(site_data$ci1)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$ci1)[, 1]
+moran.test(x_scaled, lw)
+
+# ci2
+site_data <- site_sf %>% filter(!is.na(ci2))
+summary(site_data$ci2)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$ci2)[, 1]
+moran.test(x_scaled, lw)
+
+# ci3
+site_data <- site_sf %>% filter(!is.na(ci3))
+summary(site_data$ci3)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$ci3)[, 1]
+moran.test(x_scaled, lw)
+
+
+# ibr_bio
+site_data <- site_sf %>% filter(!is.na(ibr_bio))
+summary(site_data$ibr_bio)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$ibr_bio)[, 1]
+moran.test(x_scaled, lw)
+
+# ibr_morph
+site_data <- site_sf %>% filter(!is.na(ibr_morph))
+summary(site_data$ibr_morph)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$ibr_morph)[, 1]
+moran.test(x_scaled, lw)
+
+# ibr_combined
+site_data <- site_sf %>% filter(!is.na(ibr_combined))
+summary(site_data$ibr_combined)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$ibr_combined)[, 1]
+moran.test(x_scaled, lw)
+
+# All contaminant indices
+# mixture index, sum
+site_data <- site_sf %>% filter(!is.na(mixture_index_sum))
+summary(site_data$mixture_index_sum)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$mixture_index_sum)[, 1]
+moran.test(x_scaled, lw)
+
+# mixture index, pca
+site_data <- site_sf %>% filter(!is.na(mixture_index_pca))
+summary(site_data$mixture_index_pca)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$mixture_index_pca)[, 1]
+moran.test(x_scaled, lw)
+
+#chlordane
+site_data <- site_sf %>% filter(!is.na(chlordane))
+summary(site_data$chlordane)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$chlordane)[, 1]
+moran.test(x_scaled, lw)
+
+# UPDATE the CODE from HERE
+#ddt
+site_data <- site_sf %>% filter(!is.na(ddt))
+summary(site_data$ddt)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$ddt)[, 1]
+moran.test(x_scaled, lw)
+
+#hch
+site_data <- site_sf %>% filter(!is.na(hch))
+summary(site_data$hch)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$hch)[, 1]
+moran.test(x_scaled, lw)
+
+#metal - nutrients
+site_data <- site_sf %>% filter(!is.na(nutrient_metal_ng))
+summary(site_data$nutrient_metal_ng)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$nutrient_metal_ng)[, 1]
+moran.test(x_scaled, lw)
+
+#metal - heavy
+site_data <- site_sf %>% filter(!is.na(heavy_metal_ng))
+summary(site_data$heavy_metal_ng)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$heavy_metal_ng)[, 1]
+moran.test(x_scaled, lw)
+
+#pah_lmw
+site_data <- site_sf %>% filter(!is.na(pah_lmw))
+summary(site_data$pah_lmw)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$pah_lmw)[, 1]
+moran.test(x_scaled, lw)
+
+#pah_hmw
+site_data <- site_sf %>% filter(!is.na(pah_hmw))
+summary(site_data$pah_hmw)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$pah_hmw)[, 1]
+moran.test(x_scaled, lw)
+
+#pah_add
+site_data <- site_sf %>% filter(!is.na(pah_add))
+summary(site_data$pah_add)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$pah_add)[, 1]
+moran.test(x_scaled, lw)
+
+#pbde
+site_data <- site_sf %>% filter(!is.na(pbde))
+summary(site_data$pbde)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$pbde)[, 1]
+moran.test(x_scaled, lw)
+
+#pcb
+site_data <- site_sf %>% filter(!is.na(pcb))
+summary(site_data$pcb)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$pcb)[, 1]
+moran.test(x_scaled, lw)
+
+#pesticides
+site_data <- site_sf %>% filter(!is.na(pesticide))
+summary(site_data$pesticide)
+coords <- st_coordinates(site_data)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+x_scaled <- scale(site_data$pesticide)[, 1]
+moran.test(x_scaled, lw)
+
+```
+
+## LISA - Local Indicators of Spatial Association
+```{r}
+
+library(sf)
+library(spdep)
+
+# convert df to a spatial object
+site_sf <- st_as_sf(site_data, coords = c("longitude", "latitude"), crs = 4326)
+site_sf <- st_transform(site_sf, crs = 3857)  # projected CRS for distance-based neighbors
+
+# create spatial neighbors and weights (4 nearest neighbors)
+coords <- st_coordinates(site_sf)
+nb <- knn2nb(knearneigh(coords, k = 4))
+lw <- nb2listw(nb, style = "W")
+
+# response variables to test
+bio_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3", "weight_initial", "weight_change", "weight_final", "length", "width", "height", "ibr_bio", "ibr_morph", "ibr_combined")
+
+# contaminant indices 
+index_vars <- c("chlordane", "ddt", "hch", "pah_lmw", "pah_hmw", "pah_add", "pbde", "pcb", "pesticide", "heavy_metal_ng", "nutrient_metal_ng", "mixture_index_sum", "mixture_index_pca")
+
+# LOOP FOR LOCAL MORAN'S I 
+
+# create output folder
+dir.create("lisa_outputs", showWarnings = FALSE)
+
+for (var in c(bio_vars, index_vars)) {
+  x <- site_sf[[var]]
+  lisa <- localmoran(scale(x)[,1], lw)
+
+  # Add LISA results to spatial dataframe
+  site_sf[[paste0(var, "_lisa_I")]] <- lisa[,1]
+  site_sf[[paste0(var, "_lisa_p")]] <- lisa[,5]
+
+  # Define cluster types with p-value significance threshold
+site_sf[[paste0(var, "_lisa_cluster")]] <- case_when(
+  x > mean(x, na.rm = TRUE) & lisa[,1] > 0 & lisa[,5] < 0.05 ~ "High-High",
+  x < mean(x, na.rm = TRUE) & lisa[,1] > 0 & lisa[,5] < 0.05 ~ "Low-Low",
+  lisa[,1] < 0 & lisa[,5] < 0.05 ~ "Outlier",
+  TRUE ~ "Not Significant"
+)
+
+  # Save spatial cluster results with p-values included
+st_write(site_sf[, c("site_name", paste0(var, "_lisa_cluster"), paste0(var, "_lisa_p"))],
+         paste0("lisa_outputs/LISA_", var, ".geojson"), delete_dsn = TRUE)
+}
+
+```
+
+## plotting LISA output
+### testing p450 to spot check LISA results
+```{r}
+
+getwd()
+library(sf)
+lisa_p450<- st_read("lisa_outputs/LISA_p450.geojson")
+names(lisa_p450)
+head(lisa_p450)
+
+```
+
+## mapping p450 LISA clusters to visualize the results before moving to the next steps
+```{r}
+
+library(tmap)
+
+# basic LISA plot
+tm_shape(lisa_p450) +
+  tm_symbols(col = "p450_lisa_cluster",
+             palette = "Set1",
+             size = 0.5,
+             title.col = "LISA Cluster") +
+  tm_layout(main.title = "LISA Clusters for P450 Biomarker")
+
+# only signficant clusters
+tm_shape(lisa_p450) +
+  tm_symbols(col = "p450_lisa_cluster",
+             palette = c("High-High" = "red",
+                         "Low-Low" = "blue",
+                         "Outlier" = "purple",
+                         "Not Significant" = "grey80"),
+             size = 0.5,
+             title.col = "Cluster Type") +
+  tm_layout(main.title = "Significant LISA Clusters (P450)")
+
+# table of results
+table(lisa_p450$p450_lisa_cluster)
+
+# adding WA basemap for another way to see the clusters
+library(rnaturalearth)
+
+# grab WA
+us_states <- ne_states(country = "united states of america", returnclass = "sf")
+wa_outline <- us_states[us_states$name == "Washington", ]
+
+library(tmap)
+
+tm_shape(wa_outline) +
+  tm_borders(col = "gray30") +
+tm_shape(lisa_p450) +
+  tm_symbols(col = "p450_lisa_cluster",
+             palette = c("High-High" = "red",
+                         "Low-Low" = "blue",
+                         "Outlier" = "purple",
+                         "Not Significant" = "gray80"),
+             size = 0.5,
+             title.col = "Cluster Type") +
+  tm_layout(main.title = "LISA Clusters for P450 Biomarker")
+
+
+```
+
+## creating LISA summary table
+```{r}
+
+# Directly from Chat GPT
+
+library(stringr)
+
+# Get list of all LISA geojson files
+lisa_files <- list.files("lisa_outputs", pattern = "\\.geojson$", full.names = TRUE)
+
+# Create a summary table for each
+lisa_summary <- lapply(lisa_files, function(file) {
+  data <- st_read(file, quiet = TRUE)
+  
+  # Extract the variable name from the file name
+  var_name <- str_extract(basename(file), "(?<=LISA_).*(?=\\.geojson)")
+  
+  # Identify cluster column (should be the only one with 'cluster' in name)
+  cluster_col <- names(data)[grepl("cluster", names(data))][1]
+  
+  # Summarize cluster counts
+  summary <- data %>%
+    st_drop_geometry() %>%
+    count(!!sym(cluster_col), name = "n") %>%
+    mutate(variable = var_name, cluster = !!sym(cluster_col)) %>%
+    select(variable, cluster, n)
+  
+  return(summary)
+})
+
+# Combine all summaries into one dataframe
+all_lisa_summary <- bind_rows(lisa_summary)
+
+#write.csv(all_lisa_summary, "/Users/cmantegna/Documents/Github/WDFWmussels/output/lisa_summary.csv", row.names = FALSE) # write it out
+
+```
+
