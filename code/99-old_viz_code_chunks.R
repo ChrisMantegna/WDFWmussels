@@ -1,3 +1,656 @@
+### Correlation, Pearson Correlation
+
+#### Interpretation - the biomarkers show a statistically significant *weak* negative correlation. Where one biomarker increases, the other decreases.
+
+```{r}
+# Correlation, Pearson Correlation
+
+#add condition_factor back to the dataframe
+
+
+#individual correlation test between the biomarkers
+
+cor.test(averaged_data$avg_p450, averaged_data$avg_SOD)
+
+```
+
+```{r}
+# Pearson Correlation Plot
+
+library(corrplot)
+
+cor.mtest <- function(mat, conf.level = 0.95){
+  mat <- as.matrix(mat)
+  n <- ncol(mat)
+  p.mat <- matrix(NA, n, n)
+  diag(p.mat) <- 0
+  
+  for(i in 1:(n-1)){
+    for(j in (i+1):n){
+      tmp <- cor.test(mat[,i], mat[,j], conf.level = conf.level)
+      p.mat[i,j] <- tmp$p.value
+      p.mat[j,i] <- tmp$p.value
+    }
+  }
+  list(p = p.mat, conf.level = conf.level)
+}
+
+# Assuming 'mdata' and 'data' are defined and 'data' is used to subset 'mdata'
+df2 <- averaged_data[sapply(averaged_data, is.numeric)] # Ensure 'mdata' is used here
+df2 <- na.omit(df2)
+M <- cor(df2)
+testRes <- cor.mtest(df2, conf.level = 0.95)
+
+# Visualization with corrplot
+corrplot::corrplot(M,
+                   method = "circle", type = "lower", insig = "blank",
+                   addCoef.col = "black", number.cex = 0.8, order = "AOE", diag = FALSE
+)
+
+print(cor)
+#ggsave(plot=cor, filename="/Users/cmantegna/Documents/WDFWmussels/output/avgpearson.png", width=15, height=8)
+
+```
+
+### PCA Plot
+
+#### Interpretation - This plot has to be interpreted in space, each axis represents a different variance and the attahced percentage to each axis is the total variance captured by that axis; the x-axis is the max variation in the data and should have the higher percentage. The y-axis is the second most variation. The points are observations, more distance mean more difference. The plot is not particularly helpful.
+
+```{r}
+
+# PCA Plot with biomarkers
+#install.packages("FactoMineR")
+#install.packages("factoextra")
+library('FactoMineR')
+library("factoextra")
+
+
+# Remove NAs from the dataset
+df_clean <- na.omit(averaged_data)
+
+# Selecting the relevant variables for PCA
+pca_data <- df_clean[, c("avg_SOD", "avg_p450")]
+
+# Performing PCA
+pca_res <- PCA(pca_data, scale.unit = TRUE, graph = FALSE)
+
+# Plotting the PCA
+pcaplot<- fviz_pca_biplot(pca_res, label = "var", col.var = "contrib",
+                          gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+                          repel = TRUE)  # Avoid text overlapping (slow if many points)
+
+
+
+print(pcaplot)
+#ggsave(plot=pcaplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/pca.png", width=15, height=8)
+
+```
+
+### K-means cluster/ relationship test
+
+#### Interpretation- there are three clusters that vary in size and that is an indicator of a significant number of outliers, see above for the code for the plot of the outliers. There are significant outliers for SOD, this may be rendering this test unhelpful. "The means of each cluster give you an idea of the centroid values around which the data points in each cluster are aggregated."
+
+```{r,eval=TRUE}
+#fixing data for kmeans
+
+sum(is.na(averaged_data$avg_p450)) # Checks for NA values in p450
+sum(is.nan(averaged_data$avg_p450)) # Checks for NaN values in p450
+sum(is.infinite(averaged_data$avg_p450)) # Checks for Inf values in p450
+
+sum(is.na(averaged_data$avg_SOD))
+sum(is.nan(averaged_data$avg_SOD)) 
+sum(is.infinite(averaged_data$avg_SOD)) 
+
+#sum(is.na(mdata$condition_factor)) 
+#sum(is.nan(mdata$condition_factor)) 
+#sum(is.infinite(mdata$condition_factor)) 
+
+averaged_data$avg_p450 <- as.numeric(averaged_data$avg_p450)
+averaged_data$avg_SOD <- as.numeric(averaged_data$avg_SOD)
+#mdata$condition_factor <- as.numeric(mdata$condition_factor)
+
+# Remove rows with NA or NaN values in specified columns
+clean_data <- averaged_data[complete.cases(averaged_data[, c("avg_p450", "avg_SOD")]), ]
+
+# Ensure all data is numeric for the Inf check to make sense
+clean_data <- transform(clean_data,
+                        avg_p450 = as.numeric(avg_p450),
+                        avg_SOD = as.numeric(avg_SOD))
+
+# Now check for and handle Inf values
+clean_data <- clean_data[!is.infinite(clean_data$avg_p450) & !is.infinite(clean_data$avg_SOD), ]
+
+kmeans_result <- kmeans(clean_data[, c("avg_p450", "avg_SOD")], centers = 3)
+
+print(kmeans_result)
+
+```
+
+# Mapping
+
+```{r}
+library(tidyr)
+#library(tidyverse)
+library(ggplot2)
+library(vegan)
+library(sf)
+library(viridis)
+library(rnaturalearth)
+library(rnaturalearthdata)
+```
+
+```{r}
+world <- ne_states(country = "united states of america", returnclass = "sf")
+washington_map <- world[world$name == "Washington", ]
+
+```
+
+```{r}
+# p450 map
+pmap<- ggplot() + 
+  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
+  geom_point(data = averaged_data, aes(x = longitude, y = latitude, color = avg_p450), size = 1) +
+  scale_color_viridis(option = "C", name = "p450") +
+  theme_minimal() +
+  labs(title = "Washington State - p450 Data")
+
+print(pmap)
+#ggsave(plot=pmap, filename="/Users/cmantegna/Documents/WDFWmussels/output/avgp450map.png", width=15, height=8)
+```
+
+```{r}
+#zoom into puget sound region
+xlim <- c(-124, -122)  # longitude bounds
+ylim <- c(47, 49)  # latitude bounds
+
+pmap<- ggplot() + 
+  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
+  geom_point(data = averaged_data, aes(x = longitude, y = latitude, color = avg_p450), size = 1) +
+  scale_color_viridis(option = "C", name = "p450") +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)+
+  theme_minimal() +
+  labs(title = "Washington State - p450 Data")
+
+print(pmap)
+#ggsave(plot=pmap, filename="/Users/cmantegna/Documents/WDFWmussels/output/avgp450psmap.png", width=15, height=8)
+```
+
+```{r}
+#SOD map
+smap<- ggplot() + 
+  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
+  geom_point(data = averaged_data, aes(x = longitude, y = latitude, color = avg_SOD), size = 1) +
+  scale_color_viridis(option = "C", name = "SOD") +
+  theme_minimal() +
+  labs(title = "Washington State - SOD Data")
+
+print(smap)
+#ggsave(plot=smap, filename="/Users/cmantegna/Documents/WDFWmussels/output/avgsodmap.png", width=15, height=8)
+
+```
+
+```{r}
+#zoom into puget sound region & note the legend, lighter colors are higher values
+xlim <- c(-124, -122)  # longitude bounds
+ylim <- c(47, 49)  # latitude bounds
+
+pmap<- ggplot() + 
+  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
+  geom_point(data = averaged_data, aes(x = longitude, y = latitude, color = avg_SOD), size = 1) +
+  scale_color_viridis(option = "C", name = "SOD") +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)+
+  theme_minimal() +
+  labs(title = "Washington State - SOD Data")
+
+print(pmap)
+#ggsave(plot=pmap, filename="/Users/cmantegna/Documents/WDFWmussels/output/avgSODpsmap.png", width=15, height=8) 
+```
+
+```{r}
+#mapping both
+# Assuming washington_map is your sf object for Washington State
+ggplot(data = washington_map) + 
+  geom_sf(fill = "lightgrey", color = "white") +
+  geom_point(data = averaged_data, aes(x = longitude, y = latitude, color = avg_p450, size = avg_SOD), alpha = 0.6) +
+  scale_color_viridis(name = "avg_p450", option = "D") +
+  scale_size_continuous(name = "avg_SOD", range = c(2, 6)) +
+  theme_minimal() +
+  labs(title = "Washington State: p450 and SOD")
+```
+
+```{r}
+#still not a helpful visualization
+xlim <- c(-124, -122)  # longitude bounds
+ylim <- c(47, 49)  # latitude bounds
+
+# Assuming washington_map is your sf object for Washington State
+ggplot(data = washington_map) + 
+  geom_sf(fill = "lightgrey", color = "white") +
+  geom_point(data = averaged_data, aes(x = longitude, y = latitude, color = avg_p450, size = avg_SOD), alpha = 0.6) +
+  scale_color_viridis(name = "avg_p450", option = "D") +
+  scale_size_continuous(name = "avg_SOD", range = c(2, 6)) +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)+
+  theme_minimal() +
+  labs(title = "Washington State: p450 and SOD")
+```
+
+# Spatial Analysis
+
+### Note this workflow is used to determine if there are spatial data patterns that wouldn't stand out in the exploratory or relational statistics.
+
+```{r}
+# Data prep for geospatial analysis
+
+#install.packages("spatstat")
+library(spatstat)
+
+# Create the kind of data frame that works in spatstat package
+sites_pp <- ppp(x = averaged_data$longitude, y = averaged_data$latitude, 
+                window = owin(xrange = range(averaged_data$longitude), 
+                              yrange = range(averaged_data$latitude)))
+
+```
+
+```{r}
+#Add biomarker layer to the geographical data
+sites_pp$marks <- data.frame(p450 = averaged_data$avg_p450, 
+                             SOD = averaged_data$avg_SOD)
+
+```
+
+### K test, 1 of 2.
+
+#### Interpretation- the clustering of the black, red, and green lines (isotropic, and two transformations) lie significanlty above the blue line, the Poisson distribution line. This means that the biomarker data is more clustered than random. The proximity of the black, red and green lines show agreement across the isotropic and transformation analyses. This result is in agreement with the Shapiro- Wilkes tests for normality.
+
+```{r}
+
+# average values result's mirror the results returned in the full biomarker run. see 04-spatial for interpretation.
+K_result <- Kest(sites_pp)
+print(plot(K_result))
+
+```
+
+### Point Process Model (PPM) model, 2 of 2
+
+#### Interpretation - this model measures the independence and intensity of the occurence of something in space or time based on whatever marks you determine. In this case the occurences are the data point locations, the intensity is the value of the marks and the marks are the biomarkers. This model is confusing to me and will be removed as I do not understand it well enough to interpret the results.
+
+```{r}
+
+# Fit a point process model
+#ppm_model <- ppm(sites_pp ~ p450)
+#summary(ppm_model)
+
+
+#option 2
+sites_pp$marks <- as.factor(cut(sites_pp$marks$p450, breaks = quantile(sites_pp$marks$p450, probs = 0:3/3), include.lowest = TRUE))
+
+# Now run the ppm model
+ppm_model <- ppm(sites_pp ~ marks, covariates = NULL)
+print(summary(ppm_model))
+
+```
+
+# Spatial Autocorrelation Analysis, Global
+
+### Note: there are global and local tests that assess the likelihood of the biomarker values to be randomly 'assigned'. My hypothesis is that the biomarkers values are not random.
+
+```{r}
+#load packages & prep dataframe for "sf" package
+
+#install.packages(spdep)
+#install.packages("/Users/cmantegna/Downloads/spdep_1.2-8.tar.gz", repos = NULL, type = "source")
+library(sf)
+library(sp)
+library(spdep)
+
+sf_data <- st_as_sf(averaged_data, coords = c("longitude", "latitude"), crs = 4326)
+
+# Take a look at your sf object
+print(sf_data)
+
+```
+
+```{r}
+
+# Create a spatial weights matrix to assess nearest neighbors and distance-based neighbors to define spatial relationships using Moran's I and Geary's C.
+# You can extract the matrix of coordinates using st_coordinates
+coords <- st_coordinates(sf_data)
+
+# Now use the knearneigh function from the spdep package directly on the coordinates
+neighbors <- knn2nb(knearneigh(coords, k = 4))
+
+# Then convert the neighbors into spatial weights with nb2listw
+weights <- nb2listw(neighbors, style = "W")
+
+```
+
+### Moran's I and Geary's C determine if the distribution of the biomarker values across the entire Puget Sound region are random or not- random.
+
+#### Interpretation -\ 
+
+Moran's I statistic's, used for normally distributed data, ranges from 0 - 1. A value close to 0 mean randomness and a value close to 1 means less randomness. A statistic of .04 means points that are close to each other are more likely to have similar *p450* values than you would expect by chance but this is not statistically significant. The *SOD* values are random and not statistically significant.\
+Geary's C statistic, used for non- normal data, ranges from 0-2. A value close to 0 is a positive spatial correlation, a value close to 1 is an indication of randomness, and a value close to 2 is an indication of dispersion (negative correlation). A statistic of .8 with a p-value below .05 shows a statistically significant weak indication of negative autocorrelation of *p450* values. The *SOD* values are just above 1 and are not statistically significant. Since Geary's C is influenced by "local" and "global' neighbors, this should not be used".
+
+```{r}
+
+## Run Moran's I and Geary's C for p450
+
+moran_result <- moran.test(sf_data$avg_p450, weights)
+print(moran_result)
+
+geary_result <- geary.test(sf_data$avg_p450, weights)
+print(geary_result)
+
+```
+
+```{r}
+
+## Run Moran's I and Geary's C for SOD
+moran_result <- moran.test(sf_data$avg_SOD, weights)
+print(moran_result)
+
+geary_result <- geary.test(sf_data$avg_SOD, weights)
+print(geary_result)
+
+```
+
+# Spatial Regression Analysis
+### Note: Each of the models analyzes if the observations (biomarker values) are not independent of each other but rather influenced by their location and the spatial arrangement.
+```{r}
+#library(spdep)
+#install.packages("sphet")
+library(sphet)
+
+```
+
+```{r}
+# Spatial Lag Model. Is the value of one point influencing the value of a neighboring point? 
+#Interpretation - No. No statistically significant result.
+
+library(spatialreg)
+#accounts for spatial dependence in the dependent variable
+slm_model <- lagsarlm(avg_p450 ~ avg_SOD, data = sf_data, listw = weights)
+print(summary(slm_model))
+
+```
+
+```{r}
+# Spatial Error Model. This accounts for the spatial autocorrelation in the error term. Could statistical error account for results?
+# No. There is a trend of a mild negative correlation in the data set but it is not statistically significant.
+sem_model <- errorsarlm(avg_p450 ~ avg_SOD, data = sf_data, listw = weights)
+print(summary(sem_model))
+
+
+```
+
+```{r}
+
+# Spatial Durbin Model. An all-in-one model that combines both SLM and SEM. No expected result change.
+
+#install.packages("spatialreg")
+library(spatialreg)
+
+#combines SLM and SEM
+sdm_model <- spatialreg::lagsarlm(avg_p450 ~ avg_SOD, data = sf_data, listw = weights, type="mixed")
+print(summary(sdm_model))
+
+```
+# Spatial Autocorrelation Analysis, Local
+# Local Indicator of Spatial Association (LISA)
+```{r}
+# Prep data
+
+#install.packages("spdep")
+#install.packages("sf")  # for spatial data handling
+#install.packages("tmap")  # for visualization
+library(spdep)
+library(sf)
+library(tmap)
+
+```
+
+```{r}
+
+lisa_values <- localmoran(sf_data$avg_p450, weights)
+
+```
+
+```{r}
+
+# Add LISA values and p-values to your spatial data
+
+sf_data$lisa <- lisa_values[,1]  # Local Moran's I values
+sf_data$p.value <- lisa_values[,4]  # p-values for significance
+
+# Use tmap for plotting
+library(tmap)
+
+# Define breaks for significance levels, e.g., 0.05 for 95% confidence
+sig_breaks <- c(0, 0.05, 1)  # Change according to your significance level
+
+# Create a map
+tm_shape(sf_data) +
+  tm_dots(col = "lisa", size = 0.5, palette = "-RdBu", title = "LISA Values") +
+  tm_layout(legend.position = c("left", "top")) +
+  tm_shape(sf_data[sf_data$p.value <= 0.05, ]) +  # Add a layer for significant points only
+  tm_dots(col = "red", size = 0.7, title = "Significant Clusters") +
+  tm_layout(main.title = "LISA Cluster Map", main.title.position = "center")
+
+```
+
+
+
+```{r}
+# Plot the LISA data over the map from the base Washington State map found in file: 03-map.rmd
+
+library(sf)
+library(viridis)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(ggplot2)
+
+```
+
+#### Interpretation - LISA uses the global application of the Moran's I statistic. This is used to determine any point clustering or significant outliers. There are no sites that are clustered significantly. 
+```{r}
+
+world <- ne_states(country = "united states of america", returnclass = "sf")
+washington_map <- world[world$name == "Washington", ]
+
+pmap <- ggplot() + 
+  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
+  theme_minimal() +
+  labs(title = "Washington State Map")
+
+# Ensure CRS compatibility
+sf_data <- st_transform(sf_data, st_crs(washington_map))
+
+# Prepare the base map
+pmap <- ggplot() + 
+  geom_sf(data = washington_map, fill = "lightgrey", color = "white") +
+  theme_minimal() +
+  labs(title = "Washington State Map")
+
+# Add the LISA points layer to the map
+complete_map <- pmap + 
+  geom_sf(data = sf_data, aes(color = lisa), size = 2) +
+  scale_color_viridis_c(option = "D", direction = -1, name = "LISA Values")
+
+# Display the combined map
+print(complete_map)
+
+```
+
+```{r}
+#zoom in on the puget sound region
+# Assuming you know the bounding box coordinates you want to zoom in on
+# For example: xmin, xmax, ymin, ymax
+xlim <- c(-124, -122)  # longitude bounds
+ylim <- c(47, 49)  # latitude bounds
+
+complete_map <- pmap + 
+  geom_sf(data = sf_data, aes(color = lisa), size = 2) +
+  scale_color_viridis_c(option = "D", direction = -1, name = "LISA Values") +
+  coord_sf(xlim = xlim, ylim = ylim, expand = FALSE)
+
+print(complete_map)
+
+
+```
+
+# Analytes
+
+```{r}
+# Have to merge and reshape for a date frame that lets me compare biomarker and analytes in the models and in a PCA
+
+library(reshape2)
+#merge data frames and reshape for input.
+colnames(pah)[colnames(pah) == "SiteName"] <- "site_name"
+merged_df <- merge(averaged_data, pah, by = c("site_name"), all.x = TRUE)
+
+
+#reshape to get the analytes into their own columns with the DryValue as their values
+reshaped_df <- dcast(merged_df, site_name + site_number +latitude.x + longitude.x + avg_p450 + avg_SOD ~ Analyte, value.var = "DryValue")
+
+print(reshaped_df)
+
+```
+## Linear Regression - only here to show that the non- normal data passed through this model is unsuccessful.
+```{r}
+
+# Linear Regression- p450 as response
+lm_model <- lm(avg_p450 ~ avg_SOD + SumPAHs + SumPAHs16 + SumPAHs42_DMNcorrected + SumPAHsHMW + SumPAHsLMW, data = reshaped_df)
+print(summary(lm_model))
+
+```
+## Generalized Linear Model - used for non- normal data.
+#### Interpretation - All categories of PAH's show a statistically significant relationship to the p450 biomarker result.
+```{r}
+
+# GLM - p450 as response
+glm_model <- glm(avg_p450 ~ avg_SOD + SumPAHs + SumPAHs16 + SumPAHs42_DMNcorrected + SumPAHsHMW + SumPAHsLMW, family = poisson(), data = reshaped_df)
+print(summary(glm_model))
+
+```
+
+```{r}
+# LR- p450 as response
+#### Replicating with individual analytes to see if anything really sticks out.
+
+#merge and reshape just like above
+colnames(indv)[colnames(indv) == "SiteName"] <- "site_name"
+merged_df2 <- merge(averaged_data, indv, by = c("site_name"), all.x = TRUE)
+
+
+#reshape to get the analytes into their own columns with the DryValue as their values
+reshaped2_df <- dcast(merged_df2, site_name + site_number +latitude + longitude + avg_p450 + avg_SOD ~ Analyte, value.var = "DryValue")
+
+print(reshaped2_df)
+```
+
+```{r}
+#get the column names so I don't have to individually type each one
+
+all_columns <- names(reshaped2_df)
+
+# Remove the columns you don't want to include in the model
+excluded_columns <- c('avg_p450', 'latitude', 'longitude', 'avg_SOD', 'site_name', 'site_number', 'NA')
+independent_columns <- all_columns[!all_columns %in% excluded_columns]
+
+# Enclose each column name in backticks to handle special characters
+independent_columns <- sapply(independent_columns, function(x) paste0("`", x, "`"))
+
+# Create a string representing the formula
+formula_str <- paste("avg_p450 ~", paste(independent_columns, collapse = " + "))
+
+# Convert the string to a formula object
+formula <- as.formula(formula_str)
+
+# Now you can use this formula in your model
+#lm_model <- lm(formula, data = reshaped_df)
+#summary(lm_model)
+
+
+```
+
+```{r}
+
+indvlm_model <- lm(formula, data = reshaped2_df)
+print(summary(indvlm_model))
+
+```
+
+```{r}
+
+# GLM- p450 as response
+indvglm_model<- glm(formula, data = reshaped2_df, family = poisson())
+print(summary(indvglm_model))
+
+```
+## PCA of biomarkers and analyte data
+```{r}
+#pca for pah and biomarkers, using reshaped_df
+#install.packages("FactoMineR")
+#install.packages("factoextra")
+library('FactoMineR')
+library('factoextra')
+
+# Specify the columns you want to use for PCA
+pca_columns <- c("avg_SOD", "avg_p450", "SumPAHs", "SumPAHs16", "SumPAHs42_DMNcorrected", "SumPAHsHMW", "SumPAHsLMW")
+
+# Remove rows with NAs in the specified columns only
+df_clean <- reshaped_df[complete.cases(reshaped_df[, pca_columns]), ]
+
+# Selecting the relevant variables for PCA
+pca_data <- df_clean[, pca_columns]
+
+# Performing PCA
+pca_res <- PCA(pca_data, scale.unit = TRUE, graph = FALSE)
+
+# Plotting the PCA
+analytepcaplot<- fviz_pca_biplot(pca_res, label = "var", col.var = "contrib",
+                gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
+repel = TRUE)  # Avoid text overlapping (slow if many points)
+
+
+
+print(analytepcaplot)
+ggsave(plot=analytepcaplot, filename="/Users/cmantegna/Documents/WDFWmussels/output/analytepca.png", width=15, height=8)
+
+```
+
+```{r}
+# Clustering based on k-means results. Needs to be revisited to verify it is the best option for this plot.
+
+#different pca option
+library(FactoMineR)
+library(factoextra)
+
+# Assuming pca_data is prepared for PCA
+pca_result <- PCA(pca_data, graph = FALSE)
+
+# If you need to perform clustering (e.g., k-means)
+set.seed(123)  # for reproducibility
+clusters <- kmeans(pca_data, centers = 3)  # change centers according to your data
+
+# Add the cluster assignments to your PCA data
+pca_data$cluster <- as.factor(clusters$cluster)
+
+# Now plot the PCA with fviz_pca_ind
+fviz_pca_ind(pca_result,
+             col.ind = pca_data$cluster, # color by cluster
+             palette = c("#00AFBB", "#E7B800", "#FC4E07"), # customize colors
+             addEllipses = TRUE, # add confidence ellipses around clusters
+             ellipse.level = 0.95, # 95% confidence ellipse
+             legend.title = "Cluster")
+
+```
+
+
+
+
+
+
 # Plotting
 ## Box plots, Separate Indices per Site
 ```{r}

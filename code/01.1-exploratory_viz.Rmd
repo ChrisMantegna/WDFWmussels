@@ -1,0 +1,381 @@
+---
+title: "01.1- Exploratory Visualizations of Site-Level Data"
+output:
+  pdf_document: 
+    fig_width: 10
+    fig_height: 7
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 10
+---
+
+# Setup
+
+```{r, setup, eval=TRUE, include=TRUE}
+
+knitr::opts_chunk$set(
+  echo = TRUE,         # Display code chunks
+  eval = TRUE,         # Evaluate code chunks
+  warning = FALSE,     # Hide warnings
+  message = FALSE,     # Hide messages
+  fig.width = 8,       # Set plot width in inches
+  fig.height = 5,      # Set plot height in inches
+  fig.align = "center" # Align plots to the center
+)
+
+```
+
+# Load packages
+
+```{r, eval= FALSE}
+
+library(tidyr) # data manipulation
+library(tidyverse)# data manipulation
+library(ggplot2) # plotting
+library(vegan) # ecological analysis 
+library(tinytex) # fix labels on plots
+
+```
+
+# Load data
+### Note:
+For *data* the units are listed below. Weight = g\
+Length, width, height = mm\
+p450, SOD = activity/ (mg/protein)\
+Condition factor, economic factor = unitless\
+For *pah* and *indv* the units are ng/g
+
+```{r}
+
+getwd()
+
+data<- read.csv("../data/avg_site_level_no_indices.csv")
+summary(data)
+
+```
+
+# Basic visualization post cleaning
+## Outliers - didn't rerun on 9.26.25, will do so after base analysis
+
+```{r}
+# Outliers
+
+detect_outliers_mad <- function(averaged_data, accuracy = 0.99) {
+  # Calculate z-score equivalent for the given accuracy
+  z_threshold <- qnorm(accuracy + (1 - accuracy) / 2)
+
+  # Initialize a list to store outlier indices for each numeric column
+  outliers_list <- list()
+
+  # Initialize a vector to keep track of rows with outliers
+  rows_with_outliers <- rep(FALSE, nrow(averaged_data))
+
+  # Loop through each column in the dataframe
+  for (col_name in names(averaged_data)) {
+    # Check if the column is numeric
+    if (is.numeric(averaged_data[[col_name]])) {
+      # Calculate MAD and median for the column
+      mad_value <- median(abs(averaged_data[[col_name]] - median(averaged_data[[col_name]])))
+      median_value <- median(averaged_data[[col_name]])
+
+      # Calculate the deviation scores (using a modified z-score formula)
+      deviation_scores <- 0.6745 * (averaged_data[[col_name]] - median_value) / mad_value
+
+      # Identify indices of outliers
+      outlier_indices <- which(abs(deviation_scores) > z_threshold)
+
+      # Store the indices in the list
+      outliers_list[[col_name]] <- outlier_indices
+
+      # Update rows with outliers
+      rows_with_outliers[outlier_indices] <- TRUE
+    }
+  }
+
+  # Return the list of outliers and rows with outliers
+  list(outliers_list = outliers_list, rows_with_outliers = rows_with_outliers)
+}
+
+outliers_info <- detect_outliers_mad(averaged_data)
+
+# Convert the list of outliers to a named vector of counts
+num_outliers_each_col <- sapply(outliers_info$outliers_list, length)
+num_rows_with_outliers <- sum(outliers_info$rows_with_outliers)
+
+# Check if there are any outliers
+if (all(num_outliers_each_col == 0)) {
+  print("There are no outliers in any columns.")
+} else {
+  # Create a data frame for plotting
+  outliers_data_df <- data.frame(
+    Column = names(num_outliers_each_col),
+    Outliers = as.integer(num_outliers_each_col),
+    OutlierPercentage = (as.integer(num_outliers_each_col) / nrow(data)) * 100
+  )
+
+  # Plot the number of outliers for all columns
+  outlier_plot <- ggplot(outliers_data_df, aes(x = Column, y = Outliers, fill = Column)) +
+    geom_bar(stat = "identity") +
+    geom_text(aes(label = sprintf("%.2f%%", OutlierPercentage)), position = position_dodge(width = 0.9), vjust = -0.25) +
+    coord_flip() +
+    labs(title = "Number of Outliers by Column", x = "Column", y = "Number of Outliers") +
+    scale_fill_brewer(palette = "Set3") +
+    theme_minimal()
+
+  print(outlier_plot)
+}
+
+#ggsave(plot= outlier_plot, filename="/Users/cmantegna/Documents/WDFWmussels/output/outliersavg.png", width=15, height=8)
+
+```
+
+
+
+## Boxplots
+### Combined
+```{r}
+
+# plotting both biomarkers in a box plot - not a good plot, separate plots below
+biomarkers<- ggplot(data) +
+  geom_point(aes(x = site_name, y = sod, color = "SOD")) +
+  geom_point(aes(x = site_name, y = p450, color = "P450")) +
+  labs(x = "Site Name", y = "Value", color = "Biomarker") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+print(biomarkers)
+#ggsave(plot=all, filename="/Users/cmantegna/Documents/WDFWmussels/output/allavgBoxPlot.png", width=15, height=8)
+
+```
+
+### p450
+```{r}
+
+# plotting p450 values ranked from smallest to largest
+
+# order the sites by value
+data_ordered <-data[order(data$p450),]
+
+# create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+# plot with ordered site names
+rankp<- ggplot(data_ordered, aes(x = site_name, y = p450)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+print(rankp)
+ggsave(plot=rankp, filename="../output/p450_site_ordered.png", width=15, height=8)
+```
+
+### sod
+```{r}
+
+# plotting SOD values ranked from smallest largest
+
+# order the sites by value
+data_ordered <- data[order(data$sod),]
+
+# create a factor with the ordered site names
+data_ordered$site_name <- factor(data_ordered$site_name, levels = unique(data_ordered$site_name))
+
+# plot with ordered site names
+ranks<- ggplot(data_ordered, aes(x = site_name, y = sod)) +
+  geom_boxplot() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) # Rotate x labels if needed
+
+print(ranks)
+ggsave(plot=ranks, filename="../output/sod_site_ordered.png", width=15, height=8)
+
+```
+
+# PCA - site level data without any data manipulation to control variance
+## setup
+```{r}
+
+# define columns
+bio_cols     <- c("p450", "sod") 
+morph_cols <- c("weight_change", "shell", "length", "height",
+                        "width") 
+mm_cols<- c("weight_change", "shell") 
+
+# double check no empty or missing values snuck in
+dat_bio  <- data[ , bio_cols, drop = FALSE]
+dat_morph<- data[ , morph_cols, drop = FALSE]
+dat_mm<- data[ , mm_cols, drop = FALSE]
+
+# double check everything is numeric
+dat_bio[]   <- lapply(dat_bio,   function(x) as.numeric(as.character(x)))
+dat_morph[] <- lapply(dat_morph, function(x) as.numeric(as.character(x)))
+dat_mm[] <- lapply(dat_mm, function(x) as.numeric(as.character(x)))
+
+```
+
+### biomarkers
+```{r}
+
+# run PCA 
+pca_bio <- prcomp(dat_bio, center = TRUE, scale. = TRUE)
+
+# variance explained
+bio_var  <- pca_bio$sdev^2
+bio_prop <- bio_var / sum(bio_var)
+
+# scree plot (straightforward way to see what PC contributes to the explanation - the straight line is a first)
+scree<- plot(bio_prop, type = "b",
+     xlab = "Principal Component", ylab = "Proportion of variance explained",
+     main = "Biomarker PCA – Scree")
+# save
+ggsave(plot=scree, filename="../output/biomarker_scree.png", width=15, height=8)
+
+# scores (sample coordinates) and loadings (variable contributions)
+bio_scores   <- pca_bio$x          # rows = samples, cols = PCs
+bio_loadings <- pca_bio$rotation   # rows = variables, cols = PCs
+
+# biplot (base R)
+bio_bplot<- biplot(pca_bio, cex = 0.7, main = "Biomarker PCA – Biplot")
+# save
+ggsave(plot=bio_bplot, filename="../output/biomarker_pca_biplot.png", width=15, height=8)
+
+# barplot for loading clarity (since the scree was a straight line)
+png("bio_barplots.png", width = 1200, height = 600)   # open a PNG device
+par(mfrow = c(1,2))   # two plots side by side
+barplot(bio_loadings[, 1], las = 2,
+        main = "Biomarker loadings on PC1", ylab = "Loading")
+barplot(bio_loadings[, 2], las = 2,
+        main = "Biomarker loadings on PC2", ylab = "Loading")
+dev.off()   # close the device and write the file
+
+```
+
+### morphometrics
+```{r}
+
+# run PCA 
+pca_morph <- prcomp(dat_morph, center = TRUE, scale. = TRUE)
+
+# variance explained
+morph_var  <- pca_morph$sdev^2
+morph_prop <- morph_var / sum(morph_var)
+
+# scree plot (2 components are the max needed contribution for this, based on the elbow)
+scree<- plot(morph_prop, type = "b",
+     xlab = "Principal Component", ylab = "Proportion of variance explained",
+     main = "Morphomterics PCA – Scree")
+# save
+ggsave(plot=scree, filename="../output/morphometric_scree.png", width=15, height=8)
+
+# scores (sample coordinates) and loadings (variable contributions)
+morph_scores   <- pca_morph$x          # rows = samples, cols = PCs
+morph_loadings <- pca_morph$rotation   # rows = variables, cols = PCs
+
+# biplot 
+morph_bplot<- biplot(pca_morph, cex = 0.7, main = "Morphometric PCA – Biplot")
+# save
+ggsave(plot=morph_bplot, filename="../output/morphometric_pca_biplot.png", width=15, height=8)
+
+# barplot for loading clarity (since the scree had several inflection points)
+png("morph_barplots.png", width = 1200, height = 600)   # open a PNG device
+par(mfrow = c(1,2))   # two plots side by side
+barplot(morph_loadings[, 1], las = 2,
+        main = "Morphometric loadings on PC1", ylab = "Loading")
+barplot(morph_loadings[, 2], las = 2,
+        main = "Morphometric loadings on PC2", ylab = "Loading")
+dev.off()   # close the device and write the file
+
+```
+
+### morph, only shell and weight
+```{r}
+
+# run PCA 
+pca_mm <- prcomp(dat_mm, center = TRUE, scale. = TRUE)
+
+# variance explained
+morph_var  <- pca_mm$sdev^2
+morph_prop <- morph_var / sum(morph_var)
+
+# scree plot (2 components are the max needed contribution for this, based on the elbow)
+scree<- plot(morph_prop, type = "b",
+     xlab = "Principal Component", ylab = "Proportion of variance explained",
+     main = "Morphomterics PCA – Scree")
+# save
+ggsave(plot=scree, filename="../output/mm_scree.png", width=15, height=8)
+
+# scores (sample coordinates) and loadings (variable contributions)
+morph_scores   <- pca_mm$x          # rows = samples, cols = PCs
+morph_loadings <- pca_mm$rotation   # rows = variables, cols = PCs
+
+# biplot 
+morph_bplot<- biplot(pca_mm, cex = 0.7, main = "Morphometric PCA – Biplot")
+# save
+ggsave(plot=morph_bplot, filename="../output/mm_pca_biplot.png", width=15, height=8)
+
+# barplot for loading clarity (since the scree had several inflection points)
+png("mm_barplots.png", width = 1200, height = 600)   # open a PNG device
+par(mfrow = c(1,2))   # two plots side by side
+barplot(morph_loadings[, 1], las = 2,
+        main = "Morphometric loadings on PC1", ylab = "Loading")
+barplot(morph_loadings[, 2], las = 2,
+        main = "Morphometric loadings on PC2", ylab = "Loading")
+dev.off()   # close the device and write the file
+
+```
+
+# NMDS
+```{r}
+
+bio_cols     <- c("p450", "sod") 
+morph_cols <- c("weight_change", "shell", "length") 
+
+# subset and make sure no 0s or false values snuck in
+bio_mat   <- data[, bio_cols,   drop = FALSE]
+morph_mat <- data[, morph_cols, drop = FALSE]
+bio_mat[]   <- lapply(bio_mat,   function(x) as.numeric(as.character(x)))
+morph_mat[] <- lapply(morph_mat, function(x) as.numeric(as.character(x)))
+
+# standardize with a z-score (non-referenced)
+bio_z   <- scale(bio_mat)
+morph_z <- scale(morph_mat)
+
+## create distance matrices
+bio_dist_euc   <- dist(bio_z, method = "euclidean")
+morph_dist_euc <- dist(morph_z, method = "euclidean")
+
+## run NMDS (k=2). Multiple random starts for stability.
+set.seed(42)
+nmds_bio_euc <- metaMDS(bio_dist_euc, k = 2, trymax = 200, autotransform = FALSE)
+set.seed(42)
+nmds_morph_euc <- metaMDS(morph_dist_euc, k = 2, trymax = 200, autotransform = FALSE)
+
+## Inspect stress
+nmds_bio_euc$stress
+nmds_morph_euc$stress
+
+## Shepard/stress plots (goodness of fit)
+png("nmds_shephard.png", width = 1200, height = 600)   # open a PNG device
+stressplot(nmds_bio_euc, main = "Biomarker NMDS (Euclidean) – Shepard")
+stressplot(nmds_morph_euc, main = "Morphometrics NMDS (Euclidean) – Shepard")
+dev.off()   # close the device and write the file
+
+## Base ordination plots (samples)
+png("nmds_bio.png", width = 1200, height = 600)   # open a PNG device
+plot(nmds_bio_euc, type = "n", main = "Biomarker NMDS (Euclidean)")
+points(nmds_bio_euc, pch = 19)
+## Optional: fit and draw variable vectors (biomarkers)
+fit_bio <- envfit(nmds_bio_euc ~ ., data = as.data.frame(bio_z), permutations = 999)
+plot(fit_bio, p.max = 0.1, col = "red")  # arrows for vars with p<=0.1
+dev.off()   # close the device and write the file
+
+png("nmds_morph.png", width = 1200, height = 600)   # open a PNG device
+plot(nmds_morph_euc, type = "n", main = "Morphometrics NMDS (Euclidean)")
+points(nmds_morph_euc, pch = 19)
+fit_morph <- envfit(nmds_morph_euc ~ ., data = as.data.frame(morph_z), permutations = 999)
+plot(fit_morph, p.max = 0.1, col = "blue")
+dev.off()   # close the device and write the file
+
+```
+

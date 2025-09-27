@@ -74,6 +74,39 @@ site_data$site_number <- as.factor(site_data$site_number)
 
 ```
 
+# Don't forget to update this radar plot code
+```{r}
+
+## Radars, reference overlay - reference line 757 in file 99
+## All Sites, Do Not Run
+
+
+z_scores$sample_id <- df$sample_id
+z_scores$site_name <- df$site_name
+
+# Site-averaged Z-scores
+site_means <- z_scores %>%
+  group_by(site_name) %>%
+  summarise(across(1:8, mean, na.rm = TRUE))
+
+# Loop through sites
+for (i in 1:nrow(site_means)) {
+  site_data <- site_means[i, 2:9]
+  max_min <- rbind(apply(site_means[ ,2:9], 2, max),
+                   apply(site_means[ ,2:9], 2, min))
+  radar_data <- rbind(max_min, site_data)
+  
+  png(paste0("IBRv2i_radar_site_", gsub(" ", "_", site_means$site_name[i]), ".png"), width = 600, height = 600)
+  radarchart(radar_data,
+             axistype = 1,
+             pcol = "darkblue", pfcol = rgb(0.2, 0.4, 0.9, 0.4),
+             plwd = 2,
+             title = paste("IBRv2i Radar Plot\nSite:", site_means$site_name[i]))
+  dev.off()
+}
+
+```
+
 # Box plots by reporting area - sample- level
 ## Facet wrapped for review - not reporting
 ### biomarkers 

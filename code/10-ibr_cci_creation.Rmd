@@ -16,6 +16,17 @@ output:
 
 ```{r, setup, eval=TRUE, include=TRUE, echo=FALSE}
 
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # show code chunks
+  eval = TRUE,         # evaluate code chunks
+  warning = FALSE,     # hide warnings
+  message = FALSE,     # hide messages
+  #fig.width = 15,       # set plot width in inches
+  #fig.height = 9,      # set plot height in inches
+  fig.align = "center" # slign plots to the center in output doc/ slide/ whatever
+)
+
 # libraries
 library(car) # VERIFY what this is for 
 library(cluster) # grouping metrics - VERIFY still needed
@@ -34,17 +45,6 @@ library(scales) # scaling data for IBR - works with data wrangling packages
 library(tidyr) # data wrangling
 library(tidyverse) # data wrangling
 library(vegan) # ecological stats 
-
-knitr::opts_chunk$set(
-  root.dir = here::here(),
-  echo = TRUE,         # show code chunks
-  eval = TRUE,         # evaluate code chunks
-  warning = FALSE,     # hide warnings
-  message = FALSE,     # hide messages
-  #fig.width = 15,       # set plot width in inches
-  #fig.height = 9,      # set plot height in inches
-  fig.align = "center" # slign plots to the center in output doc/ slide/ whatever
-)
 
 ```
 
@@ -76,7 +76,7 @@ site_data$site_number <- as.factor(site_data$site_number)
 
 ```
 
-## fixing sod values 
+## fixing sod values - no need to run after 9.26.25
 ```{r }
 
 metrics$sod[metrics$sod <= 0] <- 0.0025 # replace any values below LOQ with imputed LOQ (.5 x LOD), LOD= 0.05
