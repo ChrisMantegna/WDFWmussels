@@ -130,52 +130,7 @@ ai_data <- z_data %>%
   ))
 
 #save
-write.csv(ai_data, "../data/ci_site_ibr_09262025.csv")
-
-# STOP - combine the 2 df's from this step before moving forward
-
-
-#***************************************** old version*************************#
-# z-score
-z_data <- site_data %>%
-  mutate(across(
-    starts_with("log2_"),
-    ~ as.numeric(scale(.x)),
-    .names = "z_{.col}"
-  ))
-
-# reference means
-ref_site <- "Penn Cove Reference"
-z_ref_means <- z_df %>%
-  filter(site_name == ref_site) %>%
-  summarise(across(starts_with("z_log2_"), mean, na.rm = TRUE))
-
-# deviation from reference
-ai_df <- z_df %>%
-  mutate(across(
-    starts_with("z_log2_"),
-    ~ abs(.x - z_ref_means[[cur_column()]]),
-    .names = "ai_{.col}"
-  ))
-
-# identify absolute dev columns
-ai_biomarker_cols <- paste0("ai_z_log2_", biomarker_metrics)
-ai_morphometric_cols <- paste0("ai_z_log2_", morphometric_metrics)
-
-# create ibr scores
-may25_ibr <- ai_df %>%
-  rowwise() %>%
-  mutate(
-    ibr_biomarker = sum(c_across(all_of(ai_biomarker_cols)), na.rm = TRUE),
-    ibr_morphometric = sum(c_across(all_of(ai_morphometric_cols)), na.rm = TRUE),
-    ibr_combined = ibr_biomarker + ibr_morphometric
-  ) %>%
-  ungroup()
-
-# view & save. Completed 5-7-25.
-print(may25_ibr)
-#write.csv(ai_df, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metrics_zscore_sd_may25.csv", row.names = FALSE)
-#write.csv(may25_ibr, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/ibr_transformed_may25.csv", row.names = FALSE)
+#write.csv(ai_data, "../data/ci_site_ibr_09262025.csv")
 
 ```
 
