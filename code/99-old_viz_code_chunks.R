@@ -1,3 +1,336 @@
+# old cleaning steps that don't need to happen anymore
+## fixing site names & trimming white space for chem data sets
+```{r}
+
+chlordane$site_name[chlordane$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+chlordane$site_name[chlordane$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+chlordane$site_name[chlordane$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+chlordane$site_name[chlordane$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+chlordane$site_name[chlordane$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+chlordane$site_name[chlordane$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+chlordane$site_name[chlordane$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+chlordane$site_name[chlordane$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+
+ddt$site_name[ddt$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+ddt$site_name[ddt$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+ddt$site_name[ddt$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+ddt$site_name[ddt$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+ddt$site_name[ddt$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+ddt$site_name[ddt$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+ddt$site_name[ddt$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+ddt$site_name[ddt$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+
+hch$site_name[hch$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+hch$site_name[hch$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+hch$site_name[hch$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+hch$site_name[hch$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+hch$site_name[hch$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+hch$site_name[hch$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+hch$site_name[hch$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+hch$site_name[hch$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+
+metal$site_name[metal$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+metal$site_name[metal$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+metal$site_name[metal$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+metal$site_name[metal$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+metal$site_name[metal$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+metal$site_name[metal$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+metal$site_name[metal$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+metal$site_name[metal$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+#metal$analyte[metal$analyte == "mercuryTotal"] <- "mercury"
+#metal$analyte[metal$analyte == "Zinc"] <- "zinc"
+
+pbde$site_name[pbde$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+pbde$site_name[pbde$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+pbde$site_name[pbde$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+pbde$site_name[pbde$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+pbde$site_name[pbde$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+pbde$site_name[pbde$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+pbde$site_name[pbde$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+pbde$site_name[pbde$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+
+pcb$site_name[pcb$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+pcb$site_name[pcb$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+pcb$site_name[pcb$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+pcb$site_name[pcb$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+pcb$site_name[pcb$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+pcb$site_name[pcb$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+pcb$site_name[pcb$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+pcb$site_name[pcb$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+
+pesticide$site_name[pesticide$site_name == "Blair Waterway #2"] <- "Blair Waterway Two"
+pesticide$site_name[pesticide$site_name == "Comm Bay Skookum"] <- "Commencement Bay Skookum"
+pesticide$site_name[pesticide$site_name == "Comm Bay, Dick Gilmur Launch"] <- "Commencement Bay, Dick Gilmur Launch"
+pesticide$site_name[pesticide$site_name == "Comm Bay, Milwaukee Waterway"] <- "Commencement Bay, Milwaukee Waterway"
+pesticide$site_name[pesticide$site_name == "Meyer's Point - Henderson Inlet"] <- "Meyer's Point, Henderson Inlet"
+pesticide$site_name[pesticide$site_name == "Purdy - Dexters"] <- "Purdy, Dexters"
+pesticide$site_name[pesticide$site_name == "S of Skunk Island"] <- "South of Skunk Island"
+pesticide$site_name[pesticide$site_name == "Suquamish, Stormwater Outfall"] <- "Suquamish Stormwater Outfall"
+
+metrics <- metrics %>%
+  mutate(across(where(is.character), str_trim))
+
+chlordane <- chlordane %>%
+  mutate(across(where(is.character), str_trim))
+
+ddt <- ddt %>%
+  mutate(across(where(is.character), str_trim))
+
+hch <- hch %>%
+  mutate(across(where(is.character), str_trim))
+
+metal <- metal %>%
+  mutate(across(where(is.character), str_trim))
+
+pbde <- pbde %>%
+  mutate(across(where(is.character), str_trim))
+
+pcb <- pcb %>%
+  mutate(across(where(is.character), str_trim))
+
+pesticide <- pesticide %>%
+  mutate(across(where(is.character), str_trim))
+
+```
+
+## Completed 5-5-2025; Only run if rebuilding
+### replace undetected analyte values 
+```{r}
+
+chlordane<- chlordane %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
+
+ddt<- ddt %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
+
+hch<- hch %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
+
+metal<- metal %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
+
+pbde<- pbde %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
+
+pcb<- pcb %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
+
+pesticide<- pesticide %>%
+  mutate(flagged = grepl("U|B|I", qualifier),
+         wet_value = ifelse(flagged, 0, wet_value))
+
+```
+
+## Completed 5-5-2025; Only run if rebuilding
+### pivoting analytes
+```{r}
+
+chlordane <- chlordane %>%
+  select(site_name, latitude, longitude, analyte, wet_value)  # keep only what's needed
+chlordane_wide <- chlordane %>%
+  pivot_wider(
+    names_from = analyte,
+    values_from = wet_value
+  )
+
+# Save the cleaned wide-format table
+#write.csv(chlordane_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/chlordane_wide.csv", row.names = FALSE)
+
+ddt <- ddt %>%
+  select(site_name, latitude, longitude, analyte, wet_value) 
+ddt_wide <- ddt %>%
+  pivot_wider(
+    names_from = analyte,      
+    values_from = wet_value    
+  )
+#write.csv(ddt_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/ddt_wide.csv", row.names = FALSE)
+
+hch <- hch %>%
+  select(site_name, latitude, longitude, analyte, wet_value)  
+hch_wide <- hch %>%
+  pivot_wider(
+    names_from = analyte,      
+    values_from = wet_value    
+  )
+#write.csv(hch_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/hch_wide.csv", row.names = FALSE)
+
+metal <- metal %>%
+  select(site_name, latitude, longitude, analyte, wet_value)  
+metal_wide <- metal %>%
+  pivot_wider(
+    names_from = analyte,      
+    values_from = wet_value    
+  )
+#write.csv(metal_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/metal_wide.csv", row.names = FALSE)
+
+pbde <- pbde %>%
+  select(site_name, latitude, longitude, analyte, wet_value)  
+pbde_wide <- pbde %>%
+  pivot_wider(
+    names_from = analyte,      
+    values_from = wet_value   
+  )
+#write.csv(pbde_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pbde_wide.csv", row.names = FALSE)
+
+pcb <- pcb %>%
+  select(site_name, latitude, longitude, analyte, wet_value)  
+pcb_wide <- pcb %>%
+  pivot_wider(
+    names_from = analyte,      
+    values_from = wet_value    
+  )
+#write.csv(pcb_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pcb_wide.csv", row.names = FALSE)
+
+pesticide <- pesticide %>%
+  select(site_name, latitude, longitude, analyte, wet_value)  # keep only what's needed
+pesticide_wide <- pesticide %>%
+  pivot_wider(
+    names_from = analyte,      # this becomes the new column names
+    values_from = wet_value    # this fills the values
+  )
+#write.csv(pesticide_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/indices/pesticide_wide.csv", row.names = FALSE)
+
+```
+
+## check for outliers, metrics df
+```{r}
+
+library(purrr)
+library(rlang)
+
+metrics_df<- metrics
+metric_cols <- c("p450", "sod", "shell", "length_mm", "height_mm", "width_mm", 
+                 "ci1", "ci2", "ci3", "weight_initial_g", "weight_final_g", "weight_change_g") #define what we're assessing
+
+# function to assess & label 'in' or 'out'
+flag_outliers <- function(x) {
+  q1 <- quantile(x, 0.25, na.rm = TRUE)
+  q3 <- quantile(x, 0.75, na.rm = TRUE)
+  iqr <- q3 - q1
+  lower <- q1 - 1.5 * iqr
+  upper <- q3 + 1.5 * iqr
+  ifelse(x < lower | x > upper, "out", "in")
+}
+
+# loop and add columns to df
+metrics_df <- metrics_df %>%
+  bind_cols(
+    map_dfc(metric_cols, function(col) {
+      out_flag <- flag_outliers(metrics_df[[col]])
+      new_col <- paste0(col, "_quantile")
+      tibble(!!new_col := out_flag)
+    })
+  )
+
+# summary table
+outlier_cols <- grep("_quantile$", names(metrics_df), value = TRUE) # pull the columns from metrics_df
+
+# pivot and count
+outlier_summary <- metrics_df %>%
+  select(all_of(outlier_cols)) %>%
+  pivot_longer(cols = everything(),
+               names_to = "metric",
+               values_to = "status") %>%
+  mutate(metric = gsub("_quantile", "", metric)) %>%
+  group_by(metric, status) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  pivot_wider(names_from = status, values_from = count, values_fill = 0)
+
+# view & save SAVED on 5.7.25
+print(outlier_summary)
+#write.csv(outlier_summary, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metrics_outlier_summary_pre-transformation.csv", row.names = FALSE)
+
+```
+
+## transform, log2 based on the reference site - NOT CORRECT, DO NOT RERUN
+```{r}
+
+metric_cols <- c("p450", "sod", "shell", "length_mm", "height_mm", "width_mm", 
+                 "ci1", "ci2", "ci3", "weight_initial_g", "weight_final_g", "weight_change_g")
+
+ref_site <- "Penn Cove Reference"
+
+# reference site mean
+ref_means <- metrics_df %>%
+  filter(site_name == ref_site) %>%
+  summarise(across(all_of(metric_cols), mean, na.rm = TRUE))
+
+# log2-transformation table
+log2_df <- metrics_df %>%
+  mutate(across(
+    all_of(metric_cols),
+    .fns = ~ log2(.x / ref_means[[cur_column()]]),
+    .names = "log2_{.col}"
+  ))
+
+# view & save
+print(log2_df)
+#write.csv(log2_df, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metrics_outlier_summary_post-transformation.csv", row.names = FALSE)
+
+```
+
+## check for outliers in log2_df
+```{r}
+
+library(purrr)
+library(rlang)
+
+metric_cols <- c("log2_p450", "log2_sod", "log2_shell", "log2_length_mm", "log2_height_mm", "log2_width_mm", 
+                 "log2_ci1", "log2_ci2", "log2_ci3", "log2_weight_initial_g", "log2_weight_final_g", "log2_weight_change_g") 
+
+# function to assess & label 'in' or 'out'
+flag_outliers <- function(x) {
+  q1 <- quantile(x, 0.25, na.rm = TRUE)
+  q3 <- quantile(x, 0.75, na.rm = TRUE)
+  iqr <- q3 - q1
+  lower <- q1 - 1.5 * iqr
+  upper <- q3 + 1.5 * iqr
+  ifelse(x < lower | x > upper, "out", "in")
+}
+
+# loop and add columns to df
+log2_df <- log2_df %>%
+  bind_cols(
+    map_dfc(metric_cols, function(col) {
+      out_flag <- flag_outliers(log2_df[[col]])
+      new_col <- paste0(col, "_quantile")
+      tibble(!!new_col := out_flag)
+    })
+  )
+
+# summary table
+outlier_cols <- grep("_quantile$", names(log2_df), value = TRUE) # pull the columns from log2_df
+
+# pivot and count
+outlier_summary <- log2_df %>%
+  select(all_of(outlier_cols)) %>%
+  pivot_longer(cols = everything(),
+               names_to = "metric",
+               values_to = "status") %>%
+  mutate(metric = gsub("_quantile", "", metric)) %>%
+  group_by(metric, status) %>%
+  summarise(count = n(), .groups = "drop") %>%
+  pivot_wider(names_from = status, values_from = count, values_fill = 0)
+
+# view & save. Completed on 5-7-25 
+print(outlier_summary)
+#write.csv(outlier_summary, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metrics_outlier_summary_post-transformation.csv", row.names = FALSE)
+
+```
+
+
+
+
+
+
+
+
 ### Correlation, Pearson Correlation
 
 #### Interpretation - the biomarkers show a statistically significant *weak* negative correlation. Where one biomarker increases, the other decreases.
