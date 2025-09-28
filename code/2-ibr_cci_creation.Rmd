@@ -66,6 +66,14 @@ summary(con_data)
 
 # Creating Mattos' IBRv2i Index with biomarkers and raw morphometrics (no condition indices)
 
+## log2 transform the metrics
+```{r}
+
+
+
+```
+
+
 ## z-score standardization, absolute sd & IBR scoring
 ```{r}
 
