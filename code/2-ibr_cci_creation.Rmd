@@ -56,17 +56,18 @@ library(vegan) # ecological stats
 
 getwd()
 
-site_data<- read.csv("../data/start_here/cleaned_sample_level.csv")
-sample_data<- read.csv("../data/cleaned/site_level_no_indices.csv")
+site_data<- read.csv("../data/start_here/site_level_no_indices.csv")
+sample_data<- read.csv("../data/cleaned/cleaned_sample_level.csv")
 
 site_data$reporting_area <- as.factor(site_data$reporting_area)
 site_data$site_number<- as.factor(site_data$site_number)
 
 sample_data$reporting_area <- as.factor(sample_data$reporting_area)
 sample_data$site_number<- as.factor(sample_data$site_number)
-sample_data$sample_number<- as.factor(sample_data$sample_number)
+sample_data$sample_id<- as.factor(sample_data$sample_id)
+sample_data$p450<- as.numeric(sample_data$p450)
 
-summary(site_data)
+summary(sample_data)
 
 
 ```
@@ -77,13 +78,133 @@ summary(site_data)
 ## log2 transform the metrics - sample-level used in 3.2
 ```{r}
 
+df <- sample_data
+
+# define reference
+site_col  <- "site_name"
+ref_site  <- "Penn Cove Reference"
+
+# columns to remain unchanged 
+id_cols <- c("sample_id", "site_number","site_name", "reporting_area", "latitude", "longitude")
+
+# metrics for the IBR 
+metric_cols <- c("p450","sod", "shell", "weight_initial", "weight_change", "weight_final", "length","height","width")
+
+# metrics not for the IBR
+condition_cols <- c("ci1","ci2","ci3")
+all_metrics    <- c(metric_cols, condition_cols)
+# metrics to center geometrically because they have strong skews, all others will be default (arithmetic)
+geom_center_metrics <- c("p450","sod", "ci1", "ci2", "height")
+
+# positive floor for safe log2 (prevents log2(0))
+eps <- .Machine$double.eps
+
+t_name  <- function(x) paste0("t_", x)   # transformed
+tc_name <- function(x) paste0("tc_", x)  # centered vs reference
+
+# ---------------------------
+# STEP 1 — TRANSFORM (sample-level only)
+# ---------------------------
+# Keep only columns we need, then add t_* = log2(pmax(x, eps))
+sample_level_t <- df %>%
+  select(any_of(unique(c(id_cols, site_col, all_metrics)))) %>%
+  mutate(across(all_of(all_metrics), ~ log2(pmax(.x, eps)), .names = "t_{.col}")) %>%
+  relocate(any_of(id_cols), .before = 1) %>%
+  relocate(starts_with("t_"), .after = last_col())
+
+# REVIEW
+head(sample_level_t)
+#write.csv(sample_level_t, "../data/interim_df/sample_level_transformation_09292025.csv", row.names = FALSE) 
+
+# ---------------------------
+# STEP 2 — SCALE TO REFERENCE (run when your reference samples are present)
+#         Produces tc_*: deviations from reference on the log scale
+# ---------------------------
+# 2a) rows for reference site
+reference_samples <- sample_level_t %>%
+  filter(.data[[site_col]] == ref_site)
+
+if (nrow(reference_samples) == 0) {
+  stop(sprintf("No rows found for ref_site = '%s' in column '%s'.", ref_site, site_col))
+}
+
+# 2b) compute reference centers on t-scale
+#     - geometric-set: mean of t_* (equivalent to geometric mean on raw scale)
+#     - arithmetic-set: mean on raw scale, then log2 (keeps parity with arithmetic intent)
+arith_metrics <- setdiff(all_metrics, geom_center_metrics)
+
+# geometric centers
+centers_geom_t <- if (length(geom_center_metrics) > 0) {
+  reference_samples %>%
+    summarize(across(all_of(t_name(geom_center_metrics)), ~ mean(.x, na.rm = TRUE))) %>%
+    pivot_longer(everything(), names_to = "metric_t", values_to = "center_t") %>%
+    mutate(metric = str_remove(metric_t, "^t_")) %>%
+    select(metric, center_t)
+} else {
+  tibble(metric = character(0), center_t = numeric(0))
+}
+
+# arithmetic centers: average on raw, then convert to t-scale
+# recover raw from t_ via 2^t
+centers_arith_t <- if (length(arith_metrics) > 0) {
+  reference_samples %>%
+    transmute(across(all_of(t_name(arith_metrics)), ~ 2^.x)) %>%
+    summarize(across(everything(), ~ mean(.x, na.rm = TRUE))) %>%
+    pivot_longer(everything(), names_to = "raw_t_metric", values_to = "center_raw_mean") %>%
+    mutate(metric   = str_remove(raw_t_metric, "^t_"),
+           center_t = log2(pmax(center_raw_mean, eps))) %>%
+    select(metric, center_t)
+} else {
+  tibble(metric = character(0), center_t = numeric(0))
+}
+
+centers_t <- bind_rows(centers_geom_t, centers_arith_t)
+
+# 2c) Join centers back to all samples and compute tc_* = t_* - center_t
+sample_level_tc <- sample_level_t %>%
+  pivot_longer(cols = all_of(t_name(all_metrics)),
+               names_to = "metric_t", values_to = "t_value") %>%
+  mutate(metric = str_remove(metric_t, "^t_")) %>%
+  left_join(centers_t, by = "metric") %>%
+  mutate(tc_value = t_value - center_t,
+         tc_col   = tc_name(metric)) %>%
+  select(-metric_t) %>%
+  pivot_wider(names_from = c(metric, tc_col),
+              values_from = c(t_value, tc_value),
+              names_sep = "") %>%
+  relocate(starts_with("t_"),  .after = last_col()) %>%
+  relocate(starts_with("tc_"), .after = last_col())
+
+# REVIEW
+head(sample_level_tc)
+write.csv(sample_level_tc, "../data/interim_df/sample_level_scaling_09292025.csv", row.names = FALSE) 
+
+# ---------------------------
+# STEP 3 — (LATER) BUILD INDICES, THEN COLLAPSE TO SITE
+# ---------------------------
+# Example: simple additive index from tc_* columns (edit as needed)
+ tc_cols <- names(sample_level_tc)[startsWith(names(sample_level_tc), "tc_")]
+ sample_level_index <- sample_level_tc %>%
+   rowwise() %>%
+   mutate(IBR_like_index = sum(c_across(all_of(tc_cols)), na.rm = TRUE)) %>%
+   ungroup()
+
+# Collapse to one value per site (mean of the sample-level index, for example)
+ site_level_index <- sample_level_index %>%
+   group_by(.data[[site_col]]) %>%
+   summarize(IBR_like_index = mean(IBR_like_index, na.rm = TRUE),
+             n_samples = n(), .groups = "drop")
+
+ head(site_level_index)
+# write.csv(site_level_index, "site_level_index.csv", row.names = FALSE)
+
 
 
 ```
 
 
 
-## log2 transform the metrics - site-level used in 1/3 analysis outputs (3.2)
+## log2 transform the metrics - site-level used in analysis (3.2)
 ```{r}
 
 # define our reference
