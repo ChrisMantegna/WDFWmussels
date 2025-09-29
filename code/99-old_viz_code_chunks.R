@@ -1,6 +1,35 @@
 # Clean this file to keep references for future work, get rid of the junk and save as a reference file in the repo.
 
 
+#*************************************OLD CODE*****************************#
+# to scale condition indices
+non_metrics<- c("ci1", "ci2", "ci3") # for code at line 109
+ref_site <- "Penn Cove Reference"
+metrics2<- non_metrics # for code at line 109
+scale_num <- function(x) as.numeric(scale(x))
+
+# z-score the metrics. Note- condition indices will need to be done separately
+z_data <- site_data %>%
+  mutate(across(all_of(metrics2), scale_num, .names = "z_{.col}"))
+
+# reference means from reference site z-scored columns 
+ref_means <- z_data %>%
+  filter(site_name == ref_site) %>%
+  summarise(across(all_of(paste0("z_", metrics2)), ~ mean(.x, na.rm = TRUE))) %>%
+  as.list() %>% unlist()
+
+# calculate absolute deviation from reference (AI) for the same set of columns
+ai_data <- z_data %>%
+  mutate(across(
+    all_of(paste0("z_", metrics2)),
+    ~ abs(.x - ref_means[cur_column()]),
+    .names = "ai_{.col}"
+  ))
+
+#save
+#write.csv(ai_data, "../data/ci_site_ibr_09262025.csv")
+
+
 # old cleaning steps that don't need to happen anymore
 ## fixing site names & trimming white space for chem data sets
 ```{r}

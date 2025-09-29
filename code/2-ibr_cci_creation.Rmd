@@ -64,6 +64,7 @@ summary(site_data)
 
 
 ```
+# 9.29.25 - Restart here with sample_level data if I want to match the Mattos method
 
 # Creating Mattos' IBRv2i Index with biomarkers and raw morphometrics (no condition indices)
 
@@ -122,7 +123,7 @@ prepare_metrics_for_ibr_tidy <- function(site_data, site_col, ref_site, id_cols,
 ```
 
 
-## z-score standardization, absolute sd (AI) & IBR scoring
+## z-score standardization, absolute sd (AI)- Scaling
 ```{r}
 
 # define data, reference site, necessary metrics, which scaling method should be used, and the end output
@@ -145,16 +146,16 @@ resolve_t <- function(metrics_transformed, req) {
 }
 base_from_t <- function(tn) sub("^t_", "", sub("_t$", "", tn))
 
-# ---- pick transformed columns to process ----
+# columns to scale
 t_cols_all_req<- c(metrics_for_ibr, condition_metrics)
 t_cols<- resolve_t(metrics_transformed, t_cols_all_req)     
 geom_t_cols    <- resolve_t(metrics_transformed, geom_metrics)      
 
-# ---- reference mask ----
+# reference
 ref_rows <- metrics_transformed[[site_col]] == ref_site
 if (!any(ref_rows)) stop("No rows match the reference site: ", ref_site)
 
-# ---- centers (in transformed space) ----
+# scaling
 centers <- vapply(t_cols, function(tc) {
   t_ref <- metrics_transformed[[tc]][ref_rows]
   if (tc %in% geom_t_cols) {
@@ -165,67 +166,44 @@ centers <- vapply(t_cols, function(tc) {
 }, numeric(1))
 names(centers) <- t_cols
 
-# ---- add centered (_s), z of centered (_zs), and AI on centered (ai_*_s) ----
-# 1) center *_t -> *_s (keeps raw & *_t untouched)
 metrics_transformed <- metrics_transformed %>%
   mutate(across(all_of(t_cols),
                 ~ .x - centers[cur_column()],
                 .names = "{.col}_s")) %>%
-  # rename to base_s regardless of style:
   rename_with(~ sub("_t_s$", "_s", .x), ends_with("_t_s")) %>%
   rename_with(~ sub("^t_(.*)_s$", "\\1_s", .x), matches("^t_.*_s$"))
 
-# 2) z-scores of centered for IBR metrics only
-ibr_t_cols <- resolve_t(metrics_transformed, metrics_for_ibr)         # ensure alignment
+# z-scores of centered for IBR metrics only
+ibr_t_cols <- resolve_t(metrics_transformed, metrics_for_ibr)         
 ibr_bases  <- base_from_t(ibr_t_cols)
 s_cols_ibr <- paste0(ibr_bases, "_s")
 
 metrics_transformed <- metrics_transformed %>%
   mutate(across(all_of(s_cols_ibr),
                 ~ as.numeric(scale(.x)),
-                .names = "{.col}_zs"))                                # e.g., p450_s_zs
-
-# 3) absolute deviation (AI) from reference on centered scale
+                .names = "{.col}_zs"))                               
+# absolute deviation-ai
 metrics_transformed <- metrics_transformed %>%
   mutate(across(all_of(s_cols_ibr),
                 ~ abs(.x),
-                .names = "ai_{.col}"))                                # e.g., ai_p450_s
+                .names = "ai_{.col}"))
 
-# ---- quick peeks ----
+# view
 metrics_transformed %>% select(all_of(site_col), ends_with("_s"))  %>% head()
 metrics_transformed %>% select(all_of(site_col), ends_with("_zs")) %>% head()
 metrics_transformed %>% select(all_of(site_col), starts_with("ai_")) %>% head()
 
-# Example save:
-# write.csv(metrics_transformed, "metrics_transformed_with_scaling.csv", row.names = FALSE)
+# save
+#write.csv(metrics_transformed, "../data/site_level_transform_and_scale_09282025.csv", row.names = FALSE)
 
-#*************************************OLD CODE*****************************#
-# to scale condition indices
-non_metrics<- c("ci1", "ci2", "ci3") # for code at line 109
-ref_site <- "Penn Cove Reference"
-metrics2<- non_metrics # for code at line 109
-scale_num <- function(x) as.numeric(scale(x))
+```
 
-# z-score the metrics. Note- condition indices will need to be done separately
-z_data <- site_data %>%
-  mutate(across(all_of(metrics2), scale_num, .names = "z_{.col}"))
 
-# reference means from reference site z-scored columns 
-ref_means <- z_data %>%
-  filter(site_name == ref_site) %>%
-  summarise(across(all_of(paste0("z_", metrics2)), ~ mean(.x, na.rm = TRUE))) %>%
-  as.list() %>% unlist()
+##  IBR scoring
+```{r}
 
-# calculate absolute deviation from reference (AI) for the same set of columns
-ai_data <- z_data %>%
-  mutate(across(
-    all_of(paste0("z_", metrics2)),
-    ~ abs(.x - ref_means[cur_column()]),
-    .names = "ai_{.col}"
-  ))
 
-#save
-#write.csv(ai_data, "../data/ci_site_ibr_09262025.csv")
+
 
 ```
 
