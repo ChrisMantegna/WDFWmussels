@@ -40,7 +40,8 @@ library(knitr) # output formatting
 library(pgirmess) # stats - KW
 library(purrr) # works with tidy
 library(rcompanion) # KW testing
-library(rstatix) # VERIFY what this is for      
+library(rstatix) # VERIFY what this is for
+library(rlang) # verify what this is for
 library(RVAideMemoire) # post hoc test for permanova
 library(scales) # scaling data for IBR - works with data wrangling packages
 library(stringr) # helps with tidyverse table manipulation/ name reading
@@ -55,10 +56,15 @@ library(vegan) # ecological stats
 
 getwd()
 
-site_data<- read.csv("../data/start_here/site_level_no_indices.csv")
+site_data<- read.csv("../data/start_here/cleaned_sample_level.csv")
+sample_data<- read.csv("../data/cleaned/site_level_no_indices.csv")
 
 site_data$reporting_area <- as.factor(site_data$reporting_area)
 site_data$site_number<- as.factor(site_data$site_number)
+
+sample_data$reporting_area <- as.factor(sample_data$reporting_area)
+sample_data$site_number<- as.factor(sample_data$site_number)
+sample_data$sample_number<- as.factor(sample_data$sample_number)
 
 summary(site_data)
 
@@ -69,6 +75,14 @@ summary(site_data)
 # Creating Mattos' IBRv2i Index with biomarkers and raw morphometrics (no condition indices)
 
 ## log2 transform the metrics - sample-level used in 3.2
+```{r}
+
+
+
+```
+
+
+
 ## log2 transform the metrics - site-level used in 1/3 analysis outputs (3.2)
 ```{r}
 
