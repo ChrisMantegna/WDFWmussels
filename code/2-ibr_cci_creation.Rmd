@@ -38,10 +38,12 @@ library(FSA) # post hoc test - Dunn's Test
 library(ggplot2) # plots
 library(knitr) # output formatting
 library(pgirmess) # stats - KW
+library(purrr) # works with tidy
 library(rcompanion) # KW testing
 library(rstatix) # VERIFY what this is for      
 library(RVAideMemoire) # post hoc test for permanova
 library(scales) # scaling data for IBR - works with data wrangling packages
+library(stringr) # helps with tidyverse table manipulation/ name reading
 library(tidyr) # data wrangling
 library(tidyverse) # data wrangling
 library(vegan) # ecological stats 
@@ -53,66 +55,151 @@ library(vegan) # ecological stats
 
 getwd()
 
-site_data<- read.csv("../data/avg_site_level_no_indices.csv")
-con_data<- read.csv("../data/all_sites_with_contaminant_indices.csv")
+site_data<- read.csv("../data/start_here/site_level_no_indices.csv")
 
 site_data$reporting_area <- as.factor(site_data$reporting_area)
-con_data$reporting_area <- as.factor(con_data$reporting_area)
+site_data$site_number<- as.factor(site_data$site_number)
 
 summary(site_data)
-summary(con_data)
+
 
 ```
 
 # Creating Mattos' IBRv2i Index with biomarkers and raw morphometrics (no condition indices)
 
-## log2 transform the metrics
+## log2 transform the metrics - NOT used in 2/3 analysis ouptputs (3.0 and 3.1), IS used in 1/3 analysis outputs (3.2)
 ```{r}
 
+# define our reference
+site_col  <- "site_name"
+ref_site  <- "Penn Cove Reference"
 
+# columns we want to remain unchanged 
+id_cols <- c("site_number","site_name", "reporting_area", "latitude", "longitude")
+
+#  metrics that feed into the IBR 
+metric_cols <- c("p450","sod", "shell", "weight_initial", "weight_change", "weight_final", "length","height","width")
+
+# metrics that do not feed into the IBR
+condition_cols <- c("ci1","ci2","ci3")
+
+# metrics to center geometrically because they have strong skews, all others will be default (arithmetic)
+geom_center_metrics <- c("p450","sod", "ci1", "ci2", "height")
+
+# positive floor for safe log2 (prevents log2(0))
+eps <- .Machine$double.eps
+
+# function to complete the transformation
+prepare_metrics_for_ibr_tidy <- function(site_data, site_col, ref_site, id_cols, metric_cols, condition_cols, geom_center_metrics, eps = .Machine$double.eps) 
+  {
+
+  stopifnot(site_col %in% names(site_data))
+  all_metrics <- c(metric_cols, condition_cols)
+
+  # keep only what we need
+  keep_cols <- unique(c(id_cols, all_metrics, site_col))
+  keep_cols <- keep_cols[keep_cols %in% names(site_data)]
+  site_data <- site_data %>% select(all_of(keep_cols))
+
+ metrics_transformed <- site_data %>%
+    dplyr::mutate(
+      dplyr::across(dplyr::all_of(all_metrics),
+                    ~ log2(pmax(.x, eps)),
+                    .names = "t_{.col}")
+    )
+
+  # add transformed columns to og columns - fix because the naming alteration didn't work
+  metrics_transformed <- metrics_transformed %>%
+    dplyr::relocate(dplyr::all_of(id_cols), .before = 1) %>%
+    dplyr::relocate(dplyr::starts_with("t_"), .after = dplyr::last_col())
+
+  metrics_transformed
+}
+
+# save
+#write.csv(metrics_transformed, "../data/metrics_transformed_09282025.csv")
 
 ```
 
 
-## z-score standardization, absolute sd & IBR scoring
+## z-score standardization, absolute sd (AI) & IBR scoring
 ```{r}
 
-# define biomarker and morphometric groups, reference site
-biomarker_metrics <- c("p450", "sod")
-morphometric_metrics <- c("shell", "length", "height", "width", "weight_initial", "weight_change", "weight_final")
-ref_site <- "Penn Cove Reference"
+# define data, reference site, necessary metrics, which scaling method should be used, and the end output
+metrics_transformed<- metrics_transformed
+site_col<- "site_name"
+ref_site<- "Penn Cove Reference"
+biomarker_metrics<- c("p450_t","sod_t")
+morphometric_metrics<- c("shell_t","length_t","height_t","width_t","weight_change_t")
+condition_metrics<- c("ci1_t","ci2_t","ci3_t")
+geom_metrics<- c("p450_t","sod_t","ci1_t","ci2_t","height_t")  
+metrics_for_ibr<- c(biomarker_metrics, morphometric_metrics)
 
-metrics <- c(biomarker_metrics, morphometric_metrics)
-scale_num <- function(x) as.numeric(scale(x))
+resolve_t <- function(metrics_transformed, req) {
+  sapply(req, function(m) {
+    if (m %in% names(metrics_transformed)) return(m)                             # e.g., "p450_t"
+    m2 <- paste0("t_", sub("_t$", "", m))                       # try "t_p450"
+    if (m2 %in% names(metrics_transformed)) return(m2)
+    stop("Missing transformed column for '", m, "'. Looked for '", m, "' and '", m2, "'.")
+  }, USE.NAMES = FALSE)
+}
+base_from_t <- function(tn) sub("^t_", "", sub("_t$", "", tn))
 
-# z-score the metrics. Note- condition indices will need to be done separately
-z_data <- site_data %>%
-  mutate(across(all_of(metrics), scale_num, .names = "z_{.col}"))
+# ---- pick transformed columns to process ----
+t_cols_all_req<- c(metrics_for_ibr, condition_metrics)
+t_cols<- resolve_t(metrics_transformed, t_cols_all_req)     
+geom_t_cols    <- resolve_t(metrics_transformed, geom_metrics)      
 
-# reference means from reference site z-scored columns 
-ref_means <- z_data %>%
-  filter(site_name == ref_site) %>%
-  summarise(across(all_of(paste0("z_", metrics)), ~ mean(.x, na.rm = TRUE))) %>%
-  as.list() %>% unlist()
+# ---- reference mask ----
+ref_rows <- metrics_transformed[[site_col]] == ref_site
+if (!any(ref_rows)) stop("No rows match the reference site: ", ref_site)
 
-# calculate absolute deviation from reference (AI) for the same set of columns
-ai_data <- z_data %>%
-  mutate(across(
-    all_of(paste0("z_", metrics)),
-    ~ abs(.x - ref_means[cur_column()]),
-    .names = "ai_{.col}"
-  ))
+# ---- centers (in transformed space) ----
+centers <- vapply(t_cols, function(tc) {
+  t_ref <- metrics_transformed[[tc]][ref_rows]
+  if (tc %in% geom_t_cols) {
+    mean(t_ref, na.rm = TRUE)                                         
+  } else {
+    log2(mean(2^t_ref, na.rm = TRUE))                                  
+  }
+}, numeric(1))
+names(centers) <- t_cols
 
-# assign IBR scores
-site_ibr <- ai_data %>%
-  mutate(
-    ibr_biomarker= rowSums(across(all_of(paste0("ai_z_", biomarker_metrics))), na.rm = TRUE),
-    ibr_morphometric = rowSums(across(all_of(paste0("ai_z_", morphometric_metrics))), na.rm = TRUE),
-    ibr_combined= ibr_biomarker + ibr_morphometric)
+# ---- add centered (_s), z of centered (_zs), and AI on centered (ai_*_s) ----
+# 1) center *_t -> *_s (keeps raw & *_t untouched)
+metrics_transformed <- metrics_transformed %>%
+  mutate(across(all_of(t_cols),
+                ~ .x - centers[cur_column()],
+                .names = "{.col}_s")) %>%
+  # rename to base_s regardless of style:
+  rename_with(~ sub("_t_s$", "_s", .x), ends_with("_t_s")) %>%
+  rename_with(~ sub("^t_(.*)_s$", "\\1_s", .x), matches("^t_.*_s$"))
 
-# save
-#write.csv(site_ibr, "../data/site_ibr_09262025.csv")
+# 2) z-scores of centered for IBR metrics only
+ibr_t_cols <- resolve_t(metrics_transformed, metrics_for_ibr)         # ensure alignment
+ibr_bases  <- base_from_t(ibr_t_cols)
+s_cols_ibr <- paste0(ibr_bases, "_s")
 
+metrics_transformed <- metrics_transformed %>%
+  mutate(across(all_of(s_cols_ibr),
+                ~ as.numeric(scale(.x)),
+                .names = "{.col}_zs"))                                # e.g., p450_s_zs
+
+# 3) absolute deviation (AI) from reference on centered scale
+metrics_transformed <- metrics_transformed %>%
+  mutate(across(all_of(s_cols_ibr),
+                ~ abs(.x),
+                .names = "ai_{.col}"))                                # e.g., ai_p450_s
+
+# ---- quick peeks ----
+metrics_transformed %>% select(all_of(site_col), ends_with("_s"))  %>% head()
+metrics_transformed %>% select(all_of(site_col), ends_with("_zs")) %>% head()
+metrics_transformed %>% select(all_of(site_col), starts_with("ai_")) %>% head()
+
+# Example save:
+# write.csv(metrics_transformed, "metrics_transformed_with_scaling.csv", row.names = FALSE)
+
+#*************************************OLD CODE*****************************#
 # to scale condition indices
 non_metrics<- c("ci1", "ci2", "ci3") # for code at line 109
 ref_site <- "Penn Cove Reference"

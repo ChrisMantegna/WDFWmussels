@@ -1,5 +1,5 @@
 ---
-title: "3.0- Analysis without indices, site-level"
+title: "3.2- Analysis with transformation and indices"
 output:
   pdf_document: 
     fig_width: 20

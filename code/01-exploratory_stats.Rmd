@@ -78,6 +78,13 @@ shapiro.test(site_data$ci1) # NOT normal
 shapiro.test(site_data$ci2) # NOT normal
 shapiro.test(site_data$ci3) # Normal
 shapiro.test(site_data$shell) # Normal
+# raw morph measurements
+shapiro.test(site_data$weight_initial) # Normal
+shapiro.test(site_data$weight_change) # Normal
+shapiro.test(site_data$weight_final) # Normal
+shapiro.test(site_data$length) # Normal
+shapiro.test(site_data$height) # Not normal
+shapiro.test(site_data$width) # Normal
 
 ```
 

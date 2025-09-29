@@ -1,3 +1,6 @@
+# Clean this file to keep references for future work, get rid of the junk and save as a reference file in the repo.
+
+
 # old cleaning steps that don't need to happen anymore
 ## fixing site names & trimming white space for chem data sets
 ```{r}
