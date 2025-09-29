@@ -1,4 +1,4 @@
-﻿latitude,longitude,site_name,sample_id,site_number,reporting_area,p450,sod,shell,ci1,ci2,ci3,weight_initial_g,weight_final_g,weight_change_g,length_mm,width_mm,height_mm
+﻿latitude,longitude,site_name,sample_id,site_number,reporting_area,p450,sod,shell,ci1,ci2,ci3,weight_initial,weight_final,weight_change,length,width,height
 48.6793778,-122.6300583,Aiston Preserve,239,77,7,9716178,-0.232,0.7,36.91,0.719,0.054,11.688,3.283,8.406,53.9,22.73,18.59
 48.6793778,-122.6300583,Aiston Preserve,240,77,7,1358797,4.877,0.79,31.3,0.679,0.048,10.833,3.481,7.352,53.49,23.92,18.36
 48.6793778,-122.6300583,Aiston Preserve,241,77,7,4914880,8.871,0.825,32.77,0.679,0.057,14.704,4.725,9.979,55.99,27.79,19.57

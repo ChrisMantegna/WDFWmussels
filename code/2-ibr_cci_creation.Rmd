@@ -68,7 +68,8 @@ summary(site_data)
 
 # Creating Mattos' IBRv2i Index with biomarkers and raw morphometrics (no condition indices)
 
-## log2 transform the metrics - NOT used in 2/3 analysis ouptputs (3.0 and 3.1), IS used in 1/3 analysis outputs (3.2)
+## log2 transform the metrics - sample-level used in 3.2
+## log2 transform the metrics - site-level used in 1/3 analysis outputs (3.2)
 ```{r}
 
 # define our reference
