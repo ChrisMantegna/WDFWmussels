@@ -28,7 +28,7 @@ knitr::opts_chunk$set(
 )
 
 # libraries
-library(car) # VERIFY what this is for 
+#library(car) # VERIFY what this is for 
 library(cluster) # grouping metrics - VERIFY still needed
 library(dplyr) # data wrangling
 library(factoextra) # pca/ nmds/ tweaking radars
@@ -249,12 +249,14 @@ sample_level_ibr <- sample_level_ai %>%
 
 # D) Review
 head(sample_level_ibr)
-write.csv(sample_level_ibr, "../data/interim_df/sample_level_ibr_09292025.csv", row.names = FALSE)
+#write.csv(sample_level_ibr, "../data/interim_df/sample_level_ibr_09292025.csv", row.names = FALSE)
 
 ```
 
 ## create site-level ibr from the sample-level ibr
 ```{r}
+
+sample_level_ibr<- read.csv("../data/interim_df/sample_level_ibr_09292025.csv")
 
 site_level_ibr <- sample_level_ibr %>%
   dplyr::group_by(site_name) %>%
@@ -263,7 +265,7 @@ site_level_ibr <- sample_level_ibr %>%
     ibr_morph   = mean(ibr_morphometric, na.rm = TRUE),
     ibr_combined= mean(ibr_total, na.rm = TRUE),
     # averaged scaled values
-    across(starts_with("scaled_"), ~mean(.x, na.rm = TRUE), .names = "avg_{.col}"),
+    across(starts_with("tc_"), ~mean(.x, na.rm = TRUE), .names = "avg_{.col}"),
     n_samples   = dplyr::n(),
     .groups = "drop"
   )
@@ -271,7 +273,7 @@ site_level_ibr <- sample_level_ibr %>%
 
 # Review & save
 head(site_level_ibr)
-write.csv(site_level_ibr, "../data/site_level_ibr_summary_10012025.csv", row.names = FALSE)
+#write.csv(site_level_ibr, "../data/site_level_ibr_and_metrics_10012025.csv", row.names = FALSE)
 
 ```
 

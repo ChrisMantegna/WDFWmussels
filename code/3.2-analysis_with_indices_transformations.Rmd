@@ -28,7 +28,7 @@ knitr::opts_chunk$set(
 )
 
 # libraries
-library(car) # VERIFY what this is for 
+library(broom) # converting output tables to tidy tables for saving or easy view
 library(cluster) # grouping metrics - VERIFY still needed
 library(devtools) # installing bespoke packages
 library(dplyr) # data wrangling
@@ -57,14 +57,14 @@ library(vegan) # ecological stats
 
 getwd()
 
-site_data<- read.csv("../data/start_here/avg_site_level_no_indices.csv")
+site_data<- read.csv("../data/site_level_complete_indices_10012025.csv")
 
 ```
 
 # Data prep
 ```{r}
 
-# make reporting area a factor 
+# make ID columns factors (reporting and site number)
 site_data$reporting_area <- as.factor(site_data$reporting_area)
 site_data$site_name <- as.factor(site_data$site_name)
 
@@ -83,6 +83,13 @@ head(all_data_complete_indices)
 
 # write it out
 #write.csv(all_data_complete_indices, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/complete_sample_level.csv", row.names = FALSE) 
+
+```
+
+
+# Test Normality
+```{r}
+
 
 ```
 
