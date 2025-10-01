@@ -259,16 +259,19 @@ write.csv(sample_level_ibr, "../data/interim_df/sample_level_ibr_09292025.csv", 
 site_level_ibr <- sample_level_ibr %>%
   dplyr::group_by(site_name) %>%
   dplyr::summarize(
-    ibr_bio= mean(ibr_biomarker, na.rm = TRUE),
-    ibr_morph= mean(ibr_morphometric, na.rm = TRUE),
+    ibr_bio     = mean(ibr_biomarker, na.rm = TRUE),
+    ibr_morph   = mean(ibr_morphometric, na.rm = TRUE),
     ibr_combined= mean(ibr_total, na.rm = TRUE),
-    n_samples = dplyr::n(),
+    # averaged scaled values
+    across(starts_with("scaled_"), ~mean(.x, na.rm = TRUE), .names = "avg_{.col}"),
+    n_samples   = dplyr::n(),
     .groups = "drop"
   )
 
+
 # Review & save
 head(site_level_ibr)
-#write.csv(site_level_ibr, "../data/interim_df/site_level_ibr_summary_09292025.csv", row.names = FALSE)
+write.csv(site_level_ibr, "../data/site_level_ibr_summary_10012025.csv", row.names = FALSE)
 
 ```
 
