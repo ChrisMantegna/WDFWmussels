@@ -55,44 +55,218 @@ library(vegan) # ecological stats
 # Load & Check Data
 ```{r}
 
+# working from the clean data folder
 getwd()
 
-site_data<- read.csv("../data/site_level_complete_indices_10012025.csv")
+site_data<- read.csv("../data/cleaned/site_level_complete_indices_10012025.csv")
+sample_data<- read.csv("../data/interim_df/sample_level_scaling_09292025.csv")
 
 ```
 
 # Data prep
 ```{r}
 
-# make ID columns factors (reporting and site number)
+# make ID columns factors 
 site_data$reporting_area <- as.factor(site_data$reporting_area)
 site_data$site_name <- as.factor(site_data$site_name)
+site_data$site_number <- as.factor(site_data$site_number)
+
+sample_data$reporting_area <- as.factor(sample_data$reporting_area)
+sample_data$site_name <- as.factor(sample_data$site_name)
+sample_data$site_number <- as.factor(sample_data$site_number)
 
 ```
-
-## add contaminant indices to sample- level df
-### NOT needed - do not use
-```{r}
-
-site_df<- read.csv("../data/index_df/contaminant_indices_only.csv")
-
-all_data_complete_indices <- all_data %>%
-  left_join(site_df, by = "site_name")
-
-head(all_data_complete_indices)
-
-# write it out
-#write.csv(all_data_complete_indices, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/complete_sample_level.csv", row.names = FALSE) 
-
-```
-
 
 # Test Normality
+## Determines what stats I can run
 ```{r}
 
+# shapiro-wilks on scaled metrics and indices
+
+shapiro_results <- site_data %>%
+  select(6:33) %>%
+  map_df(~ broom::tidy(shapiro.test(.x)), .id = "variable")
+
+shapiro_results
+
+# save
+write.csv(shapiro_results, "../output/tables/shapiro_scaled_and_indices_10012025.csv", row.names = FALSE)
 
 ```
 
+# Normally distributed indices - ANOVA + Tukey's Post hoc
+## Are there differences between these values at the site and reporting area level?
+```{r}
+
+#p450 - site level for RA and sample level (tc value) for the site
+p450_anova_site <- aov(tc_p450 ~ site_number, data = sample_data) # p-value= 1.25e-7
+p450_anova_ra <- aov(p450 ~ reporting_area, data = site_data) # p-value= 0.0116
+summary(p450_anova_site)
+summary(p450_anova_ra)
+
+#weight_change - not significant
+wc_anova_site <- aov(tc_weight_change ~ site_number, data = sample_data) # p-value= 0.0674
+wc_anova_ra <- aov(weight_change ~ reporting_area, data = site_data) # p-value= 0.177
+summary(wc_anova_site)
+summary(wc_anova_ra)
+
+#ci3 - not significant
+ci3_anova_site <- aov(tc_ci3 ~ site_number, data = sample_data) # p-value= 0.0507
+ci3_anova_ra <- aov(ci3 ~ reporting_area, data = site_data) # p-value= 0.422
+summary(ci3_anova_site)
+summary(ci3_anova_ra)
+
+#ibr_morph
+#morph_anova_site <- aov(ibr_morph ~ site_name, data = sample_data) # p-value= 
+morph_anova_ra <- aov(ibr_morph ~ reporting_area, data = site_data) # p-value= 0.048
+#summary(morph_anova_site)
+summary(morph_anova_ra)
+
+# these may not be consequential in what I need
+#length, width, height
+#weight initial and final
+
+
+```
+## Tukey's for p450 and ibr_morph
+```{r}
+
+# p450, site
+tuk <- TukeyHSD(p450_anova_site, "site_number")
+tuk_df <- broom::tidy(tuk) %>%
+  filter(term == "site_number") %>%
+  separate(contrast, into = c("Group1", "Group2"), sep = "-") %>%
+  mutate(Significant = ifelse(adj.p.value < 0.05, "Yes", "No"))
+# cld letters
+groups <- sort(unique(c(tuk_df$Group1, tuk_df$Group2)))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in seq_len(nrow(tuk_df))) {
+  g1 <- tuk_df$Group1[i]; g2 <- tuk_df$Group2[i]
+  p  <- as.numeric(tuk_df$adj.p.value[i])
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(Group = names(cld_letters), CLD = cld_letters, 
+                     stringsAsFactors = FALSE)
+
+tukey_table_with_cld <- tuk_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(tukey_table_with_cld)
+#write.csv(tukey_table_with_cld, "../output/tukey_p450_site_10012025.csv", row.names = FALSE) 
+
+# p450 - reporting area
+tuk <- TukeyHSD(p450_anova_ra, "reporting_area")
+tuk_df <- broom::tidy(tuk) %>%
+  filter(term == "reporting_area") %>%
+  separate(contrast, into = c("Group1", "Group2"), sep = "-") %>%
+  mutate(Significant = ifelse(adj.p.value < 0.05, "Yes", "No"))
+# cld letters
+groups <- sort(unique(c(tuk_df$Group1, tuk_df$Group2)))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in seq_len(nrow(tuk_df))) {
+  g1 <- tuk_df$Group1[i]; g2 <- tuk_df$Group2[i]
+  p  <- as.numeric(tuk_df$adj.p.value[i])
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(Group = names(cld_letters), CLD = cld_letters, 
+                     stringsAsFactors = FALSE)
+
+tukey_table_with_cld <- tuk_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(tukey_table_with_cld)
+#write.csv(tukey_table_with_cld, "../output/tables/tukey_p450_ra_10012025.csv", row.names = FALSE) 
+
+# ibr_morphometrics - reporting area
+tuk <- TukeyHSD(morph_anova_ra, "reporting_area")
+tuk_df <- broom::tidy(tuk) %>%
+  filter(term == "reporting_area") %>%
+  separate(contrast, into = c("Group1", "Group2"), sep = "-") %>%
+  mutate(Significant = ifelse(adj.p.value < 0.05, "Yes", "No"))
+# cld letters
+groups <- sort(unique(c(tuk_df$Group1, tuk_df$Group2)))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in seq_len(nrow(tuk_df))) {
+  g1 <- tuk_df$Group1[i]; g2 <- tuk_df$Group2[i]
+  p  <- as.numeric(tuk_df$adj.p.value[i])
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(Group = names(cld_letters), CLD = cld_letters, 
+                     stringsAsFactors = FALSE)
+
+tukey_table_with_cld <- tuk_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(tukey_table_with_cld)
+#write.csv(tukey_table_with_cld, "../output/tables/tukey_ibr_morph_ra_10012025.csv", row.names = FALSE) 
+
+```
+
+
+# NOT Normally distributed indices - Kruskal-Wallis + Dunn's Post hoc
+## Are there differences between these values at the site and reporting area level?
+```{r}
+
+# both biomarkers
+kruskal.test(tc_p450 ~ tc_sod, data = sample_data) # p-value = 0.478 at site-level, p-value = 0.5131 at sample-level
+
+# sod
+kruskal.test(tc_sod ~ site_number, data = sample_data) # p-value = 0.001777
+kruskal.test(sod ~ reporting_area, data = site_data) # p-value = 0.7705
+
+# ci1
+kruskal.test(tc_ci1 ~ site_number, data = sample_data) # p-value = 0.001056
+kruskal.test(ci1 ~ reporting_area, data = site_data) # p-value = 0.991
+
+# ci2
+kruskal.test(tc_ci2 ~ site_number, data = sample_data) # p-value = 2.191e-8
+kruskal.test(ci2 ~ reporting_area, data = site_data) # p-value = 0.8179
+
+# shell
+kruskal.test(tc_shell ~ site_number, data = sample_data) # p-value = 1.092e-08
+kruskal.test(shell ~ reporting_area, data = site_data) # p-value = 0.0204
+
+# ibr_bio
+#kruskal.test(tc_ibr_bio ~ site_number, data = sample_data) # p-value = 
+kruskal.test(ibr_bio ~ reporting_area, data = site_data) # p-value = 0.6185
+
+# ibr_combined
+#kruskal.test(p450 ~ site_number, data = sample_data) # p-value = 
+kruskal.test(ibr_combined ~ reporting_area, data = site_data) # p-value = 0.4618
+
+# all of the contaminant indices are NOT normally distributed and will get a KW box for them v reporting area separately
+
+```
+
+
+
+
+
+
+
+
+############################### OLD Code######################################
 # KW 
 ## site & reporting area, run 9.26.25
 ### no significant result
