@@ -492,10 +492,10 @@ kruskal.test(chlordane_index ~ reporting_area, data = site_data) # p-value = 0.0
 kruskal.test(ddt_index ~ reporting_area, data = site_data) # p-value = 6.389e-06
 
 # hch_index - Not significant
-kruskal.test(hch_index ~ reporting_area, data = site_data) # p-value = 0.1796
+#kruskal.test(hch_index ~ reporting_area, data = site_data) # p-value = 0.1796
 
 # heavy_metal_index - Not significant
-kruskal.test(heavy_metal_index ~ reporting_area, data = site_data) # p-value = 0.07802
+#kruskal.test(heavy_metal_index ~ reporting_area, data = site_data) # p-value = 0.07802
 
 # nutrient_metal_index
 kruskal.test(nutrient_metal_index ~ reporting_area, data = site_data) # p-value = 0.02028
