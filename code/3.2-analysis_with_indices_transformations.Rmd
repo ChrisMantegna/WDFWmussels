@@ -58,9 +58,9 @@ library(vegan) # ecological stats
 # working from the clean data folder
 getwd()
 
-site_data<- read.csv("../data/cleaned/site_level_complete_indices_10012025.csv")
-sample_data<- read.csv("../data/interim_df/sample_level_scaling_09292025.csv")
-sample_ibr<- read.csv("../data/interim_df/sample_level_ibr_09292025.csv")
+site_data<- read.csv("../data/cleaned/site_level_complete_indices_10012025.csv") # for reporting area comparisons
+sample_data<- read.csv("../data/interim_df/sample_level_scaling_09292025.csv") # for site comparisons for the metrics
+sample_ibr<- read.csv("../data/interim_df/sample_level_ibr_09292025.csv") # for the reporting area comparisons for the ibrs
 
 ```
 
@@ -99,36 +99,40 @@ shapiro_results
 
 ```
 
-# Normally distributed indices - ANOVA + Tukey's Post hoc
-## Are there differences between these values at the site and reporting area level?
+
+# Asking: Are there differences between these values at the site and reporting area level?
+## ANOVA 
+### p450, weight_change, ci3, ibr_morph, length, width, height, weight_initial, weight_final
 ```{r}
 
-#p450 - site level for RA and sample level (tc value) for the site
+#NOTE: RA comparisons using site_data, Site comparisons using sample_data for non-ibr metrics, the tc value since it is the transformed and scaled value
+
+#p450 - significant p-value for both 
 p450_anova_site <- aov(tc_p450 ~ site_number, data = sample_data) # p-value= 1.25e-7
 p450_anova_ra <- aov(p450 ~ reporting_area, data = site_data) # p-value= 0.0116
 summary(p450_anova_site)
 summary(p450_anova_ra)
 
-#weight_change - not significant
+#weight_change - non-significant p-value for both
 wc_anova_site <- aov(tc_weight_change ~ site_number, data = sample_data) # p-value= 0.0674
 wc_anova_ra <- aov(weight_change ~ reporting_area, data = site_data) # p-value= 0.177
 summary(wc_anova_site)
 summary(wc_anova_ra)
 
-#ci3 - not significant
+#ci3 - non-significant p-value for both. Note significance for site is at the edge, will posthoc for piece of mind
 ci3_anova_site <- aov(tc_ci3 ~ site_number, data = sample_data) # p-value= 0.0507
 ci3_anova_ra <- aov(ci3 ~ reporting_area, data = site_data) # p-value= 0.422
 summary(ci3_anova_site)
 summary(ci3_anova_ra)
 
-#ibr_morph
+#ibr_morph - significant p-value for both
 morph_anova_site <- aov(ibr_morphometric ~ site_number, data = sample_ibr) # p-value= 2.65e-10
 morph_anova_ra <- aov(ibr_morph ~ reporting_area, data = site_data) # p-value= 0.048
 summary(morph_anova_site)
 summary(morph_anova_ra)
 
-# these may not be consequential in what I need
-#length
+# these may not be consequential in what I need, but running just in case
+#length - significant p-value for site, non-significant p=value for reporting area
 len_anova_site <- aov(tc_length ~ site_number, data = sample_data) # p-value= 0.0128
 len_anova_ra <- aov(length ~ reporting_area, data = site_data) # p-value= 0.594
 summary(len_anova_site)
@@ -154,15 +158,17 @@ summary(wi_anova_ra)
 
 #weight final
 wf_anova_site <- aov(tc_weight_final ~ site_number, data = sample_data) # p-value= 0.00101
-wf_anova_ra <- aov(weight_final ~ reporting_area, data = site_data) # p-value= 0.0767
+#wf_anova_ra <- aov(weight_final ~ reporting_area, data = site_data) # p-value= 0.0767
 summary(wf_anova_site)
-summary(wf_anova_ra)
+#summary(wf_anova_ra)
 
 ```
-## Tukey's for p450 and ibr_morph
+
+## Tukey's
+### p450   
 ```{r}
 
-# p450, site
+#### p450, site: significant values returned
 tuk <- TukeyHSD(p450_anova_site, "site_number")
 tuk_df <- broom::tidy(tuk) %>%
   filter(term == "site_number") %>%
@@ -192,7 +198,7 @@ tukey_table_with_cld <- tuk_df %>%
 view(tukey_table_with_cld)
 #write.csv(tukey_table_with_cld, "../output/tukey_p450_site_10012025.csv", row.names = FALSE) 
 
-# p450 - reporting area
+#### p450 - reporting area: significant values returned
 tuk <- TukeyHSD(p450_anova_ra, "reporting_area")
 tuk_df <- broom::tidy(tuk) %>%
   filter(term == "reporting_area") %>%
@@ -220,14 +226,50 @@ tukey_table_with_cld <- tuk_df %>%
   rename(Group2_CLD = CLD)
 
 view(tukey_table_with_cld)
-#write.csv(tukey_table_with_cld, "../output/tables/tukey_p450_ra_10012025.csv", row.names = FALSE) 
+#write.csv(tukey_table_with_cld, "../output/tables/anova_kw_results/tukey_p450_ra_10012025.csv", row.names = FALSE) 
 
-# ibr_morph, site
-# the object you're separating on; e.g., tukey_df
-names(tuk)
-dplyr::glimpse(tuk)
-head(tuk)
+```
 
+### ci3
+```{r}
+
+# ci3, site: no significant values returned
+tuk <- TukeyHSD(ci3_anova_site, "site_number")
+tuk_df <- broom::tidy(tuk) %>%
+  filter(term == "site_number") %>%
+  separate(contrast, into = c("Group1", "Group2"), sep = "-") %>%
+  mutate(Significant = ifelse(adj.p.value < 0.05, "Yes", "No"))
+# cld letters
+groups <- sort(unique(c(tuk_df$Group1, tuk_df$Group2)))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in seq_len(nrow(tuk_df))) {
+  g1 <- tuk_df$Group1[i]; g2 <- tuk_df$Group2[i]
+  p  <- as.numeric(tuk_df$adj.p.value[i])
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(Group = names(cld_letters), CLD = cld_letters, 
+                     stringsAsFactors = FALSE)
+
+tukey_table_with_cld <- tuk_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(tukey_table_with_cld)
+getwd()
+write.csv(tukey_table_with_cld, "../output/anova_kw_results/tukey_ci3_site_10032025.csv", row.names = FALSE) 
+
+```
+
+### ibr_morph
+```{r}
+
+#### ibr_morph, site: significant values returned
 tuk <- TukeyHSD(morph_anova_site, "site_number")
 tuk_df <- broom::tidy(tuk) %>%
   filter(term == "site_number") %>%
@@ -255,9 +297,9 @@ tukey_table_with_cld <- tuk_df %>%
   rename(Group2_CLD = CLD)
 
 view(tukey_table_with_cld)
-#write.csv(tukey_table_with_cld, "../output/tukey_morph_site_10022025.csv", row.names = FALSE) 
+#write.csv(tukey_table_with_cld, "../output/anova_kw_results/tukey_morph_site_10022025.csv", row.names = FALSE) 
 
-# ibr_morphometrics - reporting area
+#### ibr_morphometrics, reporting area: no significant result
 tuk <- TukeyHSD(morph_anova_ra, "reporting_area")
 tuk_df <- broom::tidy(tuk) %>%
   filter(term == "reporting_area") %>%
@@ -285,9 +327,20 @@ tukey_table_with_cld <- tuk_df %>%
   rename(Group2_CLD = CLD)
 
 view(tukey_table_with_cld)
-#write.csv(tukey_table_with_cld, "../output/tables/tukey_ibr_morph_ra_10012025.csv", row.names = FALSE) 
+#write.csv(tukey_table_with_cld, "../output/tables/anova_kw_results/tukey_ibr_morph_ra_10012025.csv", row.names = FALSE)
 
 ```
+
+### length, width, height, weight_initial, weight_final.
+```{r}
+
+```
+
+```{r}
+
+```
+
+
 
 ## Tukey's for length, width, height, initial and final weight - all site, no RA
 ```{r}
