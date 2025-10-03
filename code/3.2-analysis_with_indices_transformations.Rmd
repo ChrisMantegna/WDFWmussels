@@ -60,6 +60,7 @@ getwd()
 
 site_data<- read.csv("../data/cleaned/site_level_complete_indices_10012025.csv")
 sample_data<- read.csv("../data/interim_df/sample_level_scaling_09292025.csv")
+sample_ibr<- read.csv("../data/interim_df/sample_level_ibr_09292025.csv")
 
 ```
 
@@ -74,6 +75,10 @@ site_data$site_number <- as.factor(site_data$site_number)
 sample_data$reporting_area <- as.factor(sample_data$reporting_area)
 sample_data$site_name <- as.factor(sample_data$site_name)
 sample_data$site_number <- as.factor(sample_data$site_number)
+
+sample_ibr$reporting_area <- as.factor(sample_ibr$reporting_area)
+sample_ibr$site_name <- as.factor(sample_ibr$site_name)
+sample_ibr$site_number <- as.factor(sample_ibr$site_number)
 
 ```
 
@@ -90,7 +95,7 @@ shapiro_results <- site_data %>%
 shapiro_results
 
 # save
-write.csv(shapiro_results, "../output/tables/shapiro_scaled_and_indices_10012025.csv", row.names = FALSE)
+#write.csv(shapiro_results, "../output/tables/shapiro_scaled_and_indices_10012025.csv", row.names = FALSE)
 
 ```
 
@@ -117,15 +122,41 @@ summary(ci3_anova_site)
 summary(ci3_anova_ra)
 
 #ibr_morph
-#morph_anova_site <- aov(ibr_morph ~ site_name, data = sample_data) # p-value= 
+morph_anova_site <- aov(ibr_morphometric ~ site_number, data = sample_ibr) # p-value= 2.65e-10
 morph_anova_ra <- aov(ibr_morph ~ reporting_area, data = site_data) # p-value= 0.048
-#summary(morph_anova_site)
+summary(morph_anova_site)
 summary(morph_anova_ra)
 
 # these may not be consequential in what I need
-#length, width, height
-#weight initial and final
+#length
+len_anova_site <- aov(tc_length ~ site_number, data = sample_data) # p-value= 0.0128
+len_anova_ra <- aov(length ~ reporting_area, data = site_data) # p-value= 0.594
+summary(len_anova_site)
+summary(len_anova_ra)
 
+#width 
+wid_anova_site <- aov(tc_width ~ site_number, data = sample_data) # p-value= 0.000336
+wid_anova_ra <- aov(width ~ reporting_area, data = site_data) # p-value= 0.214
+summary(wid_anova_site)
+summary(wid_anova_ra)
+
+#height
+hei_anova_site <- aov(tc_height ~ site_number, data = sample_data) # p-value= 0.00987
+hei_anova_ra <- aov(height ~ reporting_area, data = site_data) # p-value= 0.22
+summary(hei_anova_site)
+summary(hei_anova_ra)
+
+#weight initial
+wi_anova_site <- aov(tc_weight_initial ~ site_number, data = sample_data) # p-value= 0.0954
+wi_anova_ra <- aov(weight_initial ~ reporting_area, data = site_data) # p-value= 0.0519
+summary(wi_anova_site)
+summary(wi_anova_ra)
+
+#weight final
+wf_anova_site <- aov(tc_weight_final ~ site_number, data = sample_data) # p-value= 0.00101
+wf_anova_ra <- aov(weight_final ~ reporting_area, data = site_data) # p-value= 0.0767
+summary(wf_anova_site)
+summary(wf_anova_ra)
 
 ```
 ## Tukey's for p450 and ibr_morph
@@ -191,6 +222,41 @@ tukey_table_with_cld <- tuk_df %>%
 view(tukey_table_with_cld)
 #write.csv(tukey_table_with_cld, "../output/tables/tukey_p450_ra_10012025.csv", row.names = FALSE) 
 
+# ibr_morph, site
+# the object you're separating on; e.g., tukey_df
+names(tuk)
+dplyr::glimpse(tuk)
+head(tuk)
+
+tuk <- TukeyHSD(morph_anova_site, "site_number")
+tuk_df <- broom::tidy(tuk) %>%
+  filter(term == "site_number") %>%
+  separate(contrast, into = c("Group1", "Group2"), sep = "-") %>%
+  mutate(Significant = ifelse(adj.p.value < 0.05, "Yes", "No"))
+# cld letters
+groups <- sort(unique(c(tuk_df$Group1, tuk_df$Group2)))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in seq_len(nrow(tuk_df))) {
+  g1 <- tuk_df$Group1[i]; g2 <- tuk_df$Group2[i]
+  p  <- as.numeric(tuk_df$adj.p.value[i])
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(Group = names(cld_letters), CLD = cld_letters, 
+                     stringsAsFactors = FALSE)
+
+tukey_table_with_cld <- tuk_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(tukey_table_with_cld)
+#write.csv(tukey_table_with_cld, "../output/tukey_morph_site_10022025.csv", row.names = FALSE) 
+
 # ibr_morphometrics - reporting area
 tuk <- TukeyHSD(morph_anova_ra, "reporting_area")
 tuk_df <- broom::tidy(tuk) %>%
@@ -223,6 +289,161 @@ view(tukey_table_with_cld)
 
 ```
 
+## Tukey's for length, width, height, initial and final weight - all site, no RA
+```{r}
+
+# length, site - not significant
+tuk <- TukeyHSD(len_anova_site, "site_number")
+tuk_df <- broom::tidy(tuk) %>%
+  filter(term == "site_number") %>%
+  separate(contrast, into = c("Group1", "Group2"), sep = "-") %>%
+  mutate(Significant = ifelse(adj.p.value < 0.05, "Yes", "No"))
+# cld letters
+groups <- sort(unique(c(tuk_df$Group1, tuk_df$Group2)))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in seq_len(nrow(tuk_df))) {
+  g1 <- tuk_df$Group1[i]; g2 <- tuk_df$Group2[i]
+  p  <- as.numeric(tuk_df$adj.p.value[i])
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(Group = names(cld_letters), CLD = cld_letters, 
+                     stringsAsFactors = FALSE)
+
+tukey_table_with_cld <- tuk_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(tukey_table_with_cld)
+#write.csv(tukey_table_with_cld, "../output/tukey_length_site_10012025.csv", row.names = FALSE) 
+
+# width, site
+tuk <- TukeyHSD(wid_anova_site, "site_number")
+tuk_df <- broom::tidy(tuk) %>%
+  filter(term == "site_number") %>%
+  separate(contrast, into = c("Group1", "Group2"), sep = "-") %>%
+  mutate(Significant = ifelse(adj.p.value < 0.05, "Yes", "No"))
+# cld letters
+groups <- sort(unique(c(tuk_df$Group1, tuk_df$Group2)))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in seq_len(nrow(tuk_df))) {
+  g1 <- tuk_df$Group1[i]; g2 <- tuk_df$Group2[i]
+  p  <- as.numeric(tuk_df$adj.p.value[i])
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(Group = names(cld_letters), CLD = cld_letters, 
+                     stringsAsFactors = FALSE)
+
+tukey_table_with_cld <- tuk_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(tukey_table_with_cld)
+#write.csv(tukey_table_with_cld, "../output/tukey_width_site_10012025.csv", row.names = FALSE) 
+
+# height, site
+tuk <- TukeyHSD(hei_anova_site, "site_number")
+tuk_df <- broom::tidy(tuk) %>%
+  filter(term == "site_number") %>%
+  separate(contrast, into = c("Group1", "Group2"), sep = "-") %>%
+  mutate(Significant = ifelse(adj.p.value < 0.05, "Yes", "No"))
+# cld letters
+groups <- sort(unique(c(tuk_df$Group1, tuk_df$Group2)))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in seq_len(nrow(tuk_df))) {
+  g1 <- tuk_df$Group1[i]; g2 <- tuk_df$Group2[i]
+  p  <- as.numeric(tuk_df$adj.p.value[i])
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(Group = names(cld_letters), CLD = cld_letters, 
+                     stringsAsFactors = FALSE)
+
+tukey_table_with_cld <- tuk_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(tukey_table_with_cld)
+#write.csv(tukey_table_with_cld, "../output/tukey_height_site_10022025.csv", row.names = FALSE) 
+
+# weight_initial, site
+tuk <- TukeyHSD(wi_anova_site, "site_number")
+tuk_df <- broom::tidy(tuk) %>%
+  filter(term == "site_number") %>%
+  separate(contrast, into = c("Group1", "Group2"), sep = "-") %>%
+  mutate(Significant = ifelse(adj.p.value < 0.05, "Yes", "No"))
+# cld letters
+groups <- sort(unique(c(tuk_df$Group1, tuk_df$Group2)))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in seq_len(nrow(tuk_df))) {
+  g1 <- tuk_df$Group1[i]; g2 <- tuk_df$Group2[i]
+  p  <- as.numeric(tuk_df$adj.p.value[i])
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(Group = names(cld_letters), CLD = cld_letters, 
+                     stringsAsFactors = FALSE)
+
+tukey_table_with_cld <- tuk_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(tukey_table_with_cld)
+#write.csv(tukey_table_with_cld, "../output/tukey_weight_initial_site_10012025.csv", row.names = FALSE) 
+
+# weight_final, site
+tuk <- TukeyHSD(wf_anova_site, "site_number")
+tuk_df <- broom::tidy(tuk) %>%
+  filter(term == "site_number") %>%
+  separate(contrast, into = c("Group1", "Group2"), sep = "-") %>%
+  mutate(Significant = ifelse(adj.p.value < 0.05, "Yes", "No"))
+# cld letters
+groups <- sort(unique(c(tuk_df$Group1, tuk_df$Group2)))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in seq_len(nrow(tuk_df))) {
+  g1 <- tuk_df$Group1[i]; g2 <- tuk_df$Group2[i]
+  p  <- as.numeric(tuk_df$adj.p.value[i])
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(Group = names(cld_letters), CLD = cld_letters, 
+                     stringsAsFactors = FALSE)
+
+tukey_table_with_cld <- tuk_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(tukey_table_with_cld)
+#write.csv(tukey_table_with_cld, "../output/tukey_weight_final_site_10012025.csv", row.names = FALSE) 
+
+```
+
 
 # NOT Normally distributed indices - Kruskal-Wallis + Dunn's Post hoc
 ## Are there differences between these values at the site and reporting area level?
@@ -248,188 +469,668 @@ kruskal.test(tc_shell ~ site_number, data = sample_data) # p-value = 1.092e-08
 kruskal.test(shell ~ reporting_area, data = site_data) # p-value = 0.0204
 
 # ibr_bio
-#kruskal.test(tc_ibr_bio ~ site_number, data = sample_data) # p-value = 
+kruskal.test(ibr_biomarker ~ site_number, data = sample_ibr) # p-value = 0.000902
 kruskal.test(ibr_bio ~ reporting_area, data = site_data) # p-value = 0.6185
 
 # ibr_combined
-#kruskal.test(p450 ~ site_number, data = sample_data) # p-value = 
+kruskal.test(ibr_total ~ site_number, data = sample_ibr) # p-value = 0.0001618
 kruskal.test(ibr_combined ~ reporting_area, data = site_data) # p-value = 0.4618
 
 # all of the contaminant indices are NOT normally distributed and will get a KW box for them v reporting area separately
 
 ```
 
+# NOT Normally distributed indices - Kruskal-Wallis + Dunn's Post hoc
+## Are there differences between these values at the site and reporting area level?
+```{r}
+
+# contaminants
+# chlordane_index
+kruskal.test(chlordane_index ~ reporting_area, data = site_data) # p-value = 0.0001187
+
+# ddt_index
+kruskal.test(ddt_index ~ reporting_area, data = site_data) # p-value = 6.389e-06
+
+# hch_index - Not significant
+kruskal.test(hch_index ~ reporting_area, data = site_data) # p-value = 0.1796
+
+# heavy_metal_index - Not significant
+kruskal.test(heavy_metal_index ~ reporting_area, data = site_data) # p-value = 0.07802
+
+# nutrient_metal_index
+kruskal.test(nutrient_metal_index ~ reporting_area, data = site_data) # p-value = 0.02028
+
+# total_metal_index
+kruskal.test(total_metal_index ~ reporting_area, data = site_data) # p-value = 0.01076
+
+# pah_lmw_index
+kruskal.test(pah_lmw_index ~ reporting_area, data = site_data) # p-value = 0.005112
+
+# pah_hmw_index
+kruskal.test(pah_hmw_index ~ reporting_area, data = site_data) # p-value = 7.555e-05
+
+# pah_add_index - Not significant
+kruskal.test(pah_add_index ~ reporting_area, data = site_data) # p-value =0.1179
+
+# total_pah_index
+kruskal.test(total_pah_index ~ reporting_area, data = site_data) # p-value = 0.001526
+
+# pbde_index
+kruskal.test(pbde_index ~ reporting_area, data = site_data) # p-value = 0.0002848
+
+# pcb_index
+kruskal.test(pcb_index ~ reporting_area, data = site_data) # p-value = 0.01909
+
+# pesticide_index - Not significant
+kruskal.test(pesticide_index ~ reporting_area, data = site_data) # p-value = 0.1069
+
+```
+
+# Dunn's Test - site
+
+```{r}
+
+#site
+# sod - Not significant
+dunn_result <- dunnTest(tc_sod ~ site_name, data = sample_data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/dunn_sod_site_10022025.csv", row.names = FALSE) 
+
+# ci1
+dunn_result <- dunnTest(tc_ci1 ~ site_name, data = sample_data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/dunn_ci1_site_10022025.csv", row.names = FALSE) 
+
+# ci2 - Not Significant
+dunn_result <- dunnTest(tc_ci2 ~ site_name, data = sample_data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/dunn_ci2_site_10022025.csv", row.names = FALSE) 
+
+# shell
+dunn_result <- dunnTest(tc_shell ~ site_name, data = sample_data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/dunn_shell_site_10022025.csv", row.names = FALSE) 
+
+# shell, ra - Not Significant
+dunn_result <- dunnTest(shell ~ reporting_area, data = site_data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/dunn_shell_ra_10022025.csv", row.names = FALSE) 
+
+# ibr_bio - Not Significant
+dunn_result <- dunnTest(ibr_biomarker ~ site_name, data = sample_ibr, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/dunn_ibr_bio_site_10022025.csv", row.names = FALSE) 
+
+# ibr_combined (total) - Not Significant
+dunn_result <- dunnTest(ibr_total ~ site_name, data = sample_ibr, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/dunn_ibr_total_site_10022025.csv", row.names = FALSE) 
+
+```
+
+# Dunn's Test - reporting area
+## chlordane, ddt, nutrient + total metal, low + high + total pah, pbde, pcb
+```{r}
+
+#reporting area
+# chlordane
+dunn_result <- dunnTest(chlordane_index ~ reporting_area, data = site_data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_chlordane_ra.csv", row.names = FALSE) 
+
+# ddt
+dunn_result <- dunnTest(ddt_index ~ reporting_area, data = site_data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_ddt_ra.csv", row.names = FALSE) 
+
+# nutrient metals
+dunn_result <- dunnTest(nutrient_metal_index ~ reporting_area, data = site_data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_nutrient_metal_ra.csv", row.names = FALSE) 
+
+# total metal - Not Significant
+dunn_result <- dunnTest(total_metal_index ~ reporting_area, data = site_data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_total_metal_ra.csv", row.names = FALSE) 
 
 
+# high pah
+dunn_result <- dunnTest(pah_hmw_index ~ reporting_area, data = site_data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_high_pah_ra.csv", row.names = FALSE) 
 
 
+# low pah
+dunn_result <- dunnTest(pah_lmw_index ~ reporting_area, data = site_data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_low_pah_ra.csv", row.names = FALSE) 
+
+# total pah
+dunn_result <- dunnTest(total_pah_index ~ reporting_area, data = site_data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_total_pah_ra.csv", row.names = FALSE) 
+
+# pbde
+dunn_result <- dunnTest(pbde_index ~ reporting_area, data = site_data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_pbde_ra.csv", row.names = FALSE) 
+
+# pcb - Not Significant
+dunn_result <- dunnTest(pcb_index ~ reporting_area, data = site_data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_pcb_ra.csv", row.names = FALSE) 
+
+```
 
 
 
 ############################### OLD Code######################################
-# KW 
-## site & reporting area, run 9.26.25
-### no significant result
-```{r}
 
-# both biomarkers
-kruskal.test(p450 ~ sod, data = site_data) # p-value = 0.478
-
-# p450
-kruskal.test(p450 ~ site_name, data = site_data) # p-value = 0.478
-kruskal.test(p450 ~ reporting_area, data = site_data) # p-value = 0.07831
-
-# sod
-kruskal.test(sod ~ site_name, data = site_data) # p-value = 0.478
-kruskal.test(sod ~ reporting_area, data = site_data) # p-value = 0.7474
-
-# ci1
-kruskal.test(ci1 ~ site_name, data = site_data) # p-value = 0.478
-kruskal.test(ci1 ~ reporting_area, data = site_data) # p-value = 0.9762
-
-# ci2
-kruskal.test(ci2 ~ site_name, data = site_data) # p-value = 0.478
-kruskal.test(ci2 ~ reporting_area, data = site_data) # p-value = 0.821
-
-```
-
-# ANOVA + post hoc
-## shell and ci3
-```{r}
-
-#shell
-anova_site <- aov(shell ~ site_name, data = site_data) # p-value= 0.01119
-anova_ra <- aov(shell ~ reporting_area, data = site_data) # p-value= 0.0312
-summary(anova_site)
-summary(anova_ra)
-
-#ci3
-anova_site <- aov(ci3 ~ site_name, data = site_data) # p-value= 1.923e-5
-anova_ra <- aov(ci3 ~ reporting_area, data = site_data) # p-value= 0.386
-summary(anova_site)
-summary(anova_ra)
-
-#post - shell, site=  not significant
-tukey_site <- TukeyHSD(anova_site, "site_name")
-tukey_df <- as.data.frame(tukey_site$site_name)
-
-tukey_df <- tukey_df %>%
-  tibble::rownames_to_column("Comparison") %>%
-  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = "-") %>%
-  rename(Diff = diff, Lower = lwr, Upper = upr, P.adj = `p adj`) %>%
-  mutate(across(everything(), ~trimws(as.character(.)))) %>%  
-  mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
-
-groups <- unique(c(tukey_df$Group1, tukey_df$Group2))
-pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
-                      dimnames = list(groups, groups))
-
-for (i in 1:nrow(tukey_df)) {
-  g1 <- tukey_df$Group1[i]
-  g2 <- tukey_df$Group2[i]
-  pval <- as.numeric(tukey_df$P.adj[i])
-  pval_matrix[g1, g2] <- pval
-  pval_matrix[g2, g1] <- pval
-}
-
-cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
-
-cld_df <- data.frame(
-  Group = names(cld_letters),
-  CLD = cld_letters,
-  stringsAsFactors = FALSE
-)
-
-tukey_table_with_cld <- tukey_df %>%
-  left_join(cld_df, by = c("Group1" = "Group")) %>%
-  rename(Group1_CLD = CLD) %>%
-  left_join(cld_df, by = c("Group2" = "Group")) %>%
-  rename(Group2_CLD = CLD)
-
-view(tukey_table_with_cld) #view
-# write.csv(tukey_table_with_cld, "../output/tukey_shell_site.csv", row.names = FALSE) #save
-
-#post - shell=  not significant
-tukey_ra <- TukeyHSD(anova_ra, "reporting_area")
-tukey_df <- as.data.frame(tukey_ra$reporting_area)
-
-tukey_df <- tukey_df %>%
-  tibble::rownames_to_column("Comparison") %>%
-  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = "-") %>%
-  rename(Diff = diff, Lower = lwr, Upper = upr, P.adj = `p adj`) %>%
-  mutate(across(everything(), ~trimws(as.character(.)))) %>%  
-  mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
-
-groups <- unique(c(tukey_df$Group1, tukey_df$Group2))
-pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
-                      dimnames = list(groups, groups))
-
-for (i in 1:nrow(tukey_df)) {
-  g1 <- tukey_df$Group1[i]
-  g2 <- tukey_df$Group2[i]
-  pval <- as.numeric(tukey_df$P.adj[i])
-  pval_matrix[g1, g2] <- pval
-  pval_matrix[g2, g1] <- pval
-}
-
-cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
-
-cld_df <- data.frame(
-  Group = names(cld_letters),
-  CLD = cld_letters,
-  stringsAsFactors = FALSE
-)
-
-tukey_table_with_cld <- tukey_df %>%
-  left_join(cld_df, by = c("Group1" = "Group")) %>%
-  rename(Group1_CLD = CLD) %>%
-  left_join(cld_df, by = c("Group2" = "Group")) %>%
-  rename(Group2_CLD = CLD)
-
-view(tukey_table_with_cld) #view
-# write.csv(tukey_table_with_cld, "../output/tukey_shell_ra.csv", row.names = FALSE) #save
-
-#post - reporting area
-tukey_ra <- TukeyHSD(anova_ra, "reporting_area")
-tukey_df <- as.data.frame(tukey_ra$reporting_area)
-
-tukey_df <- tukey_df %>%
-  tibble::rownames_to_column("Comparison") %>%
-  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = "-") %>%
-  rename(Diff = diff, Lower = lwr, Upper = upr, P.adj = `p adj`) %>%
-  mutate(across(everything(), ~trimws(as.character(.)))) %>%  
-  mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
-
-groups <- unique(c(tukey_df$Group1, tukey_df$Group2))
-pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
-                      dimnames = list(groups, groups))
-
-for (i in 1:nrow(tukey_df)) {
-  g1 <- tukey_df$Group1[i]
-  g2 <- tukey_df$Group2[i]
-  pval <- as.numeric(tukey_df$P.adj[i])
-  pval_matrix[g1, g2] <- pval
-  pval_matrix[g2, g1] <- pval
-}
-
-cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
-
-cld_df <- data.frame(
-  Group = names(cld_letters),
-  CLD = cld_letters,
-  stringsAsFactors = FALSE
-)
-
-tukey_table_with_cld <- tukey_df %>%
-  left_join(cld_df, by = c("Group1" = "Group")) %>%
-  rename(Group1_CLD = CLD) %>%
-  left_join(cld_df, by = c("Group2" = "Group")) %>%
-  rename(Group2_CLD = CLD)
-
-view(tukey_table_with_cld) #view
-#write.csv(tukey_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/tukey_p450_ra.csv", row.names = FALSE) #save
-
-```
 
 # Correlations, Spearman & Kendalls
 ## site-level
