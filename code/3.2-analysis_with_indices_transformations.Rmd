@@ -1,5 +1,5 @@
 ---
-title: "3.2- Analysis with transformation and indices"
+title: "3.2- Data Analysis with transformed and scaled metrics, IBRs and contaminant indices"
 output:
   pdf_document: 
     fig_width: 20
@@ -82,8 +82,8 @@ sample_ibr$site_number <- as.factor(sample_ibr$site_number)
 
 ```
 
-# Test Normality
-## Determines what stats I can run
+# Asking: What is the distribution of my transformed and scaled metrics, my created IBRs, and the scaled contaminant indices?
+## Shapiro- Wilks 
 ```{r}
 
 # shapiro-wilks on scaled metrics and indices
@@ -98,7 +98,6 @@ shapiro_results
 #write.csv(shapiro_results, "../output/tables/shapiro_scaled_and_indices_10012025.csv", row.names = FALSE)
 
 ```
-
 
 # Asking: Are there differences between these values at the site and reporting area level?
 ## ANOVA 
@@ -138,29 +137,29 @@ len_anova_ra <- aov(length ~ reporting_area, data = site_data) # p-value= 0.594
 summary(len_anova_site)
 summary(len_anova_ra)
 
-#width 
+#width - significant p-value for site, non-significant p=value for reporting area
 wid_anova_site <- aov(tc_width ~ site_number, data = sample_data) # p-value= 0.000336
 wid_anova_ra <- aov(width ~ reporting_area, data = site_data) # p-value= 0.214
 summary(wid_anova_site)
 summary(wid_anova_ra)
 
-#height
+#height - significant p-value for site, non-significant p=value for reporting area
 hei_anova_site <- aov(tc_height ~ site_number, data = sample_data) # p-value= 0.00987
 hei_anova_ra <- aov(height ~ reporting_area, data = site_data) # p-value= 0.22
 summary(hei_anova_site)
 summary(hei_anova_ra)
 
-#weight initial
+#weight initial - non-significant p-value for both.
 wi_anova_site <- aov(tc_weight_initial ~ site_number, data = sample_data) # p-value= 0.0954
 wi_anova_ra <- aov(weight_initial ~ reporting_area, data = site_data) # p-value= 0.0519
 summary(wi_anova_site)
 summary(wi_anova_ra)
 
-#weight final
+#weight final - significant p-value for site, non-significant p=value for reporting area
 wf_anova_site <- aov(tc_weight_final ~ site_number, data = sample_data) # p-value= 0.00101
-#wf_anova_ra <- aov(weight_final ~ reporting_area, data = site_data) # p-value= 0.0767
+wf_anova_ra <- aov(weight_final ~ reporting_area, data = site_data) # p-value= 0.0767
 summary(wf_anova_site)
-#summary(wf_anova_ra)
+summary(wf_anova_ra)
 
 ```
 
@@ -261,8 +260,7 @@ tukey_table_with_cld <- tuk_df %>%
   rename(Group2_CLD = CLD)
 
 view(tukey_table_with_cld)
-getwd()
-write.csv(tukey_table_with_cld, "../output/anova_kw_results/tukey_ci3_site_10032025.csv", row.names = FALSE) 
+#write.csv(tukey_table_with_cld, "../output/tables/anova_kw_results/tukey_ci3_site_10032025.csv", row.names = FALSE) 
 
 ```
 
@@ -297,7 +295,7 @@ tukey_table_with_cld <- tuk_df %>%
   rename(Group2_CLD = CLD)
 
 view(tukey_table_with_cld)
-#write.csv(tukey_table_with_cld, "../output/anova_kw_results/tukey_morph_site_10022025.csv", row.names = FALSE) 
+#write.csv(tukey_table_with_cld, "../output/tables/anova_kw_results/tukey_morph_site_10022025.csv", row.names = FALSE) 
 
 #### ibr_morphometrics, reporting area: no significant result
 tuk <- TukeyHSD(morph_anova_ra, "reporting_area")
@@ -331,21 +329,10 @@ view(tukey_table_with_cld)
 
 ```
 
-### length, width, height, weight_initial, weight_final.
+### length
 ```{r}
 
-```
-
-```{r}
-
-```
-
-
-
-## Tukey's for length, width, height, initial and final weight - all site, no RA
-```{r}
-
-# length, site - not significant
+# length, site: no significant result
 tuk <- TukeyHSD(len_anova_site, "site_number")
 tuk_df <- broom::tidy(tuk) %>%
   filter(term == "site_number") %>%
@@ -373,9 +360,14 @@ tukey_table_with_cld <- tuk_df %>%
   rename(Group2_CLD = CLD)
 
 view(tukey_table_with_cld)
-#write.csv(tukey_table_with_cld, "../output/tukey_length_site_10012025.csv", row.names = FALSE) 
+#write.csv(tukey_table_with_cld, "../output/tables/anova_kw_results/tukey_length_site_10012025.csv", row.names = FALSE) 
 
-# width, site
+```
+
+### width
+```{r}
+
+# width, site: significant results returned
 tuk <- TukeyHSD(wid_anova_site, "site_number")
 tuk_df <- broom::tidy(tuk) %>%
   filter(term == "site_number") %>%
@@ -403,9 +395,14 @@ tukey_table_with_cld <- tuk_df %>%
   rename(Group2_CLD = CLD)
 
 view(tukey_table_with_cld)
-#write.csv(tukey_table_with_cld, "../output/tukey_width_site_10012025.csv", row.names = FALSE) 
+#write.csv(tukey_table_with_cld, "../output/tables/anova_kw_results/tukey_width_site_10012025.csv", row.names = FALSE) 
 
-# height, site
+```
+
+### height
+```{r}
+
+# height, site: significant result returned
 tuk <- TukeyHSD(hei_anova_site, "site_number")
 tuk_df <- broom::tidy(tuk) %>%
   filter(term == "site_number") %>%
@@ -433,39 +430,14 @@ tukey_table_with_cld <- tuk_df %>%
   rename(Group2_CLD = CLD)
 
 view(tukey_table_with_cld)
-#write.csv(tukey_table_with_cld, "../output/tukey_height_site_10022025.csv", row.names = FALSE) 
+#write.csv(tukey_table_with_cld, "../output/tables/anova_kw_results/tukey_height_site_10022025.csv", row.names = FALSE) 
 
-# weight_initial, site
-tuk <- TukeyHSD(wi_anova_site, "site_number")
-tuk_df <- broom::tidy(tuk) %>%
-  filter(term == "site_number") %>%
-  separate(contrast, into = c("Group1", "Group2"), sep = "-") %>%
-  mutate(Significant = ifelse(adj.p.value < 0.05, "Yes", "No"))
-# cld letters
-groups <- sort(unique(c(tuk_df$Group1, tuk_df$Group2)))
-pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
-                      dimnames = list(groups, groups))
+```
 
-for (i in seq_len(nrow(tuk_df))) {
-  g1 <- tuk_df$Group1[i]; g2 <- tuk_df$Group2[i]
-  p  <- as.numeric(tuk_df$adj.p.value[i])
-  pval_matrix[g1, g2] <- p
-  pval_matrix[g2, g1] <- p
-}
-cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
-cld_df <- data.frame(Group = names(cld_letters), CLD = cld_letters, 
-                     stringsAsFactors = FALSE)
+### weight_final
+```{r}
 
-tukey_table_with_cld <- tuk_df %>%
-  left_join(cld_df, by = c("Group1" = "Group")) %>%
-  rename(Group1_CLD = CLD) %>%
-  left_join(cld_df, by = c("Group2" = "Group")) %>%
-  rename(Group2_CLD = CLD)
-
-view(tukey_table_with_cld)
-#write.csv(tukey_table_with_cld, "../output/tukey_weight_initial_site_10012025.csv", row.names = FALSE) 
-
-# weight_final, site
+# weight_final, site: significant result returned
 tuk <- TukeyHSD(wf_anova_site, "site_number")
 tuk_df <- broom::tidy(tuk) %>%
   filter(term == "site_number") %>%
@@ -493,98 +465,87 @@ tukey_table_with_cld <- tuk_df %>%
   rename(Group2_CLD = CLD)
 
 view(tukey_table_with_cld)
-#write.csv(tukey_table_with_cld, "../output/tukey_weight_final_site_10012025.csv", row.names = FALSE) 
+#write.csv(tukey_table_with_cld, "../output/tables/anova_kw_results/tukey_weight_final_site_10012025.csv", row.names = FALSE) 
 
 ```
 
-
-# NOT Normally distributed indices - Kruskal-Wallis + Dunn's Post hoc
-## Are there differences between these values at the site and reporting area level?
+## Kruskal-Wallis
+### both biomarkers, sod, ci1, ci2, shell, ibr_bio, ibr_combined, and all of the contaminant indices
 ```{r}
 
-# both biomarkers
+# both biomarkers - no significant result
 kruskal.test(tc_p450 ~ tc_sod, data = sample_data) # p-value = 0.478 at site-level, p-value = 0.5131 at sample-level
 
-# sod
+# sod - significant p-value for site, non-significant p=value for reporting area
 kruskal.test(tc_sod ~ site_number, data = sample_data) # p-value = 0.001777
 kruskal.test(sod ~ reporting_area, data = site_data) # p-value = 0.7705
 
-# ci1
+# ci1 - significant p-value for site, non-significant p=value for reporting area
 kruskal.test(tc_ci1 ~ site_number, data = sample_data) # p-value = 0.001056
 kruskal.test(ci1 ~ reporting_area, data = site_data) # p-value = 0.991
 
-# ci2
+# ci2 - significant p-value for site, non-significant p=value for reporting area
 kruskal.test(tc_ci2 ~ site_number, data = sample_data) # p-value = 2.191e-8
 kruskal.test(ci2 ~ reporting_area, data = site_data) # p-value = 0.8179
 
-# shell
+# shell - significant p=value for both
 kruskal.test(tc_shell ~ site_number, data = sample_data) # p-value = 1.092e-08
 kruskal.test(shell ~ reporting_area, data = site_data) # p-value = 0.0204
 
-# ibr_bio
+# ibr_bio - significant p-value for site, non-significant p=value for reporting area
 kruskal.test(ibr_biomarker ~ site_number, data = sample_ibr) # p-value = 0.000902
 kruskal.test(ibr_bio ~ reporting_area, data = site_data) # p-value = 0.6185
 
-# ibr_combined
+# ibr_combined - significant p-value for site, non-significant p=value for reporting area
 kruskal.test(ibr_total ~ site_number, data = sample_ibr) # p-value = 0.0001618
 kruskal.test(ibr_combined ~ reporting_area, data = site_data) # p-value = 0.4618
 
-# all of the contaminant indices are NOT normally distributed and will get a KW box for them v reporting area separately
-
-```
-
-# NOT Normally distributed indices - Kruskal-Wallis + Dunn's Post hoc
-## Are there differences between these values at the site and reporting area level?
-```{r}
-
-# contaminants
-# chlordane_index
+# chlordane_index - significant
 kruskal.test(chlordane_index ~ reporting_area, data = site_data) # p-value = 0.0001187
 
-# ddt_index
+# ddt_index - significant
 kruskal.test(ddt_index ~ reporting_area, data = site_data) # p-value = 6.389e-06
 
-# hch_index - Not significant
-#kruskal.test(hch_index ~ reporting_area, data = site_data) # p-value = 0.1796
+# hch_index - not significant
+kruskal.test(hch_index ~ reporting_area, data = site_data) # p-value = 0.1796
 
-# heavy_metal_index - Not significant
-#kruskal.test(heavy_metal_index ~ reporting_area, data = site_data) # p-value = 0.07802
+# heavy_metal_index - not significant
+kruskal.test(heavy_metal_index ~ reporting_area, data = site_data) # p-value = 0.07802
 
-# nutrient_metal_index
+# nutrient_metal_index - significant
 kruskal.test(nutrient_metal_index ~ reporting_area, data = site_data) # p-value = 0.02028
 
-# total_metal_index
+# total_metal_index - significant
 kruskal.test(total_metal_index ~ reporting_area, data = site_data) # p-value = 0.01076
 
-# pah_lmw_index
+# pah_lmw_index - significant
 kruskal.test(pah_lmw_index ~ reporting_area, data = site_data) # p-value = 0.005112
 
-# pah_hmw_index
+# pah_hmw_index - significant
 kruskal.test(pah_hmw_index ~ reporting_area, data = site_data) # p-value = 7.555e-05
 
-# pah_add_index - Not significant
+# pah_add_index - not significant
 kruskal.test(pah_add_index ~ reporting_area, data = site_data) # p-value =0.1179
 
-# total_pah_index
+# total_pah_index - significant
 kruskal.test(total_pah_index ~ reporting_area, data = site_data) # p-value = 0.001526
 
-# pbde_index
+# pbde_index - significant
 kruskal.test(pbde_index ~ reporting_area, data = site_data) # p-value = 0.0002848
 
-# pcb_index
+# pcb_index - significant
 kruskal.test(pcb_index ~ reporting_area, data = site_data) # p-value = 0.01909
 
-# pesticide_index - Not significant
+# pesticide_index - not significant
 kruskal.test(pesticide_index ~ reporting_area, data = site_data) # p-value = 0.1069
 
 ```
 
-# Dunn's Test - site
-
+## Dunn's Test - 'bh' method
+### sod
 ```{r}
 
-#site
-# sod - Not significant
+# sod, site - no significant result
 dunn_result <- dunnTest(tc_sod ~ site_name, data = sample_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
@@ -618,9 +579,14 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "../output/dunn_sod_site_10022025.csv", row.names = FALSE) 
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_sod_site_10022025.csv", row.names = FALSE) 
 
-# ci1
+```
+
+### ci1
+```{r}
+
+# ci1, site: significant results returned
 dunn_result <- dunnTest(tc_ci1 ~ site_name, data = sample_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
@@ -654,9 +620,14 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "../output/dunn_ci1_site_10022025.csv", row.names = FALSE) 
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_ci1_site_10022025.csv", row.names = FALSE) 
 
-# ci2 - Not Significant
+```
+
+### ci2
+```{r}
+
+# ci2, site - no significant result
 dunn_result <- dunnTest(tc_ci2 ~ site_name, data = sample_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
@@ -690,9 +661,14 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "../output/dunn_ci2_site_10022025.csv", row.names = FALSE) 
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_ci2_site_10022025.csv", row.names = FALSE) 
 
-# shell
+```
+
+### shell
+```{r}
+
+#### shell, site: significant results returned
 dunn_result <- dunnTest(tc_shell ~ site_name, data = sample_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
@@ -726,9 +702,9 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "../output/dunn_shell_site_10022025.csv", row.names = FALSE) 
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_shell_site_10032025.csv", row.names = FALSE) 
 
-# shell, ra - Not Significant
+#### shell, reporting area: no significant result returned
 dunn_result <- dunnTest(shell ~ reporting_area, data = site_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
@@ -762,10 +738,15 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "../output/dunn_shell_ra_10022025.csv", row.names = FALSE) 
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_shell_ra_10022025.csv", row.names = FALSE) 
 
-# ibr_bio - Not Significant
-dunn_result <- dunnTest(ibr_biomarker ~ site_name, data = sample_ibr, method = "bh") 
+```
+
+### ibr_bio
+```{r}
+
+# ibr_bio, site: no significant results
+dunn_result <- dunnTest(ibr_biomarker ~ site_number, data = sample_ibr, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
   tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
@@ -798,9 +779,14 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "../output/dunn_ibr_bio_site_10022025.csv", row.names = FALSE) 
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_ibr_bio_site_10022025.csv", row.names = FALSE) 
 
-# ibr_combined (total) - Not Significant
+```
+
+### ibr_combined (ibr_total)
+```{r}
+
+# ibr_combined (total), site: no significant result
 dunn_result <- dunnTest(ibr_total ~ site_name, data = sample_ibr, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
@@ -834,16 +820,15 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "../output/dunn_ibr_total_site_10022025.csv", row.names = FALSE) 
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_ibr_total_site_10022025.csv", row.names = FALSE) 
 
 ```
 
-# Dunn's Test - reporting area
-## chlordane, ddt, nutrient + total metal, low + high + total pah, pbde, pcb
+## Note: all contaminants are at the reporting area level only because site values are singular and will be used in correlations
+### chlordane
 ```{r}
 
-#reporting area
-# chlordane
+# chlordane: significant results returned
 dunn_result <- dunnTest(chlordane_index ~ reporting_area, data = site_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
@@ -878,9 +863,14 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_chlordane_ra.csv", row.names = FALSE) 
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_chlordane_ra.csv", row.names = FALSE) 
 
-# ddt
+```
+
+### ddt
+```{r}
+
+# ddt: significant results returned
 dunn_result <- dunnTest(ddt_index ~ reporting_area, data = site_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
@@ -915,9 +905,14 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_ddt_ra.csv", row.names = FALSE) 
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_ddt_ra.csv", row.names = FALSE) 
 
-# nutrient metals
+```
+
+### nutrient_metals
+```{r}
+
+# nutrient metals: significant result returned
 dunn_result <- dunnTest(nutrient_metal_index ~ reporting_area, data = site_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
@@ -952,9 +947,14 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_nutrient_metal_ra.csv", row.names = FALSE) 
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_nutrient_metal_ra.csv", row.names = FALSE) 
 
-# total metal - Not Significant
+```
+
+### total_metals
+```{r}
+
+# total metal: no significant results
 dunn_result <- dunnTest(total_metal_index ~ reporting_area, data = site_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
@@ -989,48 +989,14 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_total_metal_ra.csv", row.names = FALSE) 
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_total_metal_ra.csv", row.names = FALSE) 
 
+```
 
-# high pah
-dunn_result <- dunnTest(pah_hmw_index ~ reporting_area, data = site_data, method = "bh") 
-dunn_df <- dunn_result$res %>%
-  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
-  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
-  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+### lmw_pah
+```{r}
 
-dunn_table <- dunn_df %>%
-  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
-  dplyr::arrange(P.adj)
-
-print(dunn_table) # view
-groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
-pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
-                      dimnames = list(groups, groups))
-for (i in 1:nrow(dunn_df)) {
-  g1 <- dunn_df$Group1[i]
-  g2 <- dunn_df$Group2[i]
-  p <- dunn_df$P.adj[i]
-  pval_matrix[g1, g2] <- p
-  pval_matrix[g2, g1] <- p
-}
-cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
-cld_df <- data.frame(
-  Group = names(cld_letters),
-  CLD = cld_letters,
-  stringsAsFactors = FALSE
-)
-dunn_table_with_cld <- dunn_table %>%
-  left_join(cld_df, by = c("Group1" = "Group")) %>%
-  rename(Group1_CLD = CLD) %>%
-  left_join(cld_df, by = c("Group2" = "Group")) %>%
-  rename(Group2_CLD = CLD)
-
-view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_high_pah_ra.csv", row.names = FALSE) 
-
-
-# low pah
+# low pah: significant results returned
 dunn_result <- dunnTest(pah_lmw_index ~ reporting_area, data = site_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
@@ -1065,9 +1031,57 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_low_pah_ra.csv", row.names = FALSE) 
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_low_pah_ra.csv", row.names = FALSE) 
 
-# total pah
+```
+
+### hmw_pah
+```{r}
+
+# high pah: signficant results returned
+dunn_result <- dunnTest(pah_hmw_index ~ reporting_area, data = site_data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_high_pah_ra.csv", row.names = FALSE) 
+
+
+```
+
+### total_pah
+```{r}
+
+# total pah: significant results returned
 dunn_result <- dunnTest(total_pah_index ~ reporting_area, data = site_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
@@ -1102,9 +1116,14 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_total_pah_ra.csv", row.names = FALSE) 
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_total_pah_ra.csv", row.names = FALSE) 
 
-# pbde
+```
+
+### pbde
+```{r}
+
+# pbde: signficant results returned
 dunn_result <- dunnTest(pbde_index ~ reporting_area, data = site_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
@@ -1139,9 +1158,15 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_pbde_ra.csv", row.names = FALSE) 
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_pbde_ra.csv", row.names = FALSE) 
 
-# pcb - Not Significant
+
+```
+
+### pcb
+```{r}
+
+# pcb: no significant results
 dunn_result <- dunnTest(pcb_index ~ reporting_area, data = site_data, method = "bh") 
 dunn_df <- dunn_result$res %>%
   dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
@@ -1176,9 +1201,22 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "/Users/cmantegna/Documents/Github/WDFWmussels/output/dunn_pcb_ra.csv", row.names = FALSE) 
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_pcb_ra.csv", row.names = FALSE) 
 
 ```
+
+# Stopped here - need to re-work the correlations and explanations next. 10/03/2025.
+# Asking: Are there correlations between the 
+## Spearman
+```{r}
+
+```
+
+
+
+
+
+
 
 
 
