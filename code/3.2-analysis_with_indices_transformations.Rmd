@@ -89,13 +89,13 @@ sample_ibr$site_number <- as.factor(sample_ibr$site_number)
 # shapiro-wilks on scaled metrics and indices
 
 shapiro_results <- site_data %>%
-  select(6:33) %>%
+  select(6:34) %>%
   map_df(~ broom::tidy(shapiro.test(.x)), .id = "variable")
 
 shapiro_results
 
 # save
-#write.csv(shapiro_results, "../output/tables/shapiro_scaled_and_indices_10012025.csv", row.names = FALSE)
+#write.csv(shapiro_results, "../output/tables/shapiro_scaled_and_indices_10042025.csv", row.names = FALSE)
 
 ```
 
@@ -538,6 +538,9 @@ kruskal.test(pcb_index ~ reporting_area, data = site_data) # p-value = 0.01909
 
 # pesticide_index - not significant
 kruskal.test(pesticide_index ~ reporting_area, data = site_data) # p-value = 0.1069
+
+# total_contaminants_index - significant
+kruskal.test(total_con_index ~ reporting_area, data = site_data) # p-value = 0.0006062
 
 ```
 
@@ -1205,24 +1208,63 @@ view(dunn_table_with_cld)
 
 ```
 
+### total_contaminants
+```{r}
+
+# total_con: significant results returned
+dunn_result <- dunnTest(total_con_index ~ reporting_area, data = site_data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+
+print(dunn_table) # view
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_total_con_ra.csv", row.names = FALSE) 
+
+```
 
 # Asking: Are there correlations between the contaminants indices and the metrics(Spearman)? Is there a relationship between the contaminants indices and metrics that could indicate dependence or independence (Kendall's) in the Spearman results?
 ## Spearman & Kendall's
 ### metrics & all indices
 ```{r}
 
-# --- setup -------------------------------------------------------------
+# define variables
 metrics_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3",
                   "weight_initial", "weight_change", "weight_final",
                   "length", "width", "height", "ibr_bio", "ibr_morph", "ibr_combined")
 
-# FYI: these aren't used in the loop but fine to keep listed
+# define id columns
 id_columns <- c("site_name", "site_number", "reporting_area", "latitude", "longitude")
 
-analyte_vars <- c("chlordane_index", "ddt_index", "hch_index", "heavy_metal_index",
-                  "nutrient_metal_index", "total_metal_index",
-                  "pah_lmw_index", "pah_hmw_index", "pah_add_index", "total_pah_index",
-                  "pbde_index", "pcb_index", "pesticide_indexe")  
+analyte_vars <- c("chlordane_index", "ddt_index", "hch_index", "heavy_metal_index", "nutrient_metal_index", "total_metal_index",
+"pah_lmw_index", "pah_hmw_index", "pah_add_index", "total_pah_index", "pbde_index", "pcb_index", "pesticide_index", "total_con_index")  
 
 # make sure these are plain character vectors (not factors)
 metrics_vars <- as.character(metrics_vars)
@@ -1266,11 +1308,7 @@ for (metric in metrics_vars) {
     x_valid <- x[valid]
     y_valid <- y[valid]
 
-    # need enough paired values & some variation
-    if (length(x_valid) < 4L ||
-        length(unique(x_valid)) < 2L ||
-        length(unique(y_valid)) < 2L) next
-
+    
     spearman <- try(stats::cor.test(x_valid, y_valid, method = "spearman", exact = FALSE), silent = TRUE)
     kendall  <- try(stats::cor.test(x_valid, y_valid, method = "kendall"), silent = TRUE)
 
@@ -1309,8 +1347,8 @@ corr_full <- corr_full |>
   ) |>
   dplyr::arrange(Spearman_p, Kendall_p)
 
-view(corr_full)  # capital V
-#write.csv(corr_full, "../output/tables/spearman_kendall_results/correlation_all_indices.csv", row.names = FALSE)
+view(corr_full)
+#write.csv(corr_full, "../output/tables/spearman_kendall_results/correlation_all_indices_10042025.csv", row.names = FALSE)
 
 ```
 

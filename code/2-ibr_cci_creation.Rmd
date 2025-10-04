@@ -851,13 +851,11 @@ print(pesticide_index)
 
 ```
 
-# Creating Chemical Mixture Indices
-# Left off of index creation - may be too much for what we need. Updated 9.26.25
-## sum- based, unweighted mixture index
+# Total Contamiant Load Index
 ```{r}
 
 colnames(site_data)
-# leaving out chlordane, hch and pesticides since they have heavy zeros
+# leaving out the metal and pah separate indices, only used total metal and total pah
 
 # converting metals to match other contaminants - metals are reported in mg/kg and all others are ng/g
 # 1 mg/kg = 1000 ng/g
@@ -867,29 +865,3 @@ site_data$nutrient_metal_ng <- site_data$nutrient_metal * 1000
 site_data$mixture_index_sum <- rowSums(site_data[, c("ddt", "heavy_metal_ng", "nutrient_metal_ng", "pah_lmw", "pah_hmw", "pah_add", "pbde", "pcb")], na.rm = TRUE)
 
 ```
-
-## pca- based, standardized mixture index
-```{r}
-
-# leaving out chlordane, hch and pesticides since they have heavy zeros; same as above
-
-# contaminant index matrix
-contaminants <- site_data[, c("ddt", "heavy_metal_ng", "nutrient_metal_ng", "pah_lmw", "pah_hmw", "pah_add", "pbde", "pcb")]
-
-# scale with z-score standardization
-contaminants_scaled <- scale(contaminants)
-
-# PCA
-pca_result <- prcomp(contaminants_scaled, center = TRUE, scale. = TRUE)
-
-# use PC1 scores as the PCA-based mixture index
-site_data$mixture_index_pca <- pca_result$x[, 1]
-
-# how much variance is explained by PC1? ~49% of variation
-summary(pca_result)$importance[2, 1]  # proportion of variance explained by PC1
-
-#save data for other downstream analyses
-#write.csv(site_data, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/site_with_mixture_index.csv", row.names = FALSE)
-
-```
-
