@@ -114,7 +114,7 @@ head(sample_level_t)
 
 ```
 
-## scale to reference
+## scale to Penn Cove Reference site
 ```{r}
 
 # scale
@@ -212,7 +212,7 @@ head(sample_level_tc)
 
 ```
 
-##  adding ai and creating the ibr score
+##  adding absolute deviation from the reference (ai) and creating the ibr score
 ```{r}
 
 # where to find the columns to create ai
@@ -995,7 +995,7 @@ colnames(site_data)
 # leaving out chlordane, hch and pesticides since they have heavy zeros
 
 # converting metals to match other contaminants - metals are reported in mg/kg and all others are ng/g
-# 1 mg/kg = 1,000 ng/g
+# 1 mg/kg = 1000 ng/g
 site_data$heavy_metal_ng <- site_data$heavy_metal * 1000
 site_data$nutrient_metal_ng <- site_data$nutrient_metal * 1000
 

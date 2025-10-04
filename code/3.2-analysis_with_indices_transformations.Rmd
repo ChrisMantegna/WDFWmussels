@@ -1206,7 +1206,7 @@ view(dunn_table_with_cld)
 ```
 
 
-# Asking: Are there correlations between the contaminants and the metrics(Spearman)? Is there a relationship between the contaminants and metrics that could indicate dependence or independence (Kendall's) in the Spearman results?
+# Asking: Are there correlations between the contaminants indices and the metrics(Spearman)? Is there a relationship between the contaminants indices and metrics that could indicate dependence or independence (Kendall's) in the Spearman results?
 ## Spearman & Kendall's
 ### metrics & all indices
 ```{r}
