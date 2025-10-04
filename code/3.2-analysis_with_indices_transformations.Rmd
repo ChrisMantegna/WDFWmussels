@@ -1205,98 +1205,120 @@ view(dunn_table_with_cld)
 
 ```
 
-# Stopped here - need to re-work the correlations and explanations next. 10/03/2025.
-# Asking: Are there correlations between the 
-## Spearman
+
+# Asking: Are there correlations between the contaminants and the metrics(Spearman)? Is there a relationship between the contaminants and metrics that could indicate dependence or independence (Kendall's) in the Spearman results?
+## Spearman & Kendall's
+### metrics & all indices
 ```{r}
 
-```
+# --- setup -------------------------------------------------------------
+metrics_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3",
+                  "weight_initial", "weight_change", "weight_final",
+                  "length", "width", "height", "ibr_bio", "ibr_morph", "ibr_combined")
 
+# FYI: these aren't used in the loop but fine to keep listed
+id_columns <- c("site_name", "site_number", "reporting_area", "latitude", "longitude")
 
+analyte_vars <- c("chlordane_index", "ddt_index", "hch_index", "heavy_metal_index",
+                  "nutrient_metal_index", "total_metal_index",
+                  "pah_lmw_index", "pah_hmw_index", "pah_add_index", "total_pah_index",
+                  "pbde_index", "pcb_index", "pesticide_indexe")  
 
+# make sure these are plain character vectors (not factors)
+metrics_vars <- as.character(metrics_vars)
+analyte_vars <- as.character(analyte_vars)
 
+needed <- c(metrics_vars, analyte_vars)
 
+# check for missing columns (common cause: typos)
+missing_cols <- setdiff(needed, names(site_data))
+if (length(missing_cols) > 0) {
+  warning("These columns are missing from site_data: ",
+          paste(missing_cols, collapse = ", "))
+}
 
+# coerce just the needed columns to numeric (safe conversion)
+to_numeric <- function(v) {
+  if (is.numeric(v)) return(v)
+  if (is.factor(v)) return(as.numeric(as.character(v)))
+  if (is.character(v)) return(suppressWarnings(as.numeric(v)))
+  suppressWarnings(as.numeric(v))
+}
 
+site_data <- site_data |>
+  dplyr::mutate(dplyr::across(dplyr::all_of(intersect(needed, names(site_data))), to_numeric))
 
-
-############################### OLD Code######################################
-
-
-# Correlations, Spearman & Kendalls
-## site-level
-### all indices
-```{r}
-
-colnames(site_data)
-# Define your variable sets
-metrics_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3", "weight_initial", "weight_change", "weight_final", "length", "width", "height", "ibr_bio", "ibr_morph", "ibr_combined")
-
-# List any ID columns to exclude here
-id_columns <- c("site_name", "site_number",  "reporting_area", "latitude", "longitude", "heavy_metal", "nutrient_metal", "total_metal")
-
-# Build analyte_vars by excluding both metrics and IDs
-analyte_vars <- c("chlordane", "ddt", "hch", "pah_lmw", "pah_hmw", "pah_add", "total_pah", "pbde", "pcb", "pesticide", "mixture_index_sum", "heavy_metal_ng", "nutrient_metal_ng", "mixture_index_pca")
-
-# set p-value & initialize empty list
-alpha <- 0.05
+# --- correlation loop --------------------------------------------------
 results_list <- list()
+k <- 1L
 
-# Loop over metric–analyte pairs across sites
 for (metric in metrics_vars) {
+  if (!metric %in% names(site_data)) next
+  x <- site_data[[metric]]
+  if (!is.numeric(x)) next
+
   for (analyte in analyte_vars) {
-    
-    x <- site_data[[metric]]
+    if (!analyte %in% names(site_data)) next
     y <- site_data[[analyte]]
-    
-    valid_idx <- complete.cases(x, y)
-    x_valid <- x[valid_idx]
-    y_valid <- y[valid_idx]
-    
-    if (length(x_valid) < 4) next  # Skip if too few values
-    
-    spearman <- cor.test(x_valid, y_valid, method = "spearman")
-    kendall <- cor.test(x_valid, y_valid, method = "kendall")
-    
-    results_list[[paste(metric, analyte, sep = "_")]] <- data.frame(
+    if (!is.numeric(y)) next
+
+    valid <- is.finite(x) & is.finite(y)
+    x_valid <- x[valid]
+    y_valid <- y[valid]
+
+    # need enough paired values & some variation
+    if (length(x_valid) < 4L ||
+        length(unique(x_valid)) < 2L ||
+        length(unique(y_valid)) < 2L) next
+
+    spearman <- try(stats::cor.test(x_valid, y_valid, method = "spearman", exact = FALSE), silent = TRUE)
+    kendall  <- try(stats::cor.test(x_valid, y_valid, method = "kendall"), silent = TRUE)
+
+    if (inherits(spearman, "try-error") || inherits(kendall, "try-error")) next
+
+    results_list[[k]] <- data.frame(
       Metric = metric,
       Analyte = analyte,
-      Spearman_r = as.numeric(spearman$estimate),
-      Spearman_p = as.numeric(spearman$p.value),
-      Kendall_tau = as.numeric(kendall$estimate),
-      Kendall_p = as.numeric(kendall$p.value)
+      Spearman_r = unname(spearman$estimate),
+      Spearman_p = unname(spearman$p.value),
+      Kendall_tau = unname(kendall$estimate),
+      Kendall_p = unname(kendall$p.value),
+      stringsAsFactors = FALSE
     )
+    k <- k + 1L
   }
 }
 
-# Combine results
-corr_full <- bind_rows(results_list)
+# --- combine + significance stars -------------------------------------
+corr_full <- dplyr::bind_rows(results_list)
 
-# Add significance stars
-corr_full <- corr_full %>%
-  mutate(
-    Spearman_sig = case_when(
+corr_full <- corr_full |>
+  dplyr::mutate(
+    Spearman_sig = dplyr::case_when(
       Spearman_p <= 0.001 ~ "***",
       Spearman_p <= 0.01  ~ "**",
       Spearman_p <= 0.05  ~ "*",
       TRUE ~ ""
     ),
-    Kendall_sig = case_when(
+    Kendall_sig = dplyr::case_when(
       Kendall_p <= 0.001 ~ "***",
       Kendall_p <= 0.01  ~ "**",
       Kendall_p <= 0.05  ~ "*",
       TRUE ~ ""
     )
-  )
+  ) |>
+  dplyr::arrange(Spearman_p, Kendall_p)
 
-View(corr_full)
-#write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_all_indices.csv", row.names = FALSE)
+view(corr_full)  # capital V
+#write.csv(corr_full, "../output/tables/spearman_kendall_results/correlation_all_indices.csv", row.names = FALSE)
 
 ```
 
+############################### OLD Code######################################
 ### individual analytes
 ```{r}
 
+# this may actually need avg_ibr_analytess - double s is the file name - as the df for the analysis
 #correlation_data<- read.csv("../data/index_df/site_level_all_analytes_scaled.csv")
 
 metrics_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3", "weight_initial", "weight_change", "weight_final", "length", "width", "height", "ibr_bio", "ibr_morph", "ibr_combined")
