@@ -58,6 +58,7 @@ getwd()
 
 #site_data<- read.csv("../data/start_here/site_level_no_indices.csv")
 sample_data<- read.csv("../data/cleaned/cleaned_sample_level.csv")
+metal<- read.csv("../data/interim_df/metal_converted_for_index_creation.csv")
 
 #site_data$reporting_area <- as.factor(site_data$reporting_area)
 #site_data$site_number<- as.factor(site_data$site_number)
@@ -67,13 +68,18 @@ sample_data$site_number<- as.factor(sample_data$site_number)
 sample_data$sample_id<- as.factor(sample_data$sample_id)
 sample_data$p450<- as.numeric(sample_data$p450)
 
-#summary(sample_data)
+metal$arsenic<- as.numeric(metal$arsenic)
+metal$cadmium<- as.numeric(metal$cadmium)
+metal$copper<- as.numeric(metal$copper)
+metal$lead<- as.numeric(metal$lead)
+metal$mercury<- as.numeric(metal$mercury)
+metal$zinc<- as.numeric(metal$zinc)
 
+#summary(sample_data)
 
 ```
 
-# Creating Mattos' IBRv2i Index with biomarkers and raw morphometrics (no condition indices)
-
+# IBRv2i Index creation
 ## log2 transform the metrics - sample-level
 ```{r}
 
@@ -277,141 +283,9 @@ head(site_level_ibr)
 
 ```
 
-
-
-## log2 transform the metrics - site-level REBUILD after 9.29.25 to compare analyses
-```{r}
-
-# define our reference
-site_col  <- "site_name"
-ref_site  <- "Penn Cove Reference"
-
-# columns we want to remain unchanged 
-id_cols <- c("site_number","site_name", "reporting_area", "latitude", "longitude")
-
-#  metrics that feed into the IBR 
-metric_cols <- c("p450","sod", "shell", "weight_initial", "weight_change", "weight_final", "length","height","width")
-
-# metrics that do not feed into the IBR
-condition_cols <- c("ci1","ci2","ci3")
-
-# metrics to center geometrically because they have strong skews, all others will be default (arithmetic)
-geom_center_metrics <- c("p450","sod", "ci1", "ci2", "height")
-
-# positive floor for safe log2 (prevents log2(0))
-eps <- .Machine$double.eps
-
-# function to complete the transformation
-prepare_metrics_for_ibr_tidy <- function(site_data, site_col, ref_site, id_cols, metric_cols, condition_cols, geom_center_metrics, eps = .Machine$double.eps) 
-  {
-
-  stopifnot(site_col %in% names(site_data))
-  all_metrics <- c(metric_cols, condition_cols)
-
-  # keep only what we need
-  keep_cols <- unique(c(id_cols, all_metrics, site_col))
-  keep_cols <- keep_cols[keep_cols %in% names(site_data)]
-  site_data <- site_data %>% select(all_of(keep_cols))
-
- metrics_transformed <- site_data %>%
-    dplyr::mutate(
-      dplyr::across(dplyr::all_of(all_metrics),
-                    ~ log2(pmax(.x, eps)),
-                    .names = "t_{.col}")
-    )
-
-  # add transformed columns to og columns - fix because the naming alteration didn't work
-  metrics_transformed <- metrics_transformed %>%
-    dplyr::relocate(dplyr::all_of(id_cols), .before = 1) %>%
-    dplyr::relocate(dplyr::starts_with("t_"), .after = dplyr::last_col())
-
-  metrics_transformed
-}
-
-# save
-#write.csv(metrics_transformed, "../data/metrics_transformed_09282025.csv")
-
-```
-
-
-## z-score standardization, absolute sd (AI)- Scaling - REBUILD after 9.29.25 to compare analyses
-```{r}
-
-# define data, reference site, necessary metrics, which scaling method should be used, and the end output
-metrics_transformed<- metrics_transformed
-site_col<- "site_name"
-ref_site<- "Penn Cove Reference"
-biomarker_metrics<- c("p450_t","sod_t")
-morphometric_metrics<- c("shell_t","length_t","height_t","width_t","weight_change_t")
-condition_metrics<- c("ci1_t","ci2_t","ci3_t")
-geom_metrics<- c("p450_t","sod_t","ci1_t","ci2_t","height_t")  
-metrics_for_ibr<- c(biomarker_metrics, morphometric_metrics)
-
-resolve_t <- function(metrics_transformed, req) {
-  sapply(req, function(m) {
-    if (m %in% names(metrics_transformed)) return(m)                             # e.g., "p450_t"
-    m2 <- paste0("t_", sub("_t$", "", m))                       # try "t_p450"
-    if (m2 %in% names(metrics_transformed)) return(m2)
-    stop("Missing transformed column for '", m, "'. Looked for '", m, "' and '", m2, "'.")
-  }, USE.NAMES = FALSE)
-}
-base_from_t <- function(tn) sub("^t_", "", sub("_t$", "", tn))
-
-# columns to scale
-t_cols_all_req<- c(metrics_for_ibr, condition_metrics)
-t_cols<- resolve_t(metrics_transformed, t_cols_all_req)     
-geom_t_cols    <- resolve_t(metrics_transformed, geom_metrics)      
-
-# reference
-ref_rows <- metrics_transformed[[site_col]] == ref_site
-if (!any(ref_rows)) stop("No rows match the reference site: ", ref_site)
-
-# scaling
-centers <- vapply(t_cols, function(tc) {
-  t_ref <- metrics_transformed[[tc]][ref_rows]
-  if (tc %in% geom_t_cols) {
-    mean(t_ref, na.rm = TRUE)                                         
-  } else {
-    log2(mean(2^t_ref, na.rm = TRUE))                                  
-  }
-}, numeric(1))
-names(centers) <- t_cols
-
-metrics_transformed <- metrics_transformed %>%
-  mutate(across(all_of(t_cols),
-                ~ .x - centers[cur_column()],
-                .names = "{.col}_s")) %>%
-  rename_with(~ sub("_t_s$", "_s", .x), ends_with("_t_s")) %>%
-  rename_with(~ sub("^t_(.*)_s$", "\\1_s", .x), matches("^t_.*_s$"))
-
-# z-scores of centered for IBR metrics only
-ibr_t_cols <- resolve_t(metrics_transformed, metrics_for_ibr)         
-ibr_bases  <- base_from_t(ibr_t_cols)
-s_cols_ibr <- paste0(ibr_bases, "_s")
-
-metrics_transformed <- metrics_transformed %>%
-  mutate(across(all_of(s_cols_ibr),
-                ~ as.numeric(scale(.x)),
-                .names = "{.col}_zs"))                               
-# absolute deviation-ai
-metrics_transformed <- metrics_transformed %>%
-  mutate(across(all_of(s_cols_ibr),
-                ~ abs(.x),
-                .names = "ai_{.col}"))
-
-# view
-metrics_transformed %>% select(all_of(site_col), ends_with("_s"))  %>% head()
-metrics_transformed %>% select(all_of(site_col), ends_with("_zs")) %>% head()
-metrics_transformed %>% select(all_of(site_col), starts_with("ai_")) %>% head()
-
-# save
-#write.csv(metrics_transformed, "../data/site_level_transform_and_scale_09282025.csv", row.names = FALSE)
-
-```
-
-## Creating Chemical Contaminant Indices by class
-### Not recreated on 9.26.25 - current indices are complete
-## chlordane
+# Chemical Contaminant Indices 
+## created based on chemical class
+### chlordane
 ```{r}
 
 chlordane_df<- chlordane
@@ -454,7 +328,7 @@ print(chlordane_index)
 
 ```
 
-## ddt
+### ddt
 ```{r}
 
 ddt_df<- ddt
@@ -496,7 +370,7 @@ print(ddt_index)
 
 ```
 
-## hch
+### hch
 ```{r}
 
 hch_df<- hch
@@ -538,21 +412,19 @@ print(hch_index)
 
 ```
 
-## metal
+### metal
 ```{r}
-
-metal_df<- metal
 
 # define variables
 heavy_metals <- c("arsenic", "cadmium", "mercury")
 nutrient_metals <- c("copper", "lead", "zinc")
 
 # setup complete metal index
-all_metals <- c(heavy_metals, nutrient_metals)
+total_metals <- c(heavy_metals, nutrient_metals)
 
 # z-score for each analyte (site-level is not possible based on single site values)
-metals_z <- metal_df %>%
-  mutate(across(all_of(all_metals), scale, .names = "z_{.col}"))
+metals_z <- metal %>%
+  mutate(across(all_of(total_metals), scale, .names = "z_{.col}"))
 
 # pull reference scores
 ref_site <- "Penn Cove Baseline"
@@ -578,7 +450,7 @@ ai_heavy <- ai_cols[metal_names %in% c("arsenic", "cadmium", "mercury")]
 ai_nutrient <- ai_cols[metal_names %in% c("copper", "lead", "zinc")]
 
 # create new index columns
-metals_index <- metals_ai %>%
+metal_index <- metals_ai %>%
   rowwise() %>%
   mutate(
     heavy_metal_index = sum(c_across(all_of(ai_heavy)), na.rm = TRUE),
@@ -589,14 +461,12 @@ metals_index <- metals_ai %>%
 
 
 # view & save
-print(metals_index)
-#write.csv(metals_ai, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metals_ai.csv", row.names = FALSE)
-#write.csv(metals_index, "/Users/cmantegna/Documents/Github/WDFWmussels/data/index_df/metal_index.csv", row.names = FALSE)
+view(metal_index)
+#write.csv(metal_index, "../data/interim_df/metal_index_10042025.csv", row.names = FALSE)
 
 ```
 
-## pah, lmw
-### data prep
+### pah, lmw
 ```{r}
 
 pah_lmw<- read.csv("../data/index_df/test_pah_lmw.csv")
@@ -640,7 +510,6 @@ print(pah_lmw_wide)
 
 ```
 
-### index creation
 ```{r}
 
 pah_lmw_df<- pah_lmw_wide
@@ -682,8 +551,7 @@ print(pah_lmw_index)
 
 ```
 
-## pah, hmw
-### data prep
+### pah, hmw
 ```{r}
 
 pah_hmw<- read.csv("../data/index_df/test_pah_hmw.csv")
@@ -720,7 +588,6 @@ print(pah_hmw_wide)
 
 ```
 
-### index creation
 ```{r}
 
 pah_hmw_df<- pah_hmw_wide
@@ -762,8 +629,7 @@ print(pah_hmw_index)
 
 ```
 
-## pah, additional
-### data prep
+## #pah, additional
 ```{r}
 
 pah_add<- read.csv("../data/index_df/test_pah_additional.csv")
@@ -800,7 +666,6 @@ write.csv(pah_add_wide, "/Users/cmantegna/Documents/Github/WDFWmussels/data/inde
 
 ```
 
-### index creation
 ```{r}
 
 pah_add_df<- pah_add_wide
@@ -842,7 +707,7 @@ print(pah_add_index)
 
 ```
 
-## total pah index creation
+### total pah
 ```{r}
 
 # read in
@@ -858,7 +723,7 @@ print(pah_df)
 
 ```
 
-## pbde
+### pbde
 ```{r}
 
 pbde_df<- pbde
@@ -900,7 +765,7 @@ print(pbde_index)
 
 ```
 
-## pcb
+### pcb
 ```{r}
 
 pcb_df<- pcb
@@ -942,7 +807,7 @@ print(pcb_index)
 
 ```
 
-## pesticide
+### pesticide
 ```{r}
 
 pesticide_wide<- read.csv("../data/index_df/pesticide_wide.csv")
