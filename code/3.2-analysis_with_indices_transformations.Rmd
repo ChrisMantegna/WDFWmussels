@@ -1475,12 +1475,12 @@ lon_col <- "longitude"
 lat_col <- "latitude"
 site_col<- "site_name" 
 
-# Choose response set: prioritize IBRs (overall) + biomarkers (mechanistic)
+# choose response set: prioritize IBRs (overall) + biomarkers (mechanistic)
 responses <- unique(c(intersect(c("ibr_combined","ibr_bio","ibr_morph"), ibrs),
                       intersect(c("p450","sod"), biomarkers)))
 if (length(responses) == 0) responses <- c(ibrs, biomarkers)[1:min(3, length(c(ibrs, biomarkers)))]
 
-# Coerce to sf and project to meters
+# coerce to sf and project to meters
 site_sf <- st_as_sf(site_data, coords = c(lon_col, lat_col), crs = 4326)
 site_sf <- st_transform(site_sf, 3857)
 xy <- st_coordinates(site_sf)
@@ -1544,8 +1544,7 @@ if ("ibr_combined" %in% names(lisa_results)) {
     tm_layout(legend.outside = TRUE)
 }
 
-# GLOBAL MORAN'S I SUMMARY -----------------------------------------------
-# creates a tibble with metric, Moran's I, expected I, variance, z, p, FDR, significance, n_sites, k
+# summary tables from the tests: global moran's
 global_moran_table <- dplyr::bind_rows(lapply(names(moran_results), function(resp) {
   mres <- moran_results[[resp]]
   # robust extraction
@@ -1580,9 +1579,7 @@ global_moran_table <- dplyr::bind_rows(lapply(names(moran_results), function(res
 global_moran_table
 #write.csv(global_moran_table, "../output/tables/global_moran_10042025.csv", row.names = FALSE)
 
-# LISA SUMMARY (site-level) ----------------------------------------------
-# adds site name and (if present) reporting_area; flags p<0.05 and FDR<0.05
-
+# lisa summary table
 lisa_table <- dplyr::bind_rows(lapply(names(lisa_results), function(resp) {
   x  <- lisa_results[[resp]]
   df <- sf::st_drop_geometry(x)
@@ -1665,7 +1662,6 @@ global_moran_table_all <- bind_rows(lapply(names(metric_groups), function(g) {
 global_moran_table_all
 #write.csv(global_moran_table_all, "../output/tables/global_moran_all_10042025.csv", row.names = FALSE)
 
-
 lisa_table_all <- bind_rows(lapply(names(metric_groups), function(g) {
   cols <- metric_groups[[g]]
   bind_rows(lapply(cols, function(colname) {
@@ -1706,12 +1702,6 @@ lisa_table_all <- lisa_table_all %>%
   mutate(sig_p05   = p < 0.05,
          sig_fdr05 = p_fdr_metric < 0.05)
 
-# (b) Optional: FDR within reporting area, per metric (uncomment if you prefer):
-# lisa_table_all <- lisa_table_all %>%
-#   group_by(metric, reporting_area) %>%
-#   mutate(p_fdr_area = p.adjust(p, "fdr")) %>%
-#   ungroup()
-
 # nice ordering
 lisa_table_all <- lisa_table_all %>%
   relocate(group, metric, !!sc, reporting_area, Ii, Z.Ii, p, p_fdr_metric, sig_p05, sig_fdr05, cluster, .before = 1)
@@ -1721,181 +1711,349 @@ lisa_table_all
 
 ```
 
-
 ## GETIS-ORD Gi - Hot/ cold spot analysis 
 ```{r}
-# ─────────────────────────────────────────────────────────────────────────────────────
-# 2) GETIS-ORD Gi* HOTSPOT / COLDSPOT ANALYSIS
-# ─────────────────────────────────────────────────────────────────────────────────────
-# Metric guidance:
-# - Use IBR and also try the *most responsive* biomarker (e.g., p450 for PAHs) to find intensity clusters.
-# - Gi* is magnitude-focused; results can differ from LISA.
 
 getis_results <- list()
-for (resp in RESPONSES) {
+
+for (resp in responses) {
   if (!resp %in% names(site_data)) next
-  Y <- z(site_data[[resp]])
-  Gi <- as.numeric(localG(Y, lw))
+  y <- site_data[[resp]]
+  if (all(is.na(y)) || sd(y, na.rm = TRUE) == 0) next
+
+  Gi   <- as.numeric(localG(y, lw))                  # Gi* z-scores
+  pval <- 2 * pnorm(abs(Gi), lower.tail = FALSE)     # two-sided p
+
   out <- site_sf
-  out$Gi <- Gi
   out$resp <- resp
-  out$hotcold <- cut(Gi, breaks = classInt::classIntervals(Gi, n = 5, style = "pretty")$brks,
-                     include.lowest = TRUE, labels = FALSE)
+  out$Gi   <- Gi
+  out$p    <- pval
+  out$p_fdr <- p.adjust(out$p, method = "fdr")       # per-metric FDR
+  out$hotspot <- dplyr::case_when(
+    out$p_fdr < 0.05 & out$Gi > 0  ~ "hot",
+    out$p_fdr < 0.05 & out$Gi < 0  ~ "cold",
+    TRUE                           ~ "ns"
+  )
+
+  # keep reporting_area around for faceting, if present
+  if ("reporting_area" %in% names(site_data)) {
+    out$reporting_area <- site_data$reporting_area
+  }
+
   getis_results[[resp]] <- out
 }
 
-# Example map for p450 hotspots
-if (CFG$y_p450 %in% names(getis_results)) {
-  tm_shape(getis_results[[CFG$y_p450]]) +
-    tm_dots(col = "Gi", size = 0.15, title = paste("Getis-Ord Gi*:", CFG$y_p450)) +
+# Example map for p450 hotspots (FDR<0.05)
+if ("p450" %in% names(getis_results)) {
+  tm_shape(getis_results[["p450"]]) +
+    tm_dots(col = "hotspot", size = 0.15, title = "Gi*: p450 (FDR<0.05)") +
     tm_layout(legend.outside = TRUE)
 }
 
-# ─────────────────────────────────────────────────────────────────────────────────────
-# 3) INTERPOLATION (IDW & ORDINARY KRIGING)
-# ─────────────────────────────────────────────────────────────────────────────────────
-# Metric guidance:
-# - Interpolate a continuous indicator (often IBR). If a single biomarker strongly tracks a contaminant class, interpolate that too.
-# - Kriging requires a reasonable variogram; otherwise, use IDW as baseline.
+gi_groups <- list(
+  biomarkers    = biomarkers,
+  morphometrics = morphometrics,
+  conditions    = conditions,
+  ibrs          = ibrs,
+  indices       = index_cols
+)
+gi_groups <- lapply(gi_groups, function(v) v[v %in% names(site_data)])
+gi_groups <- gi_groups[sapply(gi_groups, length) > 0]
 
-# Build a simple grid covering your study area
-bbox <- st_bbox(site_sf)
-# Create a grid with ~2 km spacing (tune as needed)
+getis_table_all <- dplyr::bind_rows(lapply(names(gi_groups), function(g) {
+  cols <- gi_groups[[g]]
+  dplyr::bind_rows(lapply(cols, function(colname) {
+    y <- site_data[[colname]]
+    if (all(is.na(y)) || sd(y, na.rm = TRUE) == 0) return(NULL)
+
+    Gi   <- as.numeric(localG(y, lw))
+    pval <- 2 * pnorm(abs(Gi), lower.tail = FALSE)
+
+    df <- sf::st_drop_geometry(site_sf)
+    df$group   <- g
+    df$metric  <- colname
+    df$Gi      <- Gi
+    df$p       <- pval
+    df$p_fdr   <- p.adjust(df$p, "fdr")
+    df$hotspot <- dplyr::case_when(
+      df$p_fdr < 0.05 & df$Gi > 0  ~ "hot",
+      df$p_fdr < 0.05 & df$Gi < 0  ~ "cold",
+      TRUE                         ~ "ns"
+    )
+    if ("reporting_area" %in% names(site_data)) df$reporting_area <- site_data$reporting_area
+    df
+  }))
+}))
+
+# quick rollup
+gi_counts <- getis_table_all %>%
+  dplyr::count(group, metric, hotspot, p_fdr < 0.05, name = "n_sites") %>%
+  dplyr::arrange(group, dplyr::desc(n_sites))
+
+view(gi_counts)
+#write.csv(gi_counts, "../output/tables/gi_counts_10042025.csv", row.names = FALSE)
+
+```
+
+# These do not contribute to the current Results Analyses as of 10.04.2025
+## Interpolation (IDW & Ordinary Kriging)
+```{r}
+
+target_metric <- if ("ibr_combined" %in% names(site_data)) "ibr_combined" else "p450"
+
+# build a copy of your points with just the target metric as 'Y'
+pts_sf <- site_sf |> dplyr::mutate(Y = site_data[[target_metric]])
+df_sp  <- as(pts_sf, "Spatial")  # gstat works with 'Spatial*' classes
+
+# grid spacing (meters). 2000 m ≈ 2 km; increase for coarser, decrease for finer
 res_m <- 2000
-xs <- seq(bbox[1], bbox[3], by = res_m)
-ys <- seq(bbox[2], bbox[4], by = res_m)
-grid <- expand.grid(x = xs, y = ys)
-grid_sf <- st_as_sf(grid, coords = c("x","y"), crs = st_crs(site_sf))
 
-# Choose a response for interpolation (example: IBR)
-if (CFG$y_IBR %in% names(site_data)) {
-  df_sp <- as(site_sf |> dplyr::mutate(Y = site_data[[CFG$y_IBR]]), "Spatial")
-  grid_sp <- as(grid_sf, "Spatial")
+bbox     <- sf::st_bbox(site_sf)
+grid_pts <- sf::st_make_grid(sf::st_as_sfc(bbox), cellsize = res_m, what = "centers")
+grid_sf  <- sf::st_as_sf(grid_pts) |> sf::st_set_crs(sf::st_crs(site_sf))
+grid_sp  <- as(grid_sf, "Spatial")
 
-  # IDW
-  idw_pred <- gstat::idw(Y ~ 1, locations = df_sp, newdata = grid_sp)
+hull <- pts_sf |> sf::st_union() |> sf::st_convex_hull() |> sf::st_buffer(2*res_m)
+grid_sf <- grid_sf[sf::st_within(grid_sf, hull, sparse = FALSE), ]
+grid_sp <- as(grid_sf, "Spatial")
 
-  # Kriging (spherical model as a starting point)
-  v <- variogram(Y ~ 1, data = df_sp)
-  vm <- fit.variogram(v, model = vgm("Sph"))
-  kr_pred <- gstat::krige(Y ~ 1, df_sp, grid_sp, model = vm)
+# idp = 2 is a common default (stronger down-weighting with larger idp)
+idw_pred <- gstat::idw(Y ~ 1, locations = df_sp, newdata = grid_sp, idp = 2)
 
-  # Compare visually by mapping in tmap (convert back to sf)
-  idw_sf <- st_as_sf(idw_pred)
-  kr_sf  <- st_as_sf(kr_pred)
+# turn into a tidy table (x,y,pred)
+idw_sf   <- sf::st_as_sf(idw_pred)
+idw_xy   <- sf::st_coordinates(idw_sf)
+idw_tbl  <- idw_sf |>
+  sf::st_drop_geometry() |>
+  dplyr::transmute(
+    metric = target_metric,
+    x = idw_xy[,1], y = idw_xy[,2],
+    pred = var1.pred
+  )
 
-  # Map Kriging result
-  tm_shape(kr_sf) + tm_raster(col = "var1.pred", alpha = 0.8, title = paste("Kriged", CFG$y_IBR)) +
-    tm_shape(site_sf) + tm_dots(size = 0.05) + tm_layout(legend.outside = TRUE)
+v_emp <- gstat::variogram(Y ~ 1, data = df_sp)  # empirical semivariance by distance bins
+# You can plot v_emp in RStudio to eyeball the shape
+
+v_mod <- gstat::fit.variogram(v_emp, model = gstat::vgm("Sph"))
+v_mod  # look at nugget, partial sill (psill), and range
+
+kr_pred <- gstat::krige(Y ~ 1, locations = df_sp, newdata = grid_sp, model = v_mod)
+
+# tidy table (x,y,pred,variance)
+kr_sf  <- sf::st_as_sf(kr_pred)
+kr_xy  <- sf::st_coordinates(kr_sf)
+kr_tbl <- kr_sf |>
+  sf::st_drop_geometry() |>
+  dplyr::transmute(
+    metric   = target_metric,
+    x = kr_xy[,1], y = kr_xy[,2],
+    pred     = var1.pred,
+    pred_var = var1.var
+  )
+
+set.seed(42)
+# Kriging LOOCV (built-in)
+kcv <- gstat::krige.cv(Y ~ 1, df_sp, model = v_mod)
+kr_rmse <- sqrt(mean(kcv$residual^2, na.rm = TRUE))
+kr_mae  <- mean(abs(kcv$residual), na.rm = TRUE)
+
+# IDW LOOCV (manual)
+idw_res <- sapply(seq_len(nrow(df_sp)), function(i) {
+  pred_i <- gstat::idw(Y ~ 1, df_sp[-i,], df_sp[i,], idp = 2)
+  as.numeric(pred_i$var1.pred - df_sp$Y[i])
+})
+idw_rmse <- sqrt(mean(idw_res^2, na.rm = TRUE))
+idw_mae  <- mean(abs(idw_res), na.rm = TRUE)
+
+# prediction grids
+#write.csv(idw_tbl, "../output/tables/spatial_analyses/idw_table_10042025.csv", row.names = FALSE)
+#write.csv(kr_tbl, "../output/tables/spatial_analyses/kr_table_10042025.csv", row.names = FALSE)
+
+# one-row summary for the metric
+vdf     <- as.data.frame(v_mod)
+nugget  <- dplyr::coalesce(vdf$psill[vdf$model == "Nug"][1], NA_real_)
+sph_row <- vdf[vdf$model != "Nug", ][1, , drop = FALSE]
+partial <- dplyr::coalesce(sph_row$psill, NA_real_)
+vrange  <- dplyr::coalesce(sph_row$range, NA_real_)
+vmodel  <- dplyr::coalesce(sph_row$model, NA_character_)
+
+interp_summary <- tibble::tibble(
+  metric        = target_metric,
+  grid_res_m    = res_m,
+  n_sites       = nrow(df_sp),
+  n_grid        = nrow(kr_tbl),
+  variogram_mod = vmodel,
+  nugget        = nugget,
+  partial_sill  = partial,
+  range         = vrange,
+  idw_rmse      = idw_rmse,
+  idw_mae       = idw_mae,
+  krige_rmse    = kr_rmse,
+  krige_mae     = kr_mae
+)
+
+view(interp_summary)
+#write.csv(interp_summary, "../output/tables/spatial_analyses/interp_summary_10042025.csv", row.names = FALSE)
+
+```
+
+## Spatial Regression
+```{r}
+
+# SPATIAL REGRESSION (OLS → diagnostics → SAR/SEM/SDM → impacts/export)
+# Assumes these already exist from earlier steps: site_data, site_sf, index_cols, analyte_cols, responses
+# Optional: site_col (e.g., "site_name") and site_data$reporting_area
+
+# ---- choose response & predictors ----
+resp_y <- if ("ibr_combined" %in% names(site_data)) "ibr_combined" else responses[1]
+pred_idx <- index_cols
+mech_analytes <- intersect(c("z_benzo_a_pyrene","z_PCB153","z_zinc","z_copper","z_mercury"), analyte_cols)  # edit or set character(0)
+use_area <- "reporting_area" %in% names(site_data)
+sc <- if (exists("site_col")) site_col else "site_name"
+
+# ---- build model frame & subset consistently (complete cases) ----
+X_cols <- unique(c(pred_idx, mech_analytes, if (use_area) "reporting_area"))
+model_df <- cbind(Y = site_data[[resp_y]], site_data[, X_cols, drop = FALSE])
+model_df[[sc]] <- site_data[[sc]]
+keep <- stats::complete.cases(model_df[, c("Y", X_cols), drop = FALSE])
+model_df <- model_df[keep, , drop = FALSE]
+if (use_area) model_df$reporting_area <- factor(model_df$reporting_area)
+
+# neighbors/weights for the kept rows
+sf_mod <- site_sf[keep, ]
+xy_mod <- sf::st_coordinates(sf_mod)
+k_mod <- max(2, min(8, ceiling(sqrt(nrow(sf_mod)))))
+nb_mod <- spdep::knn2nb(spdep::knearneigh(xy_mod, k = k_mod))
+if (any(spdep::card(nb_mod) == 0)) { k_mod <- max(k_mod + 1, 3); nb_mod <- spdep::knn2nb(spdep::knearneigh(xy_mod, k = k_mod)) }
+lw_mod <- spdep::nb2listw(nb_mod, style = "W")
+
+# ---- OLS baseline ----
+ols_form <- stats::as.formula(paste("Y ~", paste(setdiff(colnames(model_df), c("Y", sc)), collapse = " + ")))
+ols <- stats::lm(ols_form, data = model_df)
+print(summary(ols))
+
+# ---- residual spatial diagnostics ----
+res_ols <- residuals(ols)
+print(spdep::moran.test(res_ols, lw_mod))
+print(spdep::lm.LMtests(ols, lw_mod, test = "all"))
+
+# ---- spatial models ----
+sar <- try(spatialreg::lagsarlm(ols_form, data = model_df, listw = lw_mod), silent = TRUE)
+sem <- try(spatialreg::errorsarlm(ols_form, data = model_df, listw = lw_mod), silent = TRUE)
+sdm <- try(spatialreg::lagsarlm(ols_form, data = model_df, listw = lw_mod, Durbin = TRUE), silent = TRUE)
+
+if (!inherits(sar, "try-error")) print(summary(sar))
+if (!inherits(sem, "try-error")) print(summary(sem))
+if (!inherits(sdm, "try-error")) print(summary(sdm))
+
+# ---- model diagnostics table (AIC + residual Moran's I) ----
+get_diag <- function(mod, type) {
+  if (inherits(mod, "try-error")) return(NULL)
+  r <- residuals(mod)
+  mi <- spdep::moran.test(r, lw_mod)
+  data.frame(model = type, AIC = AIC(mod),
+             moran_I = unname(mi$estimate["Moran I statistic"]),
+             p_value = mi$p.value)
+}
+model_diag <- dplyr::bind_rows(get_diag(sar, "sar"),
+                               get_diag(sem, "sem"),
+                               get_diag(sdm, "sdm")) |>
+  dplyr::arrange(AIC)
+print(model_diag)
+
+# ---- impacts (for SAR/SDM) ----
+if (!inherits(sar, "try-error")) {
+  imp_sar <- spatialreg::impacts(sar, listw = lw_mod, R = 1000)
+  print(summary(imp_sar, zstats = TRUE, short = TRUE))
+}
+if (!inherits(sdm, "try-error")) {
+  imp_sdm <- spatialreg::impacts(sdm, listw = lw_mod, R = 1000)
+  print(summary(imp_sdm, zstats = TRUE, short = TRUE))
 }
 
-# ─────────────────────────────────────────────────────────────────────────────────────
-# 4) SPATIAL REGRESSION (OLS + residual Moran; SAR/SEM/SDM)
-# ─────────────────────────────────────────────────────────────────────────────────────
-# Metric guidance:
-# - Response: Pick IBR first (integrated signal). Then test key biomarkers separately.
-# - Predictors: Start with contaminant *class sums / indices* (e.g., PAH_sum, Metals_sum) for stability and interpretability.
-#   Add individual analytes in sensitivity analyses (beware multicollinearity; standardize or use PCA of analytes).
+# ---- export CSVs (coefficients, diagnostics, impacts) ----
+ols_tbl <- tibble::as_tibble(coef(summary(ols)), rownames = "term") |>
+  dplyr::rename(estimate = Estimate, std_error = `Std. Error`, statistic = `t value`, p_value = `Pr(>|t|)`) |>
+  dplyr::mutate(model = "ols", response = resp_y)
 
-# Prepare modeling frame using index sets
-idx_df  <- as.data.frame(site_data[, CFG$idx_cols, drop = FALSE])
-ana_df  <- as.data.frame(site_data[, CFG$analyte_cols, drop = FALSE])
+.tidy_sp <- function(m, nm) {
+  if (inherits(m, "try-error")) return(NULL)
+  co <- as.data.frame(summary(m)$Coef); co$term <- rownames(co)
+  tibble::as_tibble(co) |>
+    dplyr::rename(estimate = Estimate, std_error = `Std. Error`, z_value = `z value`, p_value = `Pr(>|z|)`) |>
+    dplyr::select(term, estimate, std_error, z_value, p_value) |>
+    dplyr::mutate(model = nm, response = resp_y)
+}
+coef_table <- dplyr::bind_rows(ols_tbl, .tidy_sp(sar, "sar"), .tidy_sp(sem, "sem"), .tidy_sp(sdm, "sdm"))
+readr::write_csv(coef_table, paste0("spreg_coefficients_", resp_y, ".csv"))
+readr::write_csv(model_diag, paste0("spreg_model_diagnostics_", resp_y, ".csv"))
 
-# Transform indices (log+z unless already z_*) and analytes similarly
-for (nm_i in names(idx_df))  idx_df[[nm_i]] <- lz(idx_df[[nm_i]], nm_i)
-for (nm_a in names(ana_df))  ana_df[[nm_a]] <- lz(ana_df[[nm_a]], nm_a)
+.tidy_imp <- function(imp, nm) {
+  if (is.null(imp)) return(NULL)
+  tot <- imp$res$total; dir <- imp$res$direct; ind <- imp$res$indirect
+  tibble::tibble(term = names(tot),
+                 direct = as.numeric(dir),
+                 indirect = as.numeric(ind),
+                 total = as.numeric(tot),
+                 model = nm, response = resp_y)
+}
+impacts_table <- dplyr::bind_rows(if (exists("imp_sar")) .tidy_imp(imp_sar, "sar") else NULL,
+                                  if (exists("imp_sdm")) .tidy_imp(imp_sdm, "sdm") else NULL)
+if (!is.null(impacts_table) && nrow(impacts_table) > 0) {
+  readr::write_csv(impacts_table, paste0("spreg_impacts_", resp_y, ".csv"))
+}
 
-# Response: first of RESPONSES (prefer ibr_combined if present)
-resp_order <- c("ibr_combined", RESPONSES)
-resp_name <- unique(resp_order[resp_order %in% names(site_data)])[1]
-Y <- site_data[[resp_name]]
+```
 
-mod_df <- cbind(Y = as.numeric(Y), idx_df, ana_df)
+## Multivariate Spatial Patterns
+```{r}
 
-# OLS baseline with indices first (more stable), then (optionally) a small set of analytes
-# Tip: to limit analytes, pick a few mechanistic ones (e.g., z_benzo_a_pyrene, z_PCB153)
-keep_analytes <- intersect(c("z_benzo_a_pyrene","z_PCB153","z_zinc","z_copper","z_mercury"), names(ana_df))
-X_df <- cbind(idx_df, ana_df[, keep_analytes, drop = FALSE])
-ols <- lm(Y ~ ., data = cbind(Y = mod_df[,"Y"], X_df))
-summary(ols)
+# MULTIVARIATE SPATIAL PATTERNS — RDA + MEM (+ Mantel, varpart)
+# Assumes: site_data, site_sf, ibrs, biomarkers, responses, index_cols already exist.
 
-# Residual spatial autocorrelation
-lw <- nb2listw(knn2nb(knearneigh(xy, k = max(2, min(8, ceiling(sqrt(nrow(site_sf))))))), style = "W")
-moran.test(z(residuals(ols)), lw)
+{
+  # ---- choose response metrics (IBRs + biomarkers; fallback to `responses`) ----
+  y_vars <- unique(c(
+    intersect(c("ibr_combined","ibr_bio","ibr_morph"), ibrs),
+    intersect(c("p450","sod"), biomarkers)
+  ))
+  if (length(y_vars) == 0) y_vars <- responses
 
-o_res <- residuals(ols)
-moran.test(z(o_res), lw)
+  # ---- predictors: contaminant indices ----
+  x_cols <- index_cols
 
-# If residuals autocorrelated → Spatial models
-sar <- try(lagsarlm(formula(ols), data = cbind(st_drop_geometry(site_sf), cbind(Y = mod_df[,"Y"], X_df)), listw = lw))
-sem <- try(errorsarlm(formula(ols), data = cbind(st_drop_geometry(site_sf), cbind(Y = mod_df[,"Y"], X_df)), listw = lw))
-if (!inherits(sar, "try-error")) summary(sar)
-if (!inherits(sem, "try-error")) summary(sem)
-# Choose via AIC + residual Moran’s I diagnostics
+  # ---- align & drop NA rows used by either side ----
+  keep <- stats::complete.cases(site_data[, c(y_vars, x_cols), drop = FALSE])
+  sf_mod <- site_sf[keep, ]
+  Y_mat  <- as.matrix(site_data[keep, y_vars,  drop = FALSE])   # responses (as-is)
+  X_df   <- as.data.frame(site_data[keep, x_cols, drop = FALSE])# predictors (as-is)
 
-# ─────────────────────────────────────────────────────────────────────────────────────
-# 5) MULTIVARIATE SPATIAL PATTERNS (Mantel / RDA + MEM)
-# ─────────────────────────────────────────────────────────────────────────────────────
-# Response matrix from metrics (use up to three to balance signal)
-Y_vars <- RESPONSES[RESPONSES %in% names(site_data)]
-Y_mat <- as.matrix(scale(site_data[, Y_vars, drop = FALSE]))
-X_df  <- as.data.frame(idx_df)  # indices as primary explanatory set
+  # ---- spatial eigenfunctions (MEM/DBMEM) from coordinates ----
+  coords <- as.matrix(sf::st_coordinates(sf_mod))
+  mem    <- adespatial::dbmem(coords)
 
-# Spatial eigenfunctions (MEM)
-coords_mat <- as.matrix(xy)
-mem <- dbmem(coords_mat)
+  # ---- RDA with environment + space ----
+  rda_env_space <- vegan::rda(Y_mat ~ ., data = cbind(X_df, as.data.frame(mem)))
+  print(summary(rda_env_space))
+  print(stats::anova(rda_env_space, by = "terms"))
+  print(stats::anova(rda_env_space, by = "axis"))
 
-# RDA with environment + space
-rda_env_space <- rda(Y_mat ~ ., data = cbind(X_df, as.data.frame(mem)))
-summary(rda_env_space)
-anova(rda_env_space, by = "terms")
-
-# Variation partitioning: env vs space
-vp <- varpart(Y_mat, X_df, as.data.frame(mem))
-print(vp)
-
-# Mantel test comparing biomarker and contaminant dissimilarities
-bio_dist <- dist(scale(site_data[, Y_vars, drop = FALSE]))
-con_dist <- dist(scale(X_df))
-mantel_res <- mantel(bio_dist, con_dist, permutations = 999)
-print(mantel_res)
-# ─────────────────────────────────────────────────────────────────────────────────────
-# Metric guidance:
-# - Use a matrix of biomarkers (e.g., cbind(IBR, p450, sod)).
-# - Explanatory set: contaminant indices first (PAH_sum, Metals_sum, etc.).
-# - Alternative: reduce individual analytes with PCA, then use top PCs as predictors.
-
-# Build response and predictor matrices (drop missing columns automatically)
-Y_vars <- RESPONSES[RESPONSES %in% names(site_data)]
-X_idx  <- c(CFG$x_PAH_sum, CFG$x_metals_sum)
-X_idx  <- X_idx[X_idx %in% names(site_data)]
-
-Y_mat <- as.matrix(scale(site_data[, Y_vars]))
-X_df  <- as.data.frame(site_data[, X_idx, drop = FALSE])
-X_df[] <- lapply(X_df, lz)  # log-scale + z-score for indices
-
-# Spatial eigenfunctions (MEM) from coordinates
-coords_mat <- as.matrix(st_coordinates(site_sf))
-mem <- dbmem(coords_mat)
-
-# RDA with environment + space (partial out space or include jointly)
-rda_env_space <- rda(Y_mat ~ ., data = cbind(X_df, as.data.frame(mem)))
-summary(rda_env_space)
-anova(rda_env_space, by = "terms")
-
-# Variation partitioning example: env vs space (vegan::varpart)
-if (ncol(X_df) > 0) {
-  vp <- varpart(Y_mat, X_df, as.data.frame(mem))
+  # ---- variation partitioning: environment vs space ----
+  vp <- vegan::varpart(Y_mat, X_df, as.data.frame(mem))
   print(vp)
-}
 
-# Mantel test comparing biomarker and contaminant dissimilarities
-if (ncol(X_df) > 0) {
-  bio_dist <- dist(scale(site_data[, Y_vars]))
-  con_dist <- dist(scale(X_df))
-  mantel_res <- mantel(bio_dist, con_dist, permutations = 999)
+  # ---- Mantel test: biomarker/IBR dissimilarity vs contaminant-index dissimilarity ----
+  bio_dist <- stats::dist(Y_mat)   # values as-is; optionally standardize if scales differ
+  con_dist <- stats::dist(X_df)
+  mantel_res <- vegan::mantel(bio_dist, con_dist, permutations = 999)
   print(mantel_res)
 }
+
+
+```
+
+## Geographically weighted regression
+```{r}
 
 # ─────────────────────────────────────────────────────────────────────────────────────
 # 6) GEOGRAPHICALLY WEIGHTED REGRESSION (GWR)
@@ -1914,6 +2072,10 @@ if (nrow(site_sf) >= 40 && all(c("PAH","MET") %in% names(mod_df))) {
   tm_shape(gwr_sf) + tm_dots(col = "localR2", size = 0.15, title = "GWR local R^2") + tm_layout(legend.outside = TRUE)
 }
 
+```
+
+## Spatially Constrained Clustering
+```{r}
 # ─────────────────────────────────────────────────────────────────────────────────────
 # 7) SPATIALLY CONSTRAINED CLUSTERING (zonation)
 # ─────────────────────────────────────────────────────────────────────────────────────
@@ -1941,124 +2103,4 @@ site_sf$zone <- factor(cl)
 tm_shape(site_sf) + tm_dots(col = "zone", size = 0.18, title = sprintf("Spatially constrained zones (k=%d)", k)) +
   tm_layout(legend.outside = TRUE)
 
-# ─────────────────────────────────────────────────────────────────────────────────────
-# 8) METRIC SELECTION NOTES (AT-A-GLANCE)
-# ─────────────────────────────────────────────────────────────────────────────────────
-# • Global Moran's / LISA: IBR (robust), plus each biomarker (p450/sod) to attribute clusters.
-# • Getis-Ord Gi*: IBR or biomarker with strongest expected link to a contaminant class.
-# • Interpolation: IBR for overall field; add biomarker if mechanism is clear (e.g., p450 ↔ PAH).
-# • Spatial regression: IBR ~ contaminant indices first; then sensitivity with individual analytes or analyte PCs.
-# • Multivariate (RDA+MEM): response = cbind(IBR, p450, sod); predictors = contaminant indices (± analyte PCs), + spatial MEM.
-# • GWR: pick 1–2 predictors (indices) to avoid instability; interpret local R^2 and coefficient maps.
-# • Clustering: use biomarker matrix; blend in spatial distances for contiguous ecological zones.
-
-# ─────────────────────────────────────────────────────────────────────────────────────
-# 9) QUICK CHECKS & TIPS
-# ─────────────────────────────────────────────────────────────────────────────────────
-# • Always visualize neighbors (plot(nb_knn, xy)) and try sensitivity (k ± 1–2).
-# • Standardize responses (z-score) for autocorrelation tests; log+z for skewed contaminants.
-# • Multiple testing: when mapping many local stats, consider p.adjust(..., method='fdr').
-# • Collinearity: if using many analytes, consider PCA or sparse regression before spatial models.
-# • Reproducibility: set a seed for permutation-based tests if you use Monte Carlo options.
-
-# END OF CODE KIT
-
-
 ```
-
-## plotting LISA output
-### testing p450 to spot check LISA results
-```{r}
-
-
-```
-
-# OLD CODE - Verify before using
-## mapping p450 LISA clusters to visualize the results before moving to the next steps
-```{r}
-
-library(tmap)
-
-# basic LISA plot
-tm_shape(lisa_p450) +
-  tm_symbols(col = "p450_lisa_cluster",
-             palette = "Set1",
-             size = 0.5,
-             title.col = "LISA Cluster") +
-  tm_layout(main.title = "LISA Clusters for P450 Biomarker")
-
-# only signficant clusters
-tm_shape(lisa_p450) +
-  tm_symbols(col = "p450_lisa_cluster",
-             palette = c("High-High" = "red",
-                         "Low-Low" = "blue",
-                         "Outlier" = "purple",
-                         "Not Significant" = "grey80"),
-             size = 0.5,
-             title.col = "Cluster Type") +
-  tm_layout(main.title = "Significant LISA Clusters (P450)")
-
-# table of results
-table(lisa_p450$p450_lisa_cluster)
-
-# adding WA basemap for another way to see the clusters
-library(rnaturalearth)
-
-# grab WA
-us_states <- ne_states(country = "united states of america", returnclass = "sf")
-wa_outline <- us_states[us_states$name == "Washington", ]
-
-library(tmap)
-
-tm_shape(wa_outline) +
-  tm_borders(col = "gray30") +
-tm_shape(lisa_p450) +
-  tm_symbols(col = "p450_lisa_cluster",
-             palette = c("High-High" = "red",
-                         "Low-Low" = "blue",
-                         "Outlier" = "purple",
-                         "Not Significant" = "gray80"),
-             size = 0.5,
-             title.col = "Cluster Type") +
-  tm_layout(main.title = "LISA Clusters for P450 Biomarker")
-
-
-```
-
-## creating LISA summary table
-```{r}
-
-# Directly from Chat GPT
-
-library(stringr)
-
-# Get list of all LISA geojson files
-lisa_files <- list.files("lisa_outputs", pattern = "\\.geojson$", full.names = TRUE)
-
-# Create a summary table for each
-lisa_summary <- lapply(lisa_files, function(file) {
-  data <- st_read(file, quiet = TRUE)
-  
-  # Extract the variable name from the file name
-  var_name <- str_extract(basename(file), "(?<=LISA_).*(?=\\.geojson)")
-  
-  # Identify cluster column (should be the only one with 'cluster' in name)
-  cluster_col <- names(data)[grepl("cluster", names(data))][1]
-  
-  # Summarize cluster counts
-  summary <- data %>%
-    st_drop_geometry() %>%
-    count(!!sym(cluster_col), name = "n") %>%
-    mutate(variable = var_name, cluster = !!sym(cluster_col)) %>%
-    select(variable, cluster, n)
-  
-  return(summary)
-})
-
-# Combine all summaries into one dataframe
-all_lisa_summary <- bind_rows(lisa_summary)
-
-#write.csv(all_lisa_summary, "/Users/cmantegna/Documents/Github/WDFWmussels/output/lisa_summary.csv", row.names = FALSE) # write it out
-
-```
-
