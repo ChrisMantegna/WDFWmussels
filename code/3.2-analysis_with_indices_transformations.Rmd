@@ -28,7 +28,9 @@ knitr::opts_chunk$set(
 )
 
 # libraries
+library("adespatial")
 library(broom) # converting output tables to tidy tables for saving or easy view
+library(classInt) # creating univariate variables for mapping
 library(cluster) # grouping metrics - VERIFY still needed
 library(devtools) # installing bespoke packages
 library(dplyr) # data wrangling
@@ -37,6 +39,8 @@ library(FactoMineR) # pca/ nmds/ tweaking radars
 library(fmsb) # polygon calculations for the radars
 library(FSA) # post hoc test - Dunn's Test   
 library(ggplot2) # plots
+library("gstat")
+library("GWmodel")
 library(knitr) # output formatting
 library(multcompView) # used for the letter assignment
 library(pgirmess) # stats - KW
@@ -46,8 +50,10 @@ library(RVAideMemoire) # post hoc test for permanova
 library(scales) # scaling data for IBR - works with data wrangling packages
 library(sf) # mapping - needed for converting to spatial data
 library(spdep) # building spatial geometric components for analysis
+library(spatialreg) # spatial regression analysis
 library(tidyr) # data wrangling
 library(tidyverse) # data wrangling
+library(tmap) #mapping themes
 library(vegan) # ecological stats 
 
 ```
@@ -58,9 +64,9 @@ library(vegan) # ecological stats
 # working from the clean data folder
 getwd()
 
-site_data<- read.csv("../data/cleaned/site_level_complete_indices_10012025.csv") # for reporting area comparisons
-sample_data<- read.csv("../data/interim_df/sample_level_scaling_09292025.csv") # for site comparisons for the metrics
-sample_ibr<- read.csv("../data/interim_df/sample_level_ibr_09292025.csv") # for the reporting area comparisons for the ibrs
+site_data<- read.csv("../data/site_with_indices_identifiers_analytes_10042025.csv") # for reporting area comparisons
+#sample_data<- read.csv("../data/interim_df/sample_level_scaling_09292025.csv") # for site comparisons for the metrics
+#sample_ibr<- read.csv("../data/interim_df/sample_level_ibr_09292025.csv") # for the reporting area comparisons for the ibrs
 
 ```
 
@@ -1352,344 +1358,611 @@ view(corr_full)
 
 ```
 
-############################### OLD Code######################################
 ### individual analytes
 ```{r}
 
-# this may actually need avg_ibr_analytess - double s is the file name - as the df for the analysis
-#correlation_data<- read.csv("../data/index_df/site_level_all_analytes_scaled.csv")
+# ---- column ranges based on your layout ----
+id_columns      <- names(site_data)[1:5]
+metrics_vars    <- names(site_data)[6:20]
+index_vars      <- names(site_data)[21:34]   # not used here; for clarity
+analyte_vars    <- names(site_data)[35:142]  
 
-metrics_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3", "weight_initial", "weight_change", "weight_final", "length", "width", "height", "ibr_bio", "ibr_morph", "ibr_combined")
 
-# identifying columns to exclude from analysis
-id_columns <- c("site_name", "site_number",  "reporting_area", "latitude", "longitude", "ai_z_arsenic", "ai_z_cadmium", "ai_z_copper", "ai_z_lead", "ai_z_mercury", "ai_z_zinc")
+needed <- c(metrics_vars, analyte_vars)
 
-# converting metals to match other contaminants - metals are reported in mg/kg and all others are ng/g
-# 1 mg/kg = 1,000 ng/g
-correlation_data$ai_z_arsenic_ng <- correlation_data$ai_z_arsenic * 1000
-correlation_data$ai_z_cadmium_ng <- correlation_data$ai_z_cadmium * 1000
-correlation_data$ai_z_copper_ng <- correlation_data$ai_z_copper * 1000
-correlation_data$ai_z_lead_ng <- correlation_data$ai_z_lead * 1000
-correlation_data$ai_z_mercury_ng <- correlation_data$ai_z_mercury * 1000
-correlation_data$ai_z_zinc_ng <- correlation_data$ai_z_zinc * 1000
+to_numeric <- function(v) {
+  if (is.numeric(v)) return(v)
+  if (is.factor(v)) return(as.numeric(as.character(v)))
+  if (is.character(v)) return(suppressWarnings(as.numeric(v)))
+  suppressWarnings(as.numeric(v))
+}
 
-#write.csv(correlation_data, "/Users/cmantegna/Documents/Github/WDFWmussels/data/site_level_corrected_metals_all_analytes.csv", row.names = FALSE)
+site_data <- site_data |>
+  dplyr::mutate(dplyr::across(dplyr::all_of(intersect(needed, names(site_data))), to_numeric))
 
-# Build analyte_vars by excluding both metrics and IDs
-analyte_vars <- colnames(correlation_data)[!(colnames(correlation_data) %in% c(metrics_vars, id_columns))]
-
-# set p-value & initialize empty list
-alpha <- 0.05
+# ---- correlation loop: metrics x individual analytes ----
 results_list <- list()
+k <- 1L
+min_pairs <- 4L  # require at least 4 paired points
 
-# Loop over metric–analyte pairs across sites
 for (metric in metrics_vars) {
+  if (!metric %in% names(site_data)) next
+  x <- site_data[[metric]]
+  if (!is.numeric(x)) next
+
   for (analyte in analyte_vars) {
-    
-    x <- correlation_data[[metric]]
-    y <- correlation_data[[analyte]]
-    
-    valid_idx <- complete.cases(x, y)
-    x_valid <- x[valid_idx]
-    y_valid <- y[valid_idx]
-    
-    if (length(x_valid) < 4) next  # Skip if too few values
-    
-    spearman <- cor.test(x_valid, y_valid, method = "spearman")
-    kendall <- cor.test(x_valid, y_valid, method = "kendall")
-    
-    results_list[[paste(metric, analyte, sep = "_")]] <- data.frame(
-      Metric = metric,
-      Analyte = analyte,
-      Spearman_r = as.numeric(spearman$estimate),
-      Spearman_p = as.numeric(spearman$p.value),
-      Kendall_tau = as.numeric(kendall$estimate),
-      Kendall_p = as.numeric(kendall$p.value)
+    if (!analyte %in% names(site_data)) next
+    y <- site_data[[analyte]]
+    if (!is.numeric(y)) next
+
+    valid <- is.finite(x) & is.finite(y)
+    if (!any(valid)) next
+    x_valid <- x[valid]
+    y_valid <- y[valid]
+
+   
+    # correlations
+    spearman <- try(stats::cor.test(x_valid, y_valid, method = "spearman", exact = FALSE), silent = TRUE)
+    kendall  <- try(stats::cor.test(x_valid, y_valid, method = "kendall"), silent = TRUE)
+    if (inherits(spearman, "try-error") || inherits(kendall, "try-error")) next
+
+    results_list[[k]] <- data.frame(
+      Metric       = metric,
+      Analyte      = analyte,
+      N_Pairs      = length(x_valid),
+      Spearman_r   = unname(spearman$estimate),
+      Spearman_p   = unname(spearman$p.value),
+      Kendall_tau  = unname(kendall$estimate),
+      Kendall_p    = unname(kendall$p.value),
+      stringsAsFactors = FALSE
     )
+    k <- k + 1L
   }
 }
 
-# Combine results
-corr_full <- bind_rows(results_list)
+corr_full <- dplyr::bind_rows(results_list)
 
-# Add significance stars
-corr_full <- corr_full %>%
-  mutate(
-    Spearman_sig = case_when(
+# ---- significance flags + ordering ----
+corr_full <- corr_full |>
+  dplyr::mutate(
+    Spearman_sig = dplyr::case_when(
       Spearman_p <= 0.001 ~ "***",
       Spearman_p <= 0.01  ~ "**",
       Spearman_p <= 0.05  ~ "*",
       TRUE ~ ""
     ),
-    Kendall_sig = case_when(
+    Kendall_sig = dplyr::case_when(
       Kendall_p <= 0.001 ~ "***",
       Kendall_p <= 0.01  ~ "**",
       Kendall_p <= 0.05  ~ "*",
       TRUE ~ ""
     )
+  ) |>
+  dplyr::arrange(Spearman_p, Kendall_p)
+
+# view
+view(corr_full)
+#write.csv(corr_full, "../output/tables/spearman_kendall_results/correlation_metrics_analytes_10042025.csv", row.names = FALSE)
+
+```
+
+# Asking: Are there discernable, significant spatial correlations/ relations amongst the metrics or analytes?
+## Global Moran's I & LISA (Local Indicators of Spatial Association) w/ data prep
+### biomarkers and ibrs only
+```{r}
+
+# define my columns/ variables
+id_idx <- 1:5 # site_number, reporting_area, site_name, latitude, longitude
+biomarker_idx <- 6:7 # e.g., p450, sod <-- EDIT to your true range
+morphometric_idx<- 8:14 # e.g., shell, length/height/width, weights <-- EDIT
+condition_idx <- 15:17 # e.g., ci1:ci3 (example) <-- EDIT
+ibr_idx <- 18:20 # e.g., ibr_bio, ibr_morph, ibr_combined <-- EDIT
+index_idx <- 21:34 # contaminant indices
+analyte_idx <- 35:142 # individual analytes (z_*)
+
+# pull the column names from indices
+nm <- names(site_data)
+id_cols <- nm[intersect(id_idx, seq_along(nm))]
+biomarkers <- nm[intersect(biomarker_idx, seq_along(nm))]
+morphometrics <- nm[intersect(morphometric_idx, seq_along(nm))]
+conditions <- nm[intersect(condition_idx, seq_along(nm))]
+ibrs <- nm[intersect(ibr_idx, seq_along(nm))]
+index_cols <- nm[intersect(index_idx, seq_along(nm))]
+analyte_cols <- nm[intersect(analyte_idx, seq_along(nm))]
+
+# key id columns
+lon_col <- "longitude"
+lat_col <- "latitude"
+site_col<- "site_name" 
+
+# Choose response set: prioritize IBRs (overall) + biomarkers (mechanistic)
+responses <- unique(c(intersect(c("ibr_combined","ibr_bio","ibr_morph"), ibrs),
+                      intersect(c("p450","sod"), biomarkers)))
+if (length(responses) == 0) responses <- c(ibrs, biomarkers)[1:min(3, length(c(ibrs, biomarkers)))]
+
+# Coerce to sf and project to meters
+site_sf <- st_as_sf(site_data, coords = c(lon_col, lat_col), crs = 4326)
+site_sf <- st_transform(site_sf, 3857)
+xy <- st_coordinates(site_sf)
+
+# Neighborhood weights (k-NN with k = sqrt(n) capped at 8)
+k_default <- max(2, min(8, ceiling(sqrt(nrow(site_sf)))))
+nb_knn <- knn2nb(knearneigh(xy, k = k_default))
+if (any(card(nb_knn) == 0)) {
+  k_default <- max(k_default + 1, 3)
+  nb_knn <- knn2nb(knearneigh(xy, k = k_default))
+}
+lw <- nb2listw(nb_knn, style = "W")
+
+message(sprintf("weights: %d-NN (style=W)", k_default))
+
+# 1) Global & Local autocorrelation (clean, single pass; values as-is)
+moran_results <- list()
+lisa_results  <- list()
+
+for (resp in responses) {
+  if (!resp %in% names(site_data)) next
+
+  y  <- site_data[[resp]]
+  ly <- lag.listw(lw, y)
+
+  # Global Moran's I
+  moran_results[[resp]] <- moran.test(y, lw)
+
+  # Local Moran's I (LISA)
+  li <- localmoran(y, lw)
+
+  out <- site_sf
+  out$resp <- resp
+  out$Ii   <- li[,1]
+  out$Z.Ii <- li[,4]
+  out$p    <- li[,5]
+  out$p_fdr <- p.adjust(out$p, method = "fdr")   # optional but helpful
+
+  # Simple cluster labeling relative to overall mean (since not z-scored)
+  m_y  <- mean(y,  na.rm = TRUE)
+  m_ly <- mean(ly, na.rm = TRUE)
+
+  out$cluster <- dplyr::case_when(
+    out$p_fdr < 0.05 & y  > m_y  & ly > m_ly ~ "High-High",
+    out$p_fdr < 0.05 & y  < m_y  & ly < m_ly ~ "Low-Low",
+    out$p_fdr < 0.05 & y  > m_y  & ly < m_ly ~ "High-Low",
+    out$p_fdr < 0.05 & y  < m_y  & ly > m_ly ~ "Low-High",
+    TRUE ~ "NS"
   )
 
-View(corr_full)
-#write.csv(corr_full, "/Users/cmantegna/Documents/Github/WDFWmussels/output/correlation_individual_analytes.csv", row.names = FALSE)
+  # carry through reporting_area for faceting
+  out$reporting_area <- site_data$reporting_area
+
+  lisa_results[[resp]] <- out
+}
+
+# Example map for IBR clusters
+if ("ibr_combined" %in% names(lisa_results)) {
+  tm_shape(lisa_results[["ibr_combined"]]) +
+    tm_dots(col = "cluster", size = 0.15, title = "lisa: ibr_combined") +
+    tm_layout(legend.outside = TRUE)
+}
+
+# GLOBAL MORAN'S I SUMMARY -----------------------------------------------
+# creates a tibble with metric, Moran's I, expected I, variance, z, p, FDR, significance, n_sites, k
+global_moran_table <- dplyr::bind_rows(lapply(names(moran_results), function(resp) {
+  mres <- moran_results[[resp]]
+  # robust extraction
+  est <- suppressWarnings(unname(mres$estimate["Moran I statistic"]))
+  ei  <- suppressWarnings(unname(mres$estimate["Expectation"]))
+  vi  <- suppressWarnings(unname(mres$estimate["Variance"]))
+  if (is.na(est) || is.na(ei) || is.na(vi)) {
+    # fallback: try to compute z if needed
+    zval <- as.numeric(mres$statistic)
+  } else {
+    zval <- (est - ei) / sqrt(vi)
+  }
+  tibble::tibble(
+    metric         = resp,
+    moran_I        = est,
+    expected_I     = ei,
+    variance       = vi,
+    z              = zval,
+    p_value        = mres$p.value
+  )
+})) %>%
+  dplyr::mutate(
+    p_fdr          = p.adjust(p_value, method = "fdr"),
+    sig_p05        = p_value < 0.05,
+    sig_fdr05      = p_fdr   < 0.05,
+    direction      = dplyr::case_when(moran_I > 0 ~ "positive", moran_I < 0 ~ "negative", TRUE ~ "≈0"),
+    n_sites        = nrow(site_sf),
+    k_neighbors    = k_default
+  ) %>%
+  dplyr::arrange(p_value)
+
+global_moran_table
+#write.csv(global_moran_table, "../output/tables/global_moran_10042025.csv", row.names = FALSE)
+
+# LISA SUMMARY (site-level) ----------------------------------------------
+# adds site name and (if present) reporting_area; flags p<0.05 and FDR<0.05
+
+lisa_table <- dplyr::bind_rows(lapply(names(lisa_results), function(resp) {
+  x  <- lisa_results[[resp]]
+  df <- sf::st_drop_geometry(x)
+  # ensure metric name column
+  if (!"resp" %in% names(df)) df$resp <- resp
+  # attach site + reporting area from your original data (row order should match)
+  df[[site_col]] <- site_data[[site_col]]
+  if ("reporting_area" %in% names(site_data) && !"reporting_area" %in% names(df)) {
+    df$reporting_area <- site_data$reporting_area
+  }
+  # FDR across sites within each metric
+  if (!"p_fdr" %in% names(df)) {
+    df$p_fdr <- p.adjust(df$p, method = "fdr")
+  }
+  dplyr::select(df,
+                metric = resp,
+                !!site_col,
+                dplyr::any_of("reporting_area"),
+                Ii, Z.Ii, p, p_fdr, cluster) %>%
+    dplyr::mutate(sig_p05   = p    < 0.05,
+                  sig_fdr05 = p_fdr < 0.05)
+}), .id = NULL) %>%
+  dplyr::arrange(metric, p)
+
+lisa_table
+#write.csv(lisa_table, "../output/tables/lisa_10042025.csv", row.names = FALSE)
 
 ```
 
-# Spatial Analysis
-## Global Moran's I
+### remaining metrics - global morans & lisa
 ```{r}
 
-# fix this in post - this can be a loop, but I will need help making it work properly; this is why it is manually done
-
-# all measured metrics
-# p450
-site_data <- site_sf %>% filter(!is.na(p450)) # filter out any NAs
-summary(site_data$p450) # check for variance and more than 3 rows for analysis
-coords <- st_coordinates(site_data) # get coordinated from included sites
-nb <- knn2nb(knearneigh(coords, k = 4)) # build neighbor list and weights
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$p450)[, 1] # scale results and run morans
-moran.test(x_scaled, lw)
-
-# sod
-site_data <- site_sf %>% filter(!is.na(sod))
-summary(site_data$sod)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$sod)[, 1]
-moran.test(x_scaled, lw)
-
-# shell
-site_data <- site_sf %>% filter(!is.na(shell))
-summary(site_data$shell)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$shell)[, 1]
-moran.test(x_scaled, lw)
-
-# ci1
-site_data <- site_sf %>% filter(!is.na(ci1))
-summary(site_data$ci1)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$ci1)[, 1]
-moran.test(x_scaled, lw)
-
-# ci2
-site_data <- site_sf %>% filter(!is.na(ci2))
-summary(site_data$ci2)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$ci2)[, 1]
-moran.test(x_scaled, lw)
-
-# ci3
-site_data <- site_sf %>% filter(!is.na(ci3))
-summary(site_data$ci3)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$ci3)[, 1]
-moran.test(x_scaled, lw)
-
-
-# ibr_bio
-site_data <- site_sf %>% filter(!is.na(ibr_bio))
-summary(site_data$ibr_bio)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$ibr_bio)[, 1]
-moran.test(x_scaled, lw)
-
-# ibr_morph
-site_data <- site_sf %>% filter(!is.na(ibr_morph))
-summary(site_data$ibr_morph)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$ibr_morph)[, 1]
-moran.test(x_scaled, lw)
-
-# ibr_combined
-site_data <- site_sf %>% filter(!is.na(ibr_combined))
-summary(site_data$ibr_combined)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$ibr_combined)[, 1]
-moran.test(x_scaled, lw)
-
-# All contaminant indices
-# mixture index, sum
-site_data <- site_sf %>% filter(!is.na(mixture_index_sum))
-summary(site_data$mixture_index_sum)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$mixture_index_sum)[, 1]
-moran.test(x_scaled, lw)
-
-# mixture index, pca
-site_data <- site_sf %>% filter(!is.na(mixture_index_pca))
-summary(site_data$mixture_index_pca)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$mixture_index_pca)[, 1]
-moran.test(x_scaled, lw)
-
-#chlordane
-site_data <- site_sf %>% filter(!is.na(chlordane))
-summary(site_data$chlordane)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$chlordane)[, 1]
-moran.test(x_scaled, lw)
-
-# UPDATE the CODE from HERE
-#ddt
-site_data <- site_sf %>% filter(!is.na(ddt))
-summary(site_data$ddt)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$ddt)[, 1]
-moran.test(x_scaled, lw)
-
-#hch
-site_data <- site_sf %>% filter(!is.na(hch))
-summary(site_data$hch)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$hch)[, 1]
-moran.test(x_scaled, lw)
-
-#metal - nutrients
-site_data <- site_sf %>% filter(!is.na(nutrient_metal_ng))
-summary(site_data$nutrient_metal_ng)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$nutrient_metal_ng)[, 1]
-moran.test(x_scaled, lw)
-
-#metal - heavy
-site_data <- site_sf %>% filter(!is.na(heavy_metal_ng))
-summary(site_data$heavy_metal_ng)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$heavy_metal_ng)[, 1]
-moran.test(x_scaled, lw)
-
-#pah_lmw
-site_data <- site_sf %>% filter(!is.na(pah_lmw))
-summary(site_data$pah_lmw)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$pah_lmw)[, 1]
-moran.test(x_scaled, lw)
-
-#pah_hmw
-site_data <- site_sf %>% filter(!is.na(pah_hmw))
-summary(site_data$pah_hmw)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$pah_hmw)[, 1]
-moran.test(x_scaled, lw)
-
-#pah_add
-site_data <- site_sf %>% filter(!is.na(pah_add))
-summary(site_data$pah_add)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$pah_add)[, 1]
-moran.test(x_scaled, lw)
-
-#pbde
-site_data <- site_sf %>% filter(!is.na(pbde))
-summary(site_data$pbde)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$pbde)[, 1]
-moran.test(x_scaled, lw)
-
-#pcb
-site_data <- site_sf %>% filter(!is.na(pcb))
-summary(site_data$pcb)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$pcb)[, 1]
-moran.test(x_scaled, lw)
-
-#pesticides
-site_data <- site_sf %>% filter(!is.na(pesticide))
-summary(site_data$pesticide)
-coords <- st_coordinates(site_data)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-x_scaled <- scale(site_data$pesticide)[, 1]
-moran.test(x_scaled, lw)
-
-```
-
-## LISA - Local Indicators of Spatial Association
-```{r}
-
-library(sf)
-library(spdep)
-
-# convert df to a spatial object
-site_sf <- st_as_sf(site_data, coords = c("longitude", "latitude"), crs = 4326)
-site_sf <- st_transform(site_sf, crs = 3857)  # projected CRS for distance-based neighbors
-
-# create spatial neighbors and weights (4 nearest neighbors)
-coords <- st_coordinates(site_sf)
-nb <- knn2nb(knearneigh(coords, k = 4))
-lw <- nb2listw(nb, style = "W")
-
-# response variables to test
-bio_vars <- c("p450", "sod", "shell", "ci1", "ci2", "ci3", "weight_initial", "weight_change", "weight_final", "length", "width", "height", "ibr_bio", "ibr_morph", "ibr_combined")
-
-# contaminant indices 
-index_vars <- c("chlordane", "ddt", "hch", "pah_lmw", "pah_hmw", "pah_add", "pbde", "pcb", "pesticide", "heavy_metal_ng", "nutrient_metal_ng", "mixture_index_sum", "mixture_index_pca")
-
-# LOOP FOR LOCAL MORAN'S I 
-
-# create output folder
-dir.create("lisa_outputs", showWarnings = FALSE)
-
-for (var in c(bio_vars, index_vars)) {
-  x <- site_sf[[var]]
-  lisa <- localmoran(scale(x)[,1], lw)
-
-  # Add LISA results to spatial dataframe
-  site_sf[[paste0(var, "_lisa_I")]] <- lisa[,1]
-  site_sf[[paste0(var, "_lisa_p")]] <- lisa[,5]
-
-  # Define cluster types with p-value significance threshold
-site_sf[[paste0(var, "_lisa_cluster")]] <- case_when(
-  x > mean(x, na.rm = TRUE) & lisa[,1] > 0 & lisa[,5] < 0.05 ~ "High-High",
-  x < mean(x, na.rm = TRUE) & lisa[,1] > 0 & lisa[,5] < 0.05 ~ "Low-Low",
-  lisa[,1] < 0 & lisa[,5] < 0.05 ~ "Outlier",
-  TRUE ~ "Not Significant"
+# group the columns you want to scan
+metric_groups <- list(
+  biomarkers    = biomarkers,
+  morphometrics = morphometrics,
+  conditions    = conditions,
+  ibrs          = ibrs,
+  indices       = index_cols
 )
 
-  # Save spatial cluster results with p-values included
-st_write(site_sf[, c("site_name", paste0(var, "_lisa_cluster"), paste0(var, "_lisa_p"))],
-         paste0("lisa_outputs/LISA_", var, ".geojson"), delete_dsn = TRUE)
+# keep only columns that exist & are non-empty
+metric_groups <- lapply(metric_groups, function(v) v[v %in% names(site_data)])
+metric_groups <- metric_groups[sapply(metric_groups, length) > 0]
+
+# a helper for the site id column name
+sc <- if (exists("site_col")) site_col else "site_name"
+
+library(dplyr)
+library(tibble)
+
+safe_moran <- function(y) {
+  # skip NA/constant vectors
+  if (all(is.na(y)) || (sd(y, na.rm = TRUE) %||% 0) == 0) return(NULL)
+  res <- moran.test(y, lw)
+  est <- suppressWarnings(unname(res$estimate["Moran I statistic"]))
+  ei  <- suppressWarnings(unname(res$estimate["Expectation"]))
+  vi  <- suppressWarnings(unname(res$estimate["Variance"]))
+  z   <- if (is.finite(vi) && !is.na(vi)) (est - ei)/sqrt(vi) else as.numeric(res$statistic)
+  tibble(moran_I = est, expected_I = ei, variance = vi, z = z, p_value = res$p.value)
 }
+
+`%||%` <- function(a, b) if (is.null(a) || is.na(a)) b else a
+
+global_moran_table_all <- bind_rows(lapply(names(metric_groups), function(g) {
+  cols <- metric_groups[[g]]
+  bind_rows(lapply(cols, function(colname) {
+    y <- site_data[[colname]]
+    mr <- safe_moran(y)
+    if (is.null(mr)) return(NULL)
+    mutate(mr, group = g, metric = colname, n_sites = nrow(site_sf))
+  }))
+})) %>%
+  mutate(p_fdr_all = p.adjust(p_value, "fdr"),
+         sig_p05   = p_value   < 0.05,
+         sig_fdr05 = p_fdr_all < 0.05) %>%
+  select(group, metric, n_sites, moran_I, expected_I, variance, z, p_value, p_fdr_all, sig_p05, sig_fdr05) %>%
+  arrange(p_value)
+
+global_moran_table_all
+#write.csv(global_moran_table_all, "../output/tables/global_moran_all_10042025.csv", row.names = FALSE)
+
+
+lisa_table_all <- bind_rows(lapply(names(metric_groups), function(g) {
+  cols <- metric_groups[[g]]
+  bind_rows(lapply(cols, function(colname) {
+    y <- site_data[[colname]]
+    if (all(is.na(y)) || (sd(y, na.rm = TRUE) %||% 0) == 0) return(NULL)
+
+    li <- localmoran(y, lw)
+    ly <- lag.listw(lw, y)
+
+    out <- sf::st_drop_geometry(site_sf)
+    out$Ii   <- li[,1]
+    out$Z.Ii <- li[,4]
+    out$p    <- li[,5]
+    out$metric <- colname
+    out$group  <- g
+    out[[sc]]  <- site_data[[sc]]
+    if ("reporting_area" %in% names(site_data)) out$reporting_area <- site_data$reporting_area
+
+    m_y  <- mean(y,  na.rm = TRUE)
+    m_ly <- mean(ly, na.rm = TRUE)
+    out$cluster <- dplyr::case_when(
+      out$p < 0.05 & y  > m_y & ly > m_ly ~ "High-High",
+      out$p < 0.05 & y  < m_y & ly < m_ly ~ "Low-Low",
+      out$p < 0.05 & y  > m_y & ly < m_ly ~ "High-Low",
+      out$p < 0.05 & y  < m_y & ly > m_ly ~ "Low-High",
+      TRUE ~ "NS"
+    )
+    out
+  }))
+}))
+
+# add FDR choices:
+# (a) FDR within each metric (common for LISA)
+lisa_table_all <- lisa_table_all %>%
+  group_by(metric) %>%
+  mutate(p_fdr_metric = p.adjust(p, "fdr")) %>%
+  ungroup() %>%
+  mutate(sig_p05   = p < 0.05,
+         sig_fdr05 = p_fdr_metric < 0.05)
+
+# (b) Optional: FDR within reporting area, per metric (uncomment if you prefer):
+# lisa_table_all <- lisa_table_all %>%
+#   group_by(metric, reporting_area) %>%
+#   mutate(p_fdr_area = p.adjust(p, "fdr")) %>%
+#   ungroup()
+
+# nice ordering
+lisa_table_all <- lisa_table_all %>%
+  relocate(group, metric, !!sc, reporting_area, Ii, Z.Ii, p, p_fdr_metric, sig_p05, sig_fdr05, cluster, .before = 1)
+
+lisa_table_all
+#write.csv(lisa_table_all, "../output/tables/lisa_all_10042025.csv", row.names = FALSE)
+
+```
+
+
+## GETIS-ORD Gi - Hot/ cold spot analysis 
+```{r}
+# ─────────────────────────────────────────────────────────────────────────────────────
+# 2) GETIS-ORD Gi* HOTSPOT / COLDSPOT ANALYSIS
+# ─────────────────────────────────────────────────────────────────────────────────────
+# Metric guidance:
+# - Use IBR and also try the *most responsive* biomarker (e.g., p450 for PAHs) to find intensity clusters.
+# - Gi* is magnitude-focused; results can differ from LISA.
+
+getis_results <- list()
+for (resp in RESPONSES) {
+  if (!resp %in% names(site_data)) next
+  Y <- z(site_data[[resp]])
+  Gi <- as.numeric(localG(Y, lw))
+  out <- site_sf
+  out$Gi <- Gi
+  out$resp <- resp
+  out$hotcold <- cut(Gi, breaks = classInt::classIntervals(Gi, n = 5, style = "pretty")$brks,
+                     include.lowest = TRUE, labels = FALSE)
+  getis_results[[resp]] <- out
+}
+
+# Example map for p450 hotspots
+if (CFG$y_p450 %in% names(getis_results)) {
+  tm_shape(getis_results[[CFG$y_p450]]) +
+    tm_dots(col = "Gi", size = 0.15, title = paste("Getis-Ord Gi*:", CFG$y_p450)) +
+    tm_layout(legend.outside = TRUE)
+}
+
+# ─────────────────────────────────────────────────────────────────────────────────────
+# 3) INTERPOLATION (IDW & ORDINARY KRIGING)
+# ─────────────────────────────────────────────────────────────────────────────────────
+# Metric guidance:
+# - Interpolate a continuous indicator (often IBR). If a single biomarker strongly tracks a contaminant class, interpolate that too.
+# - Kriging requires a reasonable variogram; otherwise, use IDW as baseline.
+
+# Build a simple grid covering your study area
+bbox <- st_bbox(site_sf)
+# Create a grid with ~2 km spacing (tune as needed)
+res_m <- 2000
+xs <- seq(bbox[1], bbox[3], by = res_m)
+ys <- seq(bbox[2], bbox[4], by = res_m)
+grid <- expand.grid(x = xs, y = ys)
+grid_sf <- st_as_sf(grid, coords = c("x","y"), crs = st_crs(site_sf))
+
+# Choose a response for interpolation (example: IBR)
+if (CFG$y_IBR %in% names(site_data)) {
+  df_sp <- as(site_sf |> dplyr::mutate(Y = site_data[[CFG$y_IBR]]), "Spatial")
+  grid_sp <- as(grid_sf, "Spatial")
+
+  # IDW
+  idw_pred <- gstat::idw(Y ~ 1, locations = df_sp, newdata = grid_sp)
+
+  # Kriging (spherical model as a starting point)
+  v <- variogram(Y ~ 1, data = df_sp)
+  vm <- fit.variogram(v, model = vgm("Sph"))
+  kr_pred <- gstat::krige(Y ~ 1, df_sp, grid_sp, model = vm)
+
+  # Compare visually by mapping in tmap (convert back to sf)
+  idw_sf <- st_as_sf(idw_pred)
+  kr_sf  <- st_as_sf(kr_pred)
+
+  # Map Kriging result
+  tm_shape(kr_sf) + tm_raster(col = "var1.pred", alpha = 0.8, title = paste("Kriged", CFG$y_IBR)) +
+    tm_shape(site_sf) + tm_dots(size = 0.05) + tm_layout(legend.outside = TRUE)
+}
+
+# ─────────────────────────────────────────────────────────────────────────────────────
+# 4) SPATIAL REGRESSION (OLS + residual Moran; SAR/SEM/SDM)
+# ─────────────────────────────────────────────────────────────────────────────────────
+# Metric guidance:
+# - Response: Pick IBR first (integrated signal). Then test key biomarkers separately.
+# - Predictors: Start with contaminant *class sums / indices* (e.g., PAH_sum, Metals_sum) for stability and interpretability.
+#   Add individual analytes in sensitivity analyses (beware multicollinearity; standardize or use PCA of analytes).
+
+# Prepare modeling frame using index sets
+idx_df  <- as.data.frame(site_data[, CFG$idx_cols, drop = FALSE])
+ana_df  <- as.data.frame(site_data[, CFG$analyte_cols, drop = FALSE])
+
+# Transform indices (log+z unless already z_*) and analytes similarly
+for (nm_i in names(idx_df))  idx_df[[nm_i]] <- lz(idx_df[[nm_i]], nm_i)
+for (nm_a in names(ana_df))  ana_df[[nm_a]] <- lz(ana_df[[nm_a]], nm_a)
+
+# Response: first of RESPONSES (prefer ibr_combined if present)
+resp_order <- c("ibr_combined", RESPONSES)
+resp_name <- unique(resp_order[resp_order %in% names(site_data)])[1]
+Y <- site_data[[resp_name]]
+
+mod_df <- cbind(Y = as.numeric(Y), idx_df, ana_df)
+
+# OLS baseline with indices first (more stable), then (optionally) a small set of analytes
+# Tip: to limit analytes, pick a few mechanistic ones (e.g., z_benzo_a_pyrene, z_PCB153)
+keep_analytes <- intersect(c("z_benzo_a_pyrene","z_PCB153","z_zinc","z_copper","z_mercury"), names(ana_df))
+X_df <- cbind(idx_df, ana_df[, keep_analytes, drop = FALSE])
+ols <- lm(Y ~ ., data = cbind(Y = mod_df[,"Y"], X_df))
+summary(ols)
+
+# Residual spatial autocorrelation
+lw <- nb2listw(knn2nb(knearneigh(xy, k = max(2, min(8, ceiling(sqrt(nrow(site_sf))))))), style = "W")
+moran.test(z(residuals(ols)), lw)
+
+o_res <- residuals(ols)
+moran.test(z(o_res), lw)
+
+# If residuals autocorrelated → Spatial models
+sar <- try(lagsarlm(formula(ols), data = cbind(st_drop_geometry(site_sf), cbind(Y = mod_df[,"Y"], X_df)), listw = lw))
+sem <- try(errorsarlm(formula(ols), data = cbind(st_drop_geometry(site_sf), cbind(Y = mod_df[,"Y"], X_df)), listw = lw))
+if (!inherits(sar, "try-error")) summary(sar)
+if (!inherits(sem, "try-error")) summary(sem)
+# Choose via AIC + residual Moran’s I diagnostics
+
+# ─────────────────────────────────────────────────────────────────────────────────────
+# 5) MULTIVARIATE SPATIAL PATTERNS (Mantel / RDA + MEM)
+# ─────────────────────────────────────────────────────────────────────────────────────
+# Response matrix from metrics (use up to three to balance signal)
+Y_vars <- RESPONSES[RESPONSES %in% names(site_data)]
+Y_mat <- as.matrix(scale(site_data[, Y_vars, drop = FALSE]))
+X_df  <- as.data.frame(idx_df)  # indices as primary explanatory set
+
+# Spatial eigenfunctions (MEM)
+coords_mat <- as.matrix(xy)
+mem <- dbmem(coords_mat)
+
+# RDA with environment + space
+rda_env_space <- rda(Y_mat ~ ., data = cbind(X_df, as.data.frame(mem)))
+summary(rda_env_space)
+anova(rda_env_space, by = "terms")
+
+# Variation partitioning: env vs space
+vp <- varpart(Y_mat, X_df, as.data.frame(mem))
+print(vp)
+
+# Mantel test comparing biomarker and contaminant dissimilarities
+bio_dist <- dist(scale(site_data[, Y_vars, drop = FALSE]))
+con_dist <- dist(scale(X_df))
+mantel_res <- mantel(bio_dist, con_dist, permutations = 999)
+print(mantel_res)
+# ─────────────────────────────────────────────────────────────────────────────────────
+# Metric guidance:
+# - Use a matrix of biomarkers (e.g., cbind(IBR, p450, sod)).
+# - Explanatory set: contaminant indices first (PAH_sum, Metals_sum, etc.).
+# - Alternative: reduce individual analytes with PCA, then use top PCs as predictors.
+
+# Build response and predictor matrices (drop missing columns automatically)
+Y_vars <- RESPONSES[RESPONSES %in% names(site_data)]
+X_idx  <- c(CFG$x_PAH_sum, CFG$x_metals_sum)
+X_idx  <- X_idx[X_idx %in% names(site_data)]
+
+Y_mat <- as.matrix(scale(site_data[, Y_vars]))
+X_df  <- as.data.frame(site_data[, X_idx, drop = FALSE])
+X_df[] <- lapply(X_df, lz)  # log-scale + z-score for indices
+
+# Spatial eigenfunctions (MEM) from coordinates
+coords_mat <- as.matrix(st_coordinates(site_sf))
+mem <- dbmem(coords_mat)
+
+# RDA with environment + space (partial out space or include jointly)
+rda_env_space <- rda(Y_mat ~ ., data = cbind(X_df, as.data.frame(mem)))
+summary(rda_env_space)
+anova(rda_env_space, by = "terms")
+
+# Variation partitioning example: env vs space (vegan::varpart)
+if (ncol(X_df) > 0) {
+  vp <- varpart(Y_mat, X_df, as.data.frame(mem))
+  print(vp)
+}
+
+# Mantel test comparing biomarker and contaminant dissimilarities
+if (ncol(X_df) > 0) {
+  bio_dist <- dist(scale(site_data[, Y_vars]))
+  con_dist <- dist(scale(X_df))
+  mantel_res <- mantel(bio_dist, con_dist, permutations = 999)
+  print(mantel_res)
+}
+
+# ─────────────────────────────────────────────────────────────────────────────────────
+# 6) GEOGRAPHICALLY WEIGHTED REGRESSION (GWR)
+# ─────────────────────────────────────────────────────────────────────────────────────
+# Metric guidance:
+# - Response: IBR or the biomarker most mechanistically linked to contaminants (e.g., p450 ~ PAH).
+# - Predictors: Start with 1–2 key indices to avoid overfitting; GWR prefers n_sites >= ~40.
+
+if (nrow(site_sf) >= 40 && all(c("PAH","MET") %in% names(mod_df))) {
+  df_sp <- SpatialPointsDataFrame(coords = xy, data = cbind(st_drop_geometry(site_sf), mod_df), proj4string = CRS(st_crs(site_sf)$wkt))
+  bw <- bw.gwr(Y ~ PAH + MET, data = df_sp, approach = "AICc", adaptive = TRUE)
+  gwr_fit <- gwr.basic(Y ~ PAH + MET, data = df_sp, bw = bw, adaptive = TRUE)
+  # Local coefficients and R^2 are in gwr_fit$SDF
+  # Map local R^2
+  gwr_sf <- st_as_sf(gwr_fit$SDF)
+  tm_shape(gwr_sf) + tm_dots(col = "localR2", size = 0.15, title = "GWR local R^2") + tm_layout(legend.outside = TRUE)
+}
+
+# ─────────────────────────────────────────────────────────────────────────────────────
+# 7) SPATIALLY CONSTRAINED CLUSTERING (zonation)
+# ─────────────────────────────────────────────────────────────────────────────────────
+# Metric guidance:
+# - Use a biomarker profile matrix (e.g., IBR, p450, sod) and incorporate spatial proximity
+#   so clusters are contiguous. Consider clustGeo (biological + spatial dissimilarity balance).
+
+# Prepare dissimilarities
+bio_mat <- scale(site_data[, Y_vars])
+bio_dist <- dist(bio_mat)
+# Spatial distance (in meters)
+sp_dist <- dist(xy)
+
+# Combine distances (alpha balances biology vs space; try 0.6)
+alpha <- 0.6
+D <- (1 - alpha) * as.matrix(bio_dist) + alpha * as.matrix(sp_dist) / max(sp_dist)
+# Hierarchical clustering
+hc <- hclust(as.dist(D), method = "ward.D2")
+# Choose k clusters (inspect dendrogram / silhouette)
+k <- 4
+cl <- cutree(hc, k = k)
+site_sf$zone <- factor(cl)
+
+# Map zones
+tm_shape(site_sf) + tm_dots(col = "zone", size = 0.18, title = sprintf("Spatially constrained zones (k=%d)", k)) +
+  tm_layout(legend.outside = TRUE)
+
+# ─────────────────────────────────────────────────────────────────────────────────────
+# 8) METRIC SELECTION NOTES (AT-A-GLANCE)
+# ─────────────────────────────────────────────────────────────────────────────────────
+# • Global Moran's / LISA: IBR (robust), plus each biomarker (p450/sod) to attribute clusters.
+# • Getis-Ord Gi*: IBR or biomarker with strongest expected link to a contaminant class.
+# • Interpolation: IBR for overall field; add biomarker if mechanism is clear (e.g., p450 ↔ PAH).
+# • Spatial regression: IBR ~ contaminant indices first; then sensitivity with individual analytes or analyte PCs.
+# • Multivariate (RDA+MEM): response = cbind(IBR, p450, sod); predictors = contaminant indices (± analyte PCs), + spatial MEM.
+# • GWR: pick 1–2 predictors (indices) to avoid instability; interpret local R^2 and coefficient maps.
+# • Clustering: use biomarker matrix; blend in spatial distances for contiguous ecological zones.
+
+# ─────────────────────────────────────────────────────────────────────────────────────
+# 9) QUICK CHECKS & TIPS
+# ─────────────────────────────────────────────────────────────────────────────────────
+# • Always visualize neighbors (plot(nb_knn, xy)) and try sensitivity (k ± 1–2).
+# • Standardize responses (z-score) for autocorrelation tests; log+z for skewed contaminants.
+# • Multiple testing: when mapping many local stats, consider p.adjust(..., method='fdr').
+# • Collinearity: if using many analytes, consider PCA or sparse regression before spatial models.
+# • Reproducibility: set a seed for permutation-based tests if you use Monte Carlo options.
+
+# END OF CODE KIT
+
 
 ```
 
@@ -1697,14 +1970,10 @@ st_write(site_sf[, c("site_name", paste0(var, "_lisa_cluster"), paste0(var, "_li
 ### testing p450 to spot check LISA results
 ```{r}
 
-getwd()
-library(sf)
-lisa_p450<- st_read("lisa_outputs/LISA_p450.geojson")
-names(lisa_p450)
-head(lisa_p450)
 
 ```
 
+# OLD CODE - Verify before using
 ## mapping p450 LISA clusters to visualize the results before moving to the next steps
 ```{r}
 

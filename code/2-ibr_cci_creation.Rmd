@@ -851,7 +851,7 @@ print(pesticide_index)
 
 ```
 
-# Total Contamiant Load Index
+# Total Contamiant Index
 ```{r}
 
 colnames(site_data)
