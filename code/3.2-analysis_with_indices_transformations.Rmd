@@ -66,7 +66,7 @@ getwd()
 
 site_data<- read.csv("../data/site_with_indices_identifiers_analytes_10042025.csv") # for reporting area comparisons
 #sample_data<- read.csv("../data/interim_df/sample_level_scaling_09292025.csv") # for site comparisons for the metrics
-#sample_ibr<- read.csv("../data/interim_df/sample_level_ibr_09292025.csv") # for the reporting area comparisons for the ibrs
+sample_ibr<- read.csv("../data/interim_df/sample_level_ibr_09292025.csv") # for the reporting area comparisons for the ibrs
 
 ```
 
@@ -301,7 +301,7 @@ tukey_table_with_cld <- tuk_df %>%
   rename(Group2_CLD = CLD)
 
 view(tukey_table_with_cld)
-#write.csv(tukey_table_with_cld, "../output/tables/anova_kw_results/tukey_morph_site_10022025.csv", row.names = FALSE) 
+#write.csv(tukey_table_with_cld, "../output/tables/anova_kw_results/tukey_morph_site_10052025.csv", row.names = FALSE) 
 
 #### ibr_morphometrics, reporting area: no significant result
 tuk <- TukeyHSD(morph_anova_ra, "reporting_area")
