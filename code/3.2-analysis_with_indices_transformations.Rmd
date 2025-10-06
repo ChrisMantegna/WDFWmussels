@@ -494,7 +494,7 @@ kruskal.test(ci1 ~ reporting_area, data = site_data) # p-value = 0.991
 kruskal.test(tc_ci2 ~ site_number, data = sample_data) # p-value = 2.191e-8
 kruskal.test(ci2 ~ reporting_area, data = site_data) # p-value = 0.8179
 
-# shell - significant p=value for both
+# shell - significant p-value for both
 kruskal.test(tc_shell ~ site_number, data = sample_data) # p-value = 1.092e-08
 kruskal.test(shell ~ reporting_area, data = site_data) # p-value = 0.0204
 
@@ -502,7 +502,7 @@ kruskal.test(shell ~ reporting_area, data = site_data) # p-value = 0.0204
 kruskal.test(ibr_biomarker ~ site_number, data = sample_ibr) # p-value = 0.000902
 kruskal.test(ibr_bio ~ reporting_area, data = site_data) # p-value = 0.6185
 
-# ibr_combined - significant p-value for site, non-significant p=value for reporting area
+# ibr_combined - significant p-value for site, non-significant p-value for reporting area
 kruskal.test(ibr_total ~ site_number, data = sample_ibr) # p-value = 0.0001618
 kruskal.test(ibr_combined ~ reporting_area, data = site_data) # p-value = 0.4618
 
@@ -1252,7 +1252,7 @@ dunn_table_with_cld <- dunn_table %>%
   rename(Group2_CLD = CLD)
 
 view(dunn_table_with_cld)
-#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_total_con_ra.csv", row.names = FALSE) 
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_total_con_ra_10052025.csv", row.names = FALSE) 
 
 ```
 
