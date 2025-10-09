@@ -182,9 +182,9 @@ p_both<- p_pah + p_ibr + plot_layout(ncol = 2) +
     subtitle = "Left: PAH (exposure) Right: IBR Biomarker (biological response)"
   )
 
-ggsave(filename= "../output/meth_plot_ibr.png", plot= p_ibr, width = 16, height = 14, dpi = 300)
-ggsave(filename= "../output/meth_plot_pah.png", plot= p_pah, width = 16, height = 14, dpi = 300)
-ggsave(filename= "../output/meth_plot_ibr_and_pah.png", plot= p_both, width = 16, height = 14, dpi = 300)
+#ggsave(filename= "../output/meth_plot_ibr.png", plot= p_ibr, width = 16, height = 14, dpi = 300)
+#ggsave(filename= "../output/meth_plot_pah.png", plot= p_pah, width = 16, height = 14, dpi = 300)
+#ggsave(filename= "../output/meth_plot_ibr_and_pah.png", plot= p_both, width = 16, height = 14, dpi = 300)
 
 print(p_ibr)
 ```
