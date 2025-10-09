@@ -77,8 +77,8 @@ summary(data)
 ```{r}
 
 # ---- set your special sites (edit these two strings) ----
-baseline_site <- "Penn Cove Baseline"              # ⭐ baseline, no IBR
-invalid_site  <- "Des Moines Marina"    # ✖ invalid, unvalidated high value
+baseline_site <- "Penn Cove Baseline"             
+invalid_site  <- "Des Moines Marina"             
 
 # ---- your six follow-up sites to label ----
 label_sites <- c("Elliot Bay Myrtle Edwards", "Seattle Aquarium, Pier 59", "Smith Cove, Terminal 91", "Hood Canal Holly", "Aiston Preserve", "Broad Spit")
@@ -87,105 +87,136 @@ show_labels <- TRUE   # set FALSE if you still find it cluttered
 
 # ---- data ----
 df <- data %>%
-  mutate(
-    special = case_when(
+  dplyr::mutate(
+    special = dplyr::case_when(
       site_name == baseline_site ~ "Baseline (no IBR)",
       site_name == invalid_site  ~ "Invalid (unvalidated)",
       TRUE                       ~ "Regular"
     )
   )
 
-sites_sf <- st_as_sf(df, coords = c("longitude", "latitude"), crs = 4326)
+sites_sf <- sf::st_as_sf(df, coords = c("longitude", "latitude"), crs = 4326)
 
 # ---- basemap (PNW window) ----
-usa <- ne_states(country = "united states of america", returnclass = "sf")
-pnw_bbox <- st_as_sfc(st_bbox(c(xmin = -125.5, xmax = -121, ymin = 46.8, ymax = 49.2), crs = st_crs(4326)))
-usa_pnw <- suppressWarnings(st_intersection(st_make_valid(usa), st_make_valid(pnw_bbox)))
+usa <- rnaturalearth::ne_states(country = "united states of america", returnclass = "sf")
+pnw_bbox <- sf::st_as_sfc(sf::st_bbox(c(xmin = -124, xmax = -121, ymin = 46.5, ymax = 49), crs = sf::st_crs(4326)))
+usa_pnw <- suppressWarnings(sf::st_intersection(sf::st_make_valid(usa), sf::st_make_valid(pnw_bbox)))
 
 # ---- shared scales ----
 shape_scale <- scale_shape_manual(
-  name   = "Special",
+  name   = "Legend",
   values = c("Regular" = 16, "Baseline (no IBR)" = 8, "Invalid (unvalidated)" = 4)
 )
 
 # colorbars (CB-friendly, perceptually uniform)
-# PAH: scico "batlow" (cool -> warm)
 col_pah <- scico::scale_color_scico(
   name = "PAH",
   palette = "batlow", direction = 1,
-  labels = label_number(big.mark = ",", accuracy = 1)
+  labels = scales::label_number(big.mark = ",", accuracy = 1)
 )
-
-# IBR_bio: scico "lajolla" (dark -> light warm) or use "viridis" if you prefer
 col_ibr <- scico::scale_color_scico(
   name = "IBR (bio)",
   palette = "lajolla", direction = 1
 )
 
-# ---- helper to add labels only for the 6 sites ----
+# ---- label corridors + helper (left fixed-x, right more freedom) ----
+xlim_vec <- c(-124, -121)               # must match your coord_sf xlim
+left_corridor  <- c(xlim_vec[1], xlim_vec[1] + 0.8)
+right_corridor <- c(xlim_vec[2] - 1.0, xlim_vec[2])  # slightly wider for the tight right side
+
 label_layer <- function(data_df) {
   if (!show_labels) return(NULL)
-  geom_text_repel(
-    data = data_df %>% filter(site_name %in% label_sites),
-    aes(x = longitude, y = latitude, label = site_name),
-    size = 3.2, family = "sans",
-    box.padding = 0.2, point.padding = 0.15,
-    min.segment.length = 0,
-    max.overlaps = Inf, segment.alpha = 0.6
+
+  lab_df <- dplyr::filter(data_df, site_name %in% label_sites)
+
+  # split by longitude relative to median
+  lon_median <- stats::median(lab_df$longitude, na.rm = TRUE)
+  labels_left  <- dplyr::filter(lab_df, longitude <= lon_median)
+  labels_right <- dplyr::filter(lab_df, longitude >  lon_median)
+
+  # small y-jitter to break ties on the right (helps stacking)
+  labels_right <- dplyr::mutate(labels_right, label_y = jitter(latitude, amount = 0.05))
+
+  set.seed(42)
+
+  list(
+    # LEFT: keep horizontal-only into the left corridor
+    ggrepel::geom_text_repel(
+      data = labels_left,
+      aes(x = longitude, y = latitude, label = site_name),
+      direction = "x",
+      xlim = left_corridor,
+      hjust = 1,
+      size = 2.2, family = "sans",
+      box.padding = 0.25, point.padding = 0.2,
+      min.segment.length = 0,
+      segment.alpha = 0.6, segment.size = 0.3,
+      max.overlaps = Inf, max.time = 4
+    ),
+    # RIGHT: allow vertical stacking as well; push deeper into corridor + stronger repel
+    ggrepel::geom_text_repel(
+      data = labels_right,
+      aes(x = longitude, y = label_y, label = site_name),  # use jittered y as starting pos
+      direction = "both",            # let them move in x and y
+      xlim = right_corridor,         # still constrain to the right label band
+      nudge_x = -0.05,               # bias into the corridor (tweak 0.03–0.10)
+      hjust = 0,                     # left-align
+      size = 2.2, family = "sans",
+      box.padding = 0.28, point.padding = 0.22,
+      force = 3, force_pull = 1.2,   # stronger separation on the right only
+      min.segment.length = 0,
+      segment.alpha = 0.7, segment.size = 0.32,
+      segment.curvature = 0,
+      max.overlaps = Inf, max.time = 6
+    )
   )
 }
 
 # ---- PAH map (color = PAH, fixed size; shapes for special sites) ----
-p_pah <- ggplot() +
-  geom_sf(data = usa_pnw, fill = "grey95", color = "white", linewidth = 0.3) +
-  geom_sf(
+p_pah <- ggplot2::ggplot() +
+  ggplot2::geom_sf(data = usa_pnw, fill = "grey95", color = "white", linewidth = 0.3) +
+  ggplot2::geom_sf(
     data = sites_sf,
     aes(color = sum_pah, shape = special),
     size = 2, alpha = 0.95, stroke = 0.6
   ) +
   col_pah + shape_scale +
   label_layer(df) +
-  annotation_scale(location = "bl", width_hint = 0.28) +
-  annotation_north_arrow(location = "bl", which_north = "true",
-                         style = north_arrow_fancy_orienteering, pad_x = unit(0.5, "cm")) +
-  coord_sf(xlim = c(-125.5, -121), ylim = c(46.8, 49.2), expand = FALSE) +
-  labs(title = "PAH concentration (ng/g)", x = NULL, y = NULL) +
-  guides(shape = guide_legend(order = 2, override.aes = list(size = 2))) +
-  theme_minimal(base_size = 12) +
-  theme(panel.grid.major = element_line(color = "grey90"),
-        legend.position = "right")
+  ggplot2::coord_sf(xlim = c(-124, -121), ylim = c(46.5, 49), expand = FALSE) +
+  ggplot2::labs(title = "PAH concentration (ng/g)", x = NULL, y = NULL) +
+  ggplot2::guides(shape = ggplot2::guide_legend(order = 2, override.aes = list(size = 2))) +
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::theme(panel.grid.major = element_line(color = "grey90"),
+                 legend.position = "right")
 
 # ---- IBR map (color = IBR_bio, fixed size; shapes for special sites) ----
-p_ibr <- ggplot() +
-  geom_sf(data = usa_pnw, fill = "grey95", color = "white", linewidth = 0.3) +
-  geom_sf(
+p_ibr <- ggplot2::ggplot() +
+  ggplot2::geom_sf(data = usa_pnw, fill = "grey95", color = "white", linewidth = 0.3) +
+  ggplot2::geom_sf(
     data = sites_sf,
     aes(color = ibr_bio, shape = special),
     size = 2, alpha = 0.95, stroke = 0.6
   ) +
   col_ibr + shape_scale +
   label_layer(df) +
-  annotation_scale(location = "bl", width_hint = 0.28) +
-  annotation_north_arrow(location = "bl", which_north = "true",
-                         style = north_arrow_fancy_orienteering, pad_x = unit(0.5, "cm")) +
-  coord_sf(xlim = c(-125.5, -121), ylim = c(46.8, 49.2), expand = FALSE) +
-  labs(title = "Integrated Biomarker Response, Biomarkers Only", x = NULL, y = NULL) +
-  guides(shape = guide_legend(order = 2, override.aes = list(size = 2))) +
-  theme_minimal(base_size = 12) +
-  theme(panel.grid.major = element_line(color = "grey90"),
-        legend.position = "right")
+  ggplot2::coord_sf(xlim = c(-124, -121), ylim = c(46.5, 49), expand = FALSE) +
+  ggplot2::labs(title = "Integrated Biomarker Response, Biomarkers Only", x = NULL, y = NULL) +
+  ggplot2::guides(shape = ggplot2::guide_legend(order = 2, override.aes = list(size = 2))) +
+  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::theme(panel.grid.major = element_line(color = "grey90"),
+                 legend.position = "right")
 
 # ---- layout side by side ----
-p_both<- p_pah + p_ibr + plot_layout(ncol = 2) +
-  plot_annotation(
+p_both <- p_pah + p_ibr + patchwork::plot_layout(ncol = 2) +
+  patchwork::plot_annotation(
     title = "Follow-up Sites: Exposure vs. Response",
-    subtitle = "Left: PAH (exposure) Right: IBR Biomarker (biological response)"
+    subtitle = "Left: PAH (exposure)   Right: IBR Biomarker (biological response)"
   )
 
-#ggsave(filename= "../output/meth_plot_ibr.png", plot= p_ibr, width = 16, height = 14, dpi = 300)
-#ggsave(filename= "../output/meth_plot_pah.png", plot= p_pah, width = 16, height = 14, dpi = 300)
-#ggsave(filename= "../output/meth_plot_ibr_and_pah.png", plot= p_both, width = 16, height = 14, dpi = 300)
+print(p_both)
+#ggsave(filename= "../output/meth_plot_bounded_ibr.png", plot= p_ibr, width = 16, height = 14, dpi = 300) 
+#ggsave(filename= "../output/meth_plot_bounded_pah.png", plot= p_pah, width = 16, height = 14, dpi = 300) 
+#ggsave(filename= "../output/meth_plot_bounded_ibr_and_pah.png", plot= p_both, width = 16, height = 14, dpi = 300)
 
-print(p_ibr)
 ```
 
