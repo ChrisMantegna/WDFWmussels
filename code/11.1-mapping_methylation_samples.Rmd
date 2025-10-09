@@ -1,0 +1,191 @@
+---
+title: "11.1- Mapping all sites to illustrate chosen sites for methylation analysis"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+
+```{r, setup, eval=TRUE, include=TRUE, echo=FALSE}
+
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # show code chunks
+  eval = TRUE,         # evaluate code chunks
+  warning = FALSE,     # hide warnings
+  message = FALSE,     # hide messages
+  #fig.width = 15,       # set plot width in inches
+  #fig.height = 9,      # set plot height in inches
+  fig.align = "center" # slign plots to the center in output doc/ slide/ whatever
+)
+
+# libraries
+library("adespatial")
+library(broom) # converting output tables to tidy tables for saving or easy view
+library(classInt) # creating univariate variables for mapping
+library(cluster) # grouping metrics - VERIFY still needed
+library(devtools) # installing bespoke packages
+library(dplyr) # data wrangling
+library(factoextra) # pca/ nmds/ tweaking radars
+library(FactoMineR) # pca/ nmds/ tweaking radars
+library(fmsb) # polygon calculations for the radars
+library(FSA) # post hoc test - Dunn's Test   
+library(ggplot2) # plots
+library(ggrepel)
+library(ggspatial)
+library("gstat")
+library("GWmodel")
+library(knitr) # output formatting
+library(multcompView) # used for the letter assignment
+library(patchwork)   # for side-by-side layout
+library(pgirmess) # stats - KW
+library(rcompanion) # for annotation of permanova
+library(readr)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(rstatix) # VERIFY what this is for      
+library(RVAideMemoire) # post hoc test for permanova
+library(scales) # scaling data for IBR - works with data wrangling packages
+library(scico) # colorblind friendly palettes
+library(sf) # mapping - needed for converting to spatial data
+library(spdep) # building spatial geometric components for analysis
+library(spatialreg) # spatial regression analysis
+library(tidyr) # data wrangling
+library(tidyverse) # data wrangling
+library(tmap) #mapping themes
+library(vegan) # ecological stats 
+
+```
+
+# Load data
+```{r}
+
+data<- read.csv("../data/pah_for_plotting_methylation_10082025.csv")
+
+summary(data)
+```
+
+# Plot
+```{r}
+
+# ---- set your special sites (edit these two strings) ----
+baseline_site <- "Penn Cove Baseline"              # ⭐ baseline, no IBR
+invalid_site  <- "Des Moines Marina"    # ✖ invalid, unvalidated high value
+
+# ---- your six follow-up sites to label ----
+label_sites <- c("Elliot Bay Myrtle Edwards", "Seattle Aquarium, Pier 59", "Smith Cove, Terminal 91", "Hood Canal Holly", "Aiston Preserve", "Broad Spit")
+
+show_labels <- TRUE   # set FALSE if you still find it cluttered
+
+# ---- data ----
+df <- data %>%
+  mutate(
+    special = case_when(
+      site_name == baseline_site ~ "Baseline (no IBR)",
+      site_name == invalid_site  ~ "Invalid (unvalidated)",
+      TRUE                       ~ "Regular"
+    )
+  )
+
+sites_sf <- st_as_sf(df, coords = c("longitude", "latitude"), crs = 4326)
+
+# ---- basemap (PNW window) ----
+usa <- ne_states(country = "united states of america", returnclass = "sf")
+pnw_bbox <- st_as_sfc(st_bbox(c(xmin = -125.5, xmax = -121, ymin = 46.8, ymax = 49.2), crs = st_crs(4326)))
+usa_pnw <- suppressWarnings(st_intersection(st_make_valid(usa), st_make_valid(pnw_bbox)))
+
+# ---- shared scales ----
+shape_scale <- scale_shape_manual(
+  name   = "Special",
+  values = c("Regular" = 16, "Baseline (no IBR)" = 8, "Invalid (unvalidated)" = 4)
+)
+
+# colorbars (CB-friendly, perceptually uniform)
+# PAH: scico "batlow" (cool -> warm)
+col_pah <- scico::scale_color_scico(
+  name = "PAH",
+  palette = "batlow", direction = 1,
+  labels = label_number(big.mark = ",", accuracy = 1)
+)
+
+# IBR_bio: scico "lajolla" (dark -> light warm) or use "viridis" if you prefer
+col_ibr <- scico::scale_color_scico(
+  name = "IBR (bio)",
+  palette = "lajolla", direction = 1
+)
+
+# ---- helper to add labels only for the 6 sites ----
+label_layer <- function(data_df) {
+  if (!show_labels) return(NULL)
+  geom_text_repel(
+    data = data_df %>% filter(site_name %in% label_sites),
+    aes(x = longitude, y = latitude, label = site_name),
+    size = 3.2, family = "sans",
+    box.padding = 0.2, point.padding = 0.15,
+    min.segment.length = 0,
+    max.overlaps = Inf, segment.alpha = 0.6
+  )
+}
+
+# ---- PAH map (color = PAH, fixed size; shapes for special sites) ----
+p_pah <- ggplot() +
+  geom_sf(data = usa_pnw, fill = "grey95", color = "white", linewidth = 0.3) +
+  geom_sf(
+    data = sites_sf,
+    aes(color = sum_pah, shape = special),
+    size = 2, alpha = 0.95, stroke = 0.6
+  ) +
+  col_pah + shape_scale +
+  label_layer(df) +
+  annotation_scale(location = "bl", width_hint = 0.28) +
+  annotation_north_arrow(location = "bl", which_north = "true",
+                         style = north_arrow_fancy_orienteering, pad_x = unit(0.5, "cm")) +
+  coord_sf(xlim = c(-125.5, -121), ylim = c(46.8, 49.2), expand = FALSE) +
+  labs(title = "PAH concentration (ng/g)", x = NULL, y = NULL) +
+  guides(shape = guide_legend(order = 2, override.aes = list(size = 2))) +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major = element_line(color = "grey90"),
+        legend.position = "right")
+
+# ---- IBR map (color = IBR_bio, fixed size; shapes for special sites) ----
+p_ibr <- ggplot() +
+  geom_sf(data = usa_pnw, fill = "grey95", color = "white", linewidth = 0.3) +
+  geom_sf(
+    data = sites_sf,
+    aes(color = ibr_bio, shape = special),
+    size = 2, alpha = 0.95, stroke = 0.6
+  ) +
+  col_ibr + shape_scale +
+  label_layer(df) +
+  annotation_scale(location = "bl", width_hint = 0.28) +
+  annotation_north_arrow(location = "bl", which_north = "true",
+                         style = north_arrow_fancy_orienteering, pad_x = unit(0.5, "cm")) +
+  coord_sf(xlim = c(-125.5, -121), ylim = c(46.8, 49.2), expand = FALSE) +
+  labs(title = "Integrated Biomarker Response, Biomarkers Only", x = NULL, y = NULL) +
+  guides(shape = guide_legend(order = 2, override.aes = list(size = 2))) +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major = element_line(color = "grey90"),
+        legend.position = "right")
+
+# ---- layout side by side ----
+p_both<- p_pah + p_ibr + plot_layout(ncol = 2) +
+  plot_annotation(
+    title = "Follow-up Sites: Exposure vs. Response",
+    subtitle = "Left: PAH (exposure) Right: IBR Biomarker (biological response)"
+  )
+
+ggsave(filename= "../output/meth_plot_ibr.png", plot= p_ibr, width = 16, height = 14, dpi = 300)
+ggsave(filename= "../output/meth_plot_pah.png", plot= p_pah, width = 16, height = 14, dpi = 300)
+ggsave(filename= "../output/meth_plot_ibr_and_pah.png", plot= p_both, width = 16, height = 14, dpi = 300)
+
+print(p_ibr)
+```
+
