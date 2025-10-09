@@ -147,7 +147,7 @@ label_layer <- function(data_df) {
       direction = "x",
       xlim = left_corridor,
       hjust = 1,
-      size = 2.2, family = "sans",
+      size = 3.2, family = "sans",
       box.padding = 0.25, point.padding = 0.2,
       min.segment.length = 0,
       segment.alpha = 0.6, segment.size = 0.3,
@@ -161,7 +161,7 @@ label_layer <- function(data_df) {
       xlim = right_corridor,         # still constrain to the right label band
       nudge_x = -0.05,               # bias into the corridor (tweak 0.03–0.10)
       hjust = 0,                     # left-align
-      size = 2.2, family = "sans",
+      size = 3.2, family = "sans",
       box.padding = 0.28, point.padding = 0.22,
       force = 3, force_pull = 1.2,   # stronger separation on the right only
       min.segment.length = 0,
@@ -195,14 +195,14 @@ p_ibr <- ggplot2::ggplot() +
   ggplot2::geom_sf(
     data = sites_sf,
     aes(color = ibr_bio, shape = special),
-    size = 2, alpha = 0.95, stroke = 0.6
+    size = 2.5, alpha = 0.95, stroke = 0.6
   ) +
   col_ibr + shape_scale +
   label_layer(df) +
   ggplot2::coord_sf(xlim = c(-124, -121), ylim = c(46.5, 49), expand = FALSE) +
   ggplot2::labs(title = "Integrated Biomarker Response, Biomarkers Only", x = NULL, y = NULL) +
   ggplot2::guides(shape = ggplot2::guide_legend(order = 2, override.aes = list(size = 2))) +
-  ggplot2::theme_minimal(base_size = 12) +
+  ggplot2::theme_minimal(base_size = 14) +
   ggplot2::theme(panel.grid.major = element_line(color = "grey90"),
                  legend.position = "right")
 
@@ -213,7 +213,7 @@ p_both <- p_pah + p_ibr + patchwork::plot_layout(ncol = 2) +
     subtitle = "Left: PAH (exposure)   Right: IBR Biomarker (biological response)"
   )
 
-print(p_both)
+print(p_ibr)
 #ggsave(filename= "../output/meth_plot_bounded_ibr.png", plot= p_ibr, width = 16, height = 14, dpi = 300) 
 #ggsave(filename= "../output/meth_plot_bounded_pah.png", plot= p_pah, width = 16, height = 14, dpi = 300) 
 #ggsave(filename= "../output/meth_plot_bounded_ibr_and_pah.png", plot= p_both, width = 16, height = 14, dpi = 300)
