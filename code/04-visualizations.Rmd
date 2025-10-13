@@ -1,0 +1,180 @@
+---
+title: "04- Visualizations"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+```{r, setup, eval=TRUE, include=TRUE, echo=FALSE}
+
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # show code chunks
+  eval = TRUE,         # evaluate code chunks
+  warning = FALSE,     # hide warnings
+  message = FALSE,     # hide messages
+  #fig.width = 15,       # set plot width in inches
+  #fig.height = 9,      # set plot height in inches
+  fig.align = "center" # align plots to the center in output doc/ slide/ whatever
+)
+
+# libraries
+library("adespatial")
+library(broom) # converting output tables to tidy tables for saving or easy view
+library(classInt) # creating univariate variables for mapping
+library(cluster) # grouping metrics - VERIFY still needed
+#library(devtools) # installing bespoke packages
+library(dplyr) # data wrangling
+library(factoextra) # pca/ nmds/ tweaking radars
+library(FactoMineR) # pca/ nmds/ tweaking radars
+library(fmsb) # polygon calculations for the radars
+library(FSA) # post hoc test - Dunn's Test   
+library(ggplot2) # plots
+library(grid)
+library("gstat")
+library("GWmodel")
+library(knitr) # output formatting
+library(multcompView) # used for the letter assignment
+library(pgirmess) # stats - KW
+library(rcompanion) # for annotation of permanova
+library(rstatix) # VERIFY what this is for      
+library(RVAideMemoire) # post hoc test for permanova
+library(scales) # scaling data for IBR - works with data wrangling packages
+library(sf) # mapping - needed for converting to spatial data
+library(spdep) # building spatial geometric components for analysis
+library(spatialreg) # spatial regression analysis
+library(tidyr) # data wrangling
+library(tidyverse) # data wrangling
+library(tmap) #mapping themes
+library(vegan) # ecological stats 
+
+```
+
+# Load & Check Data
+```{r}
+
+# working from the clean data folder
+getwd()
+
+#site_data<- read.csv("../data/cleaned/site_level_complete_indices_10012025.csv") # for k-means assignment
+#summary(site_data)
+
+data<- read.csv("../data/cleaned/site_with_kmeans_4cluster_10112025.csv") # for comparison tests
+summary(data)
+
+```
+
+# Data prep
+```{r}
+
+# make ID columns factors 
+site_data$reporting_area <- as.factor(site_data$reporting_area)
+#site_data$site_name <- as.factor(site_data$site_name)
+site_data$site_number <- as.factor(site_data$site_number)
+
+data$reporting_area <- as.factor(data$reporting_area)
+#site_data$site_name <- as.factor(site_data$site_name)
+data$site_number <- as.factor(data$site_number)
+data$cluster3 <- as.factor(data$cluster3)
+data$cluster4 <- as.factor(data$cluster4)
+
+```
+
+# Box Plots
+## geo group3 and reporting area w/ reference site indicated
+### each biomarker, ibr score, shell thickness, ci3, contaminant index
+```{r}
+
+
+
+
+```
+
+
+# Radar Plots
+# site-level w/ reference site overlay
+### 1st: biomarkers + shell + ci3, 2nd: ibr scores, 3rd: contaminant indices (total metal and total pah, not sub-indices)
+
+# Correlation Plots
+# biomarkers, morphometrics, ibr on one + contaminants on another
+
+# RDA Plot
+## biomarkers
+```{r}
+
+response_var <- c("p450", "sod")
+preds <- c("chlordane_index", "ddt_index", "hch_index", "total_metal_index", "total_pah_index", "pbde_index", "pcb_index", "pesticide_index", "total_con_index")  
+
+# keep site_name
+dat <- data |>
+  dplyr::select(site_name, dplyr::all_of(c(response_var, preds))) |>
+  tidyr::drop_na()
+
+rownames(dat) <- dat$site_name   # <- key line
+
+X <- dat[, preds, drop = FALSE]
+Y <- as.matrix(dat[, response_var, drop = FALSE])
+
+fit <- vegan::rda(Y ~ ., data = X)
+
+# biplot data
+sc    <- vegan::scores(fit, display = c("sites","bp"), scaling = 2)
+sites <- as.data.frame(sc$sites)
+arws  <- as.data.frame(sc$biplot)
+
+# add site_name back for labeling/coloring
+sites$site_name <- rownames(sites)
+
+ggplot2::ggplot() +
+  ggplot2::geom_point(data = sites, ggplot2::aes(RDA1, RDA2), size = 2, alpha = 0.85) +
+  ggplot2::geom_segment(data = arws,
+    ggplot2::aes(x = 0, y = 0, xend = RDA1, yend = RDA2),
+    arrow = grid::arrow(length = grid::unit(0.02, "npc"))) +
+  ggplot2::geom_text(data = arws,
+    ggplot2::aes(RDA1, RDA2, label = rownames(arws)), vjust = -0.5, size = 3.5) +
+  ggplot2::labs(title = "RDA: biomarkers ~ contaminant indices (site-level)",
+                x = "RDA1", y = "RDA2") +
+  ggplot2::theme_minimal()
+
+
+```
+
+# PCA Plot
+## biomarkers
+```{r}
+
+vars <- c("p450","sod", "shell", "ci3", "chlordane_index", "ddt_index", "hch_index", "total_metal_index", "total_pah_index", "pbde_index", "pcb_index", "pesticide_index") 
+mat  <- na.omit(data[, vars, drop = FALSE])   # already standardized; no further scaling
+
+pca <- PCA(mat, scale.unit = FALSE, graph = FALSE)
+
+# variable correlation circle (like your screenshot)
+pca_plot<- fviz_pca_var(
+  pca,
+  col.var = "cos2",
+  gradient.cols = c("#00AFBB","#E7B800","#FC4E07"),
+  repel = TRUE,
+  title = "PCA: variable correlation"
+)
+
+print(pca_plot)
+#ggsave(filename= "../output/figures/pca_10122025.png", plot= pca_plot, width = 16, height = 14, dpi = 300)
+
+```
+
+
+
+
+
+
+
+
+
+
