@@ -35,7 +35,9 @@ library(dplyr) # data wrangling
 library(factoextra) # pca/ nmds/ tweaking radars
 library(FactoMineR) # pca/ nmds/ tweaking radars
 library(fmsb) # polygon calculations for the radars
-library(FSA) # post hoc test - Dunn's Test   
+library(forcats) # reordering categories in ggplot
+library(FSA) # post hoc test - Dunn's Test
+library("ggcorrplot")
 library(ggplot2) # plots
 library(grid)
 library("gstat")
@@ -88,22 +90,378 @@ data$cluster4 <- as.factor(data$cluster4)
 ```
 
 # Box Plots
-## geo group3 and reporting area w/ reference site indicated
-### each biomarker, ibr score, shell thickness, ci3, contaminant index
+### each measured metric, ibr, and contaminant index
 ```{r}
 
+reference_site <- "Penn Cove Reference"
+metric_cols <- 6:34
 
+df_long <- data %>%
+  pivot_longer(
+    cols = all_of(metric_cols),
+    names_to = "metric",
+    values_to = "value"
+  ) %>%
+  mutate(
+    site = fct_relevel(site_name, reference_site)
+  )
 
+# ---- Extract reference-site values for overlays ----
+ref_vals <- df_long %>%
+  filter(site == reference_site) %>%
+  group_by(metric) %>%
+  summarise(ref_median = median(value, na.rm = TRUE))
+
+# ---- Loop through metrics ----
+plots <- list()
+
+for (m in unique(df_long$metric)) {
+  p <- ggplot(filter(df_long, metric == m),
+              aes(x = reporting_area, y = value, fill = reporting_area)) +
+    geom_boxplot(outlier.shape = 21, width = 0.7, alpha = 0.85) +
+    # Add a horizontal line for the reference site's median
+    geom_hline(
+      data = filter(ref_vals, metric == m),
+      aes(yintercept = ref_median),
+      color = "black", linewidth = 1.1, linetype = "dashed"
+    ) +
+    labs(
+      title = paste("Metric:", m),
+      subtitle = paste("Dashed line = median at reference site:", reference_site),
+      x = "Reporting area",
+      y = NULL,
+      fill = "Reporting area"
+    ) +
+    scale_fill_brewer(palette = "Set2") +
+    theme_bw(base_size = 11) +
+    theme(
+      axis.text.x = element_text(angle = 45, hjust = 1),
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(face = "bold")
+    )
+
+  plots[[m]] <- p
+}
+
+# ---- View or save ----
+plots[["p450"]]  # replace with a metric name from your dataset
+
+# Save all plots as PNGs
+for (m in names(plots)) {
+  ggsave(
+    filename = paste0("boxplot_", m, "_by_reportingarea.png"),
+    plot = plots[[m]],
+    width = 7, height = 5, dpi = 300
+  )
+}
 
 ```
 
 
 # Radar Plots
-# site-level w/ reference site overlay
-### 1st: biomarkers + shell + ci3, 2nd: ibr scores, 3rd: contaminant indices (total metal and total pah, not sub-indices)
+## site-level w/ reference site overlay: biomarkers + shell + ci3
+```{r}
+
+reference_site <- "Penn Cove Reference"
+biomarkers <- c("p450", "sod", "shell", "ci3")
+
+bio_df <- data 
+
+# Ensure biomarker cols are numeric
+bio_df <- bio_df %>%
+  mutate(across(all_of(biomarkers), ~ suppressWarnings(as.numeric(.x))))
+
+# Validate reference site
+if (!reference_site %in% bio_df$site_name) {
+  stop(sprintf("Reference site '%s' not found in 'site_name' column.", reference_site))
+}
+
+sites <- unique(bio_df$site_name)
+
+for (s in sites) {
+
+  # Skip if this site's biomarkers are all NA
+  if (all(is.na(bio_df[bio_df$site_name == s, biomarkers]))) next
+
+  # Min/max rows over ALL rows so every chart shares the same scale
+  mins <- sapply(bio_df[biomarkers], min, na.rm = TRUE)
+  maxs <- sapply(bio_df[biomarkers], max, na.rm = TRUE)
+
+  ref_row <- bio_df %>% filter(site_name == reference_site) %>% select(all_of(biomarkers))
+  cur_row <- bio_df %>% filter(site_name == s)             %>% select(all_of(biomarkers))
+
+  # If reference has all NA for these biomarkers, skip (or handle differently)
+  if (nrow(ref_row) == 0 || all(is.na(ref_row))) next
+  if (nrow(cur_row) == 0 || all(is.na(cur_row))) next
+
+  plot_df <- rbind(maxs, mins, ref_row, cur_row)
+  rownames(plot_df) <- c("max", "min", "reference", "current")
+  plot_df <- as.data.frame(plot_df)
+
+  file_name <- paste0("metrics_radar_", gsub(" ", "_", s), ".png")
+  png(filename = file_name, width = 1200, height = 1200, res = 150)
+  par(mar = c(1, 1, 1, 1))
+  
+  radarchart(
+    plot_df,
+    axistype = 1,
+    seg = 5,
+    cglcol = "grey70",
+    cglty = 1,
+    cglwd = 0.8,
+    # One value per data series (reference, current):
+    pcol  = c("black", "dodgerblue4"),
+    pfcol = c(alpha("black", 0.15), alpha("dodgerblue4", 0.25)),
+    plwd  = c(2, 2),
+    plty  = c(1, 1),
+    title = paste("Measured Metrics:", s, "vs", reference_site)
+  )
+  legend("topright",
+         legend = c(paste("Reference:", reference_site),
+                    paste("Current:", s)),
+         col = c("black", "dodgerblue4"), lwd = 2, bty = "n")
+  
+  dev.off()
+}
+
+```
+
+## site-level: ibr scores
+```{r}
+
+reference_site <- "Penn Cove Reference"
+biomarkers <- c("ibr_bio", "ibr_morph", "ibr_combined")
+
+bio_df <- data 
+
+# Ensure biomarker cols are numeric
+bio_df <- bio_df %>%
+  mutate(across(all_of(biomarkers), ~ suppressWarnings(as.numeric(.x))))
+
+# Validate reference site
+if (!reference_site %in% bio_df$site_name) {
+  stop(sprintf("Reference site '%s' not found in 'site_name' column.", reference_site))
+}
+
+sites <- unique(bio_df$site_name)
+
+for (s in sites) {
+
+  # Skip if this site's biomarkers are all NA
+  if (all(is.na(bio_df[bio_df$site_name == s, biomarkers]))) next
+
+  # Min/max rows over ALL rows so every chart shares the same scale
+  mins <- sapply(bio_df[biomarkers], min, na.rm = TRUE)
+  maxs <- sapply(bio_df[biomarkers], max, na.rm = TRUE)
+
+  ref_row <- bio_df %>% filter(site_name == reference_site) %>% select(all_of(biomarkers))
+  cur_row <- bio_df %>% filter(site_name == s)             %>% select(all_of(biomarkers))
+
+  # If reference has all NA for these biomarkers, skip (or handle differently)
+  if (nrow(ref_row) == 0 || all(is.na(ref_row))) next
+  if (nrow(cur_row) == 0 || all(is.na(cur_row))) next
+
+  plot_df <- rbind(maxs, mins, ref_row, cur_row)
+  rownames(plot_df) <- c("max", "min", "reference", "current")
+  plot_df <- as.data.frame(plot_df)
+
+  file_name <- paste0("radar_", gsub(" ", "_", s), ".png")
+  png(filename = file_name, width = 1200, height = 1200, res = 150)
+  par(mar = c(1, 1, 1, 1))
+  
+  radarchart(
+    plot_df,
+    axistype = 1,
+    seg = 5,
+    cglcol = "grey70",
+    cglty = 1,
+    cglwd = 0.8,
+    # One value per data series (reference, current):
+    pcol  = c("black", "dodgerblue4"),
+    pfcol = c(alpha("black", 0.15), alpha("dodgerblue4", 0.25)),
+    plwd  = c(2, 2),
+    plty  = c(1, 1),
+    title = paste("IBR Score:", s, "vs", reference_site)
+  )
+  legend("topright",
+         legend = c(paste("Reference:", reference_site),
+                    paste("Current:", s)),
+         col = c("black", "dodgerblue4"), lwd = 2, bty = "n")
+  
+  dev.off()
+}
+
+```
+
+
+##site-level: contaminant indices (total metal and total pah, not sub-indices)
+```{r}
+
+reference_site <- "Penn Cove Reference"
+biomarkers <- c("chlordane_index", "ddt_index", "hch_index", "total_metal_index", "total_pah_index", "pbde_index", "pcb_index", "pesticide_index" )
+
+bio_df <- data 
+
+# Ensure biomarker cols are numeric
+bio_df <- bio_df %>%
+  mutate(across(all_of(biomarkers), ~ suppressWarnings(as.numeric(.x))))
+
+# Validate reference site
+if (!reference_site %in% bio_df$site_name) {
+  stop(sprintf("Reference site '%s' not found in 'site_name' column.", reference_site))
+}
+
+sites <- unique(bio_df$site_name)
+
+for (s in sites) {
+
+  # Skip if this site's biomarkers are all NA
+  if (all(is.na(bio_df[bio_df$site_name == s, biomarkers]))) next
+
+  # Min/max rows over ALL rows so every chart shares the same scale
+  mins <- sapply(bio_df[biomarkers], min, na.rm = TRUE)
+  maxs <- sapply(bio_df[biomarkers], max, na.rm = TRUE)
+
+  ref_row <- bio_df %>% filter(site_name == reference_site) %>% select(all_of(biomarkers))
+  cur_row <- bio_df %>% filter(site_name == s)             %>% select(all_of(biomarkers))
+
+  # If reference has all NA for these biomarkers, skip (or handle differently)
+  if (nrow(ref_row) == 0 || all(is.na(ref_row))) next
+  if (nrow(cur_row) == 0 || all(is.na(cur_row))) next
+
+  plot_df <- rbind(maxs, mins, ref_row, cur_row)
+  rownames(plot_df) <- c("max", "min", "reference", "current")
+  plot_df <- as.data.frame(plot_df)
+
+  file_name <- paste0("contaminant_radar_", gsub(" ", "_", s), ".png")
+  png(filename = file_name, width = 1800, height = 1600, res = 150)
+  par(mar = c(2, 6, 2, 6)) # bottom, left, top, right is the margin order
+  
+  radarchart(
+    plot_df,
+    axistype = 1,
+    seg = 5,
+    cglcol = "grey70",
+    cglty = 1,
+    cglwd = 0.8,
+    # One value per data series (reference, current):
+    pcol  = c("black", "dodgerblue4"),
+    pfcol = c(alpha("black", 0.15), alpha("dodgerblue4", 0.25)),
+    plwd  = c(2, 2),
+    plty  = c(1, 1),
+    title = paste("Contaminant Class:", s, "vs", reference_site)
+  )
+  legend("topright",
+         legend = c(paste("Reference:", reference_site),
+                    paste("Current:", s)),
+         col = c("black", "dodgerblue4"), lwd = 2, bty = "n")
+  
+  dev.off()
+}
+
+```
 
 # Correlation Plots
 # biomarkers, morphometrics, ibr on one + contaminants on another
+```{r}
+
+# both the Spearman and the Kendalls
+
+cor_with_p <- function(mat, method = c("spearman","kendall"),
+                       use = "pairwise.complete.obs",
+                       adjust = "BH") {
+  method <- match.arg(method)
+  vars <- colnames(mat)
+  n <- length(vars)
+
+  # correlation matrix
+  R <- cor(mat, method = method, use = use)
+
+  # p-value matrix (pairwise cor.test)
+  P <- matrix(NA_real_, n, n, dimnames = list(vars, vars))
+  diag(P) <- 0
+  for (i in 1:(n-1)) {
+    for (j in (i+1):n) {
+      tst <- suppressWarnings(cor.test(mat[, i], mat[, j], method = method, use = use, exact = FALSE))
+      P[i, j] <- P[j, i] <- tst$p.value
+    }
+  }
+
+  # multiple-testing correction (optional but recommended)
+  if (!is.null(adjust)) {
+    upper_vals <- P[upper.tri(P)]
+    adj_vals <- p.adjust(upper_vals, method = adjust)
+    P[upper.tri(P)] <- adj_vals
+    P[lower.tri(P)] <- t(P)[lower.tri(P)]
+  }
+
+  list(R = R, P = P)
+}
+
+# ===== select your metrics (cols 6:34) =====
+# Assumes your full data frame is named `df`
+metrics <- data[, 6:34]
+
+# keep numeric only (quietly coerce if needed)
+metrics <- metrics %>%
+  mutate(across(everything(), ~ suppressWarnings(as.numeric(.x)))) %>%
+  select(where(is.numeric))
+
+# ===== SPEARMAN =====
+sp <- cor_with_p(metrics, method = "spearman", adjust = "BH")
+
+# plot: only significant cells shown (non-sig blanked)
+p_spear <- ggcorrplot(
+  sp$R,
+  method = "square",
+  type   = "upper",
+  lab    = FALSE,
+  p.mat  = sp$P,
+  sig.level = 0.05,
+  insig = "blank",
+  hc.order = TRUE,     # hierarchical clustering for nicer blocks
+  outline.col = "grey80"
+) +
+  scale_fill_gradient2(limits = c(-1, 1)) +
+  labs(title = "Significant Spearman correlations (FDR q<0.05)") +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 8),
+    axis.text.y = element_text(size = 8)
+  )
+
+
+ggsave("cor_spearman_significant.png", p_spear, width = 9, height = 8, dpi = 300)
+
+# ===== KENDALL'S TAU =====
+kd <- cor_with_p(metrics, method = "kendall", adjust = "BH")
+
+p_kendall <- ggcorrplot(
+  kd$R,
+  method = "square",
+  type   = "upper",
+  lab    = FALSE,
+  p.mat  = kd$P,
+  sig.level = 0.05,
+  insig = "blank",
+  hc.order = TRUE,
+  outline.col = "grey80"
+) +
+  scale_fill_gradient2(limits = c(-1, 1)) +
+  labs(title = "Significant Kendall correlations (FDR q<0.05)") +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 8),
+    axis.text.y = element_text(size = 8)
+  )
+
+
+ggsave("cor_kendall_significant.png", p_kendall, width = 9, height = 8, dpi = 300)
+
+print(p_spear)
+
+```
+
 
 # RDA Plot
 ## biomarkers
