@@ -1,0 +1,749 @@
+---
+title: "3.1- Geographic Group Assignement & Analysis with transformed and scaled metrics, IBRs and contaminant indices"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+```{r, setup, eval=TRUE, include=TRUE, echo=FALSE}
+
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # show code chunks
+  eval = TRUE,         # evaluate code chunks
+  warning = FALSE,     # hide warnings
+  message = FALSE,     # hide messages
+  #fig.width = 15,       # set plot width in inches
+  #fig.height = 9,      # set plot height in inches
+  fig.align = "center" # slign plots to the center in output doc/ slide/ whatever
+)
+
+# libraries
+library("adespatial")
+library(broom) # converting output tables to tidy tables for saving or easy view
+library(classInt) # creating univariate variables for mapping
+library(cluster) # grouping metrics - VERIFY still needed
+#library(devtools) # installing bespoke packages
+library(dplyr) # data wrangling
+library(factoextra) # pca/ nmds/ tweaking radars
+library(FactoMineR) # pca/ nmds/ tweaking radars
+library(fmsb) # polygon calculations for the radars
+library(FSA) # post hoc test - Dunn's Test   
+library(ggplot2) # plots
+library("gstat")
+library("GWmodel")
+library(knitr) # output formatting
+library(multcompView) # used for the letter assignment
+library(pgirmess) # stats - KW
+library(rcompanion) # for annotation of permanova
+library(rstatix) # VERIFY what this is for      
+library(RVAideMemoire) # post hoc test for permanova
+library(scales) # scaling data for IBR - works with data wrangling packages
+library(sf) # mapping - needed for converting to spatial data
+library(spdep) # building spatial geometric components for analysis
+library(spatialreg) # spatial regression analysis
+library(tidyr) # data wrangling
+library(tidyverse) # data wrangling
+library(tmap) #mapping themes
+library(vegan) # ecological stats 
+
+```
+
+# Load & Check Data
+```{r}
+
+# working from the clean data folder
+getwd()
+
+site_data<- read.csv("../data/cleaned/site_level_complete_indices_10012025.csv") # for k-means assignment
+summary(site_data)
+
+data<- read.csv("../output/site_with_kmeans_4cluster_10112025.csv") # for comparison tests
+summary(data)
+
+```
+
+# Data prep
+```{r}
+
+# make ID columns factors 
+site_data$reporting_area <- as.factor(site_data$reporting_area)
+#site_data$site_name <- as.factor(site_data$site_name)
+site_data$site_number <- as.factor(site_data$site_number)
+
+data$reporting_area <- as.factor(data$reporting_area)
+#site_data$site_name <- as.factor(site_data$site_name)
+data$site_number <- as.factor(data$site_number)
+data$cluster3 <- as.factor(data$cluster3)
+data$cluster4 <- as.factor(data$cluster4)
+
+```
+
+# Assign K-Means Clusters
+
+```{r}
+
+# Prepare the data for clustering - only numeric columns should be included
+clustering_data <- site_data %>%
+  select(p450, sod, shell, ci3)
+
+# Perform K-means clustering with a chosen number of clusters, let's say 3 for this example
+set.seed(123)  # Setting seed for reproducibility
+kmeans_result <- kmeans(clustering_data, centers = 4)
+
+# Add the cluster assignments to the original data
+site_data$cluster4 <- kmeans_result$cluster[match(rownames(clustering_data), rownames(site_data))]
+
+# Now let's list the unique site names within each cluster
+clustered_sites <- site_data %>%
+  select(site_name, cluster4) %>%
+  group_by(cluster4) %>%
+  summarise(unique_sites = list(unique(site_name)))  # Using list to keep it all within one dataframe
+
+print(clustered_sites)
+
+# Expanding the list into separate rows
+clustered_sites_expanded <- clustered_sites %>%
+  unnest(unique_sites)
+
+# save
+#write.csv(clustered_sites_expanded, "../output/kmeans4_sites_10112025.csv", row.names = FALSE)
+#write.csv(site_data, "../output/site_with_kmeans_4cluster_10112025.csv", row.names = FALSE)
+
+```
+
+# ANOSIM, Analysis of similarity
+## 4 clusters is statistically robust enough for analysis, 3 clusters is borderline
+```{r}
+
+df_anosim <- site_data
+
+# create a new distance matrix
+dist_matrix <- vegdist(df_anosim %>%
+                         select(p450, sod, shell, ibr_combined) %>%
+                         scale(), method = "euclidean")
+
+# run ANOSIM
+anosim_results <- anosim(dist_matrix, grouping = df_anosim$cluster4)
+print(anosim_results)
+
+# result - 3 clusters
+# statistic R: 0.4685
+# Significance: 0.001
+
+# result - 4 clusters
+# statistic R: 0.5416
+# Significance: 0.001
+
+#Interpretation:
+#If R > 0.5 and p < 0.05, group differences are meaningful.
+#If R < 0.2, groups are not well-separated.
+
+```
+
+# ANOVA - update to reflect metrics tested against cluster (3) & cluster 4
+### p450, weight_change, ci3, ibr_morph, length, width, height, weight_initial, weight_final
+```{r}
+
+# p450 - both clusters are significant
+p450_anova_k3 <- aov(p450 ~ cluster3, data = data) # p-value= 0.0417
+p450_anova_k4 <- aov(p450 ~ cluster4, data = data) # p-value= 0.00106
+summary(p450_anova_k3)
+summary(p450_anova_k4)
+
+# ci3 - no significant values
+ci3_anova_k3 <- aov(ci3 ~ cluster3, data = data) # p-value= 0.569
+ci3_anova_k4 <- aov(ci3 ~ cluster4, data = data) # p-value= 0.756
+summary(ci3_anova_k3)
+summary(ci3_anova_k4)
+
+# length - no significant values
+length_anova_k3 <- aov(length ~ cluster3, data = data) # p-value= 0.569
+length_anova_k4 <- aov(length ~ cluster4, data = data) # p-value= 0.554
+summary(length_anova_k3)
+summary(length_anova_k4)
+
+# width - no significant values
+width_anova_k3 <- aov(width ~ cluster3, data = data) # p-value= 0.579
+width_anova_k4 <- aov(width ~ cluster4, data = data) # p-value= 0.749
+summary(width_anova_k3)
+summary(width_anova_k4)
+
+# height - no significant values
+height_anova_k3 <- aov(height ~ cluster3, data = data) # p-value= 0.284
+height_anova_k4 <- aov(height ~ cluster4, data = data) # p-value= 0.416
+summary(height_anova_k3)
+summary(height_anova_k4)
+
+# weight_initial - no significant values
+weight_initial_anova_k3 <- aov(weight_initial ~ cluster3, data = data) # p-value= 0.894
+weight_initial_anova_k4 <- aov(weight_initial ~ cluster4, data = data) # p-value= 0.637
+summary(weight_initial_anova_k3)
+summary(weight_initial_anova_k4)
+
+# weight_final - no significant values
+weight_final_anova_k3 <- aov(weight_final ~ cluster3, data = data) # p-value= 0.394
+weight_final_anova_k4 <- aov(weight_final ~ cluster4, data = data) # p-value= 0.158
+summary(weight_final_anova_k3)
+summary(weight_final_anova_k4)
+
+# weight_change - no significant values
+weight_change_anova_k3 <- aov(weight_change ~ cluster3, data = data) # p-value= 0.989
+weight_change_anova_k4 <- aov(weight_change ~ cluster4, data = data) # p-value= 0.862
+summary(weight_change_anova_k3)
+summary(weight_change_anova_k4)
+
+# ibr_morph - no significant values
+ibr_morph_anova_k3 <- aov(ibr_morph ~ cluster3, data = data) # p-value= 0.75
+ibr_morph_anova_k4 <- aov(ibr_morph ~ cluster4, data = data) # p-value= 0.488 
+summary(ibr_morph_anova_k3)
+summary(ibr_morph_anova_k4)
+
+```
+
+# Tukeys
+## p450
+```{r}
+#### p450, cluster3: one significant result
+tuk <- TukeyHSD(p450_anova_k3, "cluster3")
+tuk_df <- broom::tidy(tuk) %>%
+  filter(term == "cluster3") %>%
+  separate(contrast, into = c("Group1", "Group2"), sep = "-") %>%
+  mutate(Significant = ifelse(adj.p.value < 0.05, "Yes", "No"))
+# cld letters
+groups <- sort(unique(c(tuk_df$Group1, tuk_df$Group2)))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in seq_len(nrow(tuk_df))) {
+  g1 <- tuk_df$Group1[i]; g2 <- tuk_df$Group2[i]
+  p  <- as.numeric(tuk_df$adj.p.value[i])
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(Group = names(cld_letters), CLD = cld_letters, 
+                     stringsAsFactors = FALSE)
+
+tukey_table_with_cld <- tuk_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(tukey_table_with_cld)
+#write.csv(tukey_table_with_cld, "../output/tukey_p450_k3_10112025.csv", row.names = FALSE) 
+
+#### p450, cluster4: one signficant result
+tuk <- TukeyHSD(p450_anova_k4, "cluster4")
+tuk_df <- broom::tidy(tuk) %>%
+  filter(term == "cluster4") %>%
+  separate(contrast, into = c("Group1", "Group2"), sep = "-") %>%
+  mutate(Significant = ifelse(adj.p.value < 0.05, "Yes", "No"))
+# cld letters
+groups <- sort(unique(c(tuk_df$Group1, tuk_df$Group2)))
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+
+for (i in seq_len(nrow(tuk_df))) {
+  g1 <- tuk_df$Group1[i]; g2 <- tuk_df$Group2[i]
+  p  <- as.numeric(tuk_df$adj.p.value[i])
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(Group = names(cld_letters), CLD = cld_letters, 
+                     stringsAsFactors = FALSE)
+
+tukey_table_with_cld <- tuk_df %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(tukey_table_with_cld)
+#write.csv(tukey_table_with_cld, "../output/tables/anova_kw_results/tukey_p450_k4_10112025.csv", row.names = FALSE) 
+
+```
+
+# KW
+### sod, ci1, ci2, shell, ibr_bio, ibr_combined, and all of the contaminant indices
+```{r}
+
+# sod - both clusters are significant
+kruskal.test(sod ~ cluster3, data = data) # p-value = 6.55e-14
+kruskal.test(sod ~ cluster4, data = data) # p-value = 7.612e-14
+
+# ci1 - no significant values 
+kruskal.test(ci1 ~ cluster3, data = data) # p-value = 0.3964
+kruskal.test(ci1 ~ cluster4, data = data) # p-value = 0.329
+
+# ci2 - no significant values 
+kruskal.test(ci2 ~ cluster3, data = data) # p-value = 0.1929
+kruskal.test(ci2 ~ cluster4, data = data) # p-value = 0.2379
+
+# shell - no significant values
+kruskal.test(shell ~ cluster3, data = data) # p-value = 0.3565
+kruskal.test(shell ~ cluster4, data = data) # p-value = 0.05425
+
+# ibr_bio - both clusters are significant
+kruskal.test(ibr_bio ~ cluster3, data = data) # p-value = 3.462e-13
+kruskal.test(ibr_bio ~ cluster4, data = data) # p-value = 3.32e-13
+
+# ibr_combined - both clusters are significant
+kruskal.test(ibr_combined ~ cluster3, data = data) # p-value = 1.524e-12
+kruskal.test(ibr_combined ~ cluster4, data = data) # p-value = 3.099e-12
+
+# chlordane_index - no significant values 
+kruskal.test(chlordane_index ~ cluster3, data = data) # p-value = 0.2544
+kruskal.test(chlordane_index ~ cluster4, data = data) # p-value = 0.2301
+
+# ddt_index - both clusters are significant
+kruskal.test(ddt_index ~ cluster3, data = data) # p-value = 0.04112
+kruskal.test(ddt_index ~ cluster4, data = data) # p-value = 0.01931
+
+# hch_index - no significant values
+kruskal.test(hch_index ~ cluster3, data = data) # p-value = 0.1666
+kruskal.test(hch_index ~ cluster4, data = data) # p-value = 0.162
+
+# heavy_metal_index - no significant values
+kruskal.test(heavy_metal_index ~ cluster3, data = data) # p-value = 0.9219
+kruskal.test(heavy_metal_index ~ cluster4, data = data) # p-value = 0.5743
+
+# nutrient_metal_index - no significant values
+kruskal.test(nutrient_metal_index ~ cluster3, data = data) # p-value = 0.8656
+kruskal.test(nutrient_metal_index ~ cluster4, data = data) # p-value = 0.8899
+
+# total_metal_index - no significant values
+kruskal.test(total_metal_index ~ cluster3, data = data) # p-value = 0.9638
+kruskal.test(total_metal_index ~ cluster4, data = data) # p-value = 0.8302
+
+# pah_lmw_index - no significant values
+kruskal.test(pah_lmw_index ~ cluster3, data = data) # p-value = 0.1057
+kruskal.test(pah_lmw_index ~ cluster4, data = data) # p-value = 0.2895
+
+# pah_hmw_index - no significant values
+kruskal.test(pah_hmw_index ~ cluster3, data = data) # p-value = 0.2374
+kruskal.test(pah_hmw_index ~ cluster4, data = data) # p-value = 0.2628
+
+# pah_add_index - no significant values 
+kruskal.test(pah_add_index ~ cluster3, data = data) # p-value = 0.4485
+kruskal.test(pah_add_index ~ cluster4, data = data) # p-value = 0.4825
+
+# total_pah_index - no significant values
+kruskal.test(total_pah_index ~ cluster3, data = data) # p-value = 0.09698
+kruskal.test(total_pah_index ~ cluster4, data = data) # p-value = 0.2388
+
+# pbde_index - no significant values 
+kruskal.test(pbde_index  ~ cluster3, data = data) # p-value = 0.3873
+kruskal.test(pbde_index  ~ cluster4, data = data) # p-value = 0.3382
+
+# pcb_index - no significant values 
+kruskal.test(pcb_index ~ cluster3, data = data) # p-value = 0.2726
+kruskal.test(pcb_index ~ cluster4, data = data) # p-value = 0.1131
+
+# pesticide_index - both clusters are significant
+kruskal.test(pesticide_index ~ cluster3, data = data) # p-value = 0.01869
+kruskal.test(pesticide_index ~ cluster4, data = data) # p-value = 0.02279
+
+# total_con_index - no significant values 
+kruskal.test(total_con_index ~ cluster3, data = data) # p-value = 0.06486
+kruskal.test(total_con_index ~ cluster4, data = data) # p-value = 0.07095
+
+```
+
+# Dunns
+## sod, ibr_bio, ibr_combined, ddt_index and pesticide_index
+```{r}
+
+# sod, cluster3: significant
+dunn_result <- dunnTest(sod ~ cluster3, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_sod_k4_10112025.csv", row.names = FALSE)
+
+# sod, cluster4: significant results
+dunn_result <- dunnTest(sod ~ cluster4, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_sod_k4_10122025.csv", row.names = FALSE)
+
+# ibr_bio, cluster3: significant results
+dunn_result <- dunnTest(ibr_bio ~ cluster3, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_ibr_bio_k3_10122025.csv", row.names = FALSE)
+
+# ibr_bio, cluster4: significant results
+dunn_result <- dunnTest(ibr_bio ~ cluster4, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_ibr_bio_k4_10122025.csv", row.names = FALSE)
+
+# ibr_combined, cluster3: significant results
+dunn_result <- dunnTest(ibr_combined ~ cluster3, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_ibr_combined_k3_10122025.csv", row.names = FALSE)
+
+# ibr_combined, cluster4: significant results
+dunn_result <- dunnTest(ibr_combined ~ cluster4, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_ibr_combined_k4_10122025.csv", row.names = FALSE)
+
+# ddt_index, cluster3: not significant
+dunn_result <- dunnTest(ddt_index ~ cluster3, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_ddt_k3_10122025.csv", row.names = FALSE)
+
+# ddt_index, cluster4: one significant result
+dunn_result <- dunnTest(ddt_index ~ cluster4, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_ddt_k4_10122025.csv", row.names = FALSE)
+
+# pesticide_index, cluster3: one significant result
+dunn_result <- dunnTest(pesticide_index ~ cluster3, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_pesticide_k3_10122025.csv", row.names = FALSE)
+
+# pesticide_index, cluster4: no significant result
+dunn_result <- dunnTest(pesticide_index ~ cluster4, data = data, method = "bh") 
+dunn_df <- dunn_result$res %>%
+  dplyr::select(Comparison, Z, P.unadj, P.adj) %>%
+  tidyr::separate(Comparison, into = c("Group1", "Group2"), sep = " - ") %>%
+  dplyr::mutate(Significant = ifelse(P.adj < 0.05, "Yes", "No"))
+dunn_table <- dunn_df %>%
+  dplyr::mutate(across(c(P.unadj, P.adj), round, digits = 4)) %>%
+  dplyr::arrange(P.adj)
+print(dunn_table) # view
+
+groups <- unique(c(dunn_df$Group1, dunn_df$Group2)) # add letter designation
+pval_matrix <- matrix(1, nrow = length(groups), ncol = length(groups),
+                      dimnames = list(groups, groups))
+for (i in 1:nrow(dunn_df)) {
+  g1 <- dunn_df$Group1[i]
+  g2 <- dunn_df$Group2[i]
+  p <- dunn_df$P.adj[i]
+  pval_matrix[g1, g2] <- p
+  pval_matrix[g2, g1] <- p
+}
+cld_letters <- multcompLetters(pval_matrix < 0.05)$Letters
+cld_df <- data.frame(
+  Group = names(cld_letters),
+  CLD = cld_letters,
+  stringsAsFactors = FALSE
+)
+dunn_table_with_cld <- dunn_table %>%
+  left_join(cld_df, by = c("Group1" = "Group")) %>%
+  rename(Group1_CLD = CLD) %>%
+  left_join(cld_df, by = c("Group2" = "Group")) %>%
+  rename(Group2_CLD = CLD)
+
+view(dunn_table_with_cld)
+#write.csv(dunn_table_with_cld, "../output/tables/anova_kw_results/dunn_pesticide_k4_10122025.csv", row.names = FALSE)
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

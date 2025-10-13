@@ -1,5 +1,5 @@
 ---
-title: "3.2- Data Analysis with transformed and scaled metrics, IBRs and contaminant indices"
+title: "3.0- Data Analysis with transformed and scaled metrics, IBRs and contaminant indices"
 output:
   pdf_document: 
     fig_width: 20

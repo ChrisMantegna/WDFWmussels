@@ -132,8 +132,6 @@ if (all(num_outliers_each_col == 0)) {
 
 ```
 
-
-
 ## Boxplots
 ### Combined
 ```{r}
