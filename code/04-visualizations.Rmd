@@ -462,7 +462,6 @@ print(p_spear)
 
 ```
 
-
 # RDA Plot
 ## biomarkers
 ```{r}
@@ -526,13 +525,4 @@ print(pca_plot)
 #ggsave(filename= "../output/figures/pca_10122025.png", plot= pca_plot, width = 16, height = 14, dpi = 300)
 
 ```
-
-
-
-
-
-
-
-
-
 
