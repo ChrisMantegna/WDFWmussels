@@ -1,0 +1,199 @@
+metric,site_name,reporting_area,Ii,Z.Ii,p,p_fdr_metric,sig_p05,sig_fdr05,cluster
+chlordane_index,Blair Waterway Two,11,-0.7297805,-5.1933936,2.06E-07,1.53E-05,TRUE,TRUE,Low-High
+pcb_index,"Elliott Bay, Harbor Island, Pier 17",10,4.00686819,5.07977605,3.78E-07,2.63E-05,TRUE,TRUE,High-High
+pcb_index,"Salmon Bay, Commodore Park",10,1.5190573,4.95845874,7.11E-07,2.63E-05,TRUE,TRUE,High-High
+pcb_index,Shilshole Bay,10,2.38232563,4.81143247,1.50E-06,3.70E-05,TRUE,TRUE,High-High
+chlordane_index,Browns Point Lighthouse,11,1.81385784,4.71265836,2.45E-06,9.05E-05,TRUE,TRUE,High-High
+hch_index,Elliot Bay Myrtle Edwards,10,-0.5167693,-4.6131671,3.97E-06,0.00014673,TRUE,TRUE,Low-High
+hch_index,Shilshole Bay,10,-0.5167693,-4.6131671,3.97E-06,0.00014673,TRUE,TRUE,Low-High
+pcb_index,"Seattle Aquarium, Pier 59",10,3.43028394,4.56981,4.88E-06,9.03E-05,TRUE,TRUE,High-High
+pah_hmw_index,"Salmon Bay, Commodore Park",10,0.19904549,4.49581823,6.93E-06,0.00039021,TRUE,TRUE,High-High
+chlordane_index,Thea Foss Waterway,11,3.26269969,4.45939411,8.22E-06,0.00015882,TRUE,TRUE,High-High
+pcb_index,Elliot Bay Myrtle Edwards,10,4.85661384,4.45139088,8.53E-06,0.00011872,TRUE,TRUE,High-High
+chlordane_index,"Commencement Bay, Dick Gilmur Launch",11,3.45095626,4.42801312,9.51E-06,0.00015882,TRUE,TRUE,High-High
+pcb_index,"Smith Cove, Terminal 91",10,5.15434967,4.42540437,9.63E-06,0.00011872,TRUE,TRUE,High-High
+chlordane_index,Blair Waterway,11,3.67280995,4.39171051,1.12E-05,0.00015882,TRUE,TRUE,High-High
+chlordane_index,Commencement Bay Skookum,11,3.85744052,4.36218174,1.29E-05,0.00015882,TRUE,TRUE,High-High
+pah_hmw_index,Arroyo Beach,11,-0.4201488,-4.3310684,1.48E-05,0.00039021,TRUE,TRUE,Low-High
+pah_hmw_index,Shilshole Bay,10,1.03981837,4.31696138,1.58E-05,0.00039021,TRUE,TRUE,High-High
+hch_index,"Elliott Bay, Harbor Island, Pier 17",10,1.01737179,4.28221871,1.85E-05,0.00045643,TRUE,TRUE,High-High
+chlordane_index,"Commencement Bay, Milwaukee Waterway",11,4.41682546,4.27840712,1.88E-05,0.00019899,TRUE,TRUE,High-High
+chlordane_index,Des Moines Marina,11,0.56401526,4.1149648,3.87E-05,0.0003582,TRUE,TRUE,High-High
+pah_hmw_index,"Elliott Bay, Harbor Island, Pier 17",10,2.14544734,4.09666486,4.19E-05,0.00068869,TRUE,TRUE,High-High
+pbde_index,Browns Point Lighthouse,11,-0.8240139,-4.0884589,4.34E-05,0.00321344,TRUE,TRUE,Low-High
+pah_hmw_index,"Seattle Aquarium, Pier 59",10,2.27166354,4.07238944,4.65E-05,0.00068869,TRUE,TRUE,High-High
+total_pah_index,Arroyo Beach,11,-0.3180689,-4.0419588,5.30E-05,0.00392249,TRUE,TRUE,Low-High
+total_con_index,"Salmon Bay, Commodore Park",10,1.11992052,4.00733984,6.14E-05,0.00189395,TRUE,TRUE,High-High
+total_con_index,"Elliott Bay, Harbor Island, Pier 17",10,2.20305808,4.00114761,6.30E-05,0.00189395,TRUE,TRUE,High-High
+chlordane_index,Point Defiance Ferry,11,-0.5603696,-3.9838988,6.78E-05,0.00050167,TRUE,TRUE,Low-High
+chlordane_index,Salmon Beach,11,-0.5603696,-3.9838988,6.78E-05,0.00050167,TRUE,TRUE,Low-High
+total_con_index,"Seattle Aquarium, Pier 59",10,1.59177548,3.95422975,7.68E-05,0.00189395,TRUE,TRUE,High-High
+total_con_index,Shilshole Bay,10,1.72558739,3.86638727,0.00011046,0.0020435,TRUE,TRUE,High-High
+hch_index,"Seattle Aquarium, Pier 59",10,3.01649288,3.8484015,0.00011889,0.00219949,TRUE,TRUE,High-High
+pesticide_index,"Seattle Aquarium, Pier 59",10,0.46180858,3.7915417,0.00014972,0.00554679,TRUE,TRUE,High-High
+total_con_index,Arroyo Beach,11,-0.3128365,-3.752913,0.00017479,0.00258691,TRUE,TRUE,Low-High
+pesticide_index,Elliot Bay Myrtle Edwards,10,0.69492573,3.73245968,0.00018962,0.00554679,TRUE,TRUE,High-High
+pah_hmw_index,"Smith Cove, Terminal 91",10,3.7997932,3.72164215,0.00019793,0.00244115,TRUE,TRUE,High-High
+ddt_index,Miller Creek,11,-0.3996306,-3.7171052,0.00020152,0.01037023,TRUE,TRUE,Low-High
+pbde_index,Thea Foss Waterway,11,0.75501979,3.69173382,0.00022273,0.00773502,TRUE,TRUE,High-High
+pesticide_index,"Elliott Bay, Harbor Island, Pier 17",10,0.86364264,3.68930238,0.00022487,0.00554679,TRUE,TRUE,High-High
+pah_hmw_index,Elliot Bay Myrtle Edwards,10,4.58649014,3.56408881,0.00036512,0.00385986,TRUE,TRUE,High-High
+pesticide_index,Shilshole Bay,10,1.43738438,3.53903302,0.0004016,0.00655771,TRUE,TRUE,High-High
+pbde_index,"Commencement Bay, Milwaukee Waterway",11,1.37554261,3.52869715,0.00041761,0.00773502,TRUE,TRUE,High-High
+pbde_index,Blair Waterway Two,11,1.41096128,3.51914756,0.00043294,0.00773502,TRUE,TRUE,High-High
+hch_index,"Smith Cove, Terminal 91",10,4.55831657,3.51477218,0.00044013,0.00542928,TRUE,TRUE,High-High
+hch_index,"Salmon Bay, Commodore Park",10,4.56162684,3.51472359,0.00044021,0.00542928,TRUE,TRUE,High-High
+pesticide_index,"Salmon Bay, Commodore Park",10,1.53412274,3.51299345,0.00044309,0.00655771,TRUE,TRUE,High-High
+pah_add_index,Arroyo Beach,11,0.0092047,3.49722208,0.00047013,0.03478964,TRUE,TRUE,High-High
+heavy_metal_index,Edmonds Ferry,9,0.0011346,3.46872378,0.00052294,0.02779536,TRUE,TRUE,High-High
+ddt_index,Des Moines Marina,11,2.71257738,3.46487692,0.00053047,0.01037023,TRUE,TRUE,High-High
+pbde_index,Des Moines Marina,11,-0.6972269,-3.4556782,0.00054891,0.00773502,TRUE,TRUE,Low-High
+ddt_index,"Commencement Bay, Milwaukee Waterway",11,0.21001907,3.44891481,0.00056284,0.01037023,TRUE,TRUE,High-High
+total_con_index,"Smith Cove, Terminal 91",10,3.40701065,3.44230536,0.00057678,0.0071136,TRUE,TRUE,High-High
+pbde_index,Commencement Bay Skookum,11,1.7724519,3.41958668,0.00062716,0.00773502,TRUE,TRUE,High-High
+ddt_index,Thea Foss Waterway,11,0.40653612,3.39331376,0.00069052,0.01037023,TRUE,TRUE,High-High
+ddt_index,Browns Point Lighthouse,11,0.43444402,3.38534962,0.00071088,0.01037023,TRUE,TRUE,High-High
+heavy_metal_index,Everett Harbor,8.2,1.81618976,3.37016715,0.00075123,0.02779536,TRUE,TRUE,High-High
+pah_lmw_index,Arroyo Beach,11,-0.2704429,-3.3355906,0.00085118,0.06298761,TRUE,FALSE,Low-High
+ddt_index,"Seattle Aquarium, Pier 59",10,0.39889913,3.32825763,0.00087391,0.01037023,TRUE,TRUE,High-High
+total_con_index,Elliot Bay Myrtle Edwards,10,3.83636443,3.31377918,0.00092044,0.00973038,TRUE,TRUE,High-High
+shell,Eagle Harbor Dr,10,-1.1111101,-3.2628293,0.00110306,0.08162639,TRUE,FALSE,High-Low
+ddt_index,"Elliott Bay, Harbor Island, Pier 17",10,0.75421908,3.25946634,0.00111622,0.01037023,TRUE,TRUE,High-High
+ddt_index,Blair Waterway,11,0.87025412,3.25822719,0.00112111,0.01037023,TRUE,TRUE,High-High
+pbde_index,"Commencement Bay, Dick Gilmur Launch",11,2.47439188,3.20953267,0.00132951,0.01405481,TRUE,TRUE,High-High
+hch_index,Brackenwood Ln,10,-0.3572361,-3.1848888,0.0014481,0.01339489,TRUE,TRUE,Low-High
+hch_index,Skiff Point,10,-0.3572361,-3.1848888,0.0014481,0.01339489,TRUE,TRUE,Low-High
+heavy_metal_index,Edmonds Marina,9,1.2869835,3.08587244,0.00202956,0.05006245,TRUE,FALSE,High-High
+total_con_index,Miller Creek,11,-0.4630526,-3.0452882,0.00232457,0.02150231,TRUE,TRUE,Low-High
+pesticide_index,Brackenwood Ln,10,-0.3729229,-3.0298216,0.00244698,0.02546436,TRUE,TRUE,Low-High
+pesticide_index,Skiff Point,10,-0.3729229,-3.0298216,0.00244698,0.02546436,TRUE,TRUE,Low-High
+ddt_index,Blair Waterway Two,11,1.63090272,3.01670804,0.00255536,0.02101072,TRUE,TRUE,High-High
+pesticide_index,"Smith Cove, Terminal 91",10,2.88876584,2.99406159,0.0027529,0.02546436,TRUE,TRUE,High-High
+chlordane_index,Miller Creek,11,0.35100564,2.99100625,0.0027806,0.01870584,TRUE,TRUE,High-High
+p450,"Meyer's Point, Henderson Inlet",13,-1.3342147,-2.9767077,0.00291362,0.2156076,TRUE,FALSE,Low-High
+width,Locust Beach,7,-0.5922457,-2.9618172,0.00305829,0.16042613,TRUE,FALSE,High-Low
+ddt_index,Elliot Bay Myrtle Edwards,10,1.60556901,2.93649407,0.00331945,0.02273027,TRUE,TRUE,High-High
+ddt_index,"Salmon Bay, Commodore Park",10,1.62088574,2.93099115,0.00337882,0.02273027,TRUE,TRUE,High-High
+weight_initial,"Chuckanut, Clark's Point",7,-0.2371465,-2.9160867,0.00354452,0.22314606,TRUE,FALSE,High-Low
+total_metal_index,"Elliott Bay, Harbor Island, Pier 17",10,0.18912408,2.86649127,0.0041505,0.15973796,TRUE,FALSE,High-High
+ddt_index,Shilshole Bay,10,1.88419395,2.83174242,0.00462951,0.02854866,TRUE,TRUE,High-High
+pbde_index,Blair Waterway,11,3.38622881,2.82020584,0.00479929,0.04439339,TRUE,TRUE,High-High
+pah_add_index,Miller Creek,11,-0.2899494,-2.7785619,0.00546001,0.2020204,TRUE,FALSE,Low-High
+chlordane_index,"Elliott Bay, Harbor Island, Pier 17",10,-0.3898512,-2.7664974,0.0056662,0.03225378,TRUE,TRUE,Low-High
+chlordane_index,"Seattle Aquarium, Pier 59",10,-0.3898512,-2.7664974,0.0056662,0.03225378,TRUE,TRUE,Low-High
+total_pah_index,"Salmon Bay, Commodore Park",10,-0.1162188,-2.7536593,0.00589331,0.15597101,TRUE,FALSE,Low-High
+weight_initial,Locust Beach,7,0.25747426,2.74584426,0.00603554,0.22314606,TRUE,FALSE,Low-Low
+total_metal_index,"Seattle Aquarium, Pier 59",10,-0.0048662,-2.7450498,0.00605017,0.15973796,TRUE,FALSE,Low-High
+width,"Chuckanut, Clark's Point",7,0.06266852,2.73914119,0.00615999,0.16042613,TRUE,FALSE,Low-Low
+total_pah_index,Miller Creek,11,-0.364215,-2.7305357,0.00632315,0.15597101,TRUE,FALSE,Low-High
+width,Aiston Preserve,7,0.11271765,2.72123952,0.00650376,0.16042613,TRUE,FALSE,Low-Low
+heavy_metal_index,Hood Canal Holly,12,1.72776664,2.71437285,0.00664014,0.12284256,TRUE,FALSE,Low-Low
+weight_final,"Chuckanut, Clark's Point",7,-0.1710415,-2.712502,0.00667774,0.19562303,TRUE,FALSE,High-Low
+weight_final,N Avenue Park,7,-0.3174874,-2.7025972,0.00688001,0.19562303,TRUE,FALSE,High-Low
+ibr_morph,Chimacum Creek delta,9,-0.7534637,-2.6664991,0.00766458,0.55174127,TRUE,FALSE,High-Low
+weight_final,"Cherry Point Aquatic Reserve, Conoco Phillips",7,-0.0118506,-2.6550075,0.00793066,0.19562303,TRUE,FALSE,High-Low
+ddt_index,"Commencement Bay, Dick Gilmur Launch",11,2.50940003,2.65102051,0.0080249,0.04568018,TRUE,TRUE,High-High
+pcb_index,Arroyo Beach,11,-0.3633973,-2.6081513,0.00910327,0.09623458,TRUE,FALSE,Low-High
+pbde_index,Salmon Beach,11,-0.2533494,-2.5904342,0.0095855,0.07681921,TRUE,FALSE,Low-High
+pah_add_index,Three Tree Point,11,-0.2037029,-2.5673778,0.01024709,0.25276155,TRUE,FALSE,Low-High
+pbde_index,Point Defiance Ferry,11,-0.1795145,-2.5628739,0.01038097,0.07681921,TRUE,FALSE,Low-High
+total_pah_index,Three Tree Point,11,-0.2868864,-2.5624111,0.01039482,0.16158919,TRUE,FALSE,Low-High
+total_metal_index,Suquamish Stormwater Outfall,10,-0.9097393,-2.5618302,0.01041222,0.15973796,TRUE,FALSE,Low-High
+total_con_index,Three Tree Point,11,-0.3690439,-2.560161,0.01046237,0.08602391,TRUE,FALSE,Low-High
+pah_lmw_index,Miller Creek,11,-0.3578319,-2.5595556,0.01048061,0.38778251,TRUE,FALSE,Low-High
+total_metal_index,Elliot Bay Myrtle Edwards,10,0.032333,2.55638491,0.01057661,0.15973796,TRUE,FALSE,High-High
+total_metal_index,Everett Harbor,8.2,1.235337,2.54932697,0.01079311,0.15973796,TRUE,FALSE,High-High
+weight_initial,Aiston Preserve,7,0.77555029,2.54856554,0.0108167,0.22314606,TRUE,FALSE,Low-Low
+total_pah_index,"Seattle Aquarium, Pier 59",10,0.51434441,2.53206959,0.01133915,0.16158919,TRUE,FALSE,High-High
+ddt_index,Commencement Bay Skookum,11,2.69075408,2.53032491,0.01139569,0.06023439,TRUE,FALSE,High-High
+length,Three Tree Point,11,0.94572851,2.51969154,0.01174577,0.79838575,TRUE,FALSE,High-High
+heavy_metal_index,Suquamish Stormwater Outfall,10,-0.4541816,-2.5175669,0.01181685,0.17488942,TRUE,FALSE,Low-High
+pbde_index,"Elliott Bay, Harbor Island, Pier 17",10,0.26313088,2.51283058,0.01197668,0.08057042,TRUE,FALSE,High-High
+weight_initial,"Cherry Point Aquatic Reserve, Conoco Phillips",7,0.86748216,2.51032675,0.01206195,0.22314606,TRUE,FALSE,Low-Low
+shell,Suquamish Stormwater Outfall,10,-1.6782832,-2.4983397,0.01247766,0.33539674,TRUE,FALSE,High-Low
+total_pah_index,Shilshole Bay,10,0.603625,2.48098941,0.01310183,0.16158919,TRUE,FALSE,High-High
+p450,Suquamish Stormwater Outfall,10,0.43626304,2.47675124,0.01325843,0.32690026,TRUE,FALSE,Low-Low
+pah_hmw_index,Miller Creek,11,-0.2923798,-2.4633693,0.01376381,0.12731523,TRUE,FALSE,Low-High
+ci1,Shilshole Bay,10,-0.3894978,-2.4492822,0.01431412,0.59381358,TRUE,FALSE,Low-High
+width,"Eastsound, Fishing Bay",7,0.86312795,2.42526684,0.01529714,0.28299706,TRUE,FALSE,Low-Low
+weight_change,Locust Beach,7,-0.2479594,-2.4243538,0.01533566,0.59215358,TRUE,FALSE,High-Low
+ddt_index,"Smith Cove, Terminal 91",10,2.62967401,2.41681151,0.01565712,0.07724181,TRUE,FALSE,High-High
+shell,Kingston Marina,10,-0.2758172,-2.4100718,0.01594938,0.33539674,TRUE,FALSE,High-Low
+weight_change,"Chuckanut, Clark's Point",7,-0.1896495,-2.4012346,0.01633986,0.59215358,TRUE,FALSE,High-Low
+weight_initial,N Avenue Park,7,-0.4111245,-2.3982752,0.01647249,0.23104798,TRUE,FALSE,High-Low
+pah_hmw_index,Three Tree Point,11,-0.2721338,-2.397085,0.01652609,0.1358812,TRUE,FALSE,Low-High
+total_metal_index,Brackenwood Ln,10,-0.6492517,-2.3957435,0.01658669,0.17876492,TRUE,FALSE,Low-High
+weight_final,Aiston Preserve,7,0.68566899,2.3765748,0.01747422,0.26214164,TRUE,FALSE,Low-Low
+total_metal_index,Skiff Point,10,-0.5869362,-2.371362,0.01772266,0.17876492,TRUE,FALSE,Low-High
+nutrient_metal_index,"Meyer's Point, Henderson Inlet",13,0.03804019,2.36124127,0.01821388,0.38096483,TRUE,FALSE,Low-Low
+ibr_morph,South of Skunk Island,9,0.07052314,2.35204552,0.01867049,0.55174127,TRUE,FALSE,Low-Low
+total_pah_index,"Elliott Bay, Harbor Island, Pier 17",10,0.95733695,2.34491326,0.01903151,0.20119021,TRUE,FALSE,High-High
+total_metal_index,Edmonds Ferry,9,0.02139587,2.33918352,0.01932594,0.17876492,TRUE,FALSE,High-High
+chlordane_index,Chambers Bay Park,13,-0.329524,-2.3357961,0.01950187,0.10308132,TRUE,FALSE,Low-High
+weight_final,Eagle Harbor Dr,10,0.47399624,2.33181906,0.01971021,0.26214164,TRUE,FALSE,Low-Low
+pah_lmw_index,Three Tree Point,11,-0.2478095,-2.3302645,0.01979218,0.48820699,TRUE,FALSE,Low-High
+weight_initial,Three Tree Point,11,1.37660908,2.32895517,0.01986144,0.23104798,TRUE,FALSE,High-High
+nutrient_metal_index,Lions Park,10,-0.2765034,-2.3138411,0.02067644,0.38096483,TRUE,FALSE,Low-High
+height,Squaxin Island,13,0.12456728,2.29819831,0.0215505,0.63652595,TRUE,FALSE,High-High
+pcb_index,Skiff Point,10,-0.4626443,-2.2974503,0.0215931,0.19973614,TRUE,FALSE,Low-High
+weight_initial,"Eastsound, Fishing Bay",7,1.32588366,2.29286307,0.02185589,0.23104798,TRUE,FALSE,Low-Low
+total_pah_index,"Smith Cove, Terminal 91",10,1.05780123,2.27306075,0.02302252,0.2129583,TRUE,FALSE,High-High
+pbde_index,"Seattle Aquarium, Pier 59",10,0.27395615,2.26551831,0.02348089,0.14479883,TRUE,FALSE,High-High
+p450,Skiff Point,10,-0.082945,-2.2515872,0.02434837,0.32690026,TRUE,FALSE,High-Low
+heavy_metal_index,"Elliott Bay, Harbor Island, Pier 17",10,-0.1454521,-2.2488342,0.02452304,0.24631413,TRUE,FALSE,Low-High
+ibr_bio,Tulalip Bay,8.2,0.05336464,2.24839183,0.02455122,0.63630883,TRUE,FALSE,High-High
+p450,Three Tree Point,11,0.78769071,2.24793308,0.02458046,0.32690026,TRUE,FALSE,High-High
+width,"Cherry Point Aquatic Reserve, Conoco Phillips",7,1.25451151,2.23113172,0.02567241,0.3799516,TRUE,FALSE,Low-Low
+ibr_combined,Tulalip Bay,8.2,0.07884915,2.23066738,0.02570317,0.57607421,TRUE,FALSE,High-High
+weight_final,"Eastsound, Fishing Bay",7,1.00583807,2.2222192,0.0262685,0.26214164,TRUE,FALSE,Low-Low
+ci1,Chambers Bay Park,13,0.66008497,2.2171428,0.02661333,0.59381358,TRUE,FALSE,Low-Low
+heavy_metal_index,Tulalip Bay,8.2,0.06300654,2.20652508,0.02734726,0.24631413,TRUE,FALSE,High-High
+nutrient_metal_index,West Bay Park,13,0.40860349,2.1984576,0.02791651,0.38096483,TRUE,FALSE,Low-Low
+height,"Chuckanut, Clark's Point",7,-0.2523224,-2.1930696,0.02830236,0.63652595,TRUE,FALSE,High-Low
+weight_final,Locust Beach,7,1.06301834,2.19134675,0.02842671,0.26214164,TRUE,FALSE,Low-Low
+ibr_morph,Chambers Bay Park,13,1.34935181,2.18423556,0.02894494,0.55174127,TRUE,FALSE,High-High
+ci1,"Salmon Bay, Commodore Park",10,0.24605066,2.18309816,0.02902858,0.59381358,TRUE,FALSE,High-High
+pcb_index,Brackenwood Ln,10,-0.1768049,-2.1771312,0.02947078,0.24231528,TRUE,FALSE,Low-High
+ddt_index,Three Tree Point,11,-0.2644618,-2.1766197,0.02950895,0.13467935,TRUE,FALSE,Low-High
+p450,West Bay Park,13,0.78700335,2.1608348,0.0307081,0.32690026,TRUE,FALSE,High-High
+p450,Squaxin Island,13,0.46258319,2.15001355,0.03155414,0.32690026,TRUE,FALSE,High-High
+p450,Penrose Point State Park,13,0.69848172,2.14763738,0.03174257,0.32690026,TRUE,FALSE,High-High
+heavy_metal_index,"Smith Cove, Terminal 91",10,0.00346023,2.1469596,0.0317965,0.24631413,TRUE,FALSE,High-High
+ddt_index,Skiff Point,10,-0.3300264,-2.1400501,0.03235072,0.13467935,TRUE,FALSE,Low-High
+ddt_index,Brackenwood Ln,10,-0.3185065,-2.1350143,0.03275984,0.13467935,TRUE,FALSE,Low-High
+total_metal_index,"Smith Cove, Terminal 91",10,0.976377,2.13398,0.03284442,0.27005411,TRUE,FALSE,High-High
+ci1,Elliot Bay Myrtle Edwards,10,0.38707619,2.11595091,0.03434898,0.59381358,TRUE,FALSE,High-High
+length,Kitsap St Boat Launch,10,-1.2420563,-2.1150856,0.03442265,0.79838575,TRUE,FALSE,High-Low
+ibr_combined,Tulalip Reservation,8.2,0.33531092,2.11209076,0.03467867,0.57607421,TRUE,FALSE,High-High
+heavy_metal_index,Kingston Marina,10,1.20081684,2.10409663,0.03537002,0.24631413,TRUE,FALSE,High-High
+p450,Eld Inlet,13,0.55732044,2.10375949,0.03539943,0.32690026,TRUE,FALSE,High-High
+ibr_morph,Discovery Bay,6,0.61117331,2.10311399,0.03545581,0.55174127,TRUE,FALSE,Low-Low
+weight_change,Aiston Preserve,7,0.50099654,2.09432641,0.03623091,0.59215358,TRUE,FALSE,Low-Low
+ibr_bio,Tulalip Reservation,8.2,0.38834265,2.09298713,0.0363503,0.63630883,TRUE,FALSE,High-High
+heavy_metal_index,Tulalip Reservation,8.2,0.31258089,2.09011949,0.03660707,0.24631413,TRUE,FALSE,High-High
+heavy_metal_index,"Seattle Aquarium, Pier 59",10,-0.1338947,-2.0900394,0.03661426,0.24631413,TRUE,FALSE,Low-High
+weight_final,Madrona Pont,10,-0.2626017,-2.0667131,0.0387612,0.26214164,TRUE,FALSE,High-Low
+weight_final,Raft Island Park,13,-1.0944875,-2.0642214,0.03899673,0.26214164,TRUE,FALSE,Low-High
+width,Friday Harbor,7,0.94682981,2.06241549,0.0391682,0.48307441,TRUE,FALSE,Low-Low
+sod,Tulalip Bay,8.2,0.00883722,2.06049987,0.03935078,0.69261692,TRUE,FALSE,Low-Low
+total_metal_index,Edmonds Marina,9,0.62758944,2.05579389,0.03980239,0.29453767,TRUE,FALSE,High-High
+ci1,"Smith Cove, Terminal 91",10,0.51195729,2.05248512,0.04012254,0.59381358,TRUE,FALSE,High-High
+weight_change,Three Tree Point,11,1.33954908,2.04924062,0.04043859,0.59215358,TRUE,FALSE,High-High
+chlordane_index,Brackenwood Ln,10,-0.2882306,-2.0409856,0.04125226,0.17956865,TRUE,FALSE,Low-High
+chlordane_index,Elliot Bay Myrtle Edwards,10,-0.2882306,-2.0409856,0.04125226,0.17956865,TRUE,FALSE,Low-High
+chlordane_index,Skiff Point,10,-0.2882306,-2.0409856,0.04125226,0.17956865,TRUE,FALSE,Low-High
+length,Miller Creek,11,0.62721722,2.04073403,0.04127727,0.79838575,TRUE,FALSE,High-High
+weight_final,Brackenwood Ln,10,-1.1285534,-2.0374427,0.0416057,0.26214164,TRUE,FALSE,High-Low
+weight_final,"Manchester, Stormwater Outfall",10,0.30913086,2.01608244,0.04379136,0.26214164,TRUE,FALSE,Low-Low
+ibr_morph,Oak Bay County Park,9,0.06861175,2.01011481,0.04441904,0.55174127,TRUE,FALSE,Low-Low
+ibr_morph,Eagle Harbor Dr,10,-1.0586648,-2.0071304,0.04473578,0.55174127,TRUE,FALSE,High-Low
+p450,Maristone Island Bridge,9,0.11276205,2.00045776,0.04545086,0.32690026,TRUE,FALSE,Low-Low
+nutrient_metal_index,"Elliott Bay, Harbor Island, Pier 17",10,0.3439379,1.99499642,0.04604327,0.38096483,TRUE,FALSE,High-High
+weight_final,Cap Sante,7,1.23613468,1.99356404,0.04619972,0.26214164,TRUE,FALSE,Low-Low
+nutrient_metal_index,Madrona Pont,10,0.42090398,1.99297359,0.04626434,0.38096483,TRUE,FALSE,High-High
+weight_final,Everett Harbor,8.2,0.35903238,1.9908907,0.0464929,0.26214164,TRUE,FALSE,Low-Low
+height,"Meyer's Point, Henderson Inlet",13,-0.1497737,-1.9832405,0.04734057,0.63652595,TRUE,FALSE,Low-High
+nutrient_metal_index,Rocky Point,10,0.44451447,1.98024836,0.04767563,0.38096483,TRUE,FALSE,High-High
+nutrient_metal_index,"Seattle Aquarium, Pier 59",10,0.13348196,1.97878936,0.04783973,0.38096483,TRUE,FALSE,High-High
+shell,Chimacum Creek delta,9,-0.7143821,-1.974821,0.04828847,0.33539674,TRUE,FALSE,High-Low
+ci1,"Elliott Bay, Harbor Island, Pier 17",10,0.17714491,1.96344989,0.04959392,0.61165837,TRUE,FALSE,High-High

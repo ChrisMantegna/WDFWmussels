@@ -1,0 +1,182 @@
+term,Group1,Group2,null.value,estimate,conf.low,conf.high,adj.p.value,Significant,Group1_CLD,Group2_CLD,metric,block_start_row,block_start_col,header_type,Z,P.unadj,P.adj
+reporting_area,13,12,0,1.92423973,0.25657479,3.59190466,0.01234726,Yes,a,b,p450,1,0,term,,,
+reporting_area,12,8.2,0,-1.977666,-3.8882162,-0.0671158,0.03696362,Yes,b,a,p450,1,0,term,,,
+reporting_area,12,11,0,-1.6624386,-3.3231403,-0.0017368,0.04956026,Yes,b,a,p450,1,0,term,,,
+site_number,29,20,0,-3.618678949,-6.296291386,-0.941066511,7.85E-05,Yes,c,a,p450,1,0,term,,,
+site_number,59,29,0,3.30356849,0.625956053,5.981180928,0.000878868,Yes,ab,c,p450,1,0,term,,,
+site_number,29,14,0,-3.078828126,-5.756440563,-0.401215688,0.004272716,Yes,c,ab,p450,1,0,term,,,
+site_number,68,29,0,2.980321987,0.302709549,5.657934424,0.008189808,Yes,ab,c,p450,1,0,term,,,
+site_number,29,7,0,-2.965725129,-5.643337567,-0.288112692,0.008997217,Yes,c,ab,p450,1,0,term,,,
+site_number,35,20,0,-3.246972984,-6.180150449,-0.31379552,0.009093449,Yes,bc,a,p450,1,0,term,,,
+site_number,65,29,0,2.87396901,0.196356572,5.551581447,0.016007629,Yes,ab,c,p450,1,0,term,,,
+site_number,55,29,0,2.849631852,0.172019414,5.527244289,0.018567553,Yes,ab,c,p450,1,0,term,,,
+site_number,29,21,0,-2.810114393,-5.487726831,-0.132501955,0.023526675,Yes,c,ab,p450,1,0,term,,,
+site_number,49,29,0,2.631675417,0.119852302,5.143498532,0.02419557,Yes,ab,c,p450,1,0,term,,,
+site_number,73,29,0,2.754686668,0.07707423,5.432299105,0.032497835,Yes,ab,c,p450,1,0,term,,,
+site_number,69,29,0,2.738617943,0.061005505,5.41623038,0.035616083,Yes,ab,c,p450,1,0,term,,,
+site_number,29,22,0,-2.721502856,-5.399115294,-0.043890419,0.039226759,Yes,c,ab,p450,1,0,term,,,
+site_number,51,29,0,2.70616864,0.028556203,5.383781078,0.042732481,Yes,ab,c,p450,1,0,term,,,
+site_number,31,20,0,-2.939466154,-5.872643619,-0.006288689,0.048457919,Yes,bc,a,p450,1,0,term,,,
+,11,13,,,,,,Yes,a,b,total pah,1,12,group,4.25316302,0,0.0008
+,10,13,,,,,,Yes,a,b,total pah,1,12,group,3.78182401,0.0002,0.0028
+,11,13,,,,,,Yes,a,b,low pah,6,12,group,3.98264802,0.0001,0.0025
+,10,13,,,,,,Yes,a,b,low pah,6,12,group,3.19717982,0.0014,0.025
+,11,13,,,,,,Yes,a,c,high pah,11,12,group,4.13280172,0,0.0013
+,10,13,,,,,,Yes,ab,c,high pah,11,12,group,3.95453723,0.0001,0.0014
+,11,12,,,,,,Yes,a,bc,high pah,11,12,group,2.87849987,0.004,0.0479
+,11,13,,,,,,Yes,a,b,ddt,17,12,group,4.24545148,0,0.0008
+,10,13,,,,,,Yes,a,b,ddt,17,12,group,4.01326743,0.0001,0.0011
+,11,9,,,,,,Yes,a,b,ddt,17,12,group,3.41508537,0.0006,0.0077
+,10,9,,,,,,Yes,a,b,ddt,17,12,group,3.17225312,0.0015,0.0136
+,11,12,,,,,,Yes,a,b,ddt,17,12,group,3.0976499,0.002,0.014
+,10,12,,,,,,Yes,a,b,ddt,17,12,group,2.91599449,0.0035,0.0213
+,Des Moines Marina,Jamestown,,,,,,Yes,bci,fj,shell,22,0,group,4.32021931,0,0.006
+,Skiff Point,Suquamish Stormwater Outfall,,,,,,Yes,fghj,i,shell,22,0,group,-4.3468714,0,0.0062
+,Chambers Bay Park,"Eastsound, Fishing Bay",,,,,,Yes,ci,f,shell,22,0,group,4.37822845,0,0.0065
+,Chambers Bay Park,Shilshole Bay,,,,,,Yes,ci,fhj,shell,22,0,group,4.27435821,0,0.0065
+,Shilshole Bay,Suquamish Stormwater Outfall,,,,,,Yes,fhj,i,shell,22,0,group,-4.4233042,0,0.0066
+,Chambers Bay Park,Jamestown,,,,,,Yes,ci,fj,shell,22,0,group,4.47694087,0,0.0068
+,Des Moines Marina,"Eastsound, Fishing Bay",,,,,,Yes,bci,f,shell,22,0,group,4.2351619,0,0.0069
+,Chambers Bay Park,Skiff Point,,,,,,Yes,ci,fghj,shell,22,0,group,4.1979254,0,0.0073
+,"Eastsound, Fishing Bay",Suquamish Stormwater Outfall,,,,,,Yes,f,i,shell,22,0,group,-4.5271744,0,0.0081
+,"Manchester, Stormwater Outfall",Suquamish Stormwater Outfall,,,,,,Yes,efghj,i,shell,22,0,group,-4.1234524,0,0.0084
+,Gig Harbor Boat Launch,Jamestown,,,,,,Yes,abci,fj,shell,22,0,group,4.08191667,0,0.0086
+,Des Moines Marina,Shilshole Bay,,,,,,Yes,bci,fhj,shell,22,0,group,4.13129166,0,0.0089
+,Des Moines Marina,Skiff Point,,,,,,Yes,bci,fghj,shell,22,0,group,4.05485885,0.0001,0.009
+,Penn Cove Reference,Suquamish Stormwater Outfall,,,,,,Yes,efghj,i,shell,22,0,group,-4.0901355,0,0.009
+,Jamestown,Suquamish Stormwater Outfall,,,,,,Yes,fj,i,shell,22,0,group,-4.640103,0,0.0094
+,"Eastsound, Fishing Bay",Gig Harbor Boat Launch,,,,,,Yes,f,abci,shell,22,0,group,-4.0176223,0.0001,0.0099
+,Chambers Bay Park,"Manchester, Stormwater Outfall",,,,,,Yes,ci,efghj,shell,22,0,group,3.9745064,0.0001,0.0106
+,Jamestown,Thea Foss Waterway,,,,,,Yes,fj,abcdi,shell,22,0,group,-3.976012,0.0001,0.0111
+,Chambers Bay Park,Penn Cove Reference,,,,,,Yes,ci,efghj,shell,22,0,group,3.94118953,0.0001,0.0115
+,Gig Harbor Boat Launch,Shilshole Bay,,,,,,Yes,abci,fhj,shell,22,0,group,3.91375211,0.0001,0.0123
+,"Eastsound, Fishing Bay",Thea Foss Waterway,,,,,,Yes,f,abcdi,shell,22,0,group,-3.8961501,0.0001,0.0126
+,Des Moines Marina,"Manchester, Stormwater Outfall",,,,,,Yes,bci,efghj,shell,22,0,group,3.83143985,0.0001,0.015
+,Gig Harbor Boat Launch,Skiff Point,,,,,,Yes,abci,fghj,shell,22,0,group,3.8373193,0.0001,0.0153
+,Des Moines Marina,Penn Cove Reference,,,,,,Yes,bci,efghj,shell,22,0,group,3.79812298,0.0001,0.0164
+,Shilshole Bay,Thea Foss Waterway,,,,,,Yes,fhj,abcdi,shell,22,0,group,-3.7866613,0.0002,0.0165
+,Hood Canal Holly,Suquamish Stormwater Outfall,,,,,,Yes,defghj,i,shell,22,0,group,-3.7699048,0.0002,0.017
+,Arroyo Beach,Jamestown,,,,,,Yes,abcdi,fj,shell,22,0,group,3.75402904,0.0002,0.0174
+,Jamestown,Tulalip Bay,,,,,,Yes,fj,abcdi,shell,22,0,group,-3.7300263,0.0002,0.0185
+,Skiff Point,Thea Foss Waterway,,,,,,Yes,fghj,abcdi,shell,22,0,group,-3.706094,0.0002,0.0196
+,Arroyo Beach,"Eastsound, Fishing Bay",,,,,,Yes,abcdi,f,shell,22,0,group,3.67687375,0.0002,0.0213
+,"Eastsound, Fishing Bay",Tulalip Bay,,,,,,Yes,f,abcdi,shell,22,0,group,-3.655405,0.0003,0.0224
+,Chambers Bay Park,Hood Canal Holly,,,,,,Yes,ci,defghj,shell,22,0,group,3.60674264,0.0003,0.0246
+,Raft Island Park,Suquamish Stormwater Outfall,,,,,,Yes,adefghj,i,shell,22,0,group,-3.6119405,0.0003,0.0249
+,Gig Harbor Boat Launch,"Manchester, Stormwater Outfall",,,,,,Yes,abci,efghj,shell,22,0,group,3.6139003,0.0003,0.0255
+,Gig Harbor Boat Launch,Penn Cove Reference,,,,,,Yes,abci,efghj,shell,22,0,group,3.58058343,0.0003,0.0265
+,Eagle Harbor Dr,Jamestown,,,,,,Yes,abcdei,fj,shell,22,0,group,3.53875841,0.0004,0.0271
+,Jamestown,Minter Bay,,,,,,Yes,fj,abcdei,shell,22,0,group,-3.5580802,0.0004,0.0273
+,Arroyo Beach,Shilshole Bay,,,,,,Yes,abcdi,fhj,shell,22,0,group,3.56308961,0.0004,0.0275
+,Eagle Harbor Dr,"Eastsound, Fishing Bay",,,,,,Yes,abcdei,f,shell,22,0,group,3.52178895,0.0004,0.0276
+,"Eastsound, Fishing Bay",Minter Bay,,,,,,Yes,f,abcdei,shell,22,0,group,-3.5394273,0.0004,0.0278
+,Broad Spit ,Suquamish Stormwater Outfall,,,,,,Yes,adefghj,i,shell,22,0,group,-3.5257086,0.0004,0.0278
+,Shilshole Bay,Tulalip Bay,,,,,,Yes,fhj,abcdi,shell,22,0,group,-3.5416209,0.0004,0.0283
+,Des Moines Marina,Hood Canal Holly,,,,,,Yes,bci,defghj,shell,22,0,group,3.45002109,0.0006,0.0297
+,Chimacum Creek delta,"Eastsound, Fishing Bay",,,,,,Yes,abcdei,f,shell,22,0,group,3.45711503,0.0005,0.0301
+,Penn Cove Reference,Thea Foss Waterway,,,,,,Yes,efghj,abcdi,shell,22,0,group,-3.4354707,0.0006,0.0301
+,Maristone Island,Suquamish Stormwater Outfall,,,,,,Yes,abdefghj,i,shell,22,0,group,-3.4507367,0.0006,0.0302
+,Skiff Point,Tulalip Bay,,,,,,Yes,fghj,abcdi,shell,22,0,group,-3.4578929,0.0005,0.0306
+,Chambers Bay Park,Raft Island Park,,,,,,Yes,ci,adefghj,shell,22,0,group,3.46299448,0.0005,0.0307
+,Minter Bay,Shilshole Bay,,,,,,Yes,abcdei,fhj,shell,22,0,group,3.43555706,0.0006,0.0307
+,Chimacum Creek delta,Jamestown,,,,,,Yes,abcdei,fj,shell,22,0,group,3.46791168,0.0005,0.0308
+,Arroyo Beach,Skiff Point,,,,,,Yes,abcdi,fghj,shell,22,0,group,3.47936165,0.0005,0.0309
+,"Manchester, Stormwater Outfall",Thea Foss Waterway,,,,,,Yes,efghj,abcdi,shell,22,0,group,-3.4705897,0.0005,0.0312
+,Suquamish Stormwater Outfall,Williams Olson Park,,,,,,Yes,i,adefghj,shell,22,0,group,3.48063282,0.0005,0.0314
+,Eagle Harbor Dr,Shilshole Bay,,,,,,Yes,abcdei,fhj,shell,22,0,group,3.41791872,0.0006,0.0316
+,Brackenwood Lane,Suquamish Stormwater Outfall,,,,,,Yes,abdefghj,i,shell,22,0,group,-3.4081196,0.0007,0.0321
+,Broad Spit ,Chambers Bay Park,,,,,,Yes,adefghj,ci,shell,22,0,group,-3.3767626,0.0007,0.0354
+,Eagle Harbor Dr,Skiff Point,,,,,,Yes,abcdei,fghj,shell,22,0,group,3.3414859,0.0008,0.0369
+,Minter Bay,Skiff Point,,,,,,Yes,abcdei,fghj,shell,22,0,group,3.35912425,0.0008,0.0371
+,Chimacum Creek delta,Shilshole Bay,,,,,,Yes,abcdei,fhj,shell,22,0,group,3.3532448,0.0008,0.0372
+,Locust Beach,Suquamish Stormwater Outfall,,,,,,Yes,abdefghj,i,shell,22,0,group,-3.3434457,0.0008,0.0372
+,Rocky Point,Suquamish Stormwater Outfall,,,,,,Yes,abdefghj,i,shell,22,0,group,-3.3454055,0.0008,0.0376
+,Chambers Bay Park,Williams Olson Park,,,,,,Yes,ci,adefghj,shell,22,0,group,3.33168682,0.0009,0.0376
+,Des Moines Marina,Raft Island Park,,,,,,Yes,bci,adefghj,shell,22,0,group,3.31992793,0.0009,0.0386
+,"Silverdale, Dyes Inlet",Suquamish Stormwater Outfall,,,,,,Yes,abdefghj,i,shell,22,0,group,-3.3062092,0.0009,0.0399
+,Chimacum Creek delta,Skiff Point,,,,,,Yes,abcdei,fghj,shell,22,0,group,3.27681198,0.001,0.0417
+,Chambers Bay Park,Maristone Island,,,,,,Yes,ci,abdefghj,shell,22,0,group,3.28757455,0.001,0.042
+,"Cherry Point Aquatic Reserve, Conoco Phillips","Eastsound, Fishing Bay",,,,,,Yes,abcdegi,f,shell,22,0,group,3.28269143,0.001,0.0421
+,"Cherry Point Aquatic Reserve, Conoco Phillips",Jamestown,,,,,,Yes,abcdegi,fj,shell,22,0,group,3.27684019,0.001,0.0423
+,"Eastsound, Fishing Bay","Purdy, Burley Lagoon",,,,,,Yes,f,abcdegi,shell,22,0,group,-3.2650531,0.0011,0.0428
+,Jamestown,"Purdy, Burley Lagoon",,,,,,Yes,fj,abcdegi,shell,22,0,group,-3.2575184,0.0011,0.0428
+,Brackenwood Lane,Chambers Bay Park,,,,,,Yes,abdefghj,ci,shell,22,0,group,-3.2591736,0.0011,0.0431
+,Broad Spit ,Des Moines Marina,,,,,,Yes,adefghj,bci,shell,22,0,group,-3.233696,0.0012,0.0452
+,Arroyo Beach,"Manchester, Stormwater Outfall",,,,,,Yes,abcdi,efghj,shell,22,0,group,3.2346184,0.0012,0.0457
+,Gig Harbor Boat Launch,Hood Canal Holly,,,,,,Yes,abci,defghj,shell,22,0,group,3.21171845,0.0013,0.0475
+,Des Moines Marina,Williams Olson Park,,,,,,Yes,bci,adefghj,shell,22,0,group,3.18862027,0.0014,0.0477
+,Chambers Bay Park,Locust Beach,,,,,,Yes,ci,abdefghj,shell,22,0,group,3.19449972,0.0014,0.0479
+,Jamestown,Penrose Point State Park,,,,,,Yes,fj,abcdeghi,shell,22,0,group,-3.1909654,0.0014,0.0479
+,"Manchester, Stormwater Outfall",Tulalip Bay,,,,,,Yes,efghj,abcdi,shell,22,0,group,-3.2131497,0.0013,0.0479
+,"Eastsound, Fishing Bay",Penrose Point State Park,,,,,,Yes,f,abcdeghi,shell,22,0,group,-3.2042988,0.0014,0.0481
+,Chambers Bay Park,Rocky Point,,,,,,Yes,ci,abdefghj,shell,22,0,group,3.19645954,0.0014,0.0482
+,Arroyo Beach,Penn Cove Reference,,,,,,Yes,abcdi,efghj,shell,22,0,group,3.1981216,0.0014,0.0485
+,Penn Cove Reference,Tulalip Bay,,,,,,Yes,efghj,abcdi,shell,22,0,group,-3.1766529,0.0015,0.0485
+,"Cherry Point Aquatic Reserve, Conoco Phillips",Shilshole Bay,,,,,,Yes,abcdegi,fhj,shell,22,0,group,3.17882119,0.0015,0.0487
+,Blair Waterway Two,"Eastsound, Fishing Bay",,,,,,Yes,abcdeghi,f,shell,22,0,group,3.17098193,0.0015,0.0489
+,Blair Waterway Two,Jamestown,,,,,,Yes,abcdeghi,fj,shell,22,0,group,3.15446857,0.0016,0.0494
+,Chambers Bay Park,"Silverdale, Dyes Inlet",,,,,,Yes,ci,abdefghj,shell,22,0,group,3.15726322,0.0016,0.0494
+,"Salmon Bay, Commodore Park",Suquamish Stormwater Outfall,,,,,,Yes,abcdefghj,i,shell,22,0,group,-3.149424,0.0016,0.0496
+,"Eastsound, Fishing Bay",Squaxin Island,,,,,,Yes,f,abcdeghij,shell,22,0,group,-3.159223,0.0016,0.0497
+,"Purdy, Burley Lagoon",Shilshole Bay,,,,,,Yes,abcdegi,fhj,shell,22,0,group,3.16118285,0.0016,0.0499
+,11,13,,,,,,Yes,b,a,chlordanes,26,12,group,4.56549282,0,0.0002
+,11,7,,,,,,Yes,b,a,chlordanes,26,12,group,4.02381754,0.0001,0.001
+,10,11,,,,,,Yes,a,b,chlordanes,26,12,group,-3.6514308,0.0003,0.0031
+,11,9,,,,,,Yes,b,a,chlordanes,26,12,group,3.51227589,0.0004,0.004
+,11,8.2,,,,,,Yes,b,a,chlordanes,26,12,group,3.01492033,0.0026,0.0185
+,11,6,,,,,,Yes,b,a,chlordanes,26,12,group,2.68254502,0.0073,0.0438
+,10,13,,,,,,Yes,a,b,nutrient metals,35,12,group,3.55848794,0.0004,0.0134
+,10,13,,,,,,Yes,a,c,pbde,39,12,group,3.74229959,0.0002,0.0066
+,10,7,,,,,,Yes,a,bc,pbde,39,12,group,3.12737968,0.0018,0.0212
+,11,13,,,,,,Yes,ab,c,pbde,39,12,group,3.19497894,0.0014,0.0252
+,11,13,,,,,,Yes,a,b,total contaminants,45,12,group,4.14471868,0,0.0012
+,10,13,,,,,,Yes,a,b,total contaminants,45,12,group,3.892995738,0.0001,0.0018
+,Eagle Harbor Dr,Lions Park,,,,,,Yes,a,b,ci1,114,0,group,4.23471508,0,0.0309
+,Edmonds Ferry,Lions Park,,,,,,Yes,a,b,ci1,114,0,group,3.97408708,0.0001,0.0477
+site_number,59,50,0,-0.4128241,-0.7606613,-0.0649868,0.00216231,Yes,b,c,width,127,0,term,,,
+site_number,55,50,0,-0.3679467,-0.715784,-0.0201095,0.02059816,Yes,ab,c,width,127,0,term,,,
+site_number,75,50,0,-0.3618914,-0.7097287,-0.0140541,0.02714409,Yes,ab,c,width,127,0,term,,,
+site_number,61,50,0,-0.3356561,-0.6656435,-0.0056687,0.03876544,Yes,ab,c,width,127,0,term,,,
+site_number,59,34,0,-0.353306,-0.7011432,-0.0054687,0.03962311,Yes,b,ac,width,127,0,term,,,
+site_number,50,31,0,0.35147863,0.00364137,0.69931589,0.04285732,Yes,c,ab,width,127,0,term,,,
+site_number,72,59,0,0.34937643,0.00153917,0.69721369,0.04686303,Yes,ac,b,width,127,0,term,,,
+site_number,50,31,0,0.47831001,0.06945444,0.88716559,0.00296416,Yes,b,a,height,137,0,term,,,
+site_number,34,31,0,0.45665097,0.0477954,0.86550654,0.00766094,Yes,b,a,height,137,0,term,,,
+site_number,52,31,0,0.41243609,0.00358051,0.82129166,0.0439598,Yes,b,a,height,137,0,term,,,
+site_number,36,18,0,0.87646051,0.11820861,1.63471242,0.00382879,Yes,a,b,final weight,143,0,term,,,
+site_number,55,18,0,0.87367428,0.11542238,1.63192619,0.00409269,Yes,a,b,final weight,143,0,term,,,
+site_number,29,18,0,0.75759681,0.06541069,1.44978293,0.01124893,Yes,a,b,final weight,143,0,term,,,
+site_number,18,8,0,-0.8238631,-1.582115,-0.0656112,0.01286211,Yes,b,a,final weight,143,0,term,,,
+site_number,18,13,0,-0.7465961,-1.4387822,-0.05441,0.01467462,Yes,b,a,final weight,143,0,term,,,
+site_number,23,18,0,0.80870869,0.05045678,1.56696059,0.01788672,Yes,a,b,final weight,143,0,term,,,
+site_number,18,12,0,-0.7809118,-1.5391637,-0.0226599,0.03195356,Yes,b,a,final weight,143,0,term,,,
+site_number,18,14,0,-0.7613753,-1.5196272,-0.0031234,0.04707411,Yes,b,a,final weight,143,0,term,,,
+site_number,56,29,0,1.19484773,0.18864638,2.20104908,0.00213599,Yes,c,a,ibr morphometric,154,0,term,,,
+site_number,56,3,0,1.29097691,0.18873856,2.39321526,0.00289086,Yes,c,a,ibr morphometric,154,0,term,,,
+site_number,56,33,0,1.28160277,0.17936442,2.38384112,0.00338021,Yes,c,a,ibr morphometric,154,0,term,,,
+site_number,42,29,0,1.13114932,0.12494798,2.13735067,0.00674667,Yes,c,a,ibr morphometric,154,0,term,,,
+site_number,42,3,0,1.22727851,0.12504016,2.32951686,0.00813471,Yes,c,a,ibr morphometric,154,0,term,,,
+site_number,42,33,0,1.21790436,0.11566601,2.32014271,0.00941796,Yes,c,a,ibr morphometric,154,0,term,,,
+site_number,56,16,0,1.18706252,0.08482417,2.28930087,0.01508029,Yes,c,ab,ibr morphometric,154,0,term,,,
+site_number,75,29,0,1.07446823,0.06826689,2.08066958,0.0175113,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,64,29,0,1.07169249,0.06549114,2.07789384,0.01831504,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,46,29,0,1.00457004,0.06066951,1.94847057,0.018558,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,31,29,0,1.06874622,0.06254488,2.07494757,0.0192048,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,75,3,0,1.17059741,0.06835906,2.27283576,0.01924862,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,64,3,0,1.16782167,0.06558332,2.27006002,0.02004674,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,31,3,0,1.1648754,0.06263705,2.26711375,0.02092667,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,75,33,0,1.16122327,0.05898492,2.26346162,0.02206596,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,46,3,0,1.10069923,0.05502411,2.14637434,0.02238252,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,64,33,0,1.15844753,0.05620918,2.26068588,0.0229691,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,33,31,0,-1.1555013,-2.2577396,-0.0532629,0.02396416,Yes,a,bc,ibr morphometric,154,0,term,,,
+site_number,46,33,0,1.09132508,0.04564997,2.13700019,0.02579496,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,34,29,0,1.04214579,0.03594444,2.04834713,0.02919784,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,34,3,0,1.13827497,0.03603662,2.24051332,0.0305997,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,34,33,0,1.12890082,0.02666247,2.23113917,0.03486267,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,42,16,0,1.12336411,0.02112576,2.22560246,0.03762146,Yes,c,ab,ibr morphometric,154,0,term,,,
+site_number,66,29,0,1.01971128,0.01350994,2.02591263,0.04100876,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,66,3,0,1.11584047,0.01360212,2.21807882,0.04167924,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,37,29,0,1.01652848,0.01032714,2.02272983,0.04298818,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,37,3,0,1.11265766,0.01041931,2.21489601,0.04350876,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,66,33,0,1.10646632,0.00422797,2.20870467,0.04727053,Yes,bc,a,ibr morphometric,154,0,term,,,
+site_number,37,33,0,1.10328352,0.00104517,2.20552187,0.04931278,Yes,bc,a,ibr morphometric,154,0,term,,,
