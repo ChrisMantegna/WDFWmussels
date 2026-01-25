@@ -34,13 +34,17 @@ library(RVAideMemoire) # post hoc test for permanova
 library(rcompanion) # for annotation of permanova
 library(scales) # scaling data for IBR - works with data wrangling packages
 library(fmsb) # polygon calculations for the radars
-library(sf) # spatial plotting
-library(spdep) # spatial plotting
-library(tmap) # making maps
+#library(sf) # spatial plotting
+#library(spdep) # spatial plotting
+#library(tmap) # making maps
 library(patchwork) # making pretty grids of plots
 library(viridis) # colors for plotting
-library(rnaturalearth) # to pull the map
+#library(rnaturalearth) # to pull the map
 library(ggsignif) # adding significance indicators to plots
+library(readr) # reading in data
+library(janitor) # cleaning names
+library(glue) # string manipulation
+library(gt) # making nice tables
 
 knitr::opts_chunk$set(
   root.dir = here::here(),
@@ -61,42 +65,583 @@ knitr::opts_chunk$set(
 getwd()
 #setwd("/Users/cmantegna/Documents/GitHub/WDFWmussels") # something here isn't working right - check out why
 
-df<- read.csv("../data/cleaned/ibr_1.csv") # penn cove reference site only
-#analyte_long<- read.csv("../data/cleaned/analytes_long.csv")
-#metal_long<- read.csv("../data/cleaned/metals_long.csv")
-#ibr_analyte<- read.csv("../data/cleaned/avg_ibr1_analytess.csv")
-#ibr_metal<- read.csv("../data/cleaned/avg_ibr1_metals.csv")
-#moran_analyte<- read.csv("../output/tables/moran_analyte.csv")
-#moran_metal<- read.csv("../output/tables/moran_metal.csv")
-#spatial_analyte<- read.csv("../output/tables/spatial_correlation_biomarkers_analytes.csv")
-#spatial_metal<- read.csv("../output/tables/moran_analyte.csv")
+data_dir <- "../data/plotting"
+results_dir <- "../output"
+fig_dir <- "../output/figures"
+tab_dir <- "../output/tables"
 
-# clean up names if needed
-#df1 <- df1 %>%
-#  mutate(across(where(is.character), trimws))
+sites <- read.csv("../data/plotting/biomarker_df_with_identifiers_values.csv") |> 
+  clean_names()
 
+comparisons <- read.csv("../data/plotting/comparisons_all_tidy.csv") |> 
+  clean_names()
+
+correlations <- read.csv("../data/plotting/correlations_all_tidy.csv") |> 
+  clean_names()
+
+moran_global <- read.csv("../data/plotting/spatial_global_moran.csv") |> 
+  clean_names()
+
+lisa <- read.csv("../data/plotting/spatial_lisa.csv") |> 
+  clean_names()
+
+#site_number = as.character(site_number)
+
+sites <- sites |>
+  mutate(
+    site_number = as.character(site_number),
+    geo_group = as.factor(geo_group),
+    reporting_area = as.factor(reporting_area)
+  )
 
 ```
 
-# First plot
+# OG generic code base for all of the plots
 ```{r}
 
+#making a colorblind- friendly universal palette; only 8 colors here - I will need 9. Make the 8's similar colors and assign them specifically so I can use the Hex codes for ArcGIS mapping.
+okabe_ito <- c(
+  "#E69F00", "#56B4E9", "#009E73", "#F0E442",
+  "#0072B2", "#D55E00", "#CC79A7", "#000000"
+)
+
+make_palette <- function(levels_vec) {
+  n <- length(levels_vec)
+  if (n <= length(okabe_ito)) {
+    setNames(okabe_ito[seq_len(n)], levels_vec)
+  } else {
+    # fallback if you have many reporting areas
+    hues <- scales::hue_pal()(n)
+    setNames(hues, levels_vec)
+  }
+}
+
+theme_manuscript <- function(base_size = 12) {
+  theme_minimal(base_size = base_size) +
+    theme(
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      legend.position = "right",
+      axis.title.x = element_blank()
+    )
+}
+
+# box plot with whiskers and jittered points
+plot_box_jitter <- function(df, x, y, fill_var = NULL,
+                            x_order = NULL,
+                            y_label = NULL,
+                            title = NULL,
+                            log_y = FALSE) {
+
+  df <- df %>% mutate(
+    .x = .data[[x]],
+    .y = .data[[y]]
+  )
+
+  if (!is.null(x_order)) {
+    df <- df %>% mutate(.x = factor(.x, levels = x_order))
+  } else {
+    df <- df %>% mutate(.x = factor(.x))
+  }
+
+  if (!is.null(fill_var)) {
+    df <- df %>% mutate(.fill = factor(.data[[fill_var]]))
+    pal <- make_palette(levels(df$.fill))
+  }
+
+  p <- ggplot(df, aes(x = .x, y = .y)) +
+    geom_boxplot(outlier.shape = NA, width = 0.6) +
+    geom_jitter(width = 0.15, height = 0, alpha = 0.55, size = 1.6)
+
+  if (!is.null(fill_var)) {
+    p <- p +
+      aes(color = .fill) +
+      scale_color_manual(values = pal, drop = FALSE) +
+      guides(color = guide_legend(title = fill_var))
+  } else {
+    p <- p + aes(color = .x) + guides(color = "none")
+  }
+
+  if (log_y) {
+    p <- p + scale_y_log10()
+  }
+
+  p +
+    labs(y = y_label, title = title) +
+    theme_manuscript() +
+    theme(axis.text.x = element_text(angle = 35, hjust = 1))
+}
+
+
+#example calls
+# Read your master results
+master <- read_csv("results/master_biomarker_results.csv") %>%
+  clean_names()
+
+# Ensure consistent ordering (optional: by median)
+ra_order <- master %>%
+  group_by(reporting_area) %>%
+  summarise(med = median(ibr_combined, na.rm = TRUE), .groups = "drop") %>%
+  arrange(desc(med)) %>%
+  pull(reporting_area)
+
+p_ibr <- plot_box_jitter(
+  df = master,
+  x = "reporting_area",
+  y = "ibr_combined",
+  fill_var = "reporting_area",
+  x_order = ra_order,
+  y_label = "Combined IBR (unitless)",
+  title = "Combined IBR by Reporting Area"
+)
+
+p_p450 <- plot_box_jitter(
+  df = master,
+  x = "reporting_area",
+  y = "p450",
+  fill_var = "reporting_area",
+  x_order = ra_order,
+  y_label = "Cytochrome P450 activity",
+  title = "P450 Activity by Reporting Area"
+)
+
+p_sod <- plot_box_jitter(
+  df = master,
+  x = "geo_cluster",
+  y = "sod",
+  fill_var = "geo_cluster",
+  y_label = "SOD activity",
+  title = "SOD Activity by Geographic Cluster"
+)
+
+# Save
+ggsave("figures/Fig_Box_CombinedIBR_reporting_area.png", p_ibr, width = 9, height = 5, dpi = 400)
+ggsave("figures/Fig_Box_P450_reporting_area.png", p_p450, width = 9, height = 5, dpi = 400)
+ggsave("figures/Fig_Box_SOD_geocluster.png", p_sod, width = 7, height = 5, dpi = 400)
+
+#plotting moran's i
+moran <- read_csv("results/morans_i_summary.csv") %>%
+  clean_names() %>%
+  mutate(
+    sig = case_when(
+      p_value < 0.001 ~ "***",
+      p_value < 0.01  ~ "**",
+      p_value < 0.05  ~ "*",
+      TRUE ~ ""
+    ),
+    metric = fct_reorder(metric, moran_i)
+  )
+
+p_moran <- ggplot(moran, aes(x = metric, y = moran_i)) +
+  geom_col() +
+  geom_hline(yintercept = 0, linetype = "dashed") +
+  geom_text(aes(label = sig), nudge_y = 0.02, size = 4) +
+  coord_flip() +
+  labs(
+    x = NULL,
+    y = "Global Moran’s I",
+    title = "Spatial clustering of contaminants and organismal responses"
+  ) +
+  theme_manuscript()
+
+ggsave("figures/FigS_MoransI_comparison.png", p_moran, width = 8, height = 6, dpi = 400)
+
+#creating correlation tables
+cors <- read_csv("results/correlation_results_long.csv") %>%
+  clean_names() %>%
+  mutate(
+    p_adj = if ("p_adj" %in% names(.)) p_adj else p.adjust(p_value, method = "BH"),
+    sig = case_when(
+      p_adj < 0.001 ~ "***",
+      p_adj < 0.01  ~ "**",
+      p_adj < 0.05  ~ "*",
+      TRUE ~ ""
+    )
+  )
+
+cors_sig <- cors %>%
+  filter(p_adj < 0.05) %>%
+  arrange(response, method, desc(abs(estimate)))
+
+gt_tbl <- cors_sig %>%
+  select(response, predictor, method, estimate, p_value, p_adj, sig) %>%
+  gt() %>%
+  fmt_number(columns = c(estimate, p_value, p_adj), decimals = 3) %>%
+  cols_label(
+    response = "Response",
+    predictor = "Predictor",
+    method = "Method",
+    estimate = "Effect size",
+    p_value = "p",
+    p_adj = "BH-adjusted p",
+    sig = "Sig."
+  ) %>%
+  tab_header(title = "Significant correlations between biomarkers/IBR and contaminant indices") %>%
+  tab_options(table.font.size = px(12))
+
+# Save as HTML (great for supplement) and as image (for manuscripts)
+gtsave(gt_tbl, "tables/Table_Correlations_Significant.html")
+
+# Optional: export a CSV for journal submission or supplement
+write_csv(cors_sig, "tables/Table_Correlations_Significant.csv")
+
+#distribution plots- the anchor plots for the main metrics
+library(patchwork)
+
+pA <- plot_box_jitter(master, "reporting_area", "p450", "reporting_area",
+                      x_order = ra_order, y_label = "P450 activity", title = "P450")
+
+pB <- plot_box_jitter(master, "reporting_area", "sod", "reporting_area",
+                      x_order = ra_order, y_label = "SOD activity", title = "SOD")
+
+pC <- plot_box_jitter(master, "reporting_area", "ibr_biomarkers", "reporting_area",
+                      x_order = ra_order, y_label = "IBR (biomarkers)", title = "IBR (biomarkers)")
+
+pD <- plot_box_jitter(master, "reporting_area", "ibr_combined", "reporting_area",
+                      x_order = ra_order, y_label = "IBR (combined)", title = "IBR (combined)")
+
+p_anchor <- (pA | pB) / (pC | pD) +
+  plot_annotation(title = "Distributions of biomarkers and IBR metrics across reporting areas")
+
+ggsave("figures/Fig_Anchor_Distributions_4panel.png", p_anchor, width = 12, height = 8, dpi = 400)
+
+
 ```
 
-
-# Second plot
+# Defining plot names and labels 
 ```{r}
 
+# ---- metric bundles (edit these names to match your columns) ----
+# Biomarkers + morphometrics for main Figure 2
+metrics_fig2 <- c("p450", "sod", "shell", "ci") 
+# If your condition index column is named differently, swap it above.
+
+# IBR metrics for main Figure 3
+metrics_ibr <- c("ibr_bio", "ibr_morph", "ibr_combined")
+
+# Contaminant class indices for main Figure 4 and supplement S1
+metrics_contam_indices <- c("total_con_index", "pah_lmw_index", "pah_hmw_index", "total_pah_index", "pcb_index", "pbde_index", "ddt_index", "hch_index", "chlordane_index", "pesticide_index", "total_metal_index")
+
+# Choose your grouping variable (edit to match your dataset)
+group_var <- "reporting_area"  # or "geo_group" etc.
+
+# ---- helpers ----
+assert_cols <- function(df, cols, df_name = "data") {
+  missing <- setdiff(cols, names(df))
+  if (length(missing) > 0) {
+    stop(glue("Missing columns in {df_name}: {paste(missing, collapse = ', ')}"), call. = FALSE)
+  }
+}
+
+theme_manuscript <- function(base_size = 11) {
+  theme_minimal(base_size = base_size) +
+    theme(
+      panel.grid.minor = element_blank(),
+      axis.title.x = element_blank(),
+      plot.title.position = "plot",
+      legend.position = "right"
+    )
+}
+
+# check required columns exist
+assert_cols(sites, c("site_name", group_var), "sites")
+
 ```
 
-# Third plot
+# Prepping the data
 ```{r}
 
+# ---- long format for response metrics (biomarkers/morph/IBR/contam indices) ----
+all_plot_metrics <- unique(c(metrics_fig2, metrics_ibr, metrics_contam_indices))
+
+assert_cols(sites, all_plot_metrics, "sites")
+
+sites_long <- sites |>
+  select(site_name, all_of(group_var), all_of(all_plot_metrics)) |>
+  pivot_longer(
+    cols = all_of(all_plot_metrics),
+    names_to = "metric",
+    values_to = "value"
+  ) |>
+  mutate(
+    metric = factor(metric, levels = all_plot_metrics),
+    !!group_var := as.factor(.data[[group_var]])
+  ) |>
+  filter(!is.na(value))
+
+# Convenience subsets
+fig2_long <- sites_long |> filter(metric %in% metrics_fig2)
+ibr_long  <- sites_long |> filter(metric %in% metrics_ibr)
+contam_long <- sites_long |> filter(metric %in% metrics_contam_indices)
+
 ```
 
-# Fourth plot
+# Table 1
 ```{r}
 
+table1_sites_summary <- sites |>
+  count(.data[[group_var]], name = "n_sites") |>
+  arrange(desc(n_sites))
+
+# save
+write_csv(table1_sites_summary, file.path(tab_dir, "Table1_site_summary.csv"))
+
+# nice print (optional)
+table1_sites_summary |> 
+  gt() |> 
+  tab_header(title = "Table 1. Site summary by group")
+
 ```
 
+# Figure 2
+```{r}
+
+fig2 <- ggplot(fig2_long, aes(x = .data[[group_var]], y = value)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.6, size = 1.5) +
+  facet_wrap(~ metric, scales = "free_y", ncol = 2) +
+  labs(
+    title = "Figure 2. Biomarker and morphometric responses by group",
+    y = NULL
+  ) +
+  theme_manuscript() +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1))
+
+ggsave(file.path(fig_dir, "Fig2_biomarkers_morph_by_group.png"), fig2, width = 9, height = 7, dpi = 300)
+fig2
+
+```
+
+# Figure 3
+```{r}
+
+fig3 <- ggplot(ibr_long, aes(x = .data[[group_var]], y = value)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.6, size = 1.5) +
+  facet_wrap(~ metric, scales = "free_y", ncol = 1) +
+  labs(
+    title = "Figure 3. Integrated Biomarker Response (IBR) metrics by group",
+    y = NULL
+  ) +
+  theme_manuscript() +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1))
+
+ggsave(file.path(fig_dir, "Fig3_IBR_by_group.png"), fig3, width = 8, height = 8, dpi = 300)
+fig3
+
+```
+
+# Figure 4, A-B
+```{r}
+fig4a <- ggplot(contam_long, aes(x = .data[[group_var]], y = value)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.5, size = 1.2) +
+  facet_wrap(~ metric, scales = "free_y", ncol = 3) +
+  labs(
+    title = "Figure 4A. Contaminant class indices by group",
+    y = NULL
+  ) +
+  theme_manuscript() +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1))
+
+ggsave(file.path(fig_dir, "Fig4A_contaminant_indices_by_group.png"), fig4a, width = 11, height = 7, dpi = 300)
+fig4a
+
+```
+
+
+```{r}
+contam_summary <- contam_long |>
+  group_by(.data[[group_var]], metric) |>
+  summarise(
+    med = median(value, na.rm = TRUE),
+    q25 = quantile(value, 0.25, na.rm = TRUE),
+    q75 = quantile(value, 0.75, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+fig4b <- ggplot(contam_summary, aes(x = .data[[group_var]], y = med)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = q25, ymax = q75), width = 0.2) +
+  facet_wrap(~ metric, scales = "free_y", ncol = 3) +
+  labs(
+    title = "Figure 4B. Median (± IQR) contaminant indices by group",
+    y = NULL
+  ) +
+  theme_manuscript() +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1))
+
+ggsave(file.path(fig_dir, "Fig4B_contaminant_indices_summary.png"), fig4b, width = 11, height = 7, dpi = 300)
+fig4b
+
+```
+
+
+```{r}
+contam_summary <- contam_long |>
+  group_by(.data[[group_var]], metric) |>
+  summarise(
+    med = median(value, na.rm = TRUE),
+    q25 = quantile(value, 0.25, na.rm = TRUE),
+    q75 = quantile(value, 0.75, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+fig4b <- ggplot(contam_summary, aes(x = .data[[group_var]], y = med)) +
+  geom_point() +
+  geom_errorbar(aes(ymin = q25, ymax = q75), width = 0.2) +
+  facet_wrap(~ metric, scales = "free_y", ncol = 3) +
+  labs(
+    title = "Figure 4B. Median (± IQR) contaminant indices by group (ng/g)",
+    y = NULL
+  ) +
+  theme_manuscript() +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1))
+
+ggsave(file.path(fig_dir, "Fig4B_contaminant_indices_summary.png"), fig4b, width = 11, height = 7, dpi = 300)
+fig4b
+
+
+```
+
+# Table 2
+```{r}
+# Expecting moran_global to have at least: metric, moran_i, p_value (names may differ)
+# Inspect names(moran_global) if needed.
+
+moran_table <- moran_global |>
+  arrange(p_value)  # change if your column is named differently
+
+write_csv(moran_table, file.path(tab_dir, "Table2_global_moransI.csv"))
+
+moran_table |>
+  gt() |>
+  tab_header(title = "Table 2. Global Moran's I results")
+
+
+```
+
+# Figure 5A
+```{r}
+fig5a <- moran_global |>
+  mutate(metric = as.factor(metric)) |>
+  ggplot(aes(x = metric, y = moran_i)) +
+  geom_point() +
+  geom_hline(yintercept = 0, linetype = 2) +
+  coord_flip() +
+  labs(
+    title = "Figure 5A. Global spatial autocorrelation (Moran's I)",
+    y = "Moran's I"
+  ) +
+  theme_manuscript()
+
+ggsave(file.path(fig_dir, "Fig5A_global_moransI.png"), fig5a, width = 8, height = 6, dpi = 300)
+fig5a
+
+```
+
+# Supplement S3
+```{r}
+
+# ---- user controls ----
+cor_method <- "kendall"   # "spearman" or "kendall"
+cor_level  <- "indices"    # e.g., "indices" or "individual_analytes"
+alpha <- 0.05              # significance threshold
+
+# ---- 1) Filter + standardize effect size + p-value ----
+cor_plot <- correlations |>
+  filter(level == cor_level, method == cor_method) |>
+  mutate(
+    effect_size = case_when(
+      method == "spearman" ~ spearman_r,
+      method == "kendall"  ~ kendall_tau,
+      TRUE ~ NA_real_
+    ),
+    p_value = case_when(
+      method == "spearman" ~ spearman_p,
+      method == "kendall"  ~ kendall_p,
+      TRUE ~ NA_real_
+    ),
+    sig = !is.na(p_value) & (p_value <= alpha),
+    # make sure axes are treated as categorical (not numeric)
+    metric  = as.character(metric),
+    analyte = as.character(analyte)
+  ) |>
+  filter(!is.na(effect_size), !is.na(p_value))
+
+# ---- 2) Order axes by "most informative" (max absolute effect size) ----
+analyte_order <- cor_plot |>
+  group_by(analyte) |>
+  summarise(max_abs = max(abs(effect_size), na.rm = TRUE), .groups = "drop") |>
+  arrange(desc(max_abs)) |>
+  pull(analyte)
+
+metric_order <- cor_plot |>
+  group_by(metric) |>
+  summarise(max_abs = max(abs(effect_size), na.rm = TRUE), .groups = "drop") |>
+  arrange(desc(max_abs)) |>
+  pull(metric)
+
+cor_plot <- cor_plot |>
+  mutate(
+    analyte = factor(analyte, levels = analyte_order),
+    metric  = factor(metric,  levels = metric_order)
+  )
+
+# ---- 3) Heatmap with significance annotation ----
+heatmap <- ggplot(cor_plot, aes(x = analyte, y = metric)) +
+  # tiles: fade non-significant cells
+  geom_tile(aes(fill = effect_size, alpha = sig), color = NA) +
+  # outline significant cells
+  geom_tile(
+    data = cor_plot |> filter(sig),
+    fill = NA,
+    color = "black",
+    linewidth = 0.4
+  ) +
+  # optional: add stars to significant cells (comment out if you prefer outlines only)
+  geom_text(
+    data = cor_plot |> filter(sig),
+    label = "*",
+    size = 3
+  ) +
+  scale_alpha_manual(values = c(`TRUE` = 1, `FALSE` = 0.25), guide = "none") +
+  labs(
+    title = paste0(
+      "Correlations (", cor_level, " | ", str_to_title(cor_method),
+      "; α = ", alpha, "): metric × analyte"
+    ),
+    x = NULL,
+    y = NULL,
+    fill = "Effect size"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    panel.grid = element_blank(),
+    axis.text.x = element_text(angle = 45, hjust = 1)
+  )
+
+heatmap
+
+ggsave(
+  filename = file.path(fig_dir, paste0("S3_heatmap_", cor_level, "_", cor_method, ".png")),
+  plot = heatmap,
+  width = 11, height = 8, dpi = 300
+)
+
+
+
+```
+
+# Supplement Tables
+```{r}
+
+write_csv(comparisons, file.path(tab_dir, "ST1_full_pairwise_comparisons.csv"))
+write_csv(correlations, file.path(tab_dir, "ST2_full_correlations.csv"))
+
+# optional: filtered “significant only” correlation table
+cor_sig <- correlations |> filter(kendall_p <= 0.05)
+write_csv(cor_sig, file.path(tab_dir, "ST2b_kendall_significant_only.csv"))
+
+```
 
