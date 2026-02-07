@@ -1,0 +1,267 @@
+---
+title: "3.2- Verifying Spatial Analyses from QGIS by Repeating the Process in R"
+output:
+  pdf_document: 
+    fig_width: 20
+    fig_height: 9
+  html_document: 
+    toc: true
+    toc_float:
+        collapsed: false
+        smooth_scroll: true
+    fig_width: 20
+---
+
+# Directory and doc rules
+```{r, setup, eval=TRUE, include=TRUE, echo=FALSE}
+
+knitr::opts_chunk$set(
+  root.dir = here::here(),
+  echo = TRUE,         # show code chunks
+  eval = TRUE,         # evaluate code chunks
+  warning = FALSE,     # hide warnings
+  message = FALSE,     # hide messages
+  #fig.width = 15,       # set plot width in inches
+  #fig.height = 9,      # set plot height in inches
+  fig.align = "center" # slign plots to the center in output doc/ slide/ whatever
+)
+
+# libraries
+library(broom) # converting output tables to tidy tables for saving or easy view
+library(dplyr) # data wrangling
+library(fs) # file management
+library(ggplot2) # plots
+library(glue) # string manipulation
+library(janitor) # data wrangling
+library(knitr) # output formatting
+library(lwgeom) # spatial data manipulation
+library(sf) # mapping - needed for converting to spatial data
+library(spdep) # building spatial geometric components for analysis
+library(spatialreg) # spatial regression analysis
+library(tidyr) # data wrangling
+library(tidyverse) # data wrangling
+library(tmap) #mapping themes
+library(vegan) # ecological stats 
+
+```
+
+# Load & Check Data
+```{r}
+
+# working from the plotting data folder
+getwd()
+
+site_data<- read.csv("../data/plotting/biomarker_df_with_identifiers_values.csv") # complete site-level data
+summary(site_data)
+
+```
+
+# Data prep
+```{r}
+
+# create output folder
+outdir <- "../output/spatial_stats"
+dir_create(outdir)
+
+# identify metric columns - everything except id columns
+id_cols <- c("latitude", "longitude", "site_number", "reporting_area", "site_name")
+metric_cols <- setdiff(names(site_data), id_cols)
+
+# qc summary
+qc <- list(
+  n_sites = nrow(site_data),
+  n_metrics = length(metric_cols),
+  missing_coords = sum(is.na(site_data$latitude) | is.na(site_data$longitude)),
+  missing_by_metric = site_data |> summarise(across(all_of(metric_cols), ~sum(is.na(.x))))
+)
+qc
+
+```
+
+# Build sf object for spatial analyses
+```{r}
+
+sf_wgs <- st_as_sf(site_data, coords = c("longitude", "latitude"), crs = 4326, remove = FALSE)
+
+sf_proj <- st_transform(sf_wgs, 32148)  # code for WA state in meters
+
+```
+
+# K-Nearest neighbor analysis
+## starting with K=6, QGIS results showed K=6 is the best fit.
+```{r}
+
+coords <- st_coordinates(sf_proj)
+
+k <- 6
+nb_knn <- spdep::knn2nb(spdep::knearneigh(coords, k = k))
+
+# weights (row-standardized)
+lw_knn <- spdep::nb2listw(nb_knn, style = "W", zero.policy = TRUE)
+
+```
+
+# Set-up for Global Moran's I & LISA 
+## 2.6.26- chatgpt helped fix the function, must verify what i did wrong- possibly order of arguments?
+```{r}
+
+global_moran_one <- function(x, lw, nsim = 999) {
+  ok <- is.finite(x)
+  x_ok <- x[ok]
+  
+  # subset weights to non-missing rows
+  lw_ok <- spdep::subset.listw(lw, ok)
+  
+  mt <- spdep::moran.mc(x_ok, lw_ok, nsim = nsim, alternative = "two.sided",
+                       zero.policy = TRUE)
+  
+  tibble(
+    statistic = unname(mt$statistic),
+    p_value = mt$p.value,
+    nsim = nsim,
+    observed_i = unname(mt$statistic),
+    expectation = mt$estimate[["Expectation"]],
+    variance = mt$estimate[["Variance"]]
+  )
+}
+
+```
+
+# Local Moran's I with cluster labels (LISA- clusters)
+## same chat gpt note as above.
+```{r}
+
+lisa_one <- function(x, lw, ids_tbl, nsim = 999, p_cut = 0.05) {
+  ok <- is.finite(x)
+  x_ok <- x[ok]
+  ids_ok <- ids_tbl[ok, , drop = FALSE]
+  lw_ok <- spdep::subset.listw(lw, ok)
+
+  # local moran permutation
+  lm <- spdep::localmoran_perm(x_ok, lw_ok, nsim = nsim, zero.policy = TRUE)
+
+  # spatial lag
+  lagx <- spdep::lag.listw(lw_ok, x_ok, zero.policy = TRUE)
+
+  zx <- as.numeric(scale(x_ok))
+  zlag <- as.numeric(scale(lagx))
+
+  quad <- case_when(
+    zx >= 0 & zlag >= 0 ~ "HH",
+    zx <= 0 & zlag <= 0 ~ "LL",
+    zx <= 0 & zlag >= 0 ~ "LH",
+    zx >= 0 & zlag <= 0 ~ "HL",
+    TRUE ~ NA_character_
+  )
+
+  out <- bind_cols(
+    ids_ok,
+    tibble(
+      local_i = lm[, "Ii"],
+      e_i     = lm[, "E.Ii"],
+      var_i   = lm[, "Var.Ii"],
+      z_i     = lm[, "Z.Ii"],
+      p_value = lm[, "Pr(z != E(Ii))"],   # column name from spdep
+      lag_x   = lagx,
+      quad    = quad,
+      sig     = p_value <= p_cut
+    )
+  )
+
+  out
+}
+
+```
+
+# Looping all metrics through Global Moran's I and LISA 
+```{r}
+
+ids_tbl <- sf_proj |>
+  st_drop_geometry() |>
+  select(site_number, site_name, reporting_area, latitude, longitude)
+
+# choose weights - based on QGIS results and tests in the 2 chunks above 
+lw <- lw_knn
+
+# global moran for all metrics
+global_tbl <- map_dfr(metric_cols, function(m) {
+  x <- sf_proj[[m]]
+  gm <- global_moran_one(x, lw = lw, nsim = 999)
+  gm |> mutate(metric = m, .before = 1)
+}) |>
+  mutate(p_adj_bh = p.adjust(p_value, method = "BH")) |>
+  arrange(p_value)
+
+# write out the results table
+write.csv(global_tbl, file.path(outdir, "global_moransI_all_metrics.csv"))
+
+# significant global only- raw p and BH-adjusted
+global_sig_raw <- global_tbl |> filter(p_value <= 0.05)
+global_sig_bh  <- global_tbl |> filter(p_adj_bh <= 0.05)
+
+write.csv(global_sig_raw, file.path(outdir, "global_moransI_sig_raw_p05.csv"))
+write.csv(global_sig_bh,  file.path(outdir, "global_moransI_sig_BH_p05.csv"))
+
+```
+
+# Combining results into a single significance table
+```{r}
+
+lisa_long <- map_dfr(metric_cols, function(m) {
+  x <- sf_proj[[m]]
+  lisa_tbl <- lisa_one(x, lw = lw, ids_tbl = ids_tbl, nsim = 999, p_cut = 0.05)
+  lisa_tbl |> mutate(metric = m, .before = 1)
+})
+
+# multiple testing correction within each metric- not required, but can't be too certain at this point
+lisa_long <- lisa_long |>
+  group_by(metric) |>
+  mutate(p_adj_bh = p.adjust(p_value, method = "BH"),
+         sig_bh = p_adj_bh <= 0.05) |>
+  ungroup()
+
+write.csv(lisa_long, file.path(outdir, "lisa_localmoran_all_metrics_long.csv"))
+
+# significant global only- raw p and BH-adjusted
+lisa_sig_raw <- lisa_long |> filter(sig)
+lisa_sig_bh  <- lisa_long |> filter(sig_bh)
+
+write.csv(lisa_sig_raw, file.path(outdir, "lisa_sig_sites_raw_p05.csv"))
+write.csv(lisa_sig_bh,  file.path(outdir, "lisa_sig_sites_BH_p05.csv"))
+
+```
+
+# Cluster table of sites x metrics for summary/ review purposes
+```{r}
+
+lisa_clusters_wide <- lisa_long |>
+  select(site_number, site_name, reporting_area, metric, quad, sig, sig_bh) |>
+  mutate(cluster_raw = if_else(sig, quad, "NotSig"),
+         cluster_bh  = if_else(sig_bh, quad, "NotSig")) |>
+  select(site_number, metric, cluster_raw, cluster_bh) |>
+  pivot_wider(names_from = metric, values_from = c(cluster_raw, cluster_bh))
+
+write.csv(lisa_clusters_wide, file.path(outdir, "lisa_clusters_summary_table_wide.csv"))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
