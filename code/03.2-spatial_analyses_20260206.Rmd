@@ -193,13 +193,13 @@ global_tbl <- map_dfr(metric_cols, function(m) {
   arrange(p_value)
 
 # write out the results table
-write.csv(global_tbl, file.path(outdir, "global_moransI_all_metrics.csv"))
+#write.csv(global_tbl, file.path(outdir, "global_moransI_all_metrics.csv"))
 
 # significant global only- raw p and BH-adjusted
 global_sig_raw <- global_tbl |> filter(p_value <= 0.05)
 global_sig_bh  <- global_tbl |> filter(p_adj_bh <= 0.05)
 
-write.csv(global_sig_raw, file.path(outdir, "global_moransI_sig_raw_p05.csv"))
+#write.csv(global_sig_raw, file.path(outdir, "global_moransI_sig_raw_p05.csv"))
 write.csv(global_sig_bh,  file.path(outdir, "global_moransI_sig_BH_p05.csv"))
 
 ```
@@ -245,7 +245,8 @@ write.csv(lisa_clusters_wide, file.path(outdir, "lisa_clusters_summary_table_wid
 
 ```
 
-# Building the data layer for QGIS output
+# LISA
+## Building the individual data layers for QGIS output
 ```{r}
 
 # id the columns one more time in the projection to be sure
@@ -281,9 +282,69 @@ head(map_df)
 
 ```
 
+# Building a single geopackage with all layers for QGIS output
+```{r}
 
+# create the basis for the geopackage
+outdir <- "../output/spatial_stats"
 
+gpkg_path <- file.path(outdir, "lisa_all_layers.gpkg")
+if (file.exists(gpkg_path)) file.remove(gpkg_path)
 
+for (m in metric_cols) {
+
+  map_df <- sf_proj |>
+    select(site_number, site_name, reporting_area, all_of(m)) |>
+    left_join(
+      lisa_long |>
+        filter(metric == m) |>
+        select(site_number, local_i, p_value, p_adj_bh, quad, sig, sig_bh),
+      by = "site_number"
+    ) |>
+    mutate(
+      cluster_raw = if_else(sig, quad, "NotSig"),
+      cluster_bh  = if_else(sig_bh, quad, "NotSig")
+    )
+
+  st_write(
+    map_df,
+    dsn = gpkg_path,
+    layer = paste0("lisa_", m),
+    append = TRUE,
+    quiet = TRUE
+  )
+}
+
+```
+
+# Global Moran's
+## Building a single geopackage with all layers for QGIS output
+```{r}
+
+outdir <- "../output/spatial_stats"
+dir.create(outdir, recursive = TRUE, showWarnings = FALSE)
+
+gpkg_path <- file.path(outdir, "global_morans_metrics.gpkg")
+if (file.exists(gpkg_path)) file.remove(gpkg_path)
+
+metrics <- global_sig_bh$metric |> as.character()
+
+for (m in metrics) {
+
+  map_df <- sf_proj |>
+    dplyr::select(site_number, site_name, reporting_area, dplyr::all_of(m))
+
+  sf::st_write(
+    map_df,
+    dsn    = gpkg_path,
+    layer  = paste0("global_", m),
+    quiet  = TRUE
+  )
+}
+
+```
+
+# END
 
 
 
