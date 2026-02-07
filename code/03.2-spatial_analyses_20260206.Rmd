@@ -245,10 +245,41 @@ write.csv(lisa_clusters_wide, file.path(outdir, "lisa_clusters_summary_table_wid
 
 ```
 
+# Building the data layer for QGIS output
+```{r}
 
+# id the columns one more time in the projection to be sure
+metric_cols <- names(sf_proj)[6:24]
+metric_cols
 
+# create the basis for the geopackage
+outdir <- "../output/spatial_stats"
 
+for (m in metric_cols) {
 
+  map_df <- sf_proj |>
+    select(site_number, site_name, reporting_area, all_of(m)) |>
+    left_join(
+      lisa_long |>
+        filter(metric == m) |>
+        select(site_number, local_i, p_value, p_adj_bh, quad, sig, sig_bh),
+      by = "site_number"
+    ) |>
+    mutate(
+      cluster_raw = if_else(sig, quad, "NotSig"),
+      cluster_bh  = if_else(sig_bh, quad, "NotSig")
+    )
+
+  st_write(
+    map_df,
+    dsn = file.path(outdir, paste0("lisa_", m, ".gpkg")),
+    delete_dsn = TRUE, quiet = TRUE
+  )
+}
+
+head(map_df)
+
+```
 
 
 
