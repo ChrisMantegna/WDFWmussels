@@ -344,6 +344,84 @@ for (m in metrics) {
 
 ```
 
+# Creating a geopackage of my complete data with identifiers and metrics
+```{r}
+
+site_data_clean <- site_data %>%
+  mutate(
+    # columns 1–2: lat / lon → numeric, 4 decimal places
+    across(1:2, ~ round(as.numeric(.x), 4)),
+
+    # columns 3–4: integers
+    across(3:4, ~ as.integer(.x)),
+
+    # column 5: site_name → leave as character
+    across(5, as.character),
+
+    # columns 6–24: numeric, 4 decimal places
+    across(6:24, ~ round(as.numeric(.x), 4))
+  )
+
+site_data_sf <- st_as_sf(
+  site_data_clean,
+  coords = c(names(site_data_clean)[2], names(site_data_clean)[1]),
+  crs = 4326,
+  remove = FALSE
+)
+
+st_write(
+  site_data_sf,
+  "site_data_map_ready.gpkg",
+  layer = "site_data",
+  delete_layer = TRUE
+)
+
+```
+
+# Creating GeoPackage with adjustments for varying data in significant moran's metrics
+```{r}
+
+# define detected v percentile groups
+vars_pct <- c("ddt_index", "pah_hmw_index", "pbde_index", "pcb_index", "total_con_index")
+vars_det <- c("chlordane_index", "hch_index", "pesticide_index")
+
+# define column/ data format
+site_data_map <- site_data %>%
+  mutate(
+    # Make sure target columns are numeric (won't hurt if they already are)
+    across(all_of(c(vars_pct, vars_det)), ~ as.numeric(.x))
+  ) %>%
+  mutate(
+    # Percentile rank fields (0–100)
+    across(all_of(vars_pct), ~ dplyr::percent_rank(.x) * 100, .names = "{.col}_pct"),
+
+    # Detection fields: 0 = not detected, 1 = detected
+    across(all_of(vars_det), ~ ifelse(is.na(.x) | .x <= 0, 0L, 1L), .names = "{.col}_det")
+  )
+
+# convert to sf 
+site_sf <- st_as_sf(
+  site_data_map,
+  coords = c("longitude", "latitude"),
+  crs = 4326,
+  remove = FALSE
+)
+
+# write geopackage
+out_gpkg <- "../output/spatial_stats/moran_map_ready.gpkg"
+
+st_write(
+  site_sf,
+  out_gpkg,
+  layer = "sites_moran",
+  delete_layer = TRUE
+)
+
+out_gpkg
+
+```
+
+
 # END
 
 
