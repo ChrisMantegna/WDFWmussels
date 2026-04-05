@@ -1,14 +1,17 @@
 ---
 title: "12.2- Creating Visualzations for the Manuscript"
 output:
-  pdf_document: 
+  pdf_document:
     fig_width: 20
     fig_height: 9
-  html_document: 
+  word_document:
+    fig_width: 20
+    fig_height: 9
+  html_document:
     toc: true
     toc_float:
-        collapsed: false
-        smooth_scroll: true
+      collapsed: false
+      smooth_scroll: true
     fig_width: 20
 ---
 
@@ -29,6 +32,7 @@ library(glue) # string manipulation
 library(gt) # making nice tables for HTML output
 library(janitor) # cleaning names
 library(knitr) # output formatting
+library(kableExtra) # table styling + image export
 library(patchwork) # making pretty grids of plots
 library(pgirmess) # stats - KW
 library(readr) # reading in data
@@ -64,8 +68,14 @@ getwd()
 
 data_dir <- "../data/plotting"
 results_dir <- "../output"
-fig_dir <- "../output/figures"
-tab_dir <- "../output/tables"
+fig_dir <- file.path(results_dir, "figures")
+tab_dir <- file.path(results_dir, "tables")
+man_viz_dir <- file.path(results_dir, "man_viz")
+
+dir.create(results_dir, showWarnings = FALSE, recursive = TRUE)
+dir.create(fig_dir, showWarnings = FALSE, recursive = TRUE)
+dir.create(tab_dir, showWarnings = FALSE, recursive = TRUE)
+dir.create(man_viz_dir, showWarnings = FALSE, recursive = TRUE)
 
 sites <- read.csv("../data/plotting/biomarker_df_with_identifiers_values.csv") |> 
   clean_names()
@@ -93,7 +103,7 @@ sites <- sites |>
 ```
 
 # OG generic code base for all of the plots
-```{r}
+```{r, eval=FALSE}
 
 #making a colorblind- friendly universal palette; only 8 colors here - I will need 9. Make the 8's similar colors and assign them specifically so I can use the Hex codes for ArcGIS mapping.
 okabe_ito <- c(
@@ -397,20 +407,23 @@ readr::write_csv(
 )
 
 # Render table (Word/PDF friendly)
-knitr::kable(
+table1_kable <- knitr::kable(
   table1_sites_summary,
-  caption = "Table 1. Site summary by Reporting Area (n= 74 sites)",
+  caption = "Table 1. Site summary by Reporting Area (n = 74 sites)",
   align = c("c", "c"),
   booktabs = TRUE
 )
 
-# Render in document
-table1_sites_summary
+table1_kable
 
-# Save as PNG
-kableExtra::save_kable(
-  table1_sites_summary,
-  file = file.path(tab_dir, "../output/man_viz/ra_site_summary.png")
+# Save a PNG copy for slides/manuscript assembly
+table1_gt <- gt::gt(table1_sites_summary) |>
+  gt::tab_header(title = "Table 1. Site summary by Reporting Area") |>
+  gt::cols_align(columns = everything(), align = "center")
+
+gt::gtsave(
+  data = table1_gt,
+  filename = file.path(man_viz_dir, "ra_site_summary.png")
 )
 
 ```
@@ -437,20 +450,100 @@ fig2
 # Figure 3
 ```{r}
 
-fig3 <- ggplot(ibr_long, aes(x = .data[[group_var]], y = value)) +
+
+# check your actual metric names if needed
+# unique(ibr_long$metric)
+
+# keep only the three IBR metrics and add a display label
+ibr_long_plot <- ibr_long |>
+  mutate(
+    metric = as.character(metric),
+    metric_label = case_when(
+      metric == "ibr_combined" ~ "IBR Combined",
+      metric == "ibr_bio"      ~ "IBR Biomarker",
+      metric == "ibr_morph"    ~ "IBR Morphometric",
+      TRUE ~ metric
+    )
+  )
+
+# shared y-axis range that explicitly includes 0
+y_max <- max(ibr_long_plot$value, na.rm = TRUE)
+y_min <- min(0, min(ibr_long_plot$value, na.rm = TRUE))
+
+# main panel: combined
+p_combined <- ggplot(
+  filter(ibr_long_plot, metric == "ibr_combined"),
+  aes(x = .data[[group_var]], y = value)
+) +
+  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.4) +
   geom_boxplot(outlier.shape = NA) +
   geom_jitter(width = 0.15, height = 0, alpha = 0.6, size = 1.5) +
-  facet_wrap(~ metric, scales = "free_y", ncol = 1) +
   labs(
     title = "Figure 3. Integrated Biomarker Response (IBR) metrics by group",
-    y = NULL
+    subtitle = "Combined IBR shown as the primary response; biomarker and morphometric indices shown as contributing components",
+    x = NULL,
+    y = "IBR Value"
   ) +
+  coord_cartesian(ylim = c(y_min, y_max * 1.05)) +
   theme_manuscript() +
-  theme(axis.text.x = element_text(angle = 35, hjust = 1))
+  theme(
+    axis.text.x = element_text(angle = 35, hjust = 1),
+    plot.title = element_text(face = "bold")
+  )
 
-ggsave(file.path(fig_dir, "Fig3_IBR_by_group.png"), fig3, width = 8, height = 8, dpi = 300)
+# supporting panel: biomarker
+p_bio <- ggplot(
+  filter(ibr_long_plot, metric == "ibr_bio"),
+  aes(x = .data[[group_var]], y = value)
+) +
+  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.4) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.6, size = 1.5) +
+  labs(
+    title = "IBR Biomarker",
+    x = NULL,
+    y = "IBR Value"
+  ) +
+  coord_cartesian(ylim = c(y_min, y_max * 1.05)) +
+  theme_manuscript() +
+  theme(
+    axis.text.x = element_text(angle = 35, hjust = 1),
+    plot.title = element_text(size = 11, face = "bold")
+  )
+
+# supporting panel: morphometric
+p_morph <- ggplot(
+  filter(ibr_long_plot, metric == "ibr_morph"),
+  aes(x = .data[[group_var]], y = value)
+) +
+  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.4) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.6, size = 1.5) +
+  labs(
+    title = "IBR Morphometric",
+    x = NULL,
+    y = "IBR Value"
+  ) +
+  coord_cartesian(ylim = c(0, 3)) +   # 👈 key change
+  theme_manuscript() +
+  theme(
+    axis.text.x = element_text(angle = 35, hjust = 1),
+    plot.title = element_text(size = 11, face = "bold")
+  )
+
+# layout
+fig3 <- p_combined / (p_bio | p_morph) +
+  plot_layout(heights = c(1.6, 1))
+
+ggsave(
+  file.path(fig_dir, "Fig3_IBR_by_group.png"),
+  fig3,
+  width = 10,
+  height = 9,
+  dpi = 300
+)
+
 fig3
-
 ```
 
 # Figure 4, A-B
@@ -536,9 +629,12 @@ moran_table <- moran_global |>
 
 write_csv(moran_table, file.path(tab_dir, "Table2_global_moransI.csv"))
 
-moran_table |>
-  gt() |>
-  tab_header(title = "Table 2. Global Moran's I results")
+knitr::kable(
+  moran_table,
+  caption = "Table 2. Global Moran's I results",
+  align = "c",
+  booktabs = TRUE
+)
 
 
 ```
@@ -627,6 +723,7 @@ heatmap <- ggplot(cor_plot, aes(x = analyte, y = metric)) +
     label = "*",
     size = 3
   ) +
+  scale_fill_viridis_c(option = "D", limits = c(-1, 1)) +
   scale_alpha_manual(values = c(`TRUE` = 1, `FALSE` = 0.25), guide = "none") +
   labs(
     title = paste0(
