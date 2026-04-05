@@ -90,7 +90,6 @@ lisa <- read.csv("../data/plotting/spatial_lisa.csv") |>
 sites <- sites |>
   mutate(
     site_number = as.character(site_number),
-    geo_group = as.factor(geo_group),
     reporting_area = as.factor(reporting_area)
   )
 
@@ -379,17 +378,33 @@ contam_long <- sites_long |> filter(metric %in% metrics_contam_indices)
 # Table 1
 ```{r}
 
+# Create summary table with numeric ordering of groups
 table1_sites_summary <- sites |>
-  count(.data[[group_var]], name = "n_sites") |>
-  arrange(desc(n_sites))
+  dplyr::count(.data[[group_var]], name = "n_sites") |>
+  dplyr::mutate(
+    group_numeric = as.numeric(as.character(.data[[group_var]]))
+  ) |>
+  dplyr::arrange(group_numeric) |>
+  dplyr::select(-group_numeric) |>
+  dplyr::rename(
+    "Reporting Area" = !!rlang::sym(group_var),
+    `Number of Sites` = n_sites
+  )
 
-# save
-write_csv(table1_sites_summary, file.path(tab_dir, "Table1_site_summary.csv"))
+# Save CSV
+readr::write_csv(
+  table1_sites_summary,
+  file.path(tab_dir, "Table1_site_summary.csv")
+)
 
-# nice print (optional)
-table1_sites_summary |> 
-  gt() |> 
-  tab_header(title = "Table 1. Site summary by group")
+# Render table (Word/PDF friendly)
+knitr::kable(
+  table1_sites_summary,
+  caption = "Table 1. Site summary by Reporting Area (n= 74 sites)",
+  align = c("l", "c"),
+  booktabs = TRUE
+)
+
 
 ```
 
