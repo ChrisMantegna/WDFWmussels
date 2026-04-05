@@ -17,34 +17,31 @@ output:
 ```{r, setup, eval=TRUE, include=TRUE, echo=FALSE}
 
 # libraries
-library(knitr) # output formatting
-library(tidyr) # data wrangling
-library(tidyverse) # data wrangling
-library(dplyr) # data wrangling
-library(vegan) # ecological stats 
 library(cluster) # grouping metrics - VERIFY still needed
-library(pgirmess) # stats - KW
-library(ggplot2) # plots
+library(dplyr) # data wrangling
 library(factoextra) # pca/ nmds/ tweaking radars
 library(FactoMineR) # pca/ nmds/ tweaking radars
-library(FSA) # post hoc test - Dunn's Test       
+library(FSA) # post hoc test - Dunn's Test 
+library(fmsb) # polygon calculations for the radars
+library(ggplot2) # plots
+library(ggsignif) # adding significance indicators to plots
+library(glue) # string manipulation
+library(gt) # making nice tables for HTML output
+library(janitor) # cleaning names
+library(knitr) # output formatting
+library(patchwork) # making pretty grids of plots
+library(pgirmess) # stats - KW
+library(readr) # reading in data
 library(rstatix) # VERIFY what this is for      
-library(car) # VERIFY what this is for  
 library(RVAideMemoire) # post hoc test for permanova
 library(rcompanion) # for annotation of permanova
 library(scales) # scaling data for IBR - works with data wrangling packages
-library(fmsb) # polygon calculations for the radars
-#library(sf) # spatial plotting
-#library(spdep) # spatial plotting
-#library(tmap) # making maps
-library(patchwork) # making pretty grids of plots
+library(tidyr) # data wrangling
+library(tidyverse) # data wrangling
+library(vegan) # ecological stats 
 library(viridis) # colors for plotting
-#library(rnaturalearth) # to pull the map
-library(ggsignif) # adding significance indicators to plots
-library(readr) # reading in data
-library(janitor) # cleaning names
-library(glue) # string manipulation
-library(gt) # making nice tables
+#install.packages("webshot2")
+library(webshot2) # for saving gt tables as images
 
 knitr::opts_chunk$set(
   root.dir = here::here(),
@@ -378,6 +375,8 @@ contam_long <- sites_long |> filter(metric %in% metrics_contam_indices)
 # Table 1
 ```{r}
 
+getwd()
+
 # Create summary table with numeric ordering of groups
 table1_sites_summary <- sites |>
   dplyr::count(.data[[group_var]], name = "n_sites") |>
@@ -394,17 +393,25 @@ table1_sites_summary <- sites |>
 # Save CSV
 readr::write_csv(
   table1_sites_summary,
-  file.path(tab_dir, "Table1_site_summary.csv")
+  file.path(tab_dir, "table1_site_summary.csv")
 )
 
 # Render table (Word/PDF friendly)
 knitr::kable(
   table1_sites_summary,
   caption = "Table 1. Site summary by Reporting Area (n= 74 sites)",
-  align = c("l", "c"),
+  align = c("c", "c"),
   booktabs = TRUE
 )
 
+# Render in document
+table1_sites_summary
+
+# Save as PNG
+kableExtra::save_kable(
+  table1_sites_summary,
+  file = file.path(tab_dir, "../output/man_viz/ra_site_summary.png")
+)
 
 ```
 
