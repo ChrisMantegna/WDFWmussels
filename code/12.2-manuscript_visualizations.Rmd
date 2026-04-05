@@ -546,21 +546,183 @@ ggsave(
 fig3
 ```
 
-# Figure 4, A-B
+# Figure 4, A-C
 ```{r}
-fig4a <- ggplot(contam_long, aes(x = .data[[group_var]], y = value)) +
+
+# split metrics
+total_metrics <- c("total_metal_index", "total_pah_index", "total_con_index")
+
+contam_classes <- contam_long |>
+  filter(!metric %in% total_metrics) |>
+  mutate(metric = factor(metric, levels = sort(unique(metric))))
+
+contam_totals <- contam_long |>
+  filter(metric %in% total_metrics) |>
+  mutate(metric = factor(metric, levels = total_metrics))
+
+# Figure 4A: contaminant classes only
+p_classes <- ggplot(contam_classes, aes(x = .data[[group_var]], y = value)) +
   geom_boxplot(outlier.shape = NA) +
   geom_jitter(width = 0.15, height = 0, alpha = 0.5, size = 1.2) +
   facet_wrap(~ metric, scales = "free_y", ncol = 3) +
   labs(
     title = "Figure 4A. Contaminant class indices by group",
+    x = NULL,
     y = NULL
   ) +
   theme_manuscript() +
   theme(axis.text.x = element_text(angle = 35, hjust = 1))
 
-ggsave(file.path(fig_dir, "Fig4A_contaminant_indices_by_group.png"), fig4a, width = 11, height = 7, dpi = 300)
-fig4a
+# Figure 4B: totals only
+p_totals <- ggplot(contam_totals, aes(x = .data[[group_var]], y = value)) +
+  geom_boxplot(outlier.shape = NA) +
+  geom_jitter(width = 0.15, height = 0, alpha = 0.5, size = 1.2) +
+  facet_wrap(~ metric, scales = "free_y", ncol = 3) +
+  labs(
+    title = "Figure 4B. Total contaminant indices by group",
+    x = NULL,
+    y = NULL
+  ) +
+  theme_manuscript() +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1))
+
+# combined layout if you want them together in one output
+fig4 <- p_classes / p_totals +
+  plot_layout(heights = c(3, 1.1))
+
+ggsave(
+  file.path(fig_dir, "Fig4_contaminant_indices_by_group.png"),
+  fig4,
+  width = 11,
+  height = 10,
+  dpi = 300
+)
+
+fig4
+```
+
+# Different set of individual plots for 4A-C
+```{r}
+
+library(dplyr)
+library(ggplot2)
+library(purrr)
+
+# -----------------------------
+# prep metric order
+# -----------------------------
+all_metrics <- contam_long %>%
+  distinct(metric) %>%
+  pull(metric)
+
+# optional: put totals at the end
+total_metrics <- c("total_metal_index", "total_pah_index", "total_con_index")
+non_totals <- sort(setdiff(all_metrics, total_metrics))
+totals_present <- total_metrics[total_metrics %in% all_metrics]
+
+metric_order <- c(non_totals, totals_present)
+
+contam_long_plot <- contam_long %>%
+  mutate(metric = factor(metric, levels = metric_order))
+
+# -----------------------------
+# split metrics into groups of 4
+# -----------------------------
+metric_groups <- split(
+  metric_order,
+  ceiling(seq_along(metric_order) / 4)
+)
+
+# -----------------------------
+# make and save one 4-panel plot per group
+# -----------------------------
+fig4_metric_pages <- imap(metric_groups, function(metric_set, i) {
+  
+  p <- contam_long_plot %>%
+    filter(metric %in% metric_set) %>%
+    ggplot(aes(x = .data[[group_var]], y = value)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(width = 0.15, height = 0, alpha = 0.5, size = 1.2) +
+    facet_wrap(~ metric, scales = "free_y", ncol = 2) +
+    labs(
+      title = paste0("Contaminant Class Indices by Group: Set ", i),
+      x = NULL,
+      y = "Index Value"
+    ) +
+    theme_manuscript() +
+    theme(
+      axis.text.x = element_text(angle = 35, hjust = 1)
+    )
+  
+  ggsave(
+    file.path(fig_dir, paste0("Fig4_metric_set_", i, ".png")),
+    p,
+    width = 10,
+    height = 8,
+    dpi = 300
+  )
+  
+  p
+})
+
+# show the first set in the Rmd
+fig4_metric_pages[[1]]
+
+
+```
+
+# Plot $x round 2 - individual plots
+```{r}
+
+library(dplyr)
+library(ggplot2)
+library(purrr)
+
+# metric order
+all_metrics <- contam_long %>%
+  distinct(metric) %>%
+  pull(metric)
+
+total_metrics <- c("total_metal_index", "total_pah_index", "total_con_index")
+non_totals <- sort(setdiff(all_metrics, total_metrics))
+totals_present <- total_metrics[total_metrics %in% all_metrics]
+
+metric_order <- c(non_totals, totals_present)
+
+contam_long_plot <- contam_long %>%
+  mutate(metric = factor(metric, levels = metric_order))
+
+# create individual plots
+metric_plot_list <- map(metric_order, function(m) {
+  
+  p <- contam_long_plot %>%
+    filter(metric == m) %>%
+    ggplot(aes(x = .data[[group_var]], y = value)) +
+    geom_boxplot(outlier.shape = NA) +
+    geom_jitter(width = 0.15, height = 0, alpha = 0.5, size = 1.2) +
+    labs(
+      title = m,
+      x = NULL,
+      y = "Index Value"
+    ) +
+    theme_manuscript() +
+    theme(
+      axis.text.x = element_text(angle = 35, hjust = 1)
+    )
+  
+  ggsave(
+    file.path(fig_dir, paste0("Fig4_", m, ".png")),
+    p,
+    width = 6,
+    height = 5,
+    dpi = 300
+  )
+  
+  p
+})
+
+# show x plot by changing the number
+metric_plot_list[[2]]
 
 ```
 
@@ -575,19 +737,19 @@ contam_summary <- contam_long |>
     .groups = "drop"
   )
 
-fig4b <- ggplot(contam_summary, aes(x = .data[[group_var]], y = med)) +
+fig4c <- ggplot(contam_summary, aes(x = .data[[group_var]], y = med)) +
   geom_point() +
   geom_errorbar(aes(ymin = q25, ymax = q75), width = 0.2) +
   facet_wrap(~ metric, scales = "free_y", ncol = 3) +
   labs(
-    title = "Figure 4B. Median (± IQR) contaminant indices by group",
+    title = "Figure 4C. Median (± IQR) contaminant indices by group",
     y = NULL
   ) +
   theme_manuscript() +
   theme(axis.text.x = element_text(angle = 35, hjust = 1))
 
-ggsave(file.path(fig_dir, "Fig4B_contaminant_indices_summary.png"), fig4b, width = 11, height = 7, dpi = 300)
-fig4b
+ggsave(file.path(fig_dir, "Fig4C_contaminant_indices_summary.png"), fig4b, width = 11, height = 7, dpi = 300)
+fig4c
 
 ```
 
