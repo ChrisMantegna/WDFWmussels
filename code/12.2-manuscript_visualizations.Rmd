@@ -311,7 +311,6 @@ p_anchor <- (pA | pB) / (pC | pD) +
 
 ggsave("figures/Fig_Anchor_Distributions_4panel.png", p_anchor, width = 12, height = 8, dpi = 400)
 
-
 ```
 
 # Defining plot names and labels 
