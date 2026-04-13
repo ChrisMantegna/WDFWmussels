@@ -12,6 +12,14 @@ output:
     fig_width: 20
 ---
 
+#20260414 testing methylKit
+```{r}
+
+
+
+```
+
+
 # Directory and doc rules
 
 ```{r, setup, eval=TRUE, include=TRUE}
