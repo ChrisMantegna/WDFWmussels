@@ -98,9 +98,8 @@ sites <- sites |>
   mutate(
     site_number = as.character(site_number),
     reporting_area = factor(format_reporting_area(reporting_area), levels = ra_levels),
-    reporting_area_label = factor(paste0("RA ", reporting_area), levels = paste0("RA ", ra_levels))
+    reporting_area_label = factor(reporting_area, levels = ra_levels)
   )
-
 # Reporting-area palette: RA 8.1 is the reference reporting area and is set to red/orange.
 ra_palette <- c(
   "RA 6"   = "#0072B2",
@@ -142,7 +141,7 @@ theme_biomarker <- function(base_size = 12) {
 }
 
 metric_labels <- c(
-  p450  = "p450",
+  p450  = "P450",
   sod   = "SOD",
   shell = "Shell thickness",
   ci    = "Condition index"
@@ -220,7 +219,7 @@ p_ibr_combined <- ggplot(sites, aes(x = reporting_area_label, y = ibr_combined))
   scale_fill_manual(values = ra_palette, drop = FALSE, name = "Reporting area") +
   scale_color_manual(values = ra_palette, drop = FALSE, guide = "none") +
   labs(
-    title = "Combined IBR by reporting area",
+    title = "Combined IBR Score by Reporting Area",
     subtitle = paste("Dashed line =", reference_site, "combined IBR"),
     x = NULL,
     y = "Combined IBR"
@@ -236,11 +235,11 @@ ggsave(
   width = 9, height = 5.5, dpi = 400
 )
 
-ggsave(
-  filename = file.path(fig_dir, "Fig_ibr_combined_by_reporting_area.pdf"),
-  plot = p_ibr_combined,
-  width = 9, height = 5.5
-)
+#ggsave(
+#  filename = file.path(fig_dir, "Fig_ibr_combined_by_reporting_area.pdf"),
+#  plot = p_ibr_combined,
+#  width = 9, height = 5.5
+#)
 ```
 
 # Correlation helpers
