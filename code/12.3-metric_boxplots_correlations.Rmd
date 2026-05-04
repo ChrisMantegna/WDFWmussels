@@ -1,0 +1,399 @@
+---
+title: "Measured Metric Boxplots and Correlation Tables"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  eval = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.align = "center"
+)
+
+library(tidyverse)
+library(janitor)
+library(patchwork)
+library(gt)
+library(scales)
+```
+
+# User controls
+
+```{r user-controls}
+# Set this to the location of biomarker_df_with_identifiers_values.csv.
+# The script checks these paths in order so it can be run from the project root,
+# the script folder, or the folder containing the CSV.
+csv_candidates <- c(
+  "../data/plotting/biomarker_df_with_identifiers_values.csv",
+  "data/plotting/biomarker_df_with_identifiers_values.csv",
+  "biomarker_df_with_identifiers_values.csv"
+)
+
+csv_path <- csv_candidates[file.exists(csv_candidates)][1]
+if (is.na(csv_path)) {
+  stop("Could not find biomarker_df_with_identifiers_values.csv. Update csv_candidates in the user-controls chunk.")
+}
+
+results_dir <- "../output"
+fig_dir     <- file.path(results_dir, "figures")
+tab_dir     <- file.path(results_dir, "tables")
+
+# If you are running this from a different project structure, switch to local folders:
+if (!dir.exists(dirname(results_dir))) {
+  results_dir <- "output"
+  fig_dir     <- file.path(results_dir, "figures")
+  tab_dir     <- file.path(results_dir, "tables")
+}
+
+dir.create(fig_dir, showWarnings = FALSE, recursive = TRUE)
+dir.create(tab_dir, showWarnings = FALSE, recursive = TRUE)
+
+alpha <- 0.05
+p_adjust_method <- "none"  # use "BH" if you want FDR-adjusted significance filtering
+reference_site <- "Penn Cove Reference"
+
+measured_metrics <- c("p450", "sod", "shell", "ci")
+identifier_cols <- c("latitude", "longitude", "site_number", "reporting_area")
+```
+
+# Load data
+
+```{r load-data}
+sites <- readr::read_csv(csv_path, show_col_types = FALSE) |>
+  janitor::clean_names()
+
+required_cols <- c(identifier_cols, "site_name", measured_metrics, "ibr_combined")
+missing_cols <- setdiff(required_cols, names(sites))
+if (length(missing_cols) > 0) {
+  stop("Missing required columns: ", paste(missing_cols, collapse = ", "))
+}
+
+format_reporting_area <- function(x) {
+  x_chr <- as.character(x)
+  x_num <- suppressWarnings(as.numeric(x_chr))
+  dplyr::case_when(
+    is.na(x_num) ~ x_chr,
+    x_num %% 1 == 0 ~ as.character(as.integer(x_num)),
+    TRUE ~ as.character(x_num)
+  )
+}
+
+ra_levels <- sites |>
+  distinct(reporting_area) |>
+  mutate(
+    reporting_area_clean = format_reporting_area(reporting_area),
+    reporting_area_num = suppressWarnings(as.numeric(as.character(reporting_area)))
+  ) |>
+  arrange(reporting_area_num) |>
+  pull(reporting_area_clean)
+
+sites <- sites |>
+  mutate(
+    site_number = as.character(site_number),
+    reporting_area = factor(format_reporting_area(reporting_area), levels = ra_levels),
+    reporting_area_label = factor(paste0("RA ", reporting_area), levels = paste0("RA ", ra_levels))
+  )
+
+# Reporting-area palette: RA 8.1 is the reference reporting area and is set to red/orange.
+ra_palette <- c(
+  "RA 6"   = "#0072B2",
+  "RA 7"   = "#56B4E9",
+  "RA 8.1" = "#D55E00",
+  "RA 8.2" = "#E69F00",
+  "RA 9"   = "#009E73",
+  "RA 10"  = "#CC79A7",
+  "RA 11"  = "#7F7F7F",
+  "RA 12"  = "#F0E442",
+  "RA 13"  = "#6A3D9A"
+)
+
+# Fallback if the data include an unexpected reporting area.
+missing_palette_levels <- setdiff(levels(sites$reporting_area_label), names(ra_palette))
+if (length(missing_palette_levels) > 0) {
+  extra_cols <- hue_pal()(length(missing_palette_levels))
+  ra_palette <- c(ra_palette, setNames(extra_cols, missing_palette_levels))
+}
+
+sites |>
+  count(reporting_area_label, name = "n_sites")
+```
+
+# Plot helpers
+
+```{r plot-helpers}
+theme_biomarker <- function(base_size = 12) {
+  theme_minimal(base_size = base_size) +
+    theme(
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      legend.position = "right",
+      axis.title.x = element_blank(),
+      strip.text = element_text(face = "bold"),
+      plot.title = element_text(face = "bold"),
+      plot.subtitle = element_text(size = rel(0.95))
+    )
+}
+
+metric_labels <- c(
+  p450  = "p450",
+  sod   = "SOD",
+  shell = "Shell thickness",
+  ci    = "Condition index"
+)
+```
+
+# Figure 1. Four-panel measured metric boxplots
+
+```{r measured-metric-boxplots, fig.width=12, fig.height=8}
+metrics_long <- sites |>
+  select(site_number, site_name, reporting_area_label, all_of(measured_metrics)) |>
+  pivot_longer(
+    cols = all_of(measured_metrics),
+    names_to = "metric",
+    values_to = "value"
+  ) |>
+  mutate(
+    metric_label = factor(metric_labels[metric], levels = metric_labels[measured_metrics])
+  )
+
+reference_lines_metrics <- metrics_long |>
+  filter(site_name == reference_site) |>
+  group_by(metric_label) |>
+  summarise(reference_value = median(value, na.rm = TRUE), .groups = "drop")
+
+p_measured_metrics <- ggplot(metrics_long, aes(x = reporting_area_label, y = value)) +
+  geom_hline(
+    data = reference_lines_metrics,
+    aes(yintercept = reference_value),
+    inherit.aes = FALSE,
+    linetype = "dashed",
+    linewidth = 0.4
+  ) +
+  geom_boxplot(aes(fill = reporting_area_label), outlier.shape = NA, width = 0.65, alpha = 0.78) +
+  geom_jitter(aes(color = reporting_area_label), width = 0.12, height = 0, alpha = 0.55, size = 1.8) +
+  facet_wrap(~ metric_label, scales = "free_y", ncol = 2) +
+  scale_fill_manual(values = ra_palette, drop = FALSE, name = "Reporting area") +
+  scale_color_manual(values = ra_palette, drop = FALSE, guide = "none") +
+  labs(
+    title = "Measured biomarker and condition metrics by reporting area",
+    subtitle = paste("Dashed line =", reference_site, "value for each metric"),
+    x = NULL,
+    y = "Metric value"
+  ) +
+  theme_biomarker(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1))
+
+p_measured_metrics
+
+ggsave(
+  filename = file.path(fig_dir, "Fig_measured_metrics_4panel_by_reporting_area.png"),
+  plot = p_measured_metrics,
+  width = 12, height = 8, dpi = 400
+)
+
+ggsave(
+  filename = file.path(fig_dir, "Fig_measured_metrics_4panel_by_reporting_area.pdf"),
+  plot = p_measured_metrics,
+  width = 12, height = 8
+)
+```
+
+# Figure 2. Combined IBR by reporting area
+
+```{r ibr-combined-boxplot, fig.width=9, fig.height=5.5}
+reference_line_ibr <- sites |>
+  filter(site_name == reference_site) |>
+  summarise(reference_value = median(ibr_combined, na.rm = TRUE)) |>
+  pull(reference_value)
+
+p_ibr_combined <- ggplot(sites, aes(x = reporting_area_label, y = ibr_combined)) +
+  geom_hline(yintercept = reference_line_ibr, linetype = "dashed", linewidth = 0.4) +
+  geom_boxplot(aes(fill = reporting_area_label), outlier.shape = NA, width = 0.65, alpha = 0.78) +
+  geom_jitter(aes(color = reporting_area_label), width = 0.12, height = 0, alpha = 0.55, size = 1.8) +
+  scale_fill_manual(values = ra_palette, drop = FALSE, name = "Reporting area") +
+  scale_color_manual(values = ra_palette, drop = FALSE, guide = "none") +
+  labs(
+    title = "Combined IBR by reporting area",
+    subtitle = paste("Dashed line =", reference_site, "combined IBR"),
+    x = NULL,
+    y = "Combined IBR"
+  ) +
+  theme_biomarker(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1))
+
+p_ibr_combined
+
+ggsave(
+  filename = file.path(fig_dir, "Fig_ibr_combined_by_reporting_area.png"),
+  plot = p_ibr_combined,
+  width = 9, height = 5.5, dpi = 400
+)
+
+ggsave(
+  filename = file.path(fig_dir, "Fig_ibr_combined_by_reporting_area.pdf"),
+  plot = p_ibr_combined,
+  width = 9, height = 5.5
+)
+```
+
+# Correlation helpers
+
+```{r correlation-helpers}
+run_one_correlation <- function(df, metric_col, comparison_col, method = c("spearman", "kendall")) {
+  method <- match.arg(method)
+
+  dat <- df |>
+    select(all_of(c(metric_col, comparison_col))) |>
+    drop_na()
+
+  if (nrow(dat) < 3 ||
+      n_distinct(dat[[metric_col]]) < 2 ||
+      n_distinct(dat[[comparison_col]]) < 2) {
+    return(tibble(n = nrow(dat), estimate = NA_real_, p_value = NA_real_))
+  }
+
+  test <- suppressWarnings(
+    cor.test(dat[[metric_col]], dat[[comparison_col]], method = method, exact = FALSE)
+  )
+
+  tibble(
+    n = nrow(dat),
+    estimate = unname(test$estimate),
+    p_value = test$p.value
+  )
+}
+
+calc_metric_correlations <- function(df,
+                                     target_metrics,
+                                     comparison_vars,
+                                     method = c("spearman", "kendall"),
+                                     alpha = 0.05,
+                                     p_adjust_method = "none") {
+  method <- match.arg(method)
+
+  crossing(metric = target_metrics, correlated_to = comparison_vars) |>
+    filter(metric != correlated_to) |>
+    mutate(result = map2(metric, correlated_to, ~ run_one_correlation(df, .x, .y, method = method))) |>
+    unnest(result) |>
+    mutate(
+      method = method,
+      coefficient = case_when(
+        method == "spearman" ~ "rho",
+        method == "kendall"  ~ "tau",
+        TRUE ~ "estimate"
+      ),
+      p_adjusted = p.adjust(p_value, method = p_adjust_method),
+      significant = !is.na(p_adjusted) & p_adjusted < alpha
+    ) |>
+    relocate(method, metric, correlated_to, coefficient, estimate, n, p_value, p_adjusted, significant) |>
+    arrange(metric, p_adjusted, p_value)
+}
+
+make_correlation_gt <- function(sig_df, method_label) {
+  if (nrow(sig_df) == 0) {
+    sig_df <- tibble(
+      metric = character(),
+      correlated_to = character(),
+      estimate = numeric(),
+      n = integer(),
+      p_value = numeric(),
+      p_adjusted = numeric()
+    )
+  }
+
+  sig_df |>
+    select(metric, correlated_to, estimate, n, p_value, p_adjusted) |>
+    gt() |>
+    tab_header(
+      title = paste(method_label, "significant correlations"),
+      subtitle = paste0("Measured metrics: ", paste(measured_metrics, collapse = ", "),
+                        "; alpha = ", alpha,
+                        "; p-adjust method = ", p_adjust_method)
+    ) |>
+    cols_label(
+      metric = "Metric",
+      correlated_to = "Correlated to",
+      estimate = "Effect size",
+      n = "n",
+      p_value = "p-value",
+      p_adjusted = "Adjusted p-value"
+    ) |>
+    fmt_number(columns = estimate, decimals = 3) |>
+    fmt_scientific(columns = c(p_value, p_adjusted), decimals = 3) |>
+    tab_options(table.font.size = px(12))
+}
+```
+
+# Tables. Significant Spearman and Kendall correlations
+
+```{r correlation-tables}
+# By default, this compares p450, sod, shell, and ci against every other numeric
+# response/index column in the CSV. Identifier columns and the four target metrics
+# are excluded from the comparison side to avoid self-correlations and duplicate
+# measured-metric pairings.
+numeric_cols <- sites |>
+  select(where(is.numeric)) |>
+  names()
+
+comparison_vars <- setdiff(numeric_cols, c(identifier_cols, measured_metrics))
+
+spearman_all <- calc_metric_correlations(
+  df = sites,
+  target_metrics = measured_metrics,
+  comparison_vars = comparison_vars,
+  method = "spearman",
+  alpha = alpha,
+  p_adjust_method = p_adjust_method
+)
+
+kendall_all <- calc_metric_correlations(
+  df = sites,
+  target_metrics = measured_metrics,
+  comparison_vars = comparison_vars,
+  method = "kendall",
+  alpha = alpha,
+  p_adjust_method = p_adjust_method
+)
+
+spearman_sig <- spearman_all |>
+  filter(significant) |>
+  arrange(metric, p_adjusted, p_value)
+
+kendall_sig <- kendall_all |>
+  filter(significant) |>
+  arrange(metric, p_adjusted, p_value)
+
+write_csv(spearman_all, file.path(tab_dir, "Table_spearman_all_metric_correlations.csv"))
+write_csv(kendall_all,  file.path(tab_dir, "Table_kendall_all_metric_correlations.csv"))
+
+write_csv(spearman_sig, file.path(tab_dir, "Table_spearman_significant_metric_correlations.csv"))
+write_csv(kendall_sig,  file.path(tab_dir, "Table_kendall_significant_metric_correlations.csv"))
+
+spearman_gt <- make_correlation_gt(spearman_sig, "Spearman")
+kendall_gt  <- make_correlation_gt(kendall_sig, "Kendall")
+
+gtsave(spearman_gt, file.path(tab_dir, "Table_spearman_significant_metric_correlations.html"))
+gtsave(kendall_gt,  file.path(tab_dir, "Table_kendall_significant_metric_correlations.html"))
+
+# PNG table export can fail if webshot2/Chromium is unavailable. The HTML and CSV
+# tables above will still be saved.
+try(gtsave(spearman_gt, file.path(tab_dir, "Table_spearman_significant_metric_correlations.png")), silent = TRUE)
+try(gtsave(kendall_gt,  file.path(tab_dir, "Table_kendall_significant_metric_correlations.png")), silent = TRUE)
+
+spearman_gt
+kendall_gt
+```
+
+# Quick outputs check
+
+```{r output-check}
+list.files(fig_dir, pattern = "Fig_.*reporting_area", full.names = TRUE)
+list.files(tab_dir, pattern = "Table_.*metric_correlations", full.names = TRUE)
+```
